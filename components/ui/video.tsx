@@ -22,7 +22,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { useTheme } from "@/contexts/theme-context";
+import { useTheme } from "../../contexts/theme-context";
 
 export interface ThemedVideoProps
   extends Omit<VideoViewProps, "player"> {

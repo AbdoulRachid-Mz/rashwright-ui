@@ -10,9 +10,9 @@
 import React, { memo } from 'react';
 import { StyleSheet, View, StyleProp, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useTheme } from '@/contexts/theme-context';
+import { useTheme } from '../../../contexts/theme-context';
 import { useMemo } from 'react';
-import { createGlassTheme } from '@/constants/glass-theme';
+import { createGlassTheme } from '../../../constants/glass-theme';
 import type { LiquidHighlightProps } from './liquid-types';
 
 const LiquidHighlight = memo(

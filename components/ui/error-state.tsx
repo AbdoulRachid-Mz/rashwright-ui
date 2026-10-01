@@ -5,7 +5,7 @@
 import React from "react";
 import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "@/contexts/theme-context";
+import { useTheme } from "../../contexts/theme-context";
 import ThemedText from "./text";
 import Button from "./button";
 import LiquidSurface from "./liquid/liquid-surface";

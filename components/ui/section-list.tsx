@@ -1,5 +1,5 @@
 // @/components/ui/section-list.tsx
-import { useTheme } from "@/contexts/theme-context";
+import { useTheme } from "../../contexts/theme-context";
 import { forwardRef } from "react";
 import { RefreshControl, SectionList, SectionListProps } from "react-native";
 

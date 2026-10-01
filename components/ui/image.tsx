@@ -1,7 +1,7 @@
 
 // @/components/ui/image.tsx
 import { Image as ExpoImage, ImageProps, ImageStyle } from "expo-image";
-import { useTheme } from "@/contexts/theme-context";
+import { useTheme } from "../../contexts/theme-context";
 import { ReactNode, forwardRef, useMemo } from "react";
 import Animated, {
   useSharedValue,

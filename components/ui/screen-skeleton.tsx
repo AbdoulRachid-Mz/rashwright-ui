@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { useTheme } from '@/contexts/theme-context';
+import { useTheme } from '../../contexts/theme-context';
 import { Skeleton, SkeletonCard, SkeletonCircle, SkeletonText } from './skeleton';
 import SafeAreaView from './safe-area-view';
 

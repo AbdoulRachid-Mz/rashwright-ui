@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { View, Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { Image } from "expo-image";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "@/contexts/theme-context";
+import { useTheme } from "../../contexts/theme-context";
 import LiquidBorder from "./liquid/liquid-border";
 
 export interface AvatarProps {

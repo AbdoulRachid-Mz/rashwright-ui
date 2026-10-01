@@ -2,8 +2,8 @@ import { Command } from "commander";
 import chalk from "chalk";
 import ora from "ora";
 import { confirm, input, select } from "@inquirer/prompts";
-import { join } from "node:path";
-import { existsSync, mkdirSync } from "node:fs";
+import { basename, join } from "node:path";
+import { existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { detectProject } from "../core/project-detector.js";
 import { detectExpo } from "../core/expo-detector.js";
@@ -33,6 +33,32 @@ const GLASS_EXTRA_DEPS = [
 ];
 
 const SOURCE_ROOT = join(import.meta.dirname, "..", "..");
+
+function isDirectoryEmpty(dir: string): boolean {
+  if (!existsSync(dir)) return true;
+  try {
+    const entries = readdirSync(dir).filter((name) => {
+      if (name.startsWith(".git")) return false;
+      const full = join(dir, name);
+      const stat = statSync(full);
+      void stat;
+      return true;
+    });
+    return entries.length === 0;
+  } catch {
+    return false;
+  }
+}
+
+function suggestUniqueProjectName(cwd: string, baseName: string): string {
+  let candidate = baseName;
+  let counter = 2;
+  while (existsSync(join(cwd, candidate)) && !isDirectoryEmpty(join(cwd, candidate))) {
+    candidate = `${baseName}-${counter}`;
+    counter += 1;
+  }
+  return candidate;
+}
 
 export function initCommand(): Command {
   const cmd = new Command("init");
@@ -68,8 +94,12 @@ export function initCommand(): Command {
         console.log(chalk.yellow("  ℹ Aucun projet React Native / Expo détecté dans le répertoire courant."));
         console.log();
 
+        const currentDirIsEmpty = isDirectoryEmpty(cwd);
+        const defaultProjectName = suggestUniqueProjectName(cwd, "rashwright-expo-app");
+
         let shouldCreate = true;
         let projectName = projectNameArg;
+        let useCurrentDirectory = false;
 
         if (!options.yes) {
           shouldCreate = await confirm({
@@ -82,41 +112,83 @@ export function initCommand(): Command {
             return;
           }
 
-          if (!projectName) {
+          if (!currentDirIsEmpty) {
+            console.log();
+            console.log(chalk.yellow("  ⚠  Le répertoire courant contient déjà des fichiers."));
+            console.log(chalk.dim(`     (${basename(cwd)}/ n'est pas vide)`));
+            console.log();
+            useCurrentDirectory = await confirm({
+              message: "Installer Rashwright UI dans le répertoire courant (risque d'écrasement) ?",
+              default: false,
+            });
+
+            if (!useCurrentDirectory) {
+              projectName = await input({
+                message: "Nom du dossier du projet Expo à créer :",
+                default: defaultProjectName,
+              });
+            }
+          } else if (!projectName) {
             projectName = await input({
-              message: "Nom du projet Expo :",
-              default: "rashwright-expo-app",
+              message: "Nom du dossier du projet Expo :",
+              default: defaultProjectName,
             });
           }
         } else {
-          projectName = projectName || "rashwright-expo-app";
+          projectName = projectNameArg || defaultProjectName;
+          useCurrentDirectory = false;
         }
 
-        const sdkFlag = options.sdk === "latest" ? "latest" : options.sdk;
-        const targetDir = join(cwd, projectName);
-        const pm = detectPackageManager(cwd);
-        const runner = pm === "bun" ? "bunx" : "npx";
+        let targetDir: string;
 
-        console.log();
-        console.log(chalk.bold(`  Création du projet Expo (${chalk.cyan(projectName)}) SDK ${chalk.green(sdkFlag)}...`));
-
-        const createCmd = `${runner} create-expo-app@${sdkFlag} ${projectName} --template default`;
-
-        if (options.dryRun) {
-          console.log(chalk.yellow(`  [dry-run] ${createCmd}`));
+        if (useCurrentDirectory) {
+          targetDir = cwd;
+          console.log();
+          console.log(chalk.yellow(`  ⚠  Installation dans le répertoire courant : ${chalk.bold(targetDir)}`));
         } else {
-          const createSpinner = ora(`Exécution de ${createCmd}...`).start();
-          try {
-            execSync(createCmd, { cwd, stdio: "inherit" });
-            createSpinner.succeed("Projet Expo créé avec succès");
-          } catch (err) {
-            createSpinner.fail("Échec de la création du projet Expo");
-            console.error(err);
-            process.exit(1);
+          const sdkFlag = options.sdk === "latest" ? "latest" : options.sdk;
+          targetDir = join(cwd, projectName!);
+          const pm = detectPackageManager(cwd);
+          const runner = pm === "bun" ? "bunx" : "npx";
+
+          if (existsSync(targetDir) && !isDirectoryEmpty(targetDir)) {
+            if (!options.yes) {
+              console.log();
+              console.log(chalk.yellow(`  ⚠  Le dossier ${chalk.bold(projectName!)} existe déjà et n'est pas vide.`));
+              const overwrite = await confirm({
+                message: "Continuer quand même (create-expo-app refusera probablement) ?",
+                default: false,
+              });
+              if (!overwrite) {
+                console.log(chalk.dim("  Annulé. Choisissez un autre nom de projet."));
+                return;
+              }
+            } else {
+              console.log(chalk.yellow(`  ⚠  Le dossier ${chalk.bold(projectName!)} existe déjà ; create-expo-app pourrait échouer.`));
+            }
+          }
+
+          console.log();
+          console.log(chalk.bold(`  Création du projet Expo dans le dossier (${chalk.cyan(projectName!)}) SDK ${chalk.green(sdkFlag)}...`));
+
+          const createCmd = `${runner} create-expo-app@${sdkFlag} ${projectName!} --template default`;
+
+          if (options.dryRun) {
+            console.log(chalk.yellow(`  [dry-run] ${createCmd}`));
+            console.log(chalk.yellow(`  [dry-run] Dossier cible : ${targetDir}`));
+          } else {
+            const createSpinner = ora(`Exécution de ${createCmd}...`).start();
+            try {
+              execSync(createCmd, { cwd, stdio: "inherit" });
+              createSpinner.succeed(`Projet Expo créé dans le dossier ${projectName!} avec succès`);
+            } catch (err) {
+              createSpinner.fail("Échec de la création du projet Expo");
+              console.error(err);
+              process.exit(1);
+            }
           }
         }
 
-        // Switch to the newly created project folder
         cwd = targetDir;
         project = detectProject(cwd);
         expo = detectExpo(cwd);
@@ -195,10 +267,10 @@ export function initCommand(): Command {
         console.error(err);
       }
 
-      // ── 6. Copier les fondations (Theme, Store, Context) ──────────────────
-      const foundationSpinner = ora("Mise en place des fondations Rashwright (tokens, thème, store, contexte)...").start();
-      setupFoundations(SOURCE_ROOT, cwd, options.dryRun);
-      foundationSpinner.succeed("Fondations du thème & store installées");
+      // ── 6. Copier les fondations (Theme, Store, Context + Core UI text, view, liquid/*) ──────
+      const foundationSpinner = ora("Mise en place des fondations Rashwright (tokens, thème, store, contexte + primitives UI)...").start();
+      setupFoundations(SOURCE_ROOT, cwd, componentsPath, options.dryRun);
+      foundationSpinner.succeed("Fondations du thème, store & primitives UI installées");
 
       // ── 7. Copier les assets (SVG RS + PNG) ──────────────────────────────
       const assetsSpinner = ora("Copie des assets Rashwright (Logo RS SVG + PNG)...").start();

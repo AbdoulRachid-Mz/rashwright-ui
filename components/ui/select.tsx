@@ -11,7 +11,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "@/contexts/theme-context";
+import { useTheme } from "../../contexts/theme-context";
 import ThemedText from "./text";
 import LiquidPressable from "./liquid/liquid-pressable";
 import LiquidSurface from "./liquid/liquid-surface";

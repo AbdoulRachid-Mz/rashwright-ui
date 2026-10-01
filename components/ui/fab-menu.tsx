@@ -18,7 +18,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "@/contexts/theme-context";
+import { useTheme } from "../../contexts/theme-context";
 import ThemedText from "./text";
 import LiquidPressable from "./liquid/liquid-pressable";
 import LiquidSurface from "./liquid/liquid-surface";

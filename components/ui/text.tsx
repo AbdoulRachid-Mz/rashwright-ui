@@ -1,6 +1,6 @@
 // @/components/ui/text.tsx
 import { StyleSheet, StyleProp, TextStyle, Text as RNText } from "react-native";
-import { useTheme } from "@/contexts/theme-context";
+import { useTheme } from "../../contexts/theme-context";
 import { ReactNode, forwardRef, useEffect, useMemo } from "react";
 import Animated, {
   useAnimatedStyle,

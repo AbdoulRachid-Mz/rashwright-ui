@@ -7,9 +7,9 @@ import {
   StyleSheet,
   Platform,
 } from 'react-native';
-import { useTheme } from '@/contexts/theme-context';
-import ThemedText from '@/components/ui/text';
-import ThemedView from '@/components/ui/view';
+import { useTheme } from '../../contexts/theme-context';
+import ThemedText from './text';
+import ThemedView from './view';
 
 const ITEM_HEIGHT = 50;
 

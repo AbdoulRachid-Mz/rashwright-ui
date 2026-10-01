@@ -13,7 +13,7 @@ import {
   TextStyle,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "@/contexts/theme-context";
+import { useTheme } from "../../contexts/theme-context";
 import TextInput, { TextInputProps } from "./text-input";
 import IconButton from "./icon-button";
 import LiquidPressable from "./liquid/liquid-pressable";

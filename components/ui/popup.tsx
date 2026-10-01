@@ -1,5 +1,5 @@
 // @/components/ui/popup.tsx
-import { useTheme } from "@/contexts/theme-context";
+import { useTheme } from "../../contexts/theme-context";
 import { ReactNode } from "react";
 import { StyleSheet } from "react-native";
 import Button from "./button";

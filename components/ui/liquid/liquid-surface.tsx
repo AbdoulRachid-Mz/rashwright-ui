@@ -21,8 +21,8 @@ import {
 } from "react-native";
 import Animated from "react-native-reanimated";
 import { BlurView } from "expo-blur";
-import { useTheme } from "@/contexts/theme-context";
-import { createGlassTheme } from "@/constants/glass-theme";
+import { useTheme } from "../../../contexts/theme-context";
+import { createGlassTheme } from "../../../constants/glass-theme";
 import { getLiquidShadow } from "./liquid-shadow";
 import LiquidHighlight from "./liquid-highlight";
 import LiquidBorder from "./liquid-border";

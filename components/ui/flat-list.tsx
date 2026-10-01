@@ -5,7 +5,7 @@ import {
   FlatListProps,
   RefreshControl,
 } from "react-native";
-import { useTheme } from "@/contexts/theme-context";
+import { useTheme } from "../../contexts/theme-context";
 import { forwardRef } from "react";
 
 interface ThemedFlatListProps<T> extends FlatListProps<T> {

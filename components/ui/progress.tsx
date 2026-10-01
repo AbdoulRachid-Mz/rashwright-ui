@@ -9,8 +9,8 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { useTheme } from "@/contexts/theme-context";
-import { createGlassTheme } from "@/constants/glass-theme";
+import { useTheme } from "../../contexts/theme-context";
+import { createGlassTheme } from "../../constants/glass-theme";
 import ThemedText from "./text";
 import LiquidHighlight from "./liquid/liquid-highlight";
 

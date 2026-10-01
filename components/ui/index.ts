@@ -18,8 +18,8 @@ export * from "./liquid/liquid-types";
 // ---------------------------------------------------------------------------
 // 2. Composants de Base & Layout
 // ---------------------------------------------------------------------------
-export { default as View, default as ThemedView } from "./view";
-export { default as Text, default as ThemedText } from "./text";
+export { default as ThemedView } from "./view";
+export { default as ThemedText } from "./text";
 export { default as Image } from "./image";
 export { default as Spacer } from "./spacer";
 export { default as Dot } from "./dot";

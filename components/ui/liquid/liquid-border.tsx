@@ -10,8 +10,8 @@
 
 import React, { memo, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useTheme } from '@/contexts/theme-context';
-import { createGlassTheme } from '@/constants/glass-theme';
+import { useTheme } from '../../../contexts/theme-context';
+import { createGlassTheme } from '../../../constants/glass-theme';
 import type { LiquidBorderProps } from './liquid-types';
 
 const LiquidBorder = memo(
