@@ -3,7 +3,7 @@ import chalk from "chalk";
 import ora from "ora";
 import { confirm } from "@inquirer/prompts";
 import { join } from "node:path";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { detectProject } from "../core/project-detector.js";
 import { detectExpo } from "../core/expo-detector.js";
 import { readConfig, writeConfig, markComponentInstalled, isComponentInstalled } from "../core/config-manager.js";
@@ -69,7 +69,7 @@ export function addCommand(): Command {
       let installedPkgs: Record<string, string> = {};
       if (existsSync(pkgJsonPath)) {
         try {
-          const pkg = JSON.parse(require("fs").readFileSync(pkgJsonPath, "utf-8"));
+          const pkg = JSON.parse(readFileSync(pkgJsonPath, "utf-8"));
           installedPkgs = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
         } catch {
           /* ignore */

@@ -18,8 +18,8 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
-import type { IUploadProvider, UploadSource, UploadResult } from "@rashwright/upload";
-import { UploadManager } from "@rashwright/upload";
+import type { IUploadProvider, UploadSource, UploadResult } from "../../lib/upload";
+import { UploadManager } from "../../lib/upload";
 import { useTheme } from "../../contexts/theme-context";
 import LiquidSurface from "./liquid/liquid-surface";
 

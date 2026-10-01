@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, statSync } from "node:fs";
-import { join, dirname, basename } from "node:path";
+import { join, dirname } from "node:path";
 
 export interface FileCopyResult {
   source: string;
@@ -28,9 +28,9 @@ export function copyComponentFiles(
   const results: FileCopyResult[] = [];
 
   for (const file of files) {
-    const filename = basename(file);
+    const relativeComponentsPath = file.replace(/^components\/ui\//, "");
     const source = resolveSourcePath(file, registrySourceRoot);
-    const destination = join(targetComponentsRoot, filename);
+    const destination = join(targetComponentsRoot, relativeComponentsPath);
 
     if (!existsSync(source)) {
       results.push({ source, destination, status: "failed" });

@@ -33,11 +33,12 @@ export function copyRashwrightAssets(
 
 /**
  * Setup foundational files (constants/theme, constants/glass-theme, stores/theme-store, contexts/theme-context)
- * in the target project.
+ * and core UI primitives (text, view, liquid/*) in the target project.
  */
 export function setupFoundations(
   sourceRoot: string,
   targetProjectRoot: string,
+  componentsPath: string = "components/ui",
   dryRun = false
 ): void {
   if (dryRun) return;
@@ -71,6 +72,36 @@ export function setupFoundations(
       copyFileSync(srcPath, destPath);
     }
   }
+
+  setupCoreUi(sourceRoot, join(targetProjectRoot, componentsPath), dryRun);
+}
+
+/**
+ * Core UI files required by any component using Liquid primitives or Themed Text/View.
+ * Copied ONCE during init; never overwritten during add.
+ */
+const CORE_UI_FILES = [
+  "components/ui/text.tsx",
+  "components/ui/view.tsx",
+  "components/ui/liquid/liquid-types.ts",
+  "components/ui/liquid/liquid-surface.tsx",
+  "components/ui/liquid/liquid-pressable.tsx",
+  "components/ui/liquid/liquid-highlight.tsx",
+  "components/ui/liquid/liquid-border.tsx",
+  "components/ui/liquid/liquid-glow.tsx",
+  "components/ui/liquid/liquid-blob.tsx",
+  "components/ui/liquid/liquid-shadow.ts",
+];
+
+export function setupCoreUi(
+  sourceRoot: string,
+  targetComponentsRoot: string,
+  dryRun = false
+): void {
+  copyComponentFiles(CORE_UI_FILES, sourceRoot, targetComponentsRoot, {
+    overwrite: false,
+    dryRun,
+  });
 }
 
 /**

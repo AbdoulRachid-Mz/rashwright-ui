@@ -8,6 +8,9 @@
     "strict": true,
     "declaration": true,
     "skipLibCheck": true,
+    "types": ["node"],
+    "allowImportingTsExtensions": false,
+    "noEmit": true,
     "paths": {
       "@/*": ["./*"]
     }

@@ -5,7 +5,7 @@ import { detectProject } from "../core/project-detector.js";
 import { detectExpo } from "../core/expo-detector.js";
 import { readConfig } from "../core/config-manager.js";
 import { readCompatibilityMatrix } from "../core/expo-detector.js";
-import { existsSync as fsExists } from "node:fs";
+import { existsSync as fsExists, readFileSync } from "node:fs";
 
 const REGISTRY_ROOT = join(import.meta.dirname, "..", "..", "registry");
 
@@ -86,7 +86,7 @@ export function doctorCommand(): Command {
         // ── Key native deps ──────────────────────────────────────────────
         const pkgPath = join(cwd, "package.json");
         if (fsExists(pkgPath)) {
-          const pkg = JSON.parse(require("fs").readFileSync(pkgPath, "utf-8"));
+          const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
           const allDeps = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
           const matrix = expo.supportedVersion
             ? readCompatibilityMatrix(expo.supportedVersion, REGISTRY_ROOT)
