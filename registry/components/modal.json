@@ -3,13 +3,23 @@
   "version": "1.0.0",
   "description": "Modal générique avec animations d'entrée/sortie.",
   "category": "Overlay",
-  "files": ["components/ui/modal.tsx"],
+  "files": [
+    "components/ui/modal.tsx"
+  ],
   "dependencies": [],
-  "expoDependencies": ["react-native-reanimated"],
-  "optionalExpoDependencies": ["expo-blur"],
+  "expoDependencies": [
+    "expo-blur",
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [],
   "requiresComponents": [],
-  "providers": ["ThemeProvider"],
-  "supportsGlass": true,
-  "platforms": ["ios", "android"],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
   "nativeRebuildRequired": false
 }

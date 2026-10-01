@@ -1,1 +1,24 @@
-{"name":"chip","version":"1.0.0","description":"Chip/tag sélectionnable avec icône optionnelle et bouton de suppression.","category":"Forms","files":["components/ui/chip.tsx"],"dependencies":[],"expoDependencies":[],"optionalExpoDependencies":["expo-haptics"],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "chip",
+  "version": "1.0.0",
+  "description": "Chip/tag sélectionnable avec icône optionnelle et bouton de suppression.",
+  "category": "Forms",
+  "files": [
+    "components/ui/chip.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

@@ -50,18 +50,16 @@
     "stat-card",
     "switch",
     "tabs",
-    "text",
     "text-input",
     "time-picker",
     "tooltip",
     "upload-image",
     "upload-video",
-    "video",
-    "view"
+    "video"
   ],
   "categories": {
-    "Basic": ["badge", "avatar", "avatar-group", "dot", "icon", "icon-button", "rashwright-logo", "text"],
-    "Layout": ["card", "divider", "keyboard-avoiding-view", "safe-area-view", "scroll-view", "spacer", "stat-card", "view"],
+    "Basic": ["badge", "avatar", "avatar-group", "dot", "icon", "icon-button", "rashwright-logo"],
+    "Layout": ["card", "divider", "keyboard-avoiding-view", "safe-area-view", "scroll-view", "spacer", "stat-card"],
     "Forms": ["checkbox", "chip", "radio", "search-input", "segmented-control", "select", "slider", "switch", "text-input", "time-picker"],
     "Navigation": ["actions-grid", "bottom-sheet", "carousel", "drawer", "dropdown-menu", "fab-menu", "floating-action-button", "tabs"],
     "Feedback": ["alert", "confirm", "modal", "popup", "progress", "tooltip"],
@@ -72,6 +70,6 @@
     "Starter": ["button", "showcase-screen"]
   },
   "themes": ["default", "emerald", "violet", "amber", "rose", "slate", "glass"],
-  "totalComponents": 56,
+  "totalComponents": 55,
   "sdkVersions": [54, 55, 56, 57, 58]
 }

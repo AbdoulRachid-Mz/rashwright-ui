@@ -1,1 +1,25 @@
-{"name":"popup","version":"1.0.0","description":"Popup contextuel ancré à un élément avec contenu personnalisable.","category":"Feedback","files":["components/ui/popup.tsx"],"dependencies":[],"expoDependencies":["react-native-reanimated"],"optionalExpoDependencies":[],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":true,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "popup",
+  "version": "1.0.0",
+  "description": "Popup contextuel ancré à un élément avec contenu personnalisable.",
+  "category": "Feedback",
+  "files": [
+    "components/ui/popup.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [
+    "button",
+    "modal"
+  ],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

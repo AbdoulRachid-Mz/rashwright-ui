@@ -1,1 +1,25 @@
-{"name":"avatar","version":"1.0.0","description":"Avatar utilisateur avec image, initiales fallback et indicateur de présence.","category":"Basic","files":["components/ui/avatar.tsx"],"dependencies":[],"expoDependencies":[],"optionalExpoDependencies":[],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "avatar",
+  "version": "1.0.0",
+  "description": "Avatar utilisateur avec image, initiales fallback et indicateur de présence.",
+  "category": "Basic",
+  "files": [
+    "components/ui/avatar.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons",
+    "expo-image"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

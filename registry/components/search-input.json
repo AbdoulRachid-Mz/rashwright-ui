@@ -1,1 +1,27 @@
-{"name":"search-input","version":"1.0.0","description":"Champ de recherche avec icône loupe, bouton d'effacement et debounce intégré.","category":"Forms","files":["components/ui/search-input.tsx"],"dependencies":[],"expoDependencies":["@expo/vector-icons"],"optionalExpoDependencies":["expo-haptics"],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":true,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "search-input",
+  "version": "1.0.0",
+  "description": "Champ de recherche avec icône loupe, bouton d'effacement et debounce intégré.",
+  "category": "Forms",
+  "files": [
+    "components/ui/search-input.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [
+    "icon-button",
+    "text-input"
+  ],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

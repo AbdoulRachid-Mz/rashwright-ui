@@ -1,1 +1,22 @@
-{"name":"section-list","version":"1.0.0","description":"SectionList thémée avec headers de section sticky et état vide.","category":"Data","files":["components/ui/section-list.tsx"],"dependencies":[],"expoDependencies":[],"optionalExpoDependencies":[],"requiresComponents":["empty-state"],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "section-list",
+  "version": "1.0.0",
+  "description": "SectionList thémée avec headers de section sticky et état vide.",
+  "category": "Data",
+  "files": [
+    "components/ui/section-list.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

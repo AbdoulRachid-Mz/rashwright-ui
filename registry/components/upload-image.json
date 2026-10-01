@@ -1,1 +1,26 @@
-{"name":"upload-image","version":"1.0.0","description":"Sélecteur et uploader d'image avec preview, recadrage et multi-providers.","category":"Media","files":["components/ui/upload-image.tsx"],"dependencies":[],"expoDependencies":["expo-image-picker","expo-image-manipulator","@expo/vector-icons"],"optionalExpoDependencies":["expo-haptics"],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":true}
+{
+  "name": "upload-image",
+  "version": "1.0.0",
+  "description": "Sélecteur et uploader d'image avec preview, recadrage et multi-providers.",
+  "category": "Media",
+  "files": [
+    "components/ui/upload-image.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons",
+    "expo-image-manipulator",
+    "expo-image-picker"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

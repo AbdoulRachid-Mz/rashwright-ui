@@ -1,1 +1,24 @@
-{"name":"progress","version":"1.0.0","description":"Barre de progression animée avec label et variants de couleur.","category":"Feedback","files":["components/ui/progress.tsx"],"dependencies":[],"expoDependencies":["react-native-reanimated"],"optionalExpoDependencies":[],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "progress",
+  "version": "1.0.0",
+  "description": "Barre de progression animée avec label et variants de couleur.",
+  "category": "Feedback",
+  "files": [
+    "components/ui/progress.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

@@ -1,1 +1,22 @@
-{"name":"switch","version":"1.0.0","description":"Interrupteur toggle animé avec retour haptique.","category":"Forms","files":["components/ui/switch.tsx"],"dependencies":[],"expoDependencies":["react-native-reanimated"],"optionalExpoDependencies":["expo-haptics"],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "switch",
+  "version": "1.0.0",
+  "description": "Interrupteur toggle animé avec retour haptique.",
+  "category": "Forms",
+  "files": [
+    "components/ui/switch.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

@@ -1,1 +1,23 @@
-{"name":"shimmer","version":"1.0.0","description":"Effet de scintillement skeleton avec dégradé animé de gauche à droite.","category":"States","files":["components/ui/shimmer.tsx"],"dependencies":[],"expoDependencies":["react-native-reanimated","expo-linear-gradient"],"optionalExpoDependencies":[],"requiresComponents":[],"providers":[],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "shimmer",
+  "version": "1.0.0",
+  "description": "Effet de scintillement skeleton avec dégradé animé de gauche à droite.",
+  "category": "States",
+  "files": [
+    "components/ui/shimmer.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-linear-gradient",
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

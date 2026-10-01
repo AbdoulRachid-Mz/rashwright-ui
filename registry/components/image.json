@@ -1,1 +1,23 @@
-{"name":"image","version":"1.0.0","description":"Composant image optimisé avec chargement progressif, placeholder et gestion d'erreur.","category":"Media","files":["components/ui/image.tsx"],"dependencies":[],"expoDependencies":["expo-image"],"optionalExpoDependencies":[],"requiresComponents":[],"providers":[],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "image",
+  "version": "1.0.0",
+  "description": "Composant image optimisé avec chargement progressif, placeholder et gestion d'erreur.",
+  "category": "Media",
+  "files": [
+    "components/ui/image.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-image",
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

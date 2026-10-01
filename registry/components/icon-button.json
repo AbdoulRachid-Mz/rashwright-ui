@@ -1,1 +1,22 @@
-{"name":"icon-button","version":"1.0.0","description":"Bouton icône rond avec variants de style et retour haptique optionnel.","category":"Basic","files":["components/ui/icon-button.tsx"],"dependencies":[],"expoDependencies":["@expo/vector-icons"],"optionalExpoDependencies":["expo-haptics"],"requiresComponents":["icon"],"providers":["ThemeProvider"],"supportsGlass":true,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "icon-button",
+  "version": "1.0.0",
+  "description": "Bouton icône rond avec variants de style et retour haptique optionnel.",
+  "category": "Basic",
+  "files": [
+    "components/ui/icon-button.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

@@ -1,1 +1,28 @@
-{"name":"fab-menu","version":"1.0.0","description":"FAB avec menu d'actions secondaires déployable en éventail.","category":"Navigation","files":["components/ui/fab-menu.tsx"],"dependencies":[],"expoDependencies":["react-native-reanimated","@expo/vector-icons"],"optionalExpoDependencies":["expo-haptics","expo-blur"],"requiresComponents":["floating-action-button"],"providers":["ThemeProvider"],"supportsGlass":true,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "fab-menu",
+  "version": "1.0.0",
+  "description": "FAB avec menu d'actions secondaires déployable en éventail.",
+  "category": "Navigation",
+  "files": [
+    "components/ui/fab-menu.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons",
+    "react-native-reanimated",
+    "react-native-safe-area-context"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [
+    "floating-action-button"
+  ],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

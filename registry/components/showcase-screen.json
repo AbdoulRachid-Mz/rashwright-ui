@@ -1,1 +1,29 @@
-{"name":"showcase-screen","version":"1.0.0","description":"Écran de démonstration interactif avec sélecteur de thèmes, toggle Glass et galerie des composants.","category":"Starter","files":["components/ui/showcase-screen.tsx"],"dependencies":[],"expoDependencies":["react-native-safe-area-context","@expo/vector-icons","expo-linear-gradient"],"optionalExpoDependencies":["expo-blur"],"requiresComponents":["button","card","glass-card","badge","text-input","rashwright-logo"],"providers":["ThemeProvider"],"supportsGlass":true,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "showcase-screen",
+  "version": "1.0.0",
+  "description": "Écran de démonstration interactif avec sélecteur de thèmes, toggle Glass et galerie des composants.",
+  "category": "Starter",
+  "files": [
+    "components/ui/showcase-screen.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [
+    "badge",
+    "button",
+    "card",
+    "glass-card",
+    "rashwright-logo",
+    "text-input"
+  ],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

@@ -1,1 +1,24 @@
-{"name":"stat-card","version":"1.0.0","description":"Carte de statistique avec valeur, label, icône et tendance (up/down).","category":"Layout","files":["components/ui/stat-card.tsx"],"dependencies":[],"expoDependencies":[],"optionalExpoDependencies":[],"requiresComponents":["card","icon"],"providers":["ThemeProvider"],"supportsGlass":true,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "stat-card",
+  "version": "1.0.0",
+  "description": "Carte de statistique avec valeur, label, icône et tendance (up/down).",
+  "category": "Layout",
+  "files": [
+    "components/ui/stat-card.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

@@ -1,1 +1,0 @@
-{"name":"view","version":"1.0.0","description":"View thémé avec background automatique selon le thème courant.","category":"Layout","files":["components/ui/view.tsx"],"dependencies":[],"expoDependencies":[],"optionalExpoDependencies":[],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}

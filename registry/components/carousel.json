@@ -1,1 +1,25 @@
-{"name":"carousel","version":"1.0.0","description":"Carrousel d'éléments swipeable avec pagination et défilement automatique optionnel.","category":"Navigation","files":["components/ui/carousel.tsx"],"dependencies":[],"expoDependencies":["react-native-reanimated","react-native-gesture-handler"],"optionalExpoDependencies":[],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":true}
+{
+  "name": "carousel",
+  "version": "1.0.0",
+  "description": "Carrousel d'éléments swipeable avec pagination et défilement automatique optionnel.",
+  "category": "Navigation",
+  "files": [
+    "components/ui/carousel.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons",
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

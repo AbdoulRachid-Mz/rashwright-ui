@@ -19,7 +19,9 @@
     "build:cli": "bun build ./cli/index.ts --outdir ./cli/dist --target node --format esm --external commander --external inquirer --external chalk --external ora",
     "dev:cli": "bun run --watch cli/index.ts",
     "check-types": "tsc --noEmit",
-    "cli": "bun run cli/index.ts"
+    "cli": "bun run cli/index.ts",
+    "sync-registry": "bun run scripts/sync-registry.ts",
+    "validate-registry": "bun run scripts/validate-registry.ts"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",

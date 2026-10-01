@@ -1,1 +1,26 @@
-{"name":"actions-grid","version":"1.0.0","description":"Grille d'actions rapides avec icônes et labels, style app iOS.","category":"Navigation","files":["components/ui/actions-grid.tsx"],"dependencies":[],"expoDependencies":["@expo/vector-icons"],"optionalExpoDependencies":["expo-haptics"],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":true,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "actions-grid",
+  "version": "1.0.0",
+  "description": "Grille d'actions rapides avec icônes et labels, style app iOS.",
+  "category": "Navigation",
+  "files": [
+    "components/ui/actions-grid.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [
+    "carousel"
+  ],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

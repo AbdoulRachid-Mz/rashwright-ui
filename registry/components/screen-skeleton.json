@@ -1,1 +1,25 @@
-{"name":"screen-skeleton","version":"1.0.0","description":"Skeleton complet d'un écran pendant le chargement (header + liste de cards).","category":"States","files":["components/ui/screen-skeleton.tsx"],"dependencies":[],"expoDependencies":["react-native-reanimated","expo-linear-gradient","react-native-safe-area-context"],"optionalExpoDependencies":[],"requiresComponents":["shimmer"],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "screen-skeleton",
+  "version": "1.0.0",
+  "description": "Skeleton complet d'un écran pendant le chargement (header + liste de cards).",
+  "category": "States",
+  "files": [
+    "components/ui/screen-skeleton.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [
+    "safe-area-view",
+    "skeleton"
+  ],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

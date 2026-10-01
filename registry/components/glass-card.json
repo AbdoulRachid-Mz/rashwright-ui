@@ -3,14 +3,21 @@
   "version": "1.0.0",
   "description": "Carte Glass UI avec effet blur, gradient et bordure translucide. Nécessite expo-blur et expo-linear-gradient.",
   "category": "Glass",
-  "files": ["components/ui/glass-card.tsx"],
+  "files": [
+    "components/ui/glass-card.tsx"
+  ],
   "dependencies": [],
-  "expoDependencies": ["expo-blur", "expo-linear-gradient"],
+  "expoDependencies": [],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
-  "providers": ["ThemeProvider"],
-  "supportsGlass": true,
-  "platforms": ["ios", "android"],
-  "nativeRebuildRequired": true,
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false,
   "notes": "Un rebuild de développement peut être nécessaire après ajout de expo-blur."
 }
