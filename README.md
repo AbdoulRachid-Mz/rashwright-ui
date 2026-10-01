@@ -263,7 +263,7 @@ Ce guide est destiné aux développeurs qui souhaitent cloner le dépôt source,
 
 ```bash
 # 1. Cloner le repo
-git clone https://github.com/rashwright/rashwright-ui.git
+git clone https://github.com/AbdoulRachid-Mz/rashwright-ui.git
 cd rashwright-ui
 
 # 2. Installer les dépendances avec Bun

@@ -4,7 +4,7 @@
   "description": "Rashwright UI Mobile — Composants React Native / Expo distribuables",
   "license": "MIT",
   "author": "Rashwright",
-  "repository": { "type": "git", "url": "git+https://github.com/rashwright/rashwright-ui.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/AbdoulRachid-Mz/rashwright-ui.git" },
   "keywords": ["react-native", "expo", "ui", "components", "shadcn", "liquid-glass", "registry"],
   "type": "module",
   "sideEffects": false,
