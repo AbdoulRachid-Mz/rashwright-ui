@@ -15,6 +15,7 @@ import {
   setupStarterComponents,
   generateShowcaseScreen,
 } from "../core/starter-generator.js";
+import { SOURCE_ROOT } from "../core/paths.js";
 
 const CORE_EXPO_DEPS = [
   "react-native-reanimated",
@@ -31,8 +32,6 @@ const GLASS_EXTRA_DEPS = [
   "expo-blur",
   "expo-linear-gradient",
 ];
-
-const SOURCE_ROOT = join(import.meta.dirname, "..", "..");
 
 function isDirectoryEmpty(dir: string): boolean {
   if (!existsSync(dir)) return true;

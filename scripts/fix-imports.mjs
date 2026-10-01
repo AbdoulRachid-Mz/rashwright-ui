@@ -3,7 +3,8 @@ import { readdirSync, readFileSync, writeFileSync, statSync, existsSync } from "
 import { join, dirname, relative, sep } from "node:path";
 
 const PROJECT_ROOT = process.cwd();
-const COMPONENTS_ROOT = join(PROJECT_ROOT, "components", "ui");
+const UI_MOBILE_ROOT = join(PROJECT_ROOT, "packages", "ui-mobile");
+const COMPONENTS_ROOT = join(UI_MOBILE_ROOT, "components", "ui");
 
 function walk(dir, out = []) {
   const entries = readdirSync(dir);

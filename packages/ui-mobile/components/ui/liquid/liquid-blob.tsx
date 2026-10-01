@@ -88,13 +88,13 @@ const LiquidBlob = memo(
       ],
     }));
 
-    const webFilterStyle: ViewStyle = useMemo(() => {
-      if (Platform.OS !== "web") return {};
+    const webFilterStyle = useMemo(() => {
+      if (Platform.OS !== "web") return {} as ViewStyle;
       return {
         // @ts-ignore
         filter: `blur(${blur}px)`,
         WebkitFilter: `blur(${blur}px)`,
-      };
+      } as ViewStyle;
     }, [blur]);
 
     return (

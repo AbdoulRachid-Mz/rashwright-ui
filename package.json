@@ -1,50 +1,28 @@
 {
-  "name": "@rashwright/ui-mobile",
+  "name": "@rashwright/workspace-root",
+  "private": true,
   "version": "0.1.0",
-  "description": "Rashwright UI Mobile — Système de composants React Native / Expo distribuables via CLI rs-ui",
-  "type": "module",
-  "bin": {
-    "rs-ui": "./cli/dist/index.js"
-  },
-  "exports": {
-    ".": "./index.ts",
-    "./theme": "./theme/index.ts",
-    "./components/*": "./components/*.tsx",
-    "./contexts/*": "./contexts/*.tsx",
-    "./hooks/*": "./hooks/*.ts",
-    "./constants/*": "./constants/*.ts",
-    "./stores/*": "./stores/*.ts"
-  },
+  "description": "Rashwright UI Mobile — Workspace racine (Bun workspaces)",
+  "license": "MIT",
+  "packageManager": "bun@1.4.2",
+  "workspaces": ["packages/*"],
   "scripts": {
-    "build:cli": "bun build ./cli/index.ts --outdir ./cli/dist --target node --format esm --external commander --external inquirer --external chalk --external ora",
-    "dev:cli": "bun run --watch cli/index.ts",
-    "check-types": "tsc --noEmit",
-    "cli": "bun run cli/index.ts",
+    "check-types": "bun run check-types:cli && bun run check-types:ui",
+    "check-types:cli": "bun run --filter @rashwright/cli check-types",
+    "check-types:ui": "bun run --filter @rashwright/ui-mobile check-types",
     "sync-registry": "bun run scripts/sync-registry.ts",
-    "validate-registry": "bun run scripts/validate-registry.ts"
+    "validate-registry": "bun run scripts/validate-registry.ts",
+    "build:cli": "bun run --filter @rashwright/cli build",
+    "dev:cli": "bun run --filter @rashwright/cli dev",
+    "cli": "bun run packages/cli/src/index.ts"
   },
-  "dependencies": {
-    "@expo/vector-icons": "^15.0.2",
-    "@react-native-async-storage/async-storage": "2.2.0",
+  "devDependencies": {
+    "@inquirer/prompts": "^8.7.2",
+    "@types/node": "^22.0.0",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "inquirer": "^12.5.0",
     "ora": "^8.1.1",
-    "react-native-gesture-handler": "~2.32.0",
-    "react-native-reanimated": "4.5.1",
-    "react-native-safe-area-context": "~5.7.0",
-    "zustand": "^5.0.14"
-  },
-  "peerDependencies": {
-    "expo": ">=54.0.0",
-    "react": ">=18.3.0",
-    "react-native": ">=0.73.0"
-  },
-  "devDependencies": {
-    "@types/node": "^26.6.3",
-    "@types/react": "^19.3.0",
-    "@types/react-native": "^0.73.0",
-    "typescript": "^7.0.2"
-  },
-  "packageManager": "bun@1.4.2"
+    "typescript": "^5.5.0"
+  }
 }

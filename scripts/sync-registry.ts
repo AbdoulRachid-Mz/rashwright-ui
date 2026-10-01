@@ -23,8 +23,9 @@ import { join, basename, extname, dirname, relative, sep } from "node:path";
 // 0. Constantes globales
 // ---------------------------------------------------------------------------
 const PROJECT_ROOT = process.cwd();
-const COMPONENTS_UI_ROOT = join(PROJECT_ROOT, "components", "ui");
-const REGISTRY_ROOT = join(PROJECT_ROOT, "registry");
+const UI_MOBILE_ROOT = join(PROJECT_ROOT, "packages", "ui-mobile");
+const COMPONENTS_UI_ROOT = join(UI_MOBILE_ROOT, "components", "ui");
+const REGISTRY_ROOT = join(UI_MOBILE_ROOT, "registry");
 const REGISTRY_COMPONENTS = join(REGISTRY_ROOT, "components");
 
 // Core UI files — NE SONT PAS des composants enregistrables.

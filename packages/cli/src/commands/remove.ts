@@ -6,8 +6,7 @@ import { existsSync, unlinkSync } from "node:fs";
 import { detectProject } from "../core/project-detector.js";
 import { readConfig, writeConfig, markComponentRemoved, isComponentInstalled } from "../core/config-manager.js";
 import { loadAllComponentEntries } from "../core/dependency-resolver.js";
-
-const REGISTRY_ROOT = join(import.meta.dirname, "..", "..", "registry");
+import { REGISTRY_ROOT } from "../core/paths.js";
 
 export function removeCommand(): Command {
   const cmd = new Command("remove");

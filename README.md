@@ -64,19 +64,19 @@ Pour faire tourner le CLI et exécuter les projets Expo sur une nouvelle machine
 
 #### Option A : Installation globale avec Bun (recommandé)
 ```bash
-bun add -g @rashwright/ui-mobile
+bun add -g @rashwright/cli
 ```
 
 #### Option B : Installation globale avec npm
 ```bash
-npm install -g @rashwright/ui-mobile
+npm install -g @rashwright/cli
 ```
 
 #### Option C : Exécution directe sans installation globale (via npx / bunx)
 ```bash
-bunx rs-ui <commande>
+bunx @rashwright/cli <commande>
 # ou
-npx @rashwright/ui-mobile <commande>
+npx @rashwright/cli <commande>
 ```
 
 ---
@@ -272,10 +272,12 @@ bun install
 
 ### Scripts disponibles
 
-Dans `package.json`, plusieurs commandes simplifient le cycle de vie :
+Le dépôt utilise **Bun Workspaces** avec 2 packages : `@rashwright/cli` (packages/cli) et `@rashwright/ui-mobile` (packages/ui-mobile).
 
 ```bash
-# Compiler le CLI (génère cli/dist/index.js autonome avec esm)
+# --- Workspace racine ---
+
+# Compiler le CLI (génère packages/cli/dist/index.js autonome ESM + shebang)
 bun run build:cli
 
 # Développer le CLI en mode watch avec rechargement instantané
@@ -285,16 +287,41 @@ bun run dev:cli
 bun run cli --help
 bun run cli list
 
-# Vérifier la validité des types TypeScript sur tout le projet
+# Vérifier la validité des types TypeScript sur tout le projet (mode composite)
 bun run check-types
+
+# Synchroniser le registry (met à jour 5 champs dynamiques des JSON)
+bun run sync-registry
+
+# Valider le registry (8 contrôles : cohérence, existence, permissions)
+bun run validate-registry
+
+# --- Sous-package CLI ---
+cd packages/cli
+bun run build          # build local
+bun run dev            # watch
+bun run check-types    # TS strict CLI seul
+bun run prepublishOnly # (auto avant npm publish)
+
+# --- Sous-package UI Mobile ---
+cd packages/ui-mobile
+bun run check-types    # TS strict UI seul (composants + registry + contexts + ...)
 ```
 
 ### Vérification TypeScript
 
-Le projet est configuré avec un environnement TypeScript strict (`tsconfig.json`) et dispose d'un fichier `types/ambient.d.ts` qui déclare les dépendances natives d'Expo en isolation.
+Le projet est configuré en **mode composite** (tsconfig.base.json + references). Chaque package possède son propre tsconfig.json.
 
 ```bash
-bun run check-types
+# Vérification globale (racine) : CLI + UI Mobile + scripts
+npx tsc --noEmit
+
+# Vérification ciblée CLI
+cd packages/cli && npx tsc --noEmit
+
+# Vérification ciblée UI Mobile
+cd packages/ui-mobile && npx tsc --noEmit
+
 # Sortie attendue : Exit code 0 (zéro erreur)
 ```
 
@@ -302,10 +329,10 @@ bun run check-types
 
 ### Ajouter un nouveau composant au Registry
 
-Pour créer un nouveau composant `my-component` :
+Pour créer un nouveau composant `my-component` (tout se fait dans `packages/ui-mobile/`) :
 
-1. **Créer le fichier source** dans `components/ui/my-component.tsx` en utilisant `useTheme()` pour les couleurs.
-2. **Définir son entrée dans le Registry** : créer `registry/components/my-component.json` :
+1. **Créer le fichier source** dans `packages/ui-mobile/components/ui/my-component.tsx` en utilisant `useTheme()` pour les couleurs.
+2. **Définir son entrée dans le Registry** : créer `packages/ui-mobile/registry/components/my-component.json` :
    ```json
    {
      "name": "my-component",
@@ -323,9 +350,14 @@ Pour créer un nouveau composant `my-component` :
      "nativeRebuildRequired": false
    }
    ```
-3. **Mettre à jour** `registry/index.json` pour ajouter le composant dans la catégorie correspondante.
-4. **Documenter l'usage** dans `skills/my-component/SKILL.md`.
-5. **Recompiler le CLI** :
+3. **Mettre à jour** `packages/ui-mobile/registry/index.json` pour ajouter le composant dans la catégorie correspondante.
+4. **Documenter l'usage** dans `packages/ui-mobile/skills/my-component/SKILL.md`.
+5. **Synchroniser + valider le registry** :
+   ```bash
+   bun run sync-registry
+   bun run validate-registry
+   ```
+6. **Recompiler le CLI et tester** :
    ```bash
    bun run build:cli
    bun run cli info my-component

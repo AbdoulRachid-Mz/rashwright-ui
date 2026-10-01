@@ -2,8 +2,7 @@ import { Command } from "commander";
 import chalk from "chalk";
 import { join } from "node:path";
 import { loadComponentEntry } from "../core/dependency-resolver.js";
-
-const REGISTRY_ROOT = join(import.meta.dirname, "..", "..", "registry");
+import { REGISTRY_ROOT } from "../core/paths.js";
 
 export function infoCommand(): Command {
   const cmd = new Command("info");

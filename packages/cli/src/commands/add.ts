@@ -11,10 +11,7 @@ import { detectPackageManager, installExpoPackages, installNpmPackages } from ".
 import { resolveDependencies } from "../core/dependency-resolver.js";
 import { copyComponentFiles } from "../core/file-manager.js";
 import { loadRegistryIndex, getAllComponents } from "../core/registry.js";
-
-// Path to the rashwright-ui project root (where components live)
-const REGISTRY_ROOT = join(import.meta.dirname, "..", "..", "registry");
-const SOURCE_ROOT = join(import.meta.dirname, "..", "..");
+import { REGISTRY_ROOT, SOURCE_ROOT } from "../core/paths.js";
 
 export function addCommand(): Command {
   const cmd = new Command("add");

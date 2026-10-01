@@ -3,6 +3,7 @@ node_modules/
 
 # CLI build output
 cli/dist/
+packages/cli/dist/
 
 # Build output
 dist/

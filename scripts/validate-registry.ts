@@ -17,8 +17,9 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, basename, dirname, extname, relative, sep } from "node:path";
 
 const PROJECT_ROOT = process.cwd();
-const UI_ROOT = join(PROJECT_ROOT, "components", "ui");
-const REG_ROOT = join(PROJECT_ROOT, "registry");
+const UI_MOBILE_ROOT = join(PROJECT_ROOT, "packages", "ui-mobile");
+const UI_ROOT = join(UI_MOBILE_ROOT, "components", "ui");
+const REG_ROOT = join(UI_MOBILE_ROOT, "registry");
 const REG_COMPONENTS = join(REG_ROOT, "components");
 const INDEX = join(REG_ROOT, "index.json");
 
@@ -85,9 +86,11 @@ for (const src of allSources) {
 // ============ B. F-2: chaque JSON liste des fichiers existants ============
 for (const [name, j] of registryByName) {
   for (const f of j.files || []) {
-    const abs = join(PROJECT_ROOT, f);
+    // ⚠ Important : les paths "components/ui/xxx.tsx" sont RELATIFS à UI_MOBILE_ROOT (packages/ui-mobile/),
+    // PAS à PROJECT_ROOT (workspace racine). C'est la cause du bug F-2 massif après SPLIT-2.
+    const abs = join(UI_MOBILE_ROOT, f);
     if (!existsSync(abs)) {
-      errors.push(`F-2  ❌  ${name}.json liste '${f}' (n'existe pas)`);
+      errors.push(`F-2  ❌  ${name}.json liste '${f}' (n'existe pas — cherché dans : ${abs})`);
     } else if (!f.startsWith("components/ui/")) {
       errors.push(`F-2  ⚠  ${name}.json liste '${f}' — doit commencer par components/ui/`);
     }

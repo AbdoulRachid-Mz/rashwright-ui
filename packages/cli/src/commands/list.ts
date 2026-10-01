@@ -5,8 +5,7 @@ import { detectProject } from "../core/project-detector.js";
 import { readConfig, isComponentInstalled } from "../core/config-manager.js";
 import { loadRegistryIndex, getAllComponents } from "../core/registry.js";
 import type { ComponentRegistryEntry } from "../core/dependency-resolver.js";
-
-const REGISTRY_ROOT = join(import.meta.dirname, "..", "..", "registry");
+import { REGISTRY_ROOT } from "../core/paths.js";
 
 export function listCommand(): Command {
   const cmd = new Command("list");

@@ -1,0 +1,29 @@
+{
+  "name": "@rashwright/cli",
+  "version": "0.1.0",
+  "description": "CLI rs-ui pour Rashwright UI Mobile",
+  "license": "MIT",
+  "author": "Rashwright",
+  "repository": { "type": "git", "url": "git+https://github.com/rashwright/rashwright-ui.git" },
+  "type": "module",
+  "engines": { "node": ">=20.11.0" },
+  "bin": { "rs-ui": "./dist/index.js" },
+  "files": ["dist/**", "README.md"],
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./dist --target node --format esm --external commander --external inquirer --external chalk --external ora",
+    "dev": "bun run --watch src/index.ts",
+    "prepublishOnly": "bun run build && bun run check-types",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@rashwright/ui-mobile": "^0.1.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "inquirer": "^12.5.0",
+    "ora": "^8.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}

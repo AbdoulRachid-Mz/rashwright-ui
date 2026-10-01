@@ -6,8 +6,7 @@ import { detectExpo } from "../core/expo-detector.js";
 import { readConfig } from "../core/config-manager.js";
 import { readCompatibilityMatrix } from "../core/expo-detector.js";
 import { existsSync as fsExists, readFileSync } from "node:fs";
-
-const REGISTRY_ROOT = join(import.meta.dirname, "..", "..", "registry");
+import { REGISTRY_ROOT } from "../core/paths.js";
 
 interface CheckResult {
   label: string;

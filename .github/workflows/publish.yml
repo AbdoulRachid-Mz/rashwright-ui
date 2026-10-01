@@ -1,0 +1,114 @@
+name: Publish Rashwright UI
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  check:
+    name: ✅ Type check + Registry validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.2"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: TypeScript strict (CLI)
+        run: cd packages/cli && npx tsc --noEmit
+
+      - name: TypeScript strict (UI Mobile)
+        run: cd packages/ui-mobile && npx tsc --noEmit
+
+      - name: TypeScript strict (root workspace composite)
+        run: npx tsc --noEmit
+
+      - name: Validate registry
+        run: bun run scripts/validate-registry.ts
+
+  publish-ui-mobile:
+    name: 📦 Publish @rashwright/ui-mobile
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.2"
+
+      - name: Setup Node (for npm publish)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: npm publish --access public (@rashwright/ui-mobile)
+        working-directory: packages/ui-mobile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
+
+  publish-cli:
+    name: 📦 Publish @rashwright/cli
+    needs: publish-ui-mobile
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.2"
+
+      - name: Setup Node (for npm publish)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build CLI (dist + shebang)
+        run: bun run --filter @rashwright/cli build
+
+      - name: Verify workspace:* resolved for CLI dep
+        working-directory: packages/cli
+        run: |
+          node -e "
+            const fs = require('node:fs');
+            const pkg = JSON.parse(fs.readFileSync('./package.json','utf8'));
+            const dep = pkg.dependencies?.['@rashwright/ui-mobile'];
+            console.log('@rashwright/ui-mobile dep:', dep);
+            if (String(dep).startsWith('workspace:')) {
+              console.error('FAIL: workspace:* non résolu');
+              process.exit(1);
+            }
+            console.log('OK');
+          "
+
+      - name: npm publish --access public (@rashwright/cli)
+        working-directory: packages/cli
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public

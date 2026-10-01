@@ -7,9 +7,7 @@ import { detectProject } from "../core/project-detector.js";
 import { readConfig, writeConfig, markComponentInstalled, getInstalledVersion } from "../core/config-manager.js";
 import { loadComponentEntry } from "../core/dependency-resolver.js";
 import { copyComponentFiles } from "../core/file-manager.js";
-
-const REGISTRY_ROOT = join(import.meta.dirname, "..", "..", "registry");
-const SOURCE_ROOT = join(import.meta.dirname, "..", "..");
+import { REGISTRY_ROOT, SOURCE_ROOT } from "../core/paths.js";
 
 export function updateCommand(): Command {
   const cmd = new Command("update");
