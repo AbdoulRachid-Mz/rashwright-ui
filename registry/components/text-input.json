@@ -1,0 +1,15 @@
+{
+  "name": "text-input",
+  "version": "1.0.0",
+  "description": "Champ de saisie texte avec label, erreur, icônes et support Glass.",
+  "category": "Forms",
+  "files": ["components/ui/text-input.tsx"],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": ["expo-haptics"],
+  "requiresComponents": [],
+  "providers": ["ThemeProvider"],
+  "supportsGlass": true,
+  "platforms": ["ios", "android"],
+  "nativeRebuildRequired": false
+}

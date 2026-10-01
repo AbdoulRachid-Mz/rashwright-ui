@@ -1,0 +1,15 @@
+{
+  "name": "bottom-sheet",
+  "version": "1.0.0",
+  "description": "Feuille de fond animée avec gestes drag-to-dismiss. Nécessite react-native-reanimated et react-native-gesture-handler.",
+  "category": "Overlay",
+  "files": ["components/ui/bottom-sheet.tsx"],
+  "dependencies": [],
+  "expoDependencies": ["react-native-reanimated", "react-native-gesture-handler", "react-native-safe-area-context"],
+  "optionalExpoDependencies": ["expo-blur"],
+  "requiresComponents": [],
+  "providers": ["ThemeProvider", "GestureHandlerRootView"],
+  "supportsGlass": true,
+  "platforms": ["ios", "android"],
+  "nativeRebuildRequired": true
+}

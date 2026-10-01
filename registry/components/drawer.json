@@ -1,0 +1,16 @@
+{
+  "name": "drawer",
+  "version": "1.0.0",
+  "description": "Tiroir latéral animé avec gestes. Nécessite react-native-reanimated et react-native-gesture-handler.",
+  "category": "Overlay",
+  "files": ["components/ui/drawer.tsx"],
+  "dependencies": [],
+  "expoDependencies": ["react-native-reanimated", "react-native-gesture-handler", "react-native-safe-area-context"],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": ["ThemeProvider", "GestureHandlerRootView"],
+  "supportsGlass": true,
+  "platforms": ["ios", "android"],
+  "nativeRebuildRequired": true,
+  "notes": "Ajouter <GestureHandlerRootView> à la racine de l'application. Un rebuild peut être nécessaire."
+}

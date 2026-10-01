@@ -1,0 +1,25 @@
+{
+  "sdk": 56,
+  "react": "19.2.3",
+  "reactNative": "0.85.3",
+  "strategy": "expo-install",
+  "packages": {
+    "react-native-reanimated": "~4.3.1",
+    "react-native-gesture-handler": "~2.31.2",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.2",
+    "expo-blur": "~56.0.4",
+    "expo-linear-gradient": "~56.0.0",
+    "expo-haptics": "~56.0.3",
+    "expo-image": "~56.0.12",
+    "expo-image-picker": "~56.0.25",
+    "expo-image-manipulator": "~56.0.26",
+    "expo-video": "~56.1.4",
+    "expo-local-authentication": "~56.0.0",
+    "expo-secure-store": "~56.0.0",
+    "@expo/vector-icons": "^15.0.0",
+    "react-native-mmkv": "^4.3.2",
+    "nativewind": "5.0.0-preview.4",
+    "zustand": "^5.0.14"
+  }
+}

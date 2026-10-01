@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <defs>
+    <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00d9ff"/>
+      <stop offset="45%" stop-color="#2563eb"/>
+      <stop offset="75%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#dbeafe"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="1200" fill="#05070d"/>
+
+  <!-- Rashwright abstract R -->
+  <g filter="url(#glow)" fill="none" stroke="url(#logoGrad)" stroke-linecap="round">
+    <path d="M320 280 H720 C850 280 850 470 720 470 H420" stroke-width="120"/>
+    <path d="M420 470 L720 760" stroke-width="120"/>
+  </g>
+
+  <!-- Smartphone silhouette -->
+  <rect x="330" y="420" width="150" height="330" rx="45" fill="#071b4d" stroke="url(#logoGrad)" stroke-width="12"/>
+  <rect x="380" y="465" width="60" height="14" rx="7" fill="#35bdf7"/>
+  <circle cx="405" cy="680" r="18" fill="#3157ff"/>
+
+  <text x="600" y="930" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="120"
+        font-weight="800"
+        fill="url(#textGrad)">
+    Rashwright
+  </text>
+
+  <text x="600" y="1030" text-anchor="middle"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="52"
+        letter-spacing="22"
+        font-weight="600"
+        fill="url(#logoGrad)">
+    UI MOBILE
+  </text>
+</svg>

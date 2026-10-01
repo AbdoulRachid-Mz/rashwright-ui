@@ -1,0 +1,15 @@
+{
+  "name": "tabs",
+  "version": "1.0.0",
+  "description": "Composant d'onglets animé. Nécessite react-native-reanimated.",
+  "category": "Navigation",
+  "files": ["components/ui/tabs.tsx"],
+  "dependencies": [],
+  "expoDependencies": ["react-native-reanimated"],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": ["ThemeProvider"],
+  "supportsGlass": true,
+  "platforms": ["ios", "android"],
+  "nativeRebuildRequired": false
+}

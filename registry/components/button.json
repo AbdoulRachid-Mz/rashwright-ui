@@ -1,0 +1,22 @@
+{
+  "name": "button",
+  "version": "1.0.0",
+  "description": "Bouton interactif universel pour React Native avec variants, tailles, états et support Glass.",
+  "category": "Basic",
+  "files": ["components/ui/button.tsx"],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": ["expo-haptics"],
+  "requiresComponents": [],
+  "providers": ["ThemeProvider"],
+  "supportsGlass": true,
+  "platforms": ["ios", "android"],
+  "nativeRebuildRequired": false,
+  "props": {
+    "variant": ["primary", "secondary", "outline", "ghost", "destructive", "glass"],
+    "size": ["sm", "md", "lg"],
+    "disabled": "boolean",
+    "loading": "boolean",
+    "onPress": "function"
+  }
+}

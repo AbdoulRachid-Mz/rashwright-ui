@@ -1,0 +1,15 @@
+{
+  "name": "card",
+  "version": "1.0.0",
+  "description": "Conteneur de carte générique avec support Glass, ombres et coins arrondis.",
+  "category": "Layout",
+  "files": ["components/ui/card.tsx"],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": ["ThemeProvider"],
+  "supportsGlass": true,
+  "platforms": ["ios", "android"],
+  "nativeRebuildRequired": false
+}

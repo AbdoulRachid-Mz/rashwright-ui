@@ -1,0 +1,1 @@
+{"name":"spacer","version":"1.0.0","description":"Espace flexible entre éléments de layout.","category":"Layout","files":["components/ui/spacer.tsx"],"dependencies":[],"expoDependencies":[],"optionalExpoDependencies":[],"requiresComponents":[],"providers":[],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}

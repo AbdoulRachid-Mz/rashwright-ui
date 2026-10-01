@@ -1,0 +1,1 @@
+{"name":"badge","version":"1.0.0","description":"Badge de statut ou compteur avec variants de couleur et taille.","category":"Basic","files":["components/ui/badge.tsx"],"dependencies":[],"expoDependencies":[],"optionalExpoDependencies":[],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}

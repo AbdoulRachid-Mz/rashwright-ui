@@ -1,0 +1,1 @@
+{"name":"divider","version":"1.0.0","description":"Séparateur horizontal ou vertical avec label optionnel.","category":"Layout","files":["components/ui/divider.tsx"],"dependencies":[],"expoDependencies":[],"optionalExpoDependencies":[],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
