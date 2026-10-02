@@ -10,7 +10,7 @@ import {
   StyleProp,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import ThemedText from "./text";
 import { Carousel } from "./carousel";
 import LiquidPressable from "./liquid/liquid-pressable";

@@ -1,6 +1,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
+export type InitMode = "new-project" | "existing-project";
+
 export interface ProjectInfo {
   root: string;
   hasPackageJson: boolean;
@@ -105,4 +107,12 @@ export function detectProject(cwd: string = process.cwd()): ProjectInfo {
     hasRashwrightConfig,
     rashwrightConfigPath,
   };
+}
+
+export function detectInitMode(cwd: string): InitMode {
+  const project = detectProject(cwd);
+  if (project.hasPackageJson && (project.isExpo || project.reactNativeVersion !== null)) {
+    return "existing-project";
+  }
+  return "new-project";
 }

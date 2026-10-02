@@ -1,135 +1,159 @@
 # Rashwright UI Mobile (`rs-ui`)
 
-> Système moderne de composants distribuables pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie de distribution de code à la *shadcn/ui*.
+> Système moderne de composants **distribuables** pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie *shadcn/ui* : **vous copiez les composants dans votre codebase, vous en êtes propriétaire**.
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](#)
-[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20--%2058%20(beta)-000000.svg?logo=expo)](#)
-[![Package Manager](https://img.shields.io/badge/Bun-1.2+-fbf0df.svg?logo=bun)](#)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.5+-3178c6.svg?logo=typescript)](#)
+**Statut v0.1.1** : ✅ Publié sur npm — `@rashwright/cli@0.1.1` · `@rashwright/ui-mobile@0.1.1`
+**P0/P1** : 13/13 résolus. **Objectifs errors.md A/B/C/D** : 4/4 atteints.
 
----
-
-## 📑 Sommaire
-
-1. [Philosophie](#-philosophie)
-2. [Prérequis système](#-prérequis-système)
-3. [Guide 1 : Développeur Utilisateur (Intégrer dans une application)](#-guide-1--développeur-utilisateur-intégrer-dans-une-application)
-   - [Installation du CLI `rs-ui`](#installation-du-cli-rs-ui)
-   - [Initialiser un projet (`rs-ui init`)](#initialiser-un-projet-rs-ui-init)
-   - [Ajouter des composants (`rs-ui add`)](#ajouter-des-composants-rs-ui-add)
-   - [Les 6 thèmes prédéfinis](#les-6-thèmes-prédéfinis)
-   - [Composants d'upload et providers](#composants-dupload-et-providers)
-   - [Vérification et diagnostic (`rs-ui doctor`)](#vérification-et-diagnostic-rs-ui-doctor)
-4. [Guide 2 : Développeur Contributeur (Travailler sur le dépôt `rashwright-ui`)](#-guide-2--développeur-contributeur-travailler-sur-le-dépôt-rashwright-ui)
-   - [Cloner et installer](#cloner-et-installer)
-   - [Scripts disponibles](#scripts-disponibles)
-   - [Vérification TypeScript](#vérification-typescript)
-   - [Ajouter un nouveau composant au Registry](#ajouter-un-nouveau-composant-au-registry)
-5. [Architecture du système](#-architecture-du-système)
-6. [Matrice de compatibilité Expo SDK](#-matrice-de-compatibilité-expo-sdk)
-7. [Dépannage & FAQ](#-dépannage--faq)
+[![npm - @rashwright/cli](https://img.shields.io/badge/@rashwright/cli-v0.1.1-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
+[![npm - @rashwright/ui-mobile](https://img.shields.io/badge/@rashwright/ui--mobile-v0.1.1-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+[![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
+[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000000.svg?logo=expo)](#)
+[![Package Manager](https://img.shields.io/badge/Bun-1.2%2B-fbf0df.svg?logo=bun)](#)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5%2B-3178c6.svg?logo=typescript)](#)
 
 ---
 
-## 🚀 Philosophie
+## ⚡ Quick Start — Prêt en **30 secondes**
 
-Rashwright UI Mobile n'est **pas une dépendance npm opaque (`node_modules`)** qui enferme votre code. C'est un **système de distribution directe** :
+```bash
+# 1. Installer le CLI (point d'entrée unique pour les développeurs utilisateurs)
+bun add -g @rashwright/cli
+# ou : npm install -g @rashwright/cli
 
-- **Propriété totale du code** : Chaque composant installé (`rs-ui add`) est copié directement dans votre projet (`components/ui/`). Vous pouvez l'éditer, l'adapter et le personnaliser librement sans contrainte de framework.
-- **Résolution automatique des dépendances Expo** : Le CLI détecte votre version d'Expo SDK (de SDK 54 à SDK 58) et installe les versions natives exactes et vérifiées (`react-native-reanimated`, `expo-blur`, `expo-linear-gradient`, etc.).
-- **Moteur Liquid Glass** : Effets de flou dynamique, reflets lumineux physiques, bordures néon et rebonds tactiles haptiques.
-- **6 thèmes inclus & extensibles** : `default` (bleu), `emerald` (émeraude), `violet`, `amber`, `rose`, `slate`.
-- **Zéro blocage AsyncStorage** : Détection dynamique de `@react-native-async-storage/async-storage` avec fallback en mémoire sécurisé.
+# 2. Initialiser Rashwright UI Mobile dans un projet Expo existant (ou nouveau)
+rs-ui init --glass --theme emerald --yes
+
+# 3. Ajouter des composants
+rs-ui add button
+rs-ui add card drawer
+
+# ✅ C'est prêt. Plus besoin de comprendre l'architecture interne.
+```
+
+> 💡 **Rien à comprendre du monorepo.** `@rashwright/cli` est **votre unique point d'entrée** : il va chercher les composants dans le Registry `@rashwright/ui-mobile`, résout les versions natives compatibles avec votre SDK Expo et copie le code source directement dans votre projet. Pas de node_modules opaque.
 
 ---
 
-## 💻 Prérequis système
+## 📑 Sommaire — Guide utilisateur
 
-Pour faire tourner le CLI et exécuter les projets Expo sur une nouvelle machine :
+1. [Pourquoi Rashwright ?](#-pourquoi-rashwright-)
+2. [Prérequis](#-prérequis)
+3. [Installation du CLI `rs-ui`](#-installation-du-cli-rs-ui)
+4. [Initialiser un projet (`rs-ui init`)](#-initialiser-un-projet-rs-ui-init)
+5. [Ajouter des composants (`rs-ui add / list / info`)](#-ajouter-des-composants-rs-ui-add--list--info)
+6. [Les 6 thèmes prédéfinis](#-les-6-thèmes-prédéfinis)
+7. [Composants d'upload et providers](#-composants-dupload-et-providers)
+8. [Diagnostic (`rs-ui doctor`)](#-diagnostic-rs-ui-doctor)
+9. [Matrice de compatibilité Expo SDK](#-matrice-de-compatibilité-expo-sdk)
+10. [Dépannage & FAQ](#-dépannage--faq)
+11. [Architecture & Dépôt `rashwright-ui`](#-architecture--dépôt-rashwright-ui)
+
+> 🛠️ **Vous voulez contribuer (ajouter un composant, faire évoluer le CLI) ?** → Tout a été déplacé dans **[CONTRIBUTOR.md](./CONTRIBUTOR.md)**. Ce README-ci est destiné au **développeur utilisateur** qui intègre Rashwright dans son app.
+
+---
+
+## ❓ Pourquoi Rashwright ?
+
+Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`**. C'est un **système de distribution de code source directe** à la *shadcn/ui* :
+
+- ✅ **Propriété totale du code** : Chaque composant installé via `rs-ui add` est **copié** dans ton projet (`components/ui/`). Tu peux l'éditer, adapter, customiser sans contrainte de framework.
+- ✅ **Résolution automatique Expo SDK** : Le CLI détecte ta version d'Expo (SDK 54 à 58) et installe les versions natives **testées** pour `react-native-reanimated`, `expo-blur`, `expo-linear-gradient`, etc.
+- ✅ **Moteur Liquid Glass intégré** : Effets de flou dynamique, reflets physiques, bordures néon, rebonds tactiles haptiques — activable via `--glass` dans `rs-ui init`.
+- ✅ **6 thèmes prêts à l'emploi (clair + sombre)** : `default` · `emerald` · `violet` · `amber` · `rose` · `slate`.
+- ✅ **Zéro blocage persistance** : Détection dynamique de `@react-native-async-storage/async-storage` avec fallback mémoire sécurisé.
+- ✅ **55 composants** dans la version `0.1.0` (voir `rs-ui list --json` pour le nombre à jour).
+
+---
+
+## 💻 Prérequis
+
+Pour installer `@rashwright/cli` et exécuter un projet Expo :
 
 | Outil | Version minimale | Rôle |
 |---|---|---|
-| **Bun** (Recommandé) | `>= 1.2.0` | Package manager rapide & runtime |
-| **Node.js** | `>= 18.0.0` | Runtime JavaScript alternatif |
+| **Bun** (recommandé) | `>= 1.2.0` | Package manager & runtime (utilisé par défaut par `rs-ui`) |
+| **Node.js** | `>= 18.0.0` | Runtime JS (obligatoire pour Expo)
 | **Git** | Récent | Gestion de version |
-| **Watchman** *(macOS / Linux)* | Récent | Surveillance des fichiers pour Metro Bundler |
-| **Xcode & CocoaPods** *(macOS)* | Requis pour iOS | Build natif et simulateur iOS |
-| **Android Studio & JDK 17** | Requis pour Android | SDK Android, émulateur ou device physique |
 
 ---
 
-## 📱 Guide 1 : Développeur Utilisateur (Intégrer dans une application)
+## 📦 Installation du CLI `rs-ui`
 
-### Installation du CLI `rs-ui`
+⚠️ **Pour les développeurs utilisateurs** : tu n'as **jamais** besoin d'installer `@rashwright/ui-mobile` manuellement. C'est **`@rashwright/cli`** qui s'occupe de tout.
 
-#### Option A : Installation globale avec Bun (recommandé)
+### Option A : Installation globale (recommandée — commande `rs-ui` disponible partout)
 ```bash
 bun add -g @rashwright/cli
-```
-
-#### Option B : Installation globale avec npm
-```bash
+# ou avec npm :
 npm install -g @rashwright/cli
 ```
 
-#### Option C : Exécution directe sans installation globale (via npx / bunx)
+### Option B : Exécution ponctuelle (pas d'installation globale)
 ```bash
 bunx @rashwright/cli <commande>
-# ou
+# ou :
 npx @rashwright/cli <commande>
+```
+
+Vérifier l'installation :
+```bash
+rs-ui --version
+# doit afficher 0.1.1 (ou + récent)
 ```
 
 ---
 
-### Initialiser un projet (`rs-ui init`)
+## 🚀 Initialiser un projet (`rs-ui init`)
 
-La commande `init` est intelligente :
-1. **Si vous êtes déjà dans un projet React Native / Expo** : elle configure le système, crée `rashwright-ui.json`, installe les dépendances requises, configure le `ThemeProvider`, et copie l'écran démo interactif ainsi que les logos officiels Rashwright (`assets/primary.png` et `assets/svg/primary.svg`).
-2. **Si vous êtes dans un dossier vide** : elle crée automatiquement un nouveau projet Expo configuré avec le SDK spécifié (ou `@latest` par défaut).
+`rs-ui init` est **intelligent** :
+1. **Dans un projet Expo/React Native existant** → configure Rashwright, crée `rashwright-ui.json`, installe les deps natives compatibles, pose `ThemeProvider`, copie l'écran démo interactif + les logos RS (`assets/primary.png`, `assets/svg/primary.svg`).
+2. **Dans un dossier vide** → crée un **nouveau projet Expo** (SDK latest ou `--sdk XX`) puis procède comme ci-dessus.
 
 ```bash
-# Initialisation interactive (demande le thème, l'activation du mode Glass, etc.)
+# Mode interactif (recommandé au début)
 rs-ui init
 
-# Mode automatique avec réponses par défaut
+# Mode automatique (réponses par défaut)
 rs-ui init --yes
 
-# Spécifier directement un thème de base et activer le Liquid Glass
-rs-ui init --theme emerald --glass
+# Mode complet : Liquid Glass + thème émeraude + SDK 57, zéro question
+rs-ui init --glass --theme emerald --sdk 57 --yes
 
-# Spécifier une version particulière du SDK Expo
-rs-ui init --sdk 57
-
-# Prévisualiser les actions sans modifier les fichiers
+# Preview : montre ce qui va être fait, sans toucher aux fichiers
 rs-ui init --dry-run
 ```
 
 ---
 
-### Ajouter des composants (`rs-ui add`)
+## 🧩 Ajouter des composants (`rs-ui add` / `list` / `info`)
 
-Le CLI résout l'arbre complet des dépendances (composants dépendants + modules natifs Expo) :
+Le CLI résout **automatiquement** tout l'arbre de dépendances (composants enfants + modules natifs Expo + providers) :
 
 ```bash
 # Ajouter un composant
 rs-ui add button
 
-# Ajouter plusieurs composants en une seule commande
+# Ajouter plusieurs composants
 rs-ui add card modal text-input bottom-sheet
 
-# Ajouter les composants d'upload d'images et vidéos
+# Uploads
 rs-ui add upload-image upload-video
 
-# Ajouter l'ensemble des 57 composants
+# Ajouter TOUS les composants disponibles (nombre à jour selon version)
 rs-ui add --all
+# → 55 composants dans la version 0.1.1
 ```
 
-Pour explorer la bibliothèque :
+**Explorer la bibliothèque avant d'ajouter :**
 ```bash
-# Lister tous les composants disponibles et voir lesquels sont installés
+# Catalogue interactif + statut installé / non installé
 rs-ui list
 
-# Voir les détails, providers requis et dépendances d'un composant
+# Catalogue machine (pour scripts / IA)
+rs-ui list --json
+
+# Détails complets d'un composant : deps, providers, plateformes, rebuild requis
 rs-ui info drawer
 rs-ui info upload-image
 ```
@@ -182,12 +206,18 @@ function MainScreen() {
 
 ### Composants d'upload et providers
 
-Les composants `UploadImage` et `UploadVideo` s'interfacent avec `@rashwright/upload` pour gérer le téléversement local ou distant sur vos buckets cloud :
+Les composants `UploadImage` et `UploadVideo` embarquent **directement** le moteur d'upload Rashwright (il n'y a plus de package npm séparé — tout est inliné dans `lib/upload/`). Vous pouvez brancher : **Cloudinary**, **Firebase Storage**, **Vercel Blob**, **Local FS**, **Mock (test)**.
 
 ```tsx
 import { UploadImage } from "@/components/ui/upload-image";
 import { UploadVideo } from "@/components/ui/upload-video";
-import { CloudinaryProvider, FirebaseStorageProvider, VercelBlobProvider } from "@rashwright/upload";
+import {
+  CloudinaryProvider,
+  FirebaseStorageProvider,
+  VercelBlobProvider,
+  LocalUploadProvider,
+  MockUploadProvider,
+} from "@/lib/upload";
 import { useState } from "react";
 
 // Exemple avec Firebase Storage
@@ -255,172 +285,57 @@ Sortie type :
 
 ---
 
-## 🛠 Guide 2 : Développeur Contributeur (Travailler sur le dépôt `rashwright-ui`)
+## 🛠 Diagnostic (`rs-ui doctor`)
 
-Ce guide est destiné aux développeurs qui souhaitent cloner le dépôt source, enrichir la bibliothèque de composants ou faire évoluer le CLI `rs-ui`.
-
-### Cloner et installer
+Avant de soumettre un bug, ou avant un rebuild natif, lance un diagnostic complet de ton install :
 
 ```bash
-# 1. Cloner le repo
-git clone https://github.com/AbdoulRachid-Mz/rashwright-ui.git
-cd rashwright-ui
-
-# 2. Installer les dépendances avec Bun
-bun install
+rs-ui doctor
+# ou en JSON pour scripts :
+rs-ui doctor --json
 ```
 
-### Scripts disponibles
-
-Le dépôt utilise **Bun Workspaces** avec 2 packages : `@rashwright/cli` (packages/cli) et `@rashwright/ui-mobile` (packages/ui-mobile).
-
-```bash
-# --- Workspace racine ---
-
-# Compiler le CLI (génère packages/cli/dist/index.js autonome ESM + shebang)
-bun run build:cli
-
-# Développer le CLI en mode watch avec rechargement instantané
-bun run dev:cli
-
-# Exécuter directement le CLI depuis les sources TypeScript
-bun run cli --help
-bun run cli list
-
-# Vérifier la validité des types TypeScript sur tout le projet (mode composite)
-bun run check-types
-
-# Synchroniser le registry (met à jour 5 champs dynamiques des JSON)
-bun run sync-registry
-
-# Valider le registry (8 contrôles : cohérence, existence, permissions)
-bun run validate-registry
-
-# --- Sous-package CLI ---
-cd packages/cli
-bun run build          # build local
-bun run dev            # watch
-bun run check-types    # TS strict CLI seul
-bun run prepublishOnly # (auto avant npm publish)
-
-# --- Sous-package UI Mobile ---
-cd packages/ui-mobile
-bun run check-types    # TS strict UI seul (composants + registry + contexts + ...)
-```
-
-### Vérification TypeScript
-
-Le projet est configuré en **mode composite** (tsconfig.base.json + references). Chaque package possède son propre tsconfig.json.
-
-```bash
-# Vérification globale (racine) : CLI + UI Mobile + scripts
-npx tsc --noEmit
-
-# Vérification ciblée CLI
-cd packages/cli && npx tsc --noEmit
-
-# Vérification ciblée UI Mobile
-cd packages/ui-mobile && npx tsc --noEmit
-
-# Sortie attendue : Exit code 0 (zéro erreur)
-```
-
----
-
-### Ajouter un nouveau composant au Registry
-
-Pour créer un nouveau composant `my-component` (tout se fait dans `packages/ui-mobile/`) :
-
-1. **Créer le fichier source** dans `packages/ui-mobile/components/ui/my-component.tsx` en utilisant `useTheme()` pour les couleurs.
-2. **Définir son entrée dans le Registry** : créer `packages/ui-mobile/registry/components/my-component.json` :
-   ```json
-   {
-     "name": "my-component",
-     "version": "1.0.0",
-     "description": "Description concise du composant",
-     "category": "Basic",
-     "files": ["components/ui/my-component.tsx"],
-     "dependencies": [],
-     "expoDependencies": ["@expo/vector-icons"],
-     "optionalExpoDependencies": ["expo-haptics"],
-     "requiresComponents": ["text"],
-     "providers": ["ThemeProvider"],
-     "supportsGlass": true,
-     "platforms": ["ios", "android"],
-     "nativeRebuildRequired": false
-   }
-   ```
-3. **Mettre à jour** `packages/ui-mobile/registry/index.json` pour ajouter le composant dans la catégorie correspondante.
-4. **Documenter l'usage** dans `packages/ui-mobile/skills/my-component/SKILL.md`.
-5. **Synchroniser + valider le registry** :
-   ```bash
-   bun run sync-registry
-   bun run validate-registry
-   ```
-6. **Recompiler le CLI et tester** :
-   ```bash
-   bun run build:cli
-   bun run cli info my-component
-   ```
-
----
-
-## 🏗 Architecture du système
-
+Exemple de sortie en cas de succès :
 ```text
-rashwright-ui/
-├── assets/                 # Logo officiel RS (PNG haute résolution + SVG)
-│   ├── primary.png
-│   └── svg/primary.svg
-├── cli/                    # Code source du CLI rs-ui
-│   ├── commands/           # Commandes (init, add, list, info, doctor, remove, update)
-│   ├── core/               # Détection Expo, résolveur de graphe, package manager
-│   ├── index.ts            # Point d'entrée Commander
-│   └── dist/               # Binaire compilé (node executable)
-├── components/ui/          # 57 composants React Native distribuables
-│   ├── liquid/             # Primitives Liquid Glass (surface, glow, border, highlight)
-│   ├── button.tsx
-│   ├── card.tsx
-│   ├── glass-card.tsx
-│   ├── upload-image.tsx    # Upload d'images multi-providers (@rashwright/upload)
-│   ├── upload-video.tsx    # Upload de vidéos multi-providers (@rashwright/upload)
-│   ├── rashwright-logo.tsx # Composant Logo RS thémé
-│   └── showcase-screen.tsx # Écran démo avec sélecteur de thèmes et Glass
-├── constants/
-│   ├── theme.ts            # Définitions de types Theme & palettes light / dark
-│   └── glass-theme.ts      # Moteur d'adaptation Liquid Glass
-├── contexts/
-│   ├── theme-context.tsx   # ThemeProvider + hook useTheme (mode, preset, glass)
-│   └── tab-bar-context.tsx # Contexte de navigation fluide
-├── registry/               # Metadata et matrices de dépendances
-│   ├── components/         # 57 fichiers JSON individuels
-│   ├── versions/           # Matrices de compatibilité Expo 54 à 58
-│   └── index.json          # Index global
-├── skills/                 # Documentation IA & humaine structurée
-│   ├── ui-system/
-│   ├── ui-component/
-│   ├── glass/
-│   ├── cli/
-│   └── [composant]/        # Skills individuels par composant (props, accessibilité)
-├── stores/
-│   └── theme-store.ts      # Store Zustand persistant avec fallback sans AsyncStorage
-├── theme/                  # Moteur des 6 thèmes
-│   ├── tokens/             # colors, spacing, radius, typography, glass
-│   └── themes/             # default, emerald, violet, amber, rose, slate
-├── types/
-│   ├── ambient.d.ts        # Déclarations ambient isolées pour dev sans erreurs TS
-│   └── index.ts            # Types publics réexportés
-├── package.json
-└── tsconfig.json
+  Rashwright UI Mobile — rs-ui doctor
+
+  ✔ package.json
+  ✔ Expo SDK 57
+  ✔ Package manager: bun
+  ✔ TypeScript
+  ✔ rashwright-ui.json
+  ✔ Dossier composants: components/ui
+  ✔ Composants installés: 12
+  ✔ react-native-reanimated — v~4.3.1
+  ✔ react-native-gesture-handler — v~2.31.2
+  ✔ react-native-safe-area-context — v~5.7.0
+  ✔ expo-blur — v~56.0.4
+  ✔ expo-linear-gradient — v~56.0.0
+
+  Tout est en ordre!
 ```
 
 ---
 
 ## 📊 Matrice de compatibilité Expo SDK
 
-Le CLI `rs-ui` sait exactement quelle version de chaque module installer en fonction de votre SDK Expo :
+> 🧪 Les versions marquées **🟢 Tested** ont été exécutées dans un build physique (SDK 54 → 56 en test d'intégration). **🟡 Experimental** = Registry fourni, mais combinaison non testée sur device physique par l'équipe Rashwright.
 
-| Dépendance | SDK 56 (Stable) | SDK 57 (Stable) | SDK 58 (Beta / Latest) |
+### Versions testées par Rashwright
+
+| Expo SDK | Statut |
+|---|---|
+| SDK 54 | 🟢 Tested |
+| SDK 55 | 🟢 Tested |
+| SDK 56 | 🟢 Tested |
+| SDK 57 | 🟡 Experimental |
+| SDK 58 | 🟡 Experimental |
+
+### Versions résolues par le CLI (selon ton SDK)
+
+Le CLI `rs-ui` sait **exactement** quelle version installer en fonction de ton SDK Expo. Exemple (extrait `registry/versions/expo-56.json`) :
+
+| Dépendance | SDK 56 | SDK 57 | SDK 58 |
 |---|---|---|---|
 | `react` | `19.2.3` | `19.2.3` | `19.2.3` |
 | `react-native` | `0.85.3` | `0.85.3` | `0.85.4` |
@@ -431,6 +346,48 @@ Le CLI `rs-ui` sait exactement quelle version de chaque module installer en fonc
 | `expo-linear-gradient` | `~56.0.0` | `~56.0.0` | `~56.0.0` |
 | `expo-image-picker` | `~56.0.25` | `~56.0.25` | `~56.0.26` |
 | `expo-image-manipulator` | `~56.0.26` | `~56.0.26` | `~56.0.26` |
+
+La matrice complète est consultable dans : `registry/versions/expo-{54,55,56,57,58}.json` du package `@rashwright/ui-mobile`.
+
+---
+
+## 🏗 Architecture & Dépôt `rashwright-ui`
+
+Rashwright UI Mobile est un **monorepo Bun Workspaces** (1 dépôt GitHub = 2 packages npm) :
+
+```text
+Dépôt GitHub rashwright-ui             npm registry (public)
+           │                                  │
+           ├── packages/cli/       ──────▶   @rashwright/cli
+           │    └── commande: rs-ui              (pour les devs utilisateurs : entrypoint)
+           │
+           └── packages/ui-mobile/ ──────▶   @rashwright/ui-mobile
+                ├── components/ui/              (Registry + sources composants)
+                ├── registry/                   (metadata)
+                ├── liquid/ primitives
+                ├── contexts / stores / theme
+                └── skills / types / constants
+```
+
+**Comment ça marche concrètement pour le dev utilisateur :**
+```text
+rs-ui init
+     │
+     ▼
+@rashwright/cli cherche
+     │
+     ├── @rashwright/ui-mobile@latest   (Registry + composants)
+     │     (fallback workspace si on est dans le repo contributor)
+     ▼
+Résout Expo SDK (54 → 58)
+     │
+     ├── Copie les composants dans ton app (components/ui/)
+     ├── Install les versions natives compatibles via bun/expo install
+     ├── Pose ThemeProvider + rashwright-ui.json
+     └── Copie l'écran démo + assets officiels
+```
+
+La **documentation complète du contributeur** (scripts workspace, tsconfig composite, ajouter un composant au registry, publier, CI/CD) → **[CONTRIBUTOR.md](./CONTRIBUTOR.md)**.
 
 ---
 

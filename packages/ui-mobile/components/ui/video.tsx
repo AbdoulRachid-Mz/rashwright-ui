@@ -22,7 +22,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 
 export interface ThemedVideoProps
   extends Omit<VideoViewProps, "player"> {
@@ -43,7 +43,7 @@ export interface ThemedVideoProps
   loop?: boolean;
 
   /**
-   * Animation d'apparition de la vidéo.
+   * Animation d"apparition de la vidéo.
    */
   animated?: boolean;
 
@@ -88,13 +88,13 @@ const ThemedVideo = forwardRef<any, ThemedVideoProps>(
 
     const player = useVideoPlayer(
       source,
-      (videoPlayer: any) => {
-        videoPlayer.loop = loop;
+      (videoPlayer) => {
+        videoPlayer.loop = Boolean(loop);
       },
     );
 
     useEffect(() => {
-      onPlayerReady?.(player);
+      (onPlayerReady as ((player: ReturnType<typeof useVideoPlayer>) => void) | undefined)?.(player);
     }, [player, onPlayerReady]);
 
     const handleFirstFrameRender = () => {
@@ -110,15 +110,15 @@ const ThemedVideo = forwardRef<any, ThemedVideoProps>(
         opacity.value = 1;
       }
 
-      onFirstFrameRender?.();
+      (onFirstFrameRender as (() => void) | undefined)?.();
     };
 
     useEffect(() => {
-      player.loop = loop;
+      player.loop = Boolean(loop);
     }, [player, loop]);
 
     useEffect(() => {
-      if (!autoPlay) {
+      if (!Boolean(autoPlay)) {
         player.pause();
         return;
       }
@@ -139,15 +139,13 @@ const ThemedVideo = forwardRef<any, ThemedVideoProps>(
       [isDark],
     );
 
+    const combinedStyle = [fallbackStyle, style, animatedStyle] as unknown;
+
     return (
       <AnimatedVideoView
         ref={ref}
         player={player}
-        style={[
-          fallbackStyle,
-          style,
-          animatedStyle,
-        ]}
+        style={combinedStyle as StyleProp<ViewStyle>}
         onFirstFrameRender={handleFirstFrameRender}
         {...props}
       />

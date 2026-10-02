@@ -11,8 +11,8 @@ import {
   ActivityIndicator,
   View,
 } from "react-native";
-import { useTheme } from "../../contexts/theme-context";
-import { createGlassTheme } from "../../constants/glass-theme";
+import { useTheme } from "@/contexts/theme-context";
+import { createGlassTheme } from "@/constants/glass-theme";
 import ThemedText from "./text";
 import LiquidPressable from "./liquid/liquid-pressable";
 import LiquidHighlight from "./liquid/liquid-highlight";

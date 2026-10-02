@@ -19,7 +19,7 @@ import Animated, {
   Extrapolate,
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { useTheme } from '../../contexts/theme-context';
+import { useTheme } from "@/contexts/theme-context";
 import ThemedText from './text';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');

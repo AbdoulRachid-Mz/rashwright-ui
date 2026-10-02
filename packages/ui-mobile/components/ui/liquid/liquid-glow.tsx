@@ -7,7 +7,7 @@
 import React, { memo, useMemo } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useTheme } from "../../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import type { LiquidGlowProps, LiquidTint } from "./liquid-types";
 import { INTENSITY_MULTIPLIER } from "./liquid-types";
 

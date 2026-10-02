@@ -18,7 +18,7 @@ import type {
   GlassShadowConfig,
   GlassSemanticToken,
   GlassInteractionConfig,
-} from '../../../constants/glass-theme';
+} from "@/constants/glass-theme";
 
 // Re-export glass-theme types so consumers import from a single place
 export type {

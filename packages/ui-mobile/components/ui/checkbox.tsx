@@ -16,7 +16,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import ThemedText from "./text";
 import LiquidPressable from "./liquid/liquid-pressable";
 import LiquidHighlight from "./liquid/liquid-highlight";

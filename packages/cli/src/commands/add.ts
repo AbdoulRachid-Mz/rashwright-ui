@@ -1,16 +1,16 @@
 import { Command } from "commander";
 import chalk from "chalk";
 import ora from "ora";
-import { confirm } from "@inquirer/prompts";
+import { confirm, checkbox, Separator } from "@inquirer/prompts";
 import { join } from "node:path";
 import { existsSync, readFileSync } from "node:fs";
 import { detectProject } from "../core/project-detector.js";
 import { detectExpo } from "../core/expo-detector.js";
-import { readConfig, writeConfig, markComponentInstalled, isComponentInstalled } from "../core/config-manager.js";
+import { readConfig, writeConfig, markComponentInstalled, isComponentInstalled, type RashwrightConfig } from "../core/config-manager.js";
 import { detectPackageManager, installExpoPackages, installNpmPackages } from "../core/package-manager.js";
 import { resolveDependencies } from "../core/dependency-resolver.js";
 import { copyComponentFiles } from "../core/file-manager.js";
-import { loadRegistryIndex, getAllComponents } from "../core/registry.js";
+import { loadRegistryIndex, getAllComponents, type RegistryEntry, type ResolvedComponent } from "../core/registry.js";
 import { REGISTRY_ROOT, SOURCE_ROOT } from "../core/paths.js";
 
 export function addCommand(): Command {
@@ -19,8 +19,12 @@ export function addCommand(): Command {
     .description("Ajouter un ou plusieurs composants Rashwright UI au projet")
     .argument("[components...]", "Noms des composants à ajouter")
     .option("--all", "Ajouter tous les composants disponibles")
-    .option("--yes", "Répondre Oui à toutes les questions")
+    .option("--force", "Forcer la réinstallation (écraser les fichiers existants)")
+    .option("--yes", "Répondre Oui à toutes les questions (mode non interactif)")
     .option("--dry-run", "Afficher les actions sans les exécuter")
+    .option("--interactive", "Forcer le mode interactif même si des arguments sont passés", true)
+    .option("--no-interactive", "Désactiver le prompt interactif (mode CI/script)")
+    .option("--non-interactive", "Alias de --no-interactive")
     .action(async (componentArgs: string[], options) => {
       const cwd = process.cwd();
 
@@ -47,16 +51,79 @@ export function addCommand(): Command {
       // ── 2. Resolve component list ──────────────────────────────────────
       let componentNames: string[] = componentArgs;
 
+      const interactive = Boolean(options.interactive) && !options.yes && !options.dryRun && !options.nonInteractive;
+
       if (options.all) {
         const index = loadRegistryIndex(REGISTRY_ROOT);
         componentNames = index?.components ?? [];
-        console.log(chalk.dim(`  ${componentNames.length} composants disponibles`));
+        console.log(chalk.dim(`  ${componentNames.length} composants disponibles (--all)`));
       }
 
+      // ── 2b. Prompt interactif checkbox si 0 args + mode interactif ──────
       if (componentNames.length === 0) {
-        console.log(chalk.red("  ✖ Aucun composant spécifié."));
-        console.log(chalk.dim("    Usage: rs-ui add button  |  rs-ui add --all"));
-        process.exit(1);
+        if (!interactive) {
+          console.log(chalk.red("  ✖ Aucun composant spécifié."));
+          console.log(chalk.dim("    Usage: rs-ui add button card drawer"));
+          console.log(chalk.dim("           rs-ui add  (sans argument, mode interactif)"));
+          console.log(chalk.dim("           rs-ui add --all"));
+          process.exit(1);
+        }
+
+        const allComp = getAllComponents(REGISTRY_ROOT);
+        if (allComp.length === 0) {
+          console.log(chalk.red("  ✖ Registry vide dans @rashwright/ui-mobile."));
+          process.exit(1);
+        }
+
+        // Grouper par catégorie pour un affichage lisible dans la checkbox
+        type Choice = {
+          name: string;
+          value: string;
+          checked?: boolean;
+          disabled?: string | boolean;
+          description?: string;
+        };
+        const choices: Choice[] = [];
+        const categoriesMap = new Map<string, RegistryEntry[]>();
+        for (const entry of allComp) {
+          const key = entry.category || "Autres";
+          if (!categoriesMap.has(key)) categoriesMap.set(key, []);
+          categoriesMap.get(key)!.push(entry);
+        }
+        for (const [cat, entries] of [...categoriesMap.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+          choices.push({ name: chalk.bold(`── ${cat} ──`), value: `__SEP_${cat}`, disabled: true } as unknown as Choice);
+          for (const e of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+            const alreadyInstalled = isComponentInstalled(config, e.name);
+            const glass = e.supportsGlass ? " [🥽 glass]" : "";
+            choices.push({
+              name: `${e.name}${" ".repeat(Math.max(1, 26 - e.name.length))}${chalk.dim(e.description || "")}${chalk.cyan(glass)}`,
+              value: e.name,
+              checked: false,
+              disabled: alreadyInstalled ? "déjà installé (utilisez --force pour réinstaller)" : false,
+              description: alreadyInstalled ? chalk.gray(`✔ ${e.name}@${e.version} — déjà installé`) : chalk.cyan(`${e.name}@${e.version} · ${e.platforms.join(",")}`),
+            });
+          }
+        }
+
+        try {
+          const selected = await checkbox({
+            message: "Sélectionnez les composants à installer (↑/↓ naviguer, Espace = cocher, a = tout, Entrée = valider, taper = filtrer)",
+            choices,
+          });
+          componentNames = selected.filter((s): s is string => typeof s === "string" && !s.startsWith("__SEP_"));
+        } catch (err) {
+          if ((err as { name?: string })?.name === "ExitPromptError") {
+            console.log(chalk.dim("  Annulé."));
+            return;
+          }
+          throw err;
+        }
+
+        if (componentNames.length === 0) {
+          console.log(chalk.dim("  Aucun composant sélectionné."));
+          return;
+        }
+        console.log(chalk.dim(`  → ${componentNames.length} composant(s) sélectionné(s)`));
       }
 
       // ── 3. Resolve dependencies ────────────────────────────────────────
@@ -76,18 +143,60 @@ export function addCommand(): Command {
       const plan = resolveDependencies(componentNames, expo.supportedVersion, REGISTRY_ROOT, installedPkgs);
       spinner.stop();
 
-      // Filter already installed components from config
-      const newComponents = plan.components.filter(
-        (c) => !isComponentInstalled(config, c.name)
+      // ── 3b. Objectif B : Séparer composants EXPLICITEMENT demandés vs DEPENDANCES TRANSITIVES
+      //       (ex: liquid-pressable / text / view ne sont PAS des composants installables
+      //        via isComponentInstalled → ce sont des "core files" qui doivent être copiés
+      //        si fichier absent, ou systématiquement si --force)
+
+      const requestedSet = new Set(componentNames);
+
+      const requestedComponents: ResolvedComponent[] = plan.components.filter((c) =>
+        requestedSet.has(c.name),
       );
+      const transitiveDeps: ResolvedComponent[] = plan.components.filter(
+        (c) =>
+          !requestedSet.has(c.name) &&
+          c.entry.files &&
+          Array.isArray(c.entry.files) &&
+          c.entry.files.length > 0,
+      );
+
+      const force = Boolean(options.force);
+
+      // Pour les composants explicitement demandés : respecter isComponentInstalled (sauf --force)
+      const newRequestedComponents = requestedComponents.filter(
+        (c) => force || !isComponentInstalled(config, c.name),
+      );
+
+      // Pour les dépendances transitives (core files / liquid / text / view) :
+      // copier si le FICHIER N'EXISTE PAS sur le FS, OU --force.
+      const targetDir = join(cwd, config.componentsPath);
+      const missingTransitive: ResolvedComponent[] = [];
+      for (const t of transitiveDeps) {
+        const needIt = force || (t.entry.files || []).some((rel: string) => !existsSync(join(targetDir, rel.replace(/^components\/ui\//, ""))));
+        if (needIt) missingTransitive.push(t);
+      }
+
+      const newComponents: ResolvedComponent[] = [...newRequestedComponents, ...missingTransitive];
 
       // ── 4. Show plan ───────────────────────────────────────────────────
       console.log(chalk.bold("  Plan d'installation:"));
       console.log();
 
-      if (newComponents.length > 0) {
-        console.log(chalk.dim("  Composants:"));
-        newComponents.forEach((c) =>
+      if (newRequestedComponents.length > 0) {
+        console.log(chalk.dim("  Composants demandés:"));
+        newRequestedComponents.forEach((c) =>
+          console.log(chalk.green(`    + ${c.name}@${c.entry.version}`))
+        );
+      } else if (requestedComponents.length > 0 && !force) {
+        requestedComponents.forEach((c) =>
+          console.log(chalk.gray(`    ~ ${c.name}@${c.entry.version}  (déjà installé; utiliser --force pour réinstaller)`))
+        );
+      }
+
+      if (missingTransitive.length > 0) {
+        console.log(chalk.dim("  Dépendances transitives / fichiers core manquants:"));
+        missingTransitive.forEach((c) =>
           console.log(chalk.dim(`    + ${c.name}@${c.entry.version}`))
         );
       }
@@ -116,8 +225,9 @@ export function addCommand(): Command {
 
       console.log();
 
-      if (newComponents.length === 0 && newExpoDeps.length === 0) {
-        console.log(chalk.green("  ✔ Tous les composants sont déjà installés."));
+      if (newComponents.length === 0 && newExpoDeps.length === 0 && plan.allNpmDeps.length === 0) {
+        console.log(chalk.green("  ✔ Tous les composants sélectionnés sont déjà installés."));
+        console.log(chalk.dim("     → Utilisez `rs-ui add --force <noms>` pour les réinstaller/écraser."));
         return;
       }
 
@@ -155,8 +265,8 @@ export function addCommand(): Command {
       }
 
       // ── 7. Copy component files ────────────────────────────────────────
-      const targetDir = join(cwd, config.componentsPath);
-      let updatedConfig = config;
+      let updatedConfig: RashwrightConfig = config;
+      const overwrite = Boolean(options.force);
 
       for (const comp of newComponents) {
         const copySpinner = ora(`Copie de ${comp.name}...`).start();
@@ -164,13 +274,20 @@ export function addCommand(): Command {
           comp.entry.files,
           SOURCE_ROOT,
           targetDir,
-          { overwrite: false, dryRun: options.dryRun }
+          { overwrite, dryRun: options.dryRun },
         );
 
         const ok = results.every((r) => r.status !== "failed");
         if (ok) {
-          copySpinner.succeed(`${comp.name} ajouté`);
-          updatedConfig = markComponentInstalled(updatedConfig, comp.name, comp.entry.version);
+          // ── Objectif B.2 : SEULS les composants explicitement demandés sont "marqués installés" dans config.components
+          // Les deps transitives (liquid/*, text, view, ...) ne vont PAS dans config.components
+          // (ce sont des fichiers core copiés à chaque init)
+          if (requestedSet.has(comp.name)) {
+            copySpinner.succeed(`${chalk.green("✔")} ${comp.name}@${comp.entry.version} ajouté`);
+            updatedConfig = markComponentInstalled(updatedConfig, comp.name, comp.entry.version);
+          } else {
+            copySpinner.succeed(`${chalk.cyan("…")} ${comp.name}@${comp.entry.version} copié (core / dépendance transitive)`);
+          }
         } else {
           copySpinner.fail(`Échec copie ${comp.name}`);
         }

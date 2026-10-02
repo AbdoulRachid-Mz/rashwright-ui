@@ -4,13 +4,25 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@rashwright/ui-mobile": ["../ui-mobile/index.ts"],
-      "@rashwright/ui-mobile/*": ["../ui-mobile/*"]
-    }
+      "@rashwright/ui-mobile": [
+        "../ui-mobile/index.ts"
+      ],
+      "@rashwright/ui-mobile/*": [
+        "../ui-mobile/*"
+      ],
+      "@/*": [
+        "./*"
+      ]
+    },
+    "jsx": "react-native"
   },
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src/**/*.ts"
+  ]
 }

@@ -21,8 +21,8 @@ import {
 } from "react-native";
 import Animated from "react-native-reanimated";
 import { BlurView } from "expo-blur";
-import { useTheme } from "../../../contexts/theme-context";
-import { createGlassTheme } from "../../../constants/glass-theme";
+import { useTheme } from "@/contexts/theme-context";
+import { createGlassTheme } from "@/constants/glass-theme";
 import { getLiquidShadow } from "./liquid-shadow";
 import LiquidHighlight from "./liquid-highlight";
 import LiquidBorder from "./liquid-border";
@@ -101,7 +101,7 @@ const LiquidSurface = forwardRef<View, LiquidSurfaceProps>(
     const backgroundColor = useMemo(() => {
       // Liquid désactivé → fond opaque natif theme.colors.card
       if (!liquidGlassEnabled) return theme.colors.card;
-      // Android n'a pas de BlurView natif → utiliser le fallback semi-transparent
+      // Android n"a pas de BlurView natif → utiliser le fallback semi-transparent
       if (noBlur || Platform.OS === "android") return matConfig.backgroundFallback;
       return matConfig.background;
     }, [liquidGlassEnabled, theme.colors.card, noBlur, matConfig]);

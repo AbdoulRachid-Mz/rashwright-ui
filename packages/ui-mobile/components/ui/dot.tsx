@@ -1,6 +1,6 @@
 // @/components/ui/dot.tsx
 
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 interface DotProps {

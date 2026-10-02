@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, ScrollView, SafeAreaView, StatusBar, TouchableOpacity } from "react-native";
 import { RashwrightLogo } from "./rashwright-logo";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import Button from "./button";
 import Card from "./card";
 import GlassCard from "./glass-card";
@@ -10,7 +10,7 @@ import TextInput from "./text-input";
 
 /**
  * Rashwright UI Mobile — Starter Showcase Screen
- * Écran d'accueil interactif démontrant le fonctionnement du système UI.
+ * Écran d"accueil interactif démontrant le fonctionnement du système UI.
  */
 export function RashwrightShowcaseScreen() {
   const { theme, mode, setMode, themePreset, setThemePreset, isDark, liquidGlassEnabled, setLiquidGlassEnabled } = useTheme();

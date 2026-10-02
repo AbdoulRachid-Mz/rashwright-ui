@@ -1,22 +1,45 @@
 {
   "name": "@rashwright/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI rs-ui pour Rashwright UI Mobile",
   "license": "MIT",
-  "author": "Rashwright",
-  "repository": { "type": "git", "url": "git+https://github.com/AbdoulRachid-Mz/rashwright-ui.git" },
+  "author": "Rashwright office",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbdoulRachid-Mz/rashwright-ui.git"
+  },
   "type": "module",
-  "engines": { "node": ">=20.11.0" },
-  "bin": { "rs-ui": "./dist/index.js" },
-  "files": ["dist/**", "README.md"],
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "bin": {
+    "rs-ui": "dist/index.js"
+  },
+  "files": [
+    "dist/index.js",
+    "README.md"
+  ],
   "scripts": {
     "build": "bun build ./src/index.ts --outdir ./dist --target node --format esm --external commander --external inquirer --external chalk --external ora",
+    "build:watch": "bun run dev",
     "dev": "bun run --watch src/index.ts",
     "prepublishOnly": "bun run build && bun run check-types",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "tsc": "tsc --noEmit",
+    "clean": "node -e \"const fs=require('node:fs');if(fs.existsSync('dist')){fs.rmSync('dist',{recursive:true,force:true});console.log('dist/ supprimé');}else{console.log('dist/ déjà clean');}\"",
+    "lint:require": "node ../../scripts/cli-lint-require.mjs",
+    "lint:shebang": "node ../../scripts/cli-lint-shebang.mjs",
+    "version:current": "node -e \"const p=JSON.parse(require('node:fs').readFileSync('./package.json','utf8'));console.log(p.name + '@' + p.version)\"",
+    "smoke:help": "node dist/index.js --help",
+    "smoke:version": "node dist/index.js --version",
+    "smoke:commands": "node ../../scripts/cli-smoke-commands.mjs",
+    "smoke:dep-ui": "node ../../scripts/cli-smoke-dep-ui.mjs",
+    "smoke:all": "bun run smoke:version && bun run lint:require && bun run lint:shebang && bun run smoke:dep-ui",
+    "publish:dry-run": "npm publish --dry-run --access public",
+    "publish:npm": "echo \"ATTENTION: lancer 'npm publish --access public' (avec --otp=XXXXXX si 2FA) depuis packages/cli/ — IMPÉRATIVEMENT APRÈS publication de @rashwright/ui-mobile + 2-5 min CDN\""
   },
   "dependencies": {
-    "@rashwright/ui-mobile": "^0.1.0",
+    "@rashwright/ui-mobile": "^0.1.1",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "inquirer": "^12.5.0",

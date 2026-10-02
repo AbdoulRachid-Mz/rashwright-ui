@@ -23,8 +23,8 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
-import { useTheme } from "../../../contexts/theme-context";
-import { createGlassTheme } from "../../../constants/glass-theme";
+import { useTheme } from "@/contexts/theme-context";
+import { createGlassTheme } from "@/constants/glass-theme";
 import LiquidSurface from "./liquid-surface";
 import type { LiquidPressableProps } from "./liquid-types";
 import { SPRING_PRESETS, VISCOSITY_MAP } from "./liquid-types";

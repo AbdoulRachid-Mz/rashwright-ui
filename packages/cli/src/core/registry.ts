@@ -1,7 +1,10 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import type { ComponentRegistryEntry } from "./dependency-resolver.js";
+import type { ComponentRegistryEntry, ResolvedComponent } from "./dependency-resolver.js";
 import { loadAllComponentEntries, loadComponentEntry } from "./dependency-resolver.js";
+
+export type RegistryEntry = ComponentRegistryEntry;
+export type { ResolvedComponent };
 
 export interface RegistryIndex {
   version: string;

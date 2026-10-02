@@ -17,7 +17,7 @@ import Animated, {
   interpolate,
   Easing,
 } from "react-native-reanimated";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import ThemedText from "./text";
 import LiquidSurface from "./liquid/liquid-surface";
 import type { LiquidMaterial } from "./liquid/liquid-types";

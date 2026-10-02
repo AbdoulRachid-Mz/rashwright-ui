@@ -4,7 +4,7 @@
 
 import React from "react";
 import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import Avatar, { AvatarProps } from "./avatar";
 import ThemedText from "./text";
 import LiquidBorder from "./liquid/liquid-border";

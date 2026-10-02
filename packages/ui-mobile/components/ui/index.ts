@@ -102,7 +102,7 @@ export { Particles } from "./particles";
 // ---------------------------------------------------------------------------
 // 9. Adaptateur Thème Glass & Brand
 // ---------------------------------------------------------------------------
-export { createGlassTheme } from "../../constants/glass-theme";
+export { createGlassTheme } from "@/constants/glass-theme";
 export { RashwrightLogo } from "./rashwright-logo";
 export { RashwrightShowcaseScreen } from "./showcase-screen";
 export { UploadImage } from "./upload-image";

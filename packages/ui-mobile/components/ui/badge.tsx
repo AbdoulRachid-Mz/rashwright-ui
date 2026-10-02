@@ -9,8 +9,8 @@ import {
   ActivityIndicator,
   StyleProp,
 } from "react-native";
-import { useTheme } from "../../contexts/theme-context";
-import { createGlassTheme } from "../../constants/glass-theme";
+import { useTheme } from "@/contexts/theme-context";
+import { createGlassTheme } from "@/constants/glass-theme";
 import LiquidHighlight from "./liquid/liquid-highlight";
 import LiquidPressable from "./liquid/liquid-pressable";
 

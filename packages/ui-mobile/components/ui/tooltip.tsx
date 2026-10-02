@@ -23,7 +23,7 @@ import Animated, {
   withTiming,
   withSpring,
 } from "react-native-reanimated";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import ThemedText from "./text";
 import LiquidSurface from "./liquid/liquid-surface";
 

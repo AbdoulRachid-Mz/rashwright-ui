@@ -10,7 +10,7 @@ import {
   View,
   StyleProp,
 } from "react-native";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import ThemedText from "./text";
 
 export interface TextInputProps extends RNTextInputProps {

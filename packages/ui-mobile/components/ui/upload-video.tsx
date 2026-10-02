@@ -18,9 +18,9 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
-import type { IUploadProvider, UploadSource, UploadResult } from "../../lib/upload";
-import { UploadManager } from "../../lib/upload";
-import { useTheme } from "../../contexts/theme-context";
+import type { IUploadProvider, UploadSource, UploadResult } from "@/lib/upload";
+import { UploadManager } from "@/lib/upload";
+import { useTheme } from "@/contexts/theme-context";
 import LiquidSurface from "./liquid/liquid-surface";
 
 export interface UploadVideoLabels {
@@ -43,7 +43,7 @@ export interface UploadVideoProps {
   onChange: (url: string) => void;
   /** Callback lors de la suppression */
   onRemove?: () => void;
-  /** Fournisseur d'upload ou instance UploadManager de @rashwright/upload */
+  /** Fournisseur d"upload ou instance UploadManager de @rashwright/upload */
   uploader?: IUploadProvider | UploadManager;
   /** Dossier de destination sur le serveur/cloud */
   folder?: string;

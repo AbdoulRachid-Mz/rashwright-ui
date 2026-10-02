@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import ThemedText from "./text";
 import LiquidSurface from "./liquid/liquid-surface";
 import LiquidBlob from "./liquid/liquid-blob";

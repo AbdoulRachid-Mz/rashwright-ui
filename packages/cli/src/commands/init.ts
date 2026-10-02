@@ -7,13 +7,16 @@ import { existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { detectProject } from "../core/project-detector.js";
 import { detectExpo } from "../core/expo-detector.js";
-import { readConfig, writeConfig } from "../core/config-manager.js";
-import { detectPackageManager, installExpoPackages } from "../core/package-manager.js";
+import { readConfig, writeConfig, mergeRashwrightConfigs } from "../core/config-manager.js";
+import { detectPackageManager, installExpoPackages, installNpmPackages } from "../core/package-manager.js";
 import {
   copyRashwrightAssets,
+  resetExpoProject,
   setupFoundations,
   setupStarterComponents,
   generateShowcaseScreen,
+  writeBabelConfig,
+  updateTsconfig,
 } from "../core/starter-generator.js";
 import { SOURCE_ROOT } from "../core/paths.js";
 
@@ -28,10 +31,11 @@ const CORE_EXPO_DEPS = [
   "expo-image-manipulator",
 ];
 
-const GLASS_EXTRA_DEPS = [
-  "expo-blur",
-  "expo-linear-gradient",
-];
+const GLASS_EXTRA_DEPS = ["expo-blur", "expo-linear-gradient"];
+
+// Dépendances npm (non Expo) installées systématiquement (store zustand)
+const CORE_NPM_DEPS = ["zustand"];
+
 
 function isDirectoryEmpty(dir: string): boolean {
   if (!existsSync(dir)) return true;
@@ -71,6 +75,7 @@ export function initCommand(): Command {
     .option("--showcase", "Générer un écran d'accueil avec Rashwright UI & logo RS")
     .option("--no-showcase", "Ne pas générer l'écran de démo")
     .option("--yes", "Répondre Oui à toutes les questions (mode non-interactif)")
+    .option("--no-reset", "Ne pas écraser le template Expo (pour projets existants intégrés)")
     .option("--dry-run", "Afficher les actions sans les exécuter")
     .action(async (projectNameArg: string | undefined, options) => {
       let cwd = process.cwd();
@@ -188,13 +193,42 @@ export function initCommand(): Command {
           }
         }
 
+        // Juste après create-expo-app (ou installation dans dossier courant existant vide via template)
+        // on marque le flag isFreshProject pour savoir qu'on peut (doit) reset le template.
+        const isFreshProject = !useCurrentDirectory ? true : false;
+
         cwd = targetDir;
         project = detectProject(cwd);
         expo = detectExpo(cwd);
+
+        // ── 2bis. Objectif A : reset template Expo (SEULMENT SI !options.reset + projet vient d'être créé)
+        const shouldResetTemplate = options.reset !== false && (isFreshProject || useCurrentDirectory);
+        if (!options.dryRun && shouldResetTemplate) {
+          const resetSpinner = ora("Nettoyage du template Expo par défaut...").start();
+          resetExpoProject(cwd, options.dryRun);
+          resetSpinner.succeed("Template Expo par défaut nettoyé");
+        }
+
+        // ── 2ter. Toujours (même projet existant) : writeBabelConfig + updateTsconfig
+        if (!options.dryRun) {
+          const cfgSpinner = ora("Configuration babel.config.js + tsconfig.json (Reanimated, @/ paths)...").start();
+          writeBabelConfig(cwd, options.dryRun);
+          updateTsconfig(cwd, options.dryRun);
+          cfgSpinner.succeed("babel.config.js + tsconfig.json configurés");
+        }
       } else {
         console.log(chalk.green("  ✔ Projet React Native / Expo existant détecté"));
         if (expo.sdkVersion) {
           console.log(chalk.green(`  ✔ Expo SDK ${expo.sdkVersion}`));
+        }
+
+        // Projet EXISTANT : on NE reset PAS (car utilisateur a son code),
+        // MAIS on configure quand même babel (reanimated plugin) + tsconfig (@/* paths)
+        if (!options.dryRun) {
+          const cfgSpinner = ora("Vérification babel.config.js + tsconfig.json...").start();
+          writeBabelConfig(cwd, options.dryRun);
+          updateTsconfig(cwd, options.dryRun);
+          cfgSpinner.succeed("babel.config.js + tsconfig.json vérifiés/mis à jour");
         }
       }
 
@@ -238,17 +272,19 @@ export function initCommand(): Command {
       }
 
       // ── 4. Plan des dépendances ──────────────────────────────────────────
-      const depsToInstall = [
+      const expoDepsToInstall = [
         ...CORE_EXPO_DEPS,
         ...(glassEnabled ? GLASS_EXTRA_DEPS : []),
       ];
+      const npmDepsToInstall = [...CORE_NPM_DEPS];
 
       console.log();
       console.log(chalk.bold("  Configuration appliquée :"));
-      console.log(chalk.dim(`  • Dossier : ${componentsPath}`));
+      console.log(chalk.dim(`  • Dossier composants : ${componentsPath}`));
       console.log(chalk.dim(`  • Thème : ${themePreset}`));
       console.log(chalk.dim(`  • Style : ${glassEnabled ? "Liquid Glass" : "Default"}`));
-      console.log(chalk.dim(`  • Dépendances Expo : ${depsToInstall.join(", ")}`));
+      console.log(chalk.dim(`  • Dépendances Expo : ${expoDepsToInstall.join(", ")}`));
+      console.log(chalk.dim(`  • Dépendances NPM  : ${npmDepsToInstall.join(", ")}`));
       console.log();
 
       if (options.dryRun) {
@@ -256,14 +292,25 @@ export function initCommand(): Command {
         return;
       }
 
-      // ── 5. Installer les dépendances ─────────────────────────────────────
+      // ── 5. Installer les dépendances Expo (1/2) + npm (2/2) ────────────────
       const installSpinner = ora("Installation des dépendances Expo compatibles...").start();
       try {
-        installExpoPackages(depsToInstall, project.packageManager, cwd, options.dryRun);
-        installSpinner.succeed("Dépendances installées");
+        installExpoPackages(expoDepsToInstall, project.packageManager, cwd, options.dryRun);
+        installSpinner.succeed("Dépendances Expo installées");
       } catch (err) {
-        installSpinner.fail("Échec de l'installation des dépendances");
+        installSpinner.fail("Échec de l'installation des dépendances Expo");
         console.error(err);
+      }
+
+      if (npmDepsToInstall.length > 0) {
+        const npmInstallSpinner = ora("Installation des dépendances NPM (zustand, ...)...").start();
+        try {
+          installNpmPackages(npmDepsToInstall, project.packageManager, cwd, options.dryRun);
+          npmInstallSpinner.succeed(`Dépendances NPM installées (${npmDepsToInstall.join(", ")})`);
+        } catch (err) {
+          npmInstallSpinner.fail("Échec installation dépendances NPM");
+          console.error(err);
+        }
       }
 
       // ── 6. Copier les fondations (Theme, Store, Context + Core UI text, view, liquid/*) ──────
@@ -298,15 +345,15 @@ export function initCommand(): Command {
         componentsRecord[comp] = "1.0.0";
       }
 
-      const config = {
-        ...readConfig(join(cwd, "rashwright-ui.json")),
+      const existingConfig = readConfig(join(cwd, "rashwright-ui.json"));
+      const config = mergeRashwrightConfigs(existingConfig, {
         componentsPath,
         theme: (glassEnabled ? "glass" : "default") as "glass" | "default",
         themePreset,
         glass: glassEnabled,
         typescript: project.hasTypeScript,
         components: componentsRecord,
-      };
+      });
       writeConfig(join(cwd, "rashwright-ui.json"), config);
 
       // ── 11. Résumé & instructions ────────────────────────────────────────

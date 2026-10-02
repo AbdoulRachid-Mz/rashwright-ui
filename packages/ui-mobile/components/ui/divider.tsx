@@ -5,8 +5,8 @@
 
 import React, { useMemo } from "react";
 import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
-import { useTheme } from "../../contexts/theme-context";
-import { createGlassTheme } from "../../constants/glass-theme";
+import { useTheme } from "@/contexts/theme-context";
+import { createGlassTheme } from "@/constants/glass-theme";
 import ThemedText from "./text";
 
 export type DividerVariant = "solid" | "subtle" | "glass";

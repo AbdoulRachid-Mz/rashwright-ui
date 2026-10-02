@@ -1,32 +1,53 @@
-export interface UploadSource {
-  name: string;
-  type: string;
-  uri: string;
-}
+/**
+ * lib/upload/index.ts — Barrel principal du système d'upload Rashwright (INLINÉ).
+ *
+ * Ce fichier remplace l'ancien package npm @rashwright/upload (workspace:*).
+ * Tout est embarqué DANS @rashwright/ui-mobile. Les utilisateurs n'ont pas besoin
+ * d'installer un package supplémentaire.
+ */
 
-export interface UploadResult {
-  success: boolean;
-  url?: string;
-  error?: string;
-}
+// 1) Erreur locale (remplace @rashwright/core UploadError)
+export { UploadError } from "./errors";
 
-export interface UploadOptions {
-  folder?: string;
-  onProgress?: (progress: number) => void;
-}
+// 2) Contrats et types
+export type {
+  UploadSource,
+  UploadOptions,
+  UploadResult,
+  UploadStatus,
+  UploadTaskState,
+  IUploadProvider,
+} from "./types";
 
-export interface IUploadProvider {
-  upload(source: UploadSource, options?: UploadOptions): Promise<UploadResult>;
-}
+// 3) Orchestrateur principal
+export {
+  UploadManager,
+  createUploader,
+  type UploadManagerOptions,
+} from "./upload-manager";
 
-export class UploadManager {
-  private provider: IUploadProvider;
+// 4) Providers (Cloud / API / Mock)
+export {
+  CloudinaryProvider,
+  type CloudinaryConfig,
+} from "./providers/cloudinary-provider";
 
-  constructor({ provider }: { provider: IUploadProvider }) {
-    this.provider = provider;
-  }
+export {
+  FirebaseStorageProvider,
+  type FirebaseStorageConfig,
+} from "./providers/firebase-provider";
 
-  async upload(source: UploadSource, options?: UploadOptions): Promise<UploadResult> {
-    return this.provider.upload(source, options);
-  }
-}
+export {
+  VercelBlobProvider,
+  type VercelBlobConfig,
+} from "./providers/vercel-blob-provider";
+
+export {
+  LocalUploadProvider,
+  type LocalUploadConfig,
+} from "./providers/local-provider";
+
+export {
+  MockUploadProvider,
+  type MockProviderOptions,
+} from "./providers/mock-provider";

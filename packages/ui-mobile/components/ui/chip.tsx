@@ -12,8 +12,8 @@ import {
   StyleProp,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "../../contexts/theme-context";
-import { createGlassTheme } from "../../constants/glass-theme";
+import { useTheme } from "@/contexts/theme-context";
+import { createGlassTheme } from "@/constants/glass-theme";
 import ThemedText from "./text";
 import LiquidPressable from "./liquid/liquid-pressable";
 import LiquidHighlight from "./liquid/liquid-highlight";

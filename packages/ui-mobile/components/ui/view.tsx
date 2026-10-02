@@ -1,5 +1,5 @@
 // @/components/ui/view.tsx
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import React, { forwardRef } from "react";
 import {
   StyleProp,

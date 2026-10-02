@@ -13,7 +13,7 @@ import {
   StyleSheet,
   TouchableOpacityProps,
 } from "react-native";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import ThemedText from "./text";
 import LiquidSurface from "./liquid/liquid-surface";
 import LiquidPressable from "./liquid/liquid-pressable";

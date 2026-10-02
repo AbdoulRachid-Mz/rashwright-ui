@@ -1,10 +1,13 @@
 {
   "name": "@rashwright/ui-mobile",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Rashwright UI Mobile — Composants React Native / Expo distribuables",
   "license": "MIT",
-  "author": "Rashwright",
-  "repository": { "type": "git", "url": "git+https://github.com/AbdoulRachid-Mz/rashwright-ui.git" },
+  "author": "Rashwright office",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbdoulRachid-Mz/rashwright-ui.git"
+  },
   "keywords": ["react-native", "expo", "ui", "components", "shadcn", "liquid-glass", "registry"],
   "type": "module",
   "sideEffects": false,
@@ -24,11 +27,20 @@
     "README.md"
   ],
   "scripts": {
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "tsc": "tsc --noEmit",
+    "version:current": "node -e \"const p=JSON.parse(require('node:fs').readFileSync('./package.json','utf8'));console.log(p.name + '@' + p.version)\"",
+    "lint:any": "node ../../scripts/ui-lint-any.mjs",
+    "lint:ambient-zero-any": "node ../../scripts/ui-lint-ambient-zero-any.mjs",
+    "list:components": "node ../../scripts/ui-list-components.mjs",
+    "count:tsx": "node ../../scripts/ui-count-tsx.mjs",
+    "publish:dry-run": "npm publish --dry-run --access public",
+    "publish:npm": "echo \"ATTENTION: lancer 'npm publish --access public' (avec --otp=XXXXXX si 2FA) depuis packages/ui-mobile/\""
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
-    "@react-native-async-storage/async-storage": "2.2.0"
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "zustand": "^5.0.0"
   },
   "peerDependencies": {
     "expo": ">=54.0.0",
@@ -40,8 +52,7 @@
   },
   "peerDependenciesMeta": {
     "react-native-reanimated": { "optional": true },
-    "react-native-safe-area-context": { "optional": true },
-    "zustand": { "optional": true }
+    "react-native-safe-area-context": { "optional": true }
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

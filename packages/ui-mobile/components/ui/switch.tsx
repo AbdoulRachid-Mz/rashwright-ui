@@ -1,7 +1,7 @@
 // @/components/ui/switch.tsx
 import React, { forwardRef } from "react";
 import { Switch as RNSwitch, SwitchProps } from "react-native";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 
 export interface ThemedSwitchProps extends SwitchProps {
   className?: string;

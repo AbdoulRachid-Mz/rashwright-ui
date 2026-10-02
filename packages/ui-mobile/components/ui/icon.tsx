@@ -7,7 +7,7 @@
 import React from "react";
 import { StyleProp, TextStyle } from "react-native";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 
 export type IconLibrary = "ionicons" | "feather" | "material";
 export type IconSize = "xs" | "sm" | "md" | "lg" | "xl" | number;

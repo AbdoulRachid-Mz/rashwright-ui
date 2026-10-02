@@ -21,7 +21,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { BlurView } from "expo-blur";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import LiquidSurface from "./liquid/liquid-surface";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");

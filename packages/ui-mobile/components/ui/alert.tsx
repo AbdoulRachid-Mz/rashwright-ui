@@ -10,7 +10,7 @@ import {
   TextStyle,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 
 // Alert variant types that match our theme color system
 type AlertVariant = "default" | "primary" | "destructive" | "muted";

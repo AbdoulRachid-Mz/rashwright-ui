@@ -26,9 +26,9 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { Ionicons } from "@expo/vector-icons";
-import type { IUploadProvider, UploadSource, UploadResult } from "../../lib/upload";
-import { UploadManager } from "../../lib/upload";
-import { useTheme } from "../../contexts/theme-context";
+import type { IUploadProvider, UploadSource, UploadResult } from "@/lib/upload";
+import { UploadManager } from "@/lib/upload";
+import { useTheme } from "@/contexts/theme-context";
 
 export interface UploadImageFile {
   uri: string;
@@ -62,7 +62,7 @@ export interface UploadImageProps {
   value: string[];
   /** Callback lors du changement de valeur */
   onChange: (urls: string[]) => void;
-  /** Fournisseur d'upload ou instance UploadManager de @rashwright/upload */
+  /** Fournisseur d"upload ou instance UploadManager de @rashwright/upload */
   uploader?: IUploadProvider | UploadManager;
   /** Dossier de destination sur le serveur/cloud */
   folder?: string;

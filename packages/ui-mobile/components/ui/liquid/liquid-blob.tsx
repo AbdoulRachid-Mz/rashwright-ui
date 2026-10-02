@@ -14,7 +14,7 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated";
-import { useTheme } from "../../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import type { LiquidBlobProps } from "./liquid-types";
 
 const LiquidBlob = memo(

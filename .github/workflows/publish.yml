@@ -39,7 +39,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,6 +56,19 @@ jobs:
 
       - name: Install dependencies
         run: bun install
+
+      - name: 🔒 Verify package.json version matches git tag
+        working-directory: packages/ui-mobile
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION=$(node -e "console.log(require('./package.json').version)")
+          echo "Git tag version (sans v):  $TAG_VERSION"
+          echo "package.json version:       $PKG_VERSION"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "❌ FAIL: version mismatch. git tag v$TAG_VERSION vs package.json $PKG_VERSION"
+            exit 1
+          fi
+          echo "✅ Version OK ($PKG_VERSION)"
 
       - name: npm publish --access public (@rashwright/ui-mobile)
         working-directory: packages/ui-mobile
@@ -70,7 +82,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -89,23 +100,76 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Build CLI (dist + shebang)
-        run: bun run --filter @rashwright/cli build
-
-      - name: Verify workspace:* resolved for CLI dep
+      - name: 🔒 Verify CLI version === git tag  +  CLI dep UI-Mobile cohérente
         working-directory: packages/cli
         run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          CLI_VERSION=$(node -e "console.log(require('./package.json').version)")
+          UI_VERSION=$(node -e "console.log(require('../ui-mobile/package.json').version)")
+          CLI_DEP=$(node -e "console.log(require('./package.json').dependencies?.['@rashwright/ui-mobile'] ?? 'MISSING')")
+
+          echo "Git tag (sans v):           $TAG_VERSION"
+          echo "packages/cli version:       $CLI_VERSION"
+          echo "packages/ui-mobile version: $UI_VERSION"
+          echo "CLI dep → @rashwright/ui-mobile: $CLI_DEP"
+
+          # Vérif 1 : CLI.version === tag.version
+          if [ "$TAG_VERSION" != "$CLI_VERSION" ]; then
+            echo "❌ FAIL: CLI version mismatch: git v$TAG_VERSION vs package.json $CLI_VERSION"
+            exit 1
+          fi
+          echo "✅ CLI version matches tag ($CLI_VERSION)"
+
+          # Vérif 2 : UI-Mobile.version === tag.version (on publie toujours les 2 en même temps)
+          if [ "$TAG_VERSION" != "$UI_VERSION" ]; then
+            echo "❌ FAIL: UI-Mobile version mismatch: git v$TAG_VERSION vs $UI_VERSION"
+            exit 1
+          fi
+          echo "✅ UI-Mobile version matches tag ($UI_VERSION)"
+
+          # Vérif 3 : CLI_DEP === ^UI_VERSION (plage semver compatible)
+          EXPECTED_DEP="^$UI_VERSION"
+          if [ "$CLI_DEP" != "$EXPECTED_DEP" ]; then
+            echo "❌ FAIL: CLI doit dépendre de @rashwright/ui-mobile@$EXPECTED_DEP, actuel: $CLI_DEP"
+            exit 1
+          fi
+          echo "✅ CLI dépend correctement de @rashwright/ui-mobile@$EXPECTED_DEP"
+
+      - name: 🔒 Verify dist build CLI + workspace:* a bien été résolu
+        working-directory: packages/cli
+        run: |
+          # build (prepublishOnly le fait aussi, mais on préfère une étape explicite pour les logs)
+          bun run build
+
+          # Vérif anti-régression : workspace:* INTERDIT dans package.json avant publication
           node -e "
             const fs = require('node:fs');
             const pkg = JSON.parse(fs.readFileSync('./package.json','utf8'));
-            const dep = pkg.dependencies?.['@rashwright/ui-mobile'];
-            console.log('@rashwright/ui-mobile dep:', dep);
-            if (String(dep).startsWith('workspace:')) {
-              console.error('FAIL: workspace:* non résolu');
+            const errors = [];
+            for (const scope of ['dependencies','devDependencies','peerDependencies','optionalDependencies']) {
+              if (!pkg[scope]) continue;
+              for (const [name, range] of Object.entries(pkg[scope])) {
+                if (String(range).startsWith('workspace:')) {
+                  errors.push(scope + '.' + name + ' = ' + range);
+                }
+              }
+            }
+            if (errors.length > 0) {
+              console.error('❌ FAIL: workspace:* trouvé dans package.json (doit être remplacé par version réelle) :');
+              errors.forEach(e => console.error('  -', e));
               process.exit(1);
             }
-            console.log('OK');
+            console.log('✅ Aucun workspace:* restant — toutes deps résolues');
           "
+
+          # Vérif que le dist contient bien 1 shebang unique L1
+          if ! head -n1 dist/index.js | grep -q '^#!/usr/bin/env node; then
+            echo '❌ FAIL: dist/index.js L1 doit être un shebang #!/usr/bin/env node unique'; exit 1
+          fi
+          if head -n2 dist/index.js | tail -n1 | grep -q '^#!'; then
+            echo '❌ FAIL: Double shebang détecté dans dist/index.js (bun banner + source)'; exit 1
+          fi
+          echo '✅ dist/index.js — shebang unique OK ('$(head -n1 dist/index.js)')'
 
       - name: npm publish --access public (@rashwright/cli)
         working-directory: packages/cli

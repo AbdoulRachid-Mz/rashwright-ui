@@ -16,7 +16,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
 } from "react-native-reanimated";
-import { useTheme } from "../../contexts/theme-context";
+import { useTheme } from "@/contexts/theme-context";
 import ThemedText from "./text";
 import LiquidHighlight from "./liquid/liquid-highlight";
 import LiquidBorder from "./liquid/liquid-border";

@@ -98,3 +98,19 @@ export function getInstalledVersion(
 ): string | null {
   return config.components[name] ?? null;
 }
+
+export function mergeRashwrightConfigs(
+  existing: RashwrightConfig,
+  overrides: Partial<RashwrightConfig> & { components?: Record<string, string> },
+): RashwrightConfig {
+  const { components: overrideComponents, ...restOverrides } = overrides;
+  const merged: RashwrightConfig = {
+    ...existing,
+    ...restOverrides,
+    components: {
+      ...existing.components,
+      ...(overrideComponents ?? {}),
+    },
+  };
+  return merged;
+}
