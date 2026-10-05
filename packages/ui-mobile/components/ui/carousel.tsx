@@ -24,9 +24,9 @@ import ThemedText from './text';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-interface CarouselProps {
-  data: any[];
-  renderItem: (item: any, index: number) => React.ReactNode;
+interface CarouselProps<T> {
+  data: T[];
+  renderItem: (item: T, index: number) => React.ReactNode;
   itemsPerView?: number;
   itemWidth?: number;
   spacing?: number;
@@ -37,10 +37,10 @@ interface CarouselProps {
   loop?: boolean;
   containerStyle?: ViewStyle;
   contentContainerStyle?: ViewStyle;
-  onItemPress?: (item: any, index: number) => void;
+  onItemPress?: (item: T, index: number) => void;
 }
 
-export const Carousel: React.FC<CarouselProps> = ({
+export function Carousel<T>({
   data,
   renderItem,
   itemsPerView = 1,
@@ -54,12 +54,12 @@ export const Carousel: React.FC<CarouselProps> = ({
   containerStyle,
   contentContainerStyle,
   onItemPress,
-}) => {
+}: CarouselProps<T>) {
   const { theme } = useTheme();
-  const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef<FlatList<T>>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(autoPlay);
-  const autoPlayTimer = useRef<any>(null);
+  const autoPlayTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const calculatedItemWidth = itemWidth || (SCREEN_WIDTH - 32 - (itemsPerView - 1) * spacing) / itemsPerView;
 

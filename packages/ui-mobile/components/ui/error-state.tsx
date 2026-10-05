@@ -34,7 +34,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
     if (typeof icon === "string") {
       return (
         <Ionicons
-          name={icon as any}
+          name={icon satisfies string}
           size={36}
           color={theme.colors.destructive}
         />

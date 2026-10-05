@@ -8,6 +8,7 @@ import React, {
 import {
   StyleProp,
   ViewStyle,
+  View,
 } from "react-native";
 import {
   VideoView,
@@ -67,7 +68,7 @@ export interface ThemedVideoProps
 const AnimatedVideoView =
   Animated.createAnimatedComponent(VideoView);
 
-const ThemedVideo = forwardRef<any, ThemedVideoProps>(
+const ThemedVideo = forwardRef<React.ElementRef<typeof View>, ThemedVideoProps>(
   (
     {
       source,

@@ -1,5 +1,6 @@
 // @/components/ui/safe-area-view.tsx
 import { forwardRef } from "react";
+import { View } from "react-native";
 import {
   SafeAreaView,
   SafeAreaViewProps,
@@ -10,8 +11,8 @@ interface ThemedSafeAreaViewProps extends SafeAreaViewProps {
   className?: string;
 }
 
-const ThemedSafeAreaView = forwardRef<any, ThemedSafeAreaViewProps>(
-  (props: ThemedSafeAreaViewProps, _ref: any) => {
+const ThemedSafeAreaView = forwardRef<React.ElementRef<typeof View>, ThemedSafeAreaViewProps>(
+  (props: ThemedSafeAreaViewProps, _ref: React.ForwardedRef<React.ElementRef<typeof View>>) => {
     return <SafeAreaView {...props} />;
   },
 );

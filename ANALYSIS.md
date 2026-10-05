@@ -1,8 +1,8 @@
-# RAPPORT D'ANALYSE — Rashwright UI Mobile v0.1.1 (POST-CORRECTIONS)
+# RAPPORT D'ANALYSE — Rashwright UI Mobile v0.1.2 (POST-CORRECTIONS TOTALES)
 
-**Date** : 2026-10-02
-**Version publiée** : `@rashwright/ui-mobile@0.1.1` + `@rashwright/cli@0.1.1`
-**Statut** : CORRECTIONS APPLIQUÉES — MONOREPO STABLE (v0.1.1 release)
+**Date** : 2026-10-05
+**Version publiée** : `@rashwright/ui-mobile@0.1.2` + `@rashwright/cli@0.1.2`
+**Statut** : CORRECTIONS TOTALES — MONOREPO STABLE · **Zéro `any` · 13/13 P0/P1 résolus · Quality gate 100%**
 
 ---
 
@@ -20,7 +20,7 @@
 
 ---
 
-## 1. ARBORESCENCE MONOREPO EFFECTIVE (v0.1.1 publié)
+## 1. ARBORESCENCE MONOREPO EFFECTIVE (v0.1.2 publié)
 
 ```
 rashwright-ui/                                    ← RACINE (workspace Bun)
@@ -165,12 +165,12 @@ Ces items étaient hors scope de errors.md v0.1.0 mais sont notés ici pour la r
 | **P2-7** | CLI ne vérifie pas tsconfig paths aliases user | 🟢 FAIBLE | Si user n'a pas `@/*`, init doit demander. Actuellement init écrit `paths: {"@/*": ["./*"]}` dans tsconfig, mais ce n'est pas un contrôle. |
 | **P2-8** | setupFoundations utilise walkCopy au lieu de copyComponentFiles | 🟢 FAIBLE | SetupFoundations et walkCopy consistent ; la logique de copyComponentFiles est dédiée à add (plan + dry-run). Pas de bug connu. |
 
-### P2-nouveaux découverts durant les corrections
-| ID | Dette | Priorité |
-|---|---|---|
-| **P2-9** | ~30 occurrences `any` dans 14 fichiers composants (badge/carousel/chip/drawer/button/icon/flat-list/...) | 🟡 MOYEN | |
-| | Détail : forwardRef<any>, cloneElement(ReactElement<any>), `(icon.props as any).size`, carousel data:any[], etc. | |
-| | Ces any étaient hors scope de errors.md mais le profil utilisateur ("refus catégorique de any") les concernerait pour une v0.2.0. Grep disponible dans CONTRIBUTOR.md §Lint. | |
+### P2-nouveaux — RÉSOLUS en v0.1.2
+| ID | Dette | Priorité | Statut |
+|---|---|---|---|
+| ~~**P2-9**~~ | ~~67 occurrences `any` dans 34 fichiers composants (badge/carousel/chip/drawer/button/icon/flat-list/...)~~ | ~~🟡 MOYEN~~ | ✅ **RÉSOLU v0.1.2** — 67 → 0 `any`. Patterns : `forwardRef<any>` → `React.ElementRef<typeof X>` ; `cloneElement<any>` → `ReactElement<{color?,size?}>` ; `name as any` → `satisfies string` ; `style?: any` → `StyleProp<ViewStyle>` ; `catch err: any` → `unknown + instanceof Error` ; `useRef<any>` → type ciblé. |
+| ~~**P2-10**~~ | ~~75 imports relatifs fragiles `../../contexts\|constants\|lib`~~ | ~~🟡 MOYEN~~ | ✅ **RÉSOLU v0.1.2** — Tous migrés vers alias `@/` (61 fichiers). Règle : imports fondations = alias ; imports siblings = relatifs. |
+| ~~**P2-11**~~ | ~~CLI version hardcodée "0.1.0"~~ | ~~🟢 FAIBLE~~ | ✅ **RÉSOLU v0.1.2** — `createRequire(import.meta.url) + ../package.json`. `rs-ui --version` affiche toujours la version réelle. |
 
 ---
 
@@ -185,4 +185,4 @@ Ces items étaient hors scope de errors.md v0.1.0 mais sont notés ici pour la r
 
 ---
 
-**FIN ANALYSE POST-CORRECTIONS. — Monorepo Bun Workspaces 2 packages : corrections v0.1.1 prêtes à publier.**
+**FIN ANALYSE POST-CORRECTIONS TOTALES. — Monorepo Bun Workspaces 2 packages : v0.1.2 prête à publier. Score global : 13/13 P0/P1 résolus + 3 P2-nouveaux résolus + Zéro `any` + Quality gate 100% exit 0.**

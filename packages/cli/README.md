@@ -1,4 +1,8 @@
-# @rashwright/cli — v0.1.1 · Commande `rs-ui`
+<p align="center">
+  <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
+</p>
+
+# @rashwright/cli — v0.1.2 · Commande `rs-ui`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -6,6 +10,7 @@
 > Plus de node_modules opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
+[![version](https://img.shields.io/badge/version-0.1.2-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
@@ -233,6 +238,17 @@ Et **Glass UI** en plus (`--glass` dans init) — chaque thème peut être combi
 Tu veux renommer 16 tokens de couleurs ? Forker un `Button` en 3 variants business différents ? Rashwright est fait pour ça.
 
 Le CLI est juste l'installeur. **La connaissance t'appartient.**
+
+---
+
+## 🆕 Nouveautés v0.1.2
+
+- **`detectProject()`** : Détection intelligente du projet (InitMode new/existing, package manager, SDK version)
+- **`createExpoProject()`** : Création projet Expo avec pin SDK 54→58 et runner bunx/npx
+- **`mergeRashwrightConfigs()`** : Fusion profonde existing.components (plus d'écrasement)
+- **`generateShowcaseScreen()`** : Dual mode — Expo Router (`app/_layout.tsx` + `app/index.tsx`) OU App.tsx classique
+- **`rs-ui --version` dynamique** : Lit la version depuis `package.json` (plus hardcodée `"0.1.0"`)
+- **Quality gate complet** : `prepublishOnly` = build + check-types TypeScript strict
 
 ---
 

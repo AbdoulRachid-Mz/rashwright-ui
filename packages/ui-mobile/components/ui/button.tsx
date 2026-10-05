@@ -40,7 +40,7 @@ export interface ButtonProps extends Omit<PressableProps, "style"> {
   rightIcon?: ReactNode;
 }
 
-const Button = forwardRef<any, ButtonProps>(
+const Button = forwardRef<React.ElementRef<typeof View>, ButtonProps>(
   (
     {
       children,

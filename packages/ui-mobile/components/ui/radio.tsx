@@ -66,7 +66,7 @@ export function RadioGroup<T extends string = string>({
     <RadioGroupContext.Provider
       value={{
         value: selectedValue,
-        onValueChange: handleChange as any,
+        onValueChange: handleChange as unknown as RadioGroupContextType["onValueChange"],
         disabled,
       }}
     >

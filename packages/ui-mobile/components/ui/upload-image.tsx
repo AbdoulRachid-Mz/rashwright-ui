@@ -234,10 +234,10 @@ export const UploadImage = forwardRef<UploadImageRef, UploadImageProps>(
           if (autoUpload && uploader) {
             // Téléversement direct
             const newStartIndex = value.length;
-            const newIndices = selectedAssets.map((_: any, i: number) => newStartIndex + i);
+            const newIndices = selectedAssets.map((_: ImagePicker.ImagePickerAsset, i: number) => newStartIndex + i);
             setUploadingIndices((prev) => [...prev, ...newIndices]);
 
-            const uploadPromises = selectedAssets.map(async (asset: any) => {
+            const uploadPromises = selectedAssets.map(async (asset: ImagePicker.ImagePickerAsset) => {
               const compressedUri = await compressImage(asset.uri);
               return await uploadSingle({
                 uri: compressedUri,
@@ -252,18 +252,19 @@ export const UploadImage = forwardRef<UploadImageRef, UploadImageProps>(
           } else {
             // Mode différé (URI locale conservée)
             const compressedAssets = await Promise.all(
-              selectedAssets.map(async (a: any) => ({
+              selectedAssets.map(async (a: ImagePicker.ImagePickerAsset) => ({
                 uri: await compressImage(a.uri),
                 fileName: a.fileName || undefined,
                 type: a.mimeType || "image/jpeg",
               }))
             );
             setLocalQueue((prev) => [...prev, ...compressedAssets]);
-            onChange([...value, ...compressedAssets.map((c: any) => c.uri)]);
+            onChange([...value, ...compressedAssets.map((c: { uri: string }) => c.uri)]);
           }
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("UploadImage error:", err);
-          Alert.alert("Erreur", err?.message || "Impossible de charger l'image.");
+          const message = err instanceof Error ? err.message : "Impossible de charger l'image.";
+          Alert.alert("Erreur", message);
         }
       },
       [value, maxImages, labels, multiple, autoUpload, uploader, compressImage, uploadSingle, onChange]

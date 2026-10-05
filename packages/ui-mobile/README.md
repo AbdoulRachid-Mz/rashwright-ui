@@ -1,4 +1,12 @@
-# @rashwright/ui-mobile — v0.1.1
+<p align="center">
+  <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile" width="180" />
+</p>
+
+# @rashwright/ui-mobile — v0.1.2
+
+[![npm version](https://img.shields.io/badge/npm-%400.1.2-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2058-000000?logo=expo)](#)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6?logo=typescript)](#)
 
 > **⚠️ Pour les développeurs UTILISATEURS de Rashwright UI : vous n'avez JAMAIS besoin d'installer ce package directement.**
 >
@@ -41,7 +49,7 @@ Ce modèle de distribution (**code copié, pas de dépendance opaque npm**) perm
 ## Contenu détaillé publié dans ce package
 
 ```
-@rashwright/ui-mobile@0.1.0/
+@rashwright/ui-mobile@0.1.2/
 ├── index.ts                     → Barrel (theme tokens, contexts, stores, hooks, UI barrel)
 ├── components/
 │   └── ui/                      → 63 fichiers
@@ -92,6 +100,17 @@ Tous les fichiers ci-dessus sont déclarés dans `files:[]` de `package.json` et
 1. **Ne jamais coder de logique métier dans ce package** : c'est un catalogue distribuable. Les logiques spécifiques (PropertyCard, UserProfileCard...) appartiennent aux projets consommateurs.
 2. **Si tu es contributeur** → docs racine monorepo : [CONTRIBUTOR.md](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/CONTRIBUTOR.md) · [Quick-Start.md](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/Quick-Start.md).
 3. **Si tu rencontres un bug avec `rs-ui`** → ouvrir une issue sur [GitHub AbdoulRachid-Mz/rashwright-ui](https://github.com/AbdoulRachid-Mz/rashwright-ui/issues).
+
+---
+
+## Nouveautés v0.1.2
+
+- **Zéro `any`** : 67 occurrences éliminées dans 34 composants (forwardRef, cloneElement, event handlers...)
+- **75 imports migrés** vers alias `@/` (contexts, constants, lib) — plus d'imports relatifs `../../`
+- **Architecture CLI renforcée** : `detectProject()`, `createExpoProject()`, `mergeRashwrightConfigs()`, `generateShowcaseScreen()` dual mode
+- **Version CLI dynamique** : `rs-ui --version` lit depuis `package.json` (plus hardcodée)
+- **Registry synchro** : `registry/index.json` version `0.1.2`
+- **Quality gate** : `bun run quality` 100% exit 0 (validate-registry + check-types + build + smoke)
 
 ---
 

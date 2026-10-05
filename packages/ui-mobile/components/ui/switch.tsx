@@ -7,7 +7,7 @@ export interface ThemedSwitchProps extends SwitchProps {
   className?: string;
 }
 
-const ThemedSwitch = forwardRef<any, ThemedSwitchProps>(
+const ThemedSwitch = forwardRef<React.ElementRef<typeof RNSwitch>, ThemedSwitchProps>(
   ({ ...props }, ref) => {
     const { theme, isDark } = useTheme();
 

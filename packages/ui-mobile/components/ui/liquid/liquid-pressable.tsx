@@ -15,6 +15,8 @@ import {
   ViewStyle,
   StyleProp,
   Platform,
+  PressableStateCallbackType,
+  View,
 } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -31,7 +33,7 @@ import { SPRING_PRESETS, VISCOSITY_MAP } from "./liquid-types";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const LiquidPressable = forwardRef<any, LiquidPressableProps>(
+const LiquidPressable = forwardRef<React.ElementRef<typeof View>, LiquidPressableProps>(
   (
     {
       children,
@@ -101,7 +103,7 @@ const LiquidPressable = forwardRef<any, LiquidPressableProps>(
         {...props}
       >
         {typeof children === "function"
-          ? (state: any) => children(state)
+          ? (state: PressableStateCallbackType) => children(state)
           : children}
       </AnimatedPressable>
     );
@@ -126,7 +128,9 @@ const styles = StyleSheet.create({
   base: {
     justifyContent: "center",
     alignItems: "center",
-    ...(Platform.OS === "web" ? ({ cursor: "pointer", userSelect: "none" } as any) : {}),
+    ...(Platform.OS === "web"
+      ? ({ cursor: "pointer", userSelect: "none" } as unknown as ViewStyle)
+      : {}),
   },
   surfaceWrapper: {
     alignSelf: "flex-start",

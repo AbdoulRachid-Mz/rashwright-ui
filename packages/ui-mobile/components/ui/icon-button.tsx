@@ -51,7 +51,7 @@ const SIZE_MAP = {
   xl: { size: 60, radius: 18, iconSize: 30 },
 };
 
-export const IconButton = forwardRef<any, IconButtonProps>(
+export const IconButton = forwardRef<React.ElementRef<typeof View>, IconButtonProps>(
   (
     {
       icon,
@@ -133,9 +133,10 @@ export const IconButton = forwardRef<any, IconButtonProps>(
 
     const renderedIcon = useMemo(() => {
       if (React.isValidElement(icon)) {
-        return React.cloneElement(icon as React.ReactElement<any>, {
-          size: (icon.props as any).size ?? sizeConfig.iconSize,
-          color: (icon.props as any).color ?? colors.fg,
+        const typedIcon = icon as React.ReactElement<{ color?: string; size?: number; style?: unknown }>;
+        return React.cloneElement(typedIcon, {
+          size: typedIcon.props.size ?? sizeConfig.iconSize,
+          color: typedIcon.props.color ?? colors.fg,
         });
       }
       return icon;

@@ -2,6 +2,10 @@ import { useCallback, useRef } from "react";
 import { useSharedValue, useAnimatedScrollHandler } from "react-native-reanimated";
 import { useTabBarContext } from "@/contexts/tab-bar-context";
 
+type ReanimatedScrollEvent = {
+  contentOffset?: { x?: number; y?: number };
+};
+
 /**
  * Hook pour masquer / afficher la tab bar lors du scroll.
  *
@@ -24,9 +28,9 @@ export function useScrollAwareTabBar() {
    * Handler Reanimated à utiliser avec <Animated.ScrollView onScroll={scrollHandler} />
    */
   const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event: any) => {
+    onScroll: (event: ReanimatedScrollEvent) => {
       "worklet";
-      const currentY = event.contentOffset.y;
+      const currentY = event.contentOffset?.y ?? 0;
       const diff = currentY - lastOffsetY.value;
 
       // 1. En haut de page : toujours visible
@@ -58,15 +62,15 @@ export function useScrollAwareTabBar() {
 
       lastOffsetY.value = currentY;
     },
-    onEndDrag: (event: any) => {
+    onEndDrag: (event: ReanimatedScrollEvent) => {
       "worklet";
-      if (event.contentOffset.y <= 80 && tabBarHidden.value !== 0) {
+      if ((event.contentOffset?.y ?? 0) <= 80 && tabBarHidden.value !== 0) {
         notifyScroll(false);
       }
     },
-    onMomentumEnd: (event: any) => {
+    onMomentumEnd: (event: ReanimatedScrollEvent) => {
       "worklet";
-      if (event.contentOffset.y <= 80 && tabBarHidden.value !== 0) {
+      if ((event.contentOffset?.y ?? 0) <= 80 && tabBarHidden.value !== 0) {
         notifyScroll(false);
       }
     },

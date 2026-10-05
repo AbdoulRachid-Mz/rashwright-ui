@@ -50,7 +50,7 @@ const ThemedFlatList = forwardRef(ThemedFlatListComponent) as <T>(
   props: ThemedFlatListProps<T> & { ref?: React.ForwardedRef<RNFlatList<T>> }
 ) => React.ReactElement;
 
-(ThemedFlatList as any).displayName = "FlatList";
+(ThemedFlatList as unknown as { displayName: string }).displayName = "FlatList";
 
 export default ThemedFlatList;
 

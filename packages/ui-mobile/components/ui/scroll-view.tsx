@@ -15,7 +15,7 @@ interface ThemedScrollViewProps extends ScrollViewProps {
   className?: string;
 }
 
-const ThemedScrollView = forwardRef<any, ThemedScrollViewProps>(
+const ThemedScrollView = forwardRef<React.ElementRef<typeof ScrollView>, ThemedScrollViewProps>(
   (
     {
       children,

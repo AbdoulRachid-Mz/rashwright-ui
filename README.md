@@ -1,16 +1,22 @@
+<p align="center">
+  <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile Logo" width="200" />
+</p>
+
 # Rashwright UI Mobile (`rs-ui`)
 
 > Système moderne de composants **distribuables** pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie *shadcn/ui* : **vous copiez les composants dans votre codebase, vous en êtes propriétaire**.
 
-**Statut v0.1.1** : ✅ Publié sur npm — `@rashwright/cli@0.1.1` · `@rashwright/ui-mobile@0.1.1`
-**P0/P1** : 13/13 résolus. **Objectifs errors.md A/B/C/D** : 4/4 atteints.
+**Statut v0.1.2** : ✅ Publié sur npm — `@rashwright/cli@0.1.2` · `@rashwright/ui-mobile@0.1.2`
+**P0/P1** : 13/13 résolus. **Objectifs errors.md A/B/C/D** : 4/4 atteints. **Typing strict** : Zéro `any` (67/67 retirés).
 
-[![npm - @rashwright/cli](https://img.shields.io/badge/@rashwright/cli-v0.1.1-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![npm - @rashwright/ui-mobile](https://img.shields.io/badge/@rashwright/ui--mobile-v0.1.1-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
-[![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
-[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000000.svg?logo=expo)](#)
-[![Package Manager](https://img.shields.io/badge/Bun-1.2%2B-fbf0df.svg?logo=bun)](#)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.5%2B-3178c6.svg?logo=typescript)](#)
+<p align="center">
+  [![npm - @rashwright/cli](https://img.shields.io/badge/@rashwright/cli-v0.1.2-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
+  [![npm - @rashwright/ui-mobile](https://img.shields.io/badge/@rashwright/ui--mobile-v0.1.2-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+  [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
+  [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000000.svg?logo=expo)](#)
+  [![Package Manager](https://img.shields.io/badge/Bun-1.2%2B-fbf0df.svg?logo=bun)](#)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.5%2B-3178c6.svg?logo=typescript)](#)
+</p>
 
 ---
 
@@ -99,7 +105,7 @@ npx @rashwright/cli <commande>
 Vérifier l'installation :
 ```bash
 rs-ui --version
-# doit afficher 0.1.1 (ou + récent)
+# doit afficher 0.1.2 (ou + récent)
 ```
 
 ---
@@ -142,7 +148,7 @@ rs-ui add upload-image upload-video
 
 # Ajouter TOUS les composants disponibles (nombre à jour selon version)
 rs-ui add --all
-# → 55 composants dans la version 0.1.1
+# → 55 composants dans la version 0.1.2
 ```
 
 **Explorer la bibliothèque avant d'ajouter :**
@@ -251,36 +257,6 @@ export function ProfileForm() {
     </>
   );
 }
-```
-
----
-
-### Vérification et diagnostic (`rs-ui doctor`)
-
-Lance un diagnostic complet de l'environnement, des dépendances natives installées et de la configuration du projet :
-
-```bash
-rs-ui doctor
-```
-
-Sortie type :
-```text
-  Rashwright UI Mobile — rs-ui doctor
-
-  ✔ package.json
-  ✔ Expo SDK 57
-  ✔ Package manager: bun
-  ✔ TypeScript
-  ✔ rashwright-ui.json
-  ✔ Dossier composants: components/ui
-  ✔ Composants installés: 12
-  ✔ react-native-reanimated — v~4.3.1
-  ✔ react-native-gesture-handler — v~2.31.2
-  ✔ react-native-safe-area-context — v~5.7.0
-  ✔ expo-blur — v~56.0.4
-  ✔ expo-linear-gradient — v~56.0.0
-
-  Tout est en ordre!
 ```
 
 ---
@@ -422,4 +398,3 @@ La **documentation complète du contributeur** (scripts workspace, tsconfig comp
 ## 📄 Licence
 
 Fait avec ❤️ par l'équipe **Rashwright**. Tous droits réservés.
-# rashwright-ui

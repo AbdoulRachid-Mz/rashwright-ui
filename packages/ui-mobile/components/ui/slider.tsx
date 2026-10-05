@@ -56,7 +56,7 @@ export const Slider: React.FC<SliderProps> = ({
   const currentValue = value !== undefined ? value : internalValue;
   const thumbScale = useSharedValue(1);
 
-  const trackRef = useRef<any>(null);
+  const trackRef = useRef<React.ElementRef<typeof View>>(null);
 
   const clampValue = (val: number) => {
     let clamped = Math.min(max, Math.max(min, val));

@@ -60,7 +60,7 @@ export const Shimmer: React.FC<ShimmerProps> = ({
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, { borderRadius, overflow: "hidden" }]}>
           <Animated.View style={[styles.shimmerWave, animatedStyle]}>
             <LinearGradient
-              colors={highlightColors as any}
+              colors={highlightColors as readonly [string, string, ...string[]]}
               start={{ x: 0, y: 0.5 }}
               end={{ x: 1, y: 0.5 }}
               style={styles.gradient}

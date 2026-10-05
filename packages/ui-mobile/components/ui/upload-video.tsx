@@ -132,9 +132,10 @@ export function UploadVideo({
       } else {
         throw new Error(labels.errorMessage);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("UploadVideo error:", err);
-      Alert.alert(labels.errorTitle, err?.message || labels.errorMessage);
+      const message = err instanceof Error ? err.message : labels.errorMessage;
+      Alert.alert(labels.errorTitle, message);
     } finally {
       setUploading(false);
     }

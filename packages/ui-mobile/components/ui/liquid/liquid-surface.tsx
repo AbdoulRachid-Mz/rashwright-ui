@@ -87,15 +87,14 @@ const LiquidSurface = forwardRef<View, LiquidSurfaceProps>(
       return Math.min(100, Math.round(matConfig.blurIntensity * multiplier));
     }, [liquidGlassEnabled, noBlur, matConfig.blurIntensity, multiplier]);
 
-    const webBackdropStyle: any = useMemo(() => {
-      if (Platform.OS !== "web") return {};
-      if (!liquidGlassEnabled || noBlur || matConfig.blurPx === 0) return {};
+    const webBackdropStyle = useMemo(() => {
+      if (Platform.OS !== "web") return {} as StyleProp<ViewStyle>;
+      if (!liquidGlassEnabled || noBlur || matConfig.blurPx === 0) return {} as StyleProp<ViewStyle>;
       const blurPx = Math.round(matConfig.blurPx * multiplier);
       return {
-        // @ts-ignore Web CSS backdrop-filter
         backdropFilter: `blur(${blurPx}px)`,
         WebkitBackdropFilter: `blur(${blurPx}px)`,
-      };
+      } as unknown as StyleProp<ViewStyle>;
     }, [liquidGlassEnabled, noBlur, matConfig.blurPx, multiplier]);
 
     const backgroundColor = useMemo(() => {
@@ -108,7 +107,7 @@ const LiquidSurface = forwardRef<View, LiquidSurfaceProps>(
 
     return (
       <Animated.View
-        ref={ref as any}
+        ref={ref}
         style={[
           styles.container,
           // Ombres uniquement quand liquid est actif (évite un look bizarre sans blur)

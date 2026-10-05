@@ -8,7 +8,7 @@ interface ThemedActivityIndicatorProps extends ActivityIndicatorProps {
   className?: string;
 }
 
-const ThemedActivityIndicator = forwardRef<any, ThemedActivityIndicatorProps>(
+const ThemedActivityIndicator = forwardRef<React.ElementRef<typeof RNActivityIndicator>, ThemedActivityIndicatorProps>(
   (
     {
       color,

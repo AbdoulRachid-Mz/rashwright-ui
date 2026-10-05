@@ -9,6 +9,8 @@ import {
   TextStyle,
   View,
   StyleProp,
+  NativeSyntheticEvent,
+  TextInputFocusEventData,
 } from "react-native";
 import { useTheme } from "@/contexts/theme-context";
 import ThemedText from "./text";
@@ -24,7 +26,7 @@ export interface TextInputProps extends RNTextInputProps {
   hint?: string;
 }
 
-const TextInput = forwardRef<any, TextInputProps>(
+const TextInput = forwardRef<React.ElementRef<typeof RNTextInput>, TextInputProps>(
   (
     {
       style,
@@ -54,12 +56,12 @@ const TextInput = forwardRef<any, TextInputProps>(
 
     const borderWidth = isFocused || hasError ? 1.5 : 1;
 
-    const handleFocus = (e: any) => {
+    const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
       setIsFocused(true);
       onFocus?.(e);
     };
 
-    const handleBlur = (e: any) => {
+    const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
       setIsFocused(false);
       onBlur?.(e);
     };
@@ -89,7 +91,7 @@ const TextInput = forwardRef<any, TextInputProps>(
           fontSize: theme.typography.base,
           paddingVertical: theme.spacing.sm,
           ...(Platform.OS === "web" && {
-            outlineStyle: "none" as any,
+            outlineStyle: "none" satisfies TextStyle[keyof TextStyle],
             outlineWidth: 0,
             borderWidth: 0,
           }),

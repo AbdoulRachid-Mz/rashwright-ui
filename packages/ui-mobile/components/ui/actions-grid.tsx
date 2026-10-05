@@ -102,7 +102,7 @@ export const ActionsGrid: React.FC<ActionsGridProps> = ({
           ]}
         >
           <Ionicons
-            name={action.icon as any}
+            name={action.icon satisfies string}
             size={compact ? iconSize * 0.8 : iconSize}
             color={color}
           />

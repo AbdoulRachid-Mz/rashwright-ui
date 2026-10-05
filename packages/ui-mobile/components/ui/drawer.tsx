@@ -7,6 +7,8 @@ import {
   View,
   Dimensions,
   Platform,
+  StyleProp,
+  ViewStyle,
 } from "react-native";
 import Animated, {
   Easing,
@@ -23,13 +25,13 @@ export interface DrawerProps {
   children: ReactNode;
   visible: boolean;
   onClose?: () => void;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
   noBlur?: boolean;
 }
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-const Drawer = forwardRef<any, DrawerProps>(
+const Drawer = forwardRef<React.ElementRef<typeof RNModal>, DrawerProps>(
   ({ children, visible, onClose, style, noBlur = false }, ref) => {
     const { theme, isDark } = useTheme();
     const opacity = useSharedValue(0);

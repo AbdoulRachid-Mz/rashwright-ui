@@ -100,10 +100,13 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   };
 
   const renderedIcon = React.isValidElement(icon)
-    ? React.cloneElement(icon as React.ReactElement<any>, {
-        size: (icon.props as any).size ?? sizeCfg.iconSize,
-        color: (icon.props as any).color ?? fgColors[variant],
-      })
+    ? (() => {
+        const typedIcon = icon as React.ReactElement<{ color?: string; size?: number; style?: unknown }>;
+        return React.cloneElement(typedIcon, {
+          size: typedIcon.props.size ?? sizeCfg.iconSize,
+          color: typedIcon.props.color ?? fgColors[variant],
+        });
+      })()
     : icon;
 
   const content = (

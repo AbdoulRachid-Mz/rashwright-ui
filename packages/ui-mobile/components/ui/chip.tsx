@@ -164,9 +164,10 @@ export const Chip: React.FC<ChipProps> = ({
   const renderIcon = () => {
     if (!icon) return null;
     if (React.isValidElement(icon)) {
-      return React.cloneElement(icon as React.ReactElement<any>, {
-        size: (icon.props as any).size ?? sizeStyles.iconSize,
-        color: (icon.props as any).color ?? colors.fg,
+      const typedIcon = icon as React.ReactElement<{ color?: string; size?: number; style?: unknown }>;
+      return React.cloneElement(typedIcon, {
+        size: typedIcon.props.size ?? sizeStyles.iconSize,
+        color: typedIcon.props.color ?? colors.fg,
       });
     }
     return icon;

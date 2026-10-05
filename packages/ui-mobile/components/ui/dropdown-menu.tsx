@@ -117,7 +117,7 @@ export const DropdownMenu: React.FC<DropdownMenuProps> = ({
                       >
                         {typeof item.icon === "string" ? (
                           <Ionicons
-                            name={item.icon as any}
+                            name={item.icon satisfies string}
                             size={18}
                             color={
                               isDestructive

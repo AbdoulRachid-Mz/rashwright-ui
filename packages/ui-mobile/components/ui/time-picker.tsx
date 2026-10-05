@@ -6,6 +6,8 @@ import {
   FlatList,
   StyleSheet,
   Platform,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from 'react-native';
 import { useTheme } from "@/contexts/theme-context";
 import ThemedText from './text';
@@ -47,7 +49,7 @@ function WheelPicker({
     }
   }, [selectedIndex]);
 
-  const handleMomentumScrollEnd = (e: any) => {
+  const handleMomentumScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetY = e.nativeEvent.contentOffset.y;
     const index = Math.round(offsetY / ITEM_HEIGHT);
     const clampedIndex = Math.max(0, Math.min(index, data.length - 1));

@@ -69,7 +69,7 @@ const LiquidHighlight = memo(
     }, [glass, type, opacity]);
 
     const coverageStyle: ViewStyle = {
-      height: `${Math.round(coverage * 100)}%` as any,
+      height: `${Math.round(coverage * 100)}%` satisfies ViewStyle['height'],
     };
 
     if (type === 'edge') {
@@ -107,7 +107,7 @@ const LiquidHighlight = memo(
 
     return (
       <LinearGradient
-        colors={colors as any}
+        colors={(colors ?? []) as readonly [string, string, ...string[]]}
         start={gradientStart}
         end={gradientEnd}
         pointerEvents="none"
@@ -118,7 +118,7 @@ const LiquidHighlight = memo(
             borderTopLeftRadius: borderRadius,
             borderTopRightRadius: borderRadius,
             ...(type === 'inner' && {
-              top: 'auto' as any,
+              top: 'auto' satisfies ViewStyle['top'],
               bottom: 0,
               borderTopLeftRadius: 0,
               borderTopRightRadius: 0,

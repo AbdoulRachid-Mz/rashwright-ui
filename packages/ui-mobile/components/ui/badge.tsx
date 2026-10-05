@@ -171,10 +171,11 @@ export const Badge: React.FC<BadgeProps> = ({
   const renderIcon = () => {
     if (!icon || loading) return null;
     if (React.isValidElement(icon)) {
-      return React.cloneElement(icon as React.ReactElement<any>, {
-        color: (icon.props as any).color ?? iconColor,
+      const typedIcon = icon as React.ReactElement<{ color?: string; size?: number; style?: unknown }>;
+      return React.cloneElement(typedIcon, {
+        color: typedIcon.props.color ?? iconColor,
         size:
-          (icon.props as any).size ??
+          typedIcon.props.size ??
           (size === "sm" ? 10 : size === "lg" ? 14 : 12),
       });
     }
@@ -203,7 +204,7 @@ export const Badge: React.FC<BadgeProps> = ({
         renderIcon()
       )}
       {children && (
-        <Text style={[containerStyles, styles.resetView, textStyle as any]} numberOfLines={1}>
+        <Text style={[containerStyles, styles.resetView, textStyle]} numberOfLines={1}>
           <Text style={{ color: textColor, fontWeight: "600" }}>{children}</Text>
         </Text>
       )}

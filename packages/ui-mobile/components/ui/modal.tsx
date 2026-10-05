@@ -7,6 +7,8 @@ import {
   TouchableWithoutFeedback,
   View,
   Platform,
+  StyleProp,
+  ViewStyle,
 } from "react-native";
 import Animated, {
   Easing,
@@ -23,14 +25,14 @@ export interface ThemedModalProps extends ModalProps {
   visible: boolean;
   onClose?: () => void;
   className?: string;
-  style?: any;
-  overlayStyle?: any;
+  style?: StyleProp<ViewStyle>;
+  overlayStyle?: StyleProp<ViewStyle>;
   animationDuration?: number;
   dismissOnOverlayPress?: boolean;
   noBlur?: boolean;
 }
 
-const ThemedModal = forwardRef<any, ThemedModalProps>(
+const ThemedModal = forwardRef<React.ElementRef<typeof RNModal>, ThemedModalProps>(
   (
     {
       children,

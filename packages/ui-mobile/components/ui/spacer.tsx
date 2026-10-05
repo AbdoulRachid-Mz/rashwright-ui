@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { useTheme } from "@/contexts/theme-context";
 
 interface SpacerProps {
-  size?: keyof ReturnType<typeof useTheme>["theme']['spacing'];
+  size?: keyof ReturnType<typeof useTheme>["theme"]["spacing"];
   height?: number;
 }
 

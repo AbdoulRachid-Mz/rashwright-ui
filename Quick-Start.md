@@ -154,7 +154,7 @@ node packages/cli/dist/index.js --help   # liste commandes
 # (C) Vérification version + dep pas workspace:*
 cd packages/ui-mobile ; grep version package.json   # attendu: "0.1.1"
 cd ../../packages/cli ; grep -i "ui-mobile" package.json
-# Doit afficher: "@rashwright/ui-mobile": "^0.1.1"   (PAS workspace:*)
+# Doit afficher: "@rashwright/ui-mobile": "^0.1.2"   (PAS workspace:*)
 ```
 
 ### Phase 1 — Publier `@rashwright/ui-mobile` (PREMIER)
