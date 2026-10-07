@@ -109,6 +109,58 @@ export function detectProject(cwd: string = process.cwd()): ProjectInfo {
   };
 }
 
+/**
+ * Détecte si le projet cible est un template standard officiel Expo / React Native par défaut
+ * (généré par create-expo-app ou react-native init) qui contient les fichiers d'exemple par défaut
+ * nécessitant un reset avant installation de Rashwright UI.
+ */
+export function isDefaultExpoTemplate(cwd: string = process.cwd()): boolean {
+  // Si Rashwright UI est déjà configuré, ce n'est pas un template standard vierge
+  if (existsSync(join(cwd, "rashwright-ui.json"))) {
+    return false;
+  }
+
+  // 1. Script reset-project officiel fourni par le template par défaut d'Expo
+  if (existsSync(join(cwd, "scripts", "reset-project.js"))) {
+    return true;
+  }
+
+  // 2. Détection via package.json ("reset-project" script)
+  const pkgPath = join(cwd, "package.json");
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+      if (pkg.scripts && ("reset-project" in pkg.scripts || pkg.scripts["reset-project"])) {
+        return true;
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  // 3. Fichiers/dossiers signatures du template create-expo-app par défaut
+  const templateMarkers = [
+    join(cwd, "app", "(tabs)"),
+    join(cwd, "src", "app", "(tabs)"),
+    join(cwd, "components", "Collapsible.tsx"),
+    join(cwd, "src", "components", "Collapsible.tsx"),
+    join(cwd, "components", "ParallaxScrollView.tsx"),
+    join(cwd, "src", "components", "ParallaxScrollView.tsx"),
+    join(cwd, "components", "ThemedText.tsx"),
+    join(cwd, "src", "components", "ThemedText.tsx"),
+    join(cwd, "components", "ThemedView.tsx"),
+    join(cwd, "src", "components", "ThemedView.tsx"),
+    join(cwd, "components", "animated-icon.web.tsx"),
+    join(cwd, "src", "components", "animated-icon.web.tsx"),
+    join(cwd, "constants", "Colors.ts"),
+    join(cwd, "src", "constants", "Colors.ts"),
+    join(cwd, "hooks", "useColorScheme.ts"),
+    join(cwd, "src", "hooks", "useColorScheme.ts"),
+  ];
+
+  return templateMarkers.some((marker) => existsSync(marker));
+}
+
 export function detectInitMode(cwd: string): InitMode {
   const project = detectProject(cwd);
   if (project.hasPackageJson && (project.isExpo || project.reactNativeVersion !== null)) {

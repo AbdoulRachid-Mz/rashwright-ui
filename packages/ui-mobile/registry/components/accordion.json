@@ -1,0 +1,19 @@
+{
+  "name": "accordion",
+  "version": "1.0.0",
+  "description": "Sections dépliables animées avec support multi-ouverture et variantes Glass.",
+  "category": "Layout",
+  "files": ["components/ui/accordion.tsx"],
+  "dependencies": [],
+  "expoDependencies": ["expo-haptics"],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": ["ThemeProvider"],
+  "supportsGlass": true,
+  "platforms": ["ios", "android"],
+  "nativeRebuildRequired": false,
+  "props": {
+    "multiple": "boolean",
+    "variant": ["default", "bordered", "glass"]
+  }
+}

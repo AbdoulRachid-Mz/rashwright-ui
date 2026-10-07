@@ -124,7 +124,7 @@ export function UploadVideo({
 
       const res = await uploadManager.upload(source, {
         folder,
-        onProgress: (p) => setProgress(p),
+        onProgress: (p: number) => setProgress(p),
       });
 
       if (res.success && res.url) {

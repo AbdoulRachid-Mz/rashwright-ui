@@ -1,0 +1,22 @@
+{
+  "name": "rating",
+  "version": "1.0.0",
+  "description": "Notation par étoiles interactive avec support demi-étoiles et variante Glass.",
+  "category": "Forms",
+  "files": ["components/ui/rating.tsx"],
+  "dependencies": [],
+  "expoDependencies": ["expo-haptics"],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": ["ThemeProvider"],
+  "supportsGlass": false,
+  "platforms": ["ios", "android"],
+  "nativeRebuildRequired": false,
+  "props": {
+    "value": "number",
+    "max": "number",
+    "readonly": "boolean",
+    "allowHalf": "boolean",
+    "onChange": "function"
+  }
+}

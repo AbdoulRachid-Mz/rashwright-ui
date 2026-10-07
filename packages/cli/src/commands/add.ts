@@ -3,21 +3,27 @@ import chalk from "chalk";
 import ora from "ora";
 import { confirm, checkbox, Separator } from "@inquirer/prompts";
 import { join } from "node:path";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
 import { detectProject } from "../core/project-detector.js";
 import { detectExpo } from "../core/expo-detector.js";
 import { readConfig, writeConfig, markComponentInstalled, isComponentInstalled, type RashwrightConfig } from "../core/config-manager.js";
-import { detectPackageManager, installExpoPackages, installNpmPackages } from "../core/package-manager.js";
+import { detectPackageManager, installExpoPackages, installNpmPackages, type PackageManager } from "../core/package-manager.js";
 import { resolveDependencies } from "../core/dependency-resolver.js";
 import { copyComponentFiles } from "../core/file-manager.js";
 import { loadRegistryIndex, getAllComponents, type RegistryEntry, type ResolvedComponent } from "../core/registry.js";
 import { REGISTRY_ROOT, SOURCE_ROOT } from "../core/paths.js";
+import { generateUiIndex, updateTsconfig } from "../core/starter-generator.js";
+import { resolveRegistry, ensureComponentDownloaded } from "../core/remote-registry.js";
+import { computeLineDiff, formatDiffOutput } from "../core/diff.js";
 
 export function addCommand(): Command {
   const cmd = new Command("add");
   cmd
     .description("Ajouter un ou plusieurs composants Rashwright UI au projet")
     .argument("[components...]", "Noms des composants à ajouter")
+    .option("--registry <url>", "URL du registre distant (ex: https://unpkg.com/@rashwright/ui-mobile@latest)")
+    .option("--fresh", "Forcer le rafraîchissement du registre distant sans utiliser le cache")
+    .option("--diff", "Afficher les différences (diff) avant d'écraser un composant déjà existant")
     .option("--all", "Ajouter tous les composants disponibles")
     .option("--force", "Forcer la réinstallation (écraser les fichiers existants)")
     .option("--yes", "Répondre Oui à toutes les questions (mode non interactif)")
@@ -48,13 +54,22 @@ export function addCommand(): Command {
 
       const config = readConfig(project.rashwrightConfigPath);
 
+      // ── 1b. Résolution du registre (local ou distant) ───────────────────
+      const resolved = await resolveRegistry({
+        registryUrl: options.registry,
+        fresh: options.fresh,
+      });
+      if (resolved.isRemote) {
+        console.log(chalk.dim(`  ℹ Source registre : ${resolved.registryUrl}`));
+      }
+
       // ── 2. Resolve component list ──────────────────────────────────────
       let componentNames: string[] = componentArgs;
 
       const interactive = Boolean(options.interactive) && !options.yes && !options.dryRun && !options.nonInteractive;
 
       if (options.all) {
-        const index = loadRegistryIndex(REGISTRY_ROOT);
+        const index = loadRegistryIndex(resolved.registryRoot);
         componentNames = index?.components ?? [];
         console.log(chalk.dim(`  ${componentNames.length} composants disponibles (--all)`));
       }
@@ -69,9 +84,9 @@ export function addCommand(): Command {
           process.exit(1);
         }
 
-        const allComp = getAllComponents(REGISTRY_ROOT);
+        const allComp = getAllComponents(resolved.registryRoot);
         if (allComp.length === 0) {
-          console.log(chalk.red("  ✖ Registry vide dans @rashwright/ui-mobile."));
+          console.log(chalk.red("  ✖ Registry vide."));
           process.exit(1);
         }
 
@@ -140,8 +155,18 @@ export function addCommand(): Command {
         }
       }
 
-      const plan = resolveDependencies(componentNames, expo.supportedVersion, REGISTRY_ROOT, installedPkgs);
+      const plan = resolveDependencies(componentNames, expo.supportedVersion, resolved.registryRoot, installedPkgs);
       spinner.stop();
+
+      // ── C-2 : Avertissement conflits de versions Expo
+      if (plan.versionConflicts.length > 0) {
+        console.log(chalk.yellow("  ⚠  Conflits de versions Expo détectés :"));
+        for (const c of plan.versionConflicts) {
+          console.log(chalk.yellow(`    • ${c.pkg}`) + chalk.dim(` installé: ${c.installed}`) + chalk.red(` ≠ `) + chalk.cyan(`requis: ${c.required}`));
+        }
+        console.log(chalk.dim("    → Mettez à jour ces packages : npx expo install " + plan.versionConflicts.map((c) => c.pkg).join(" ")));
+        console.log();
+      }
 
       // ── 3b. Objectif B : Séparer composants EXPLICITEMENT demandés vs DEPENDANCES TRANSITIVES
       //       (ex: liquid-pressable / text / view ne sont PAS des composants installables
@@ -240,10 +265,12 @@ export function addCommand(): Command {
       }
 
       // ── 5. Install Expo deps ───────────────────────────────────────────
+      const pm: PackageManager = config.packageManager || project.packageManager || "npm";
+
       if (newExpoDeps.length > 0) {
-        const depSpinner = ora("Installation des dépendances Expo...").start();
+        const depSpinner = ora(`Installation des dépendances Expo via ${pm}...`).start();
         try {
-          installExpoPackages(newExpoDeps, project.packageManager, cwd, options.dryRun);
+          installExpoPackages(newExpoDeps, pm, cwd, options.dryRun);
           depSpinner.succeed("Dépendances Expo installées");
         } catch (err) {
           depSpinner.fail("Échec de l'installation des dépendances");
@@ -254,13 +281,43 @@ export function addCommand(): Command {
 
       // ── 6. Install npm deps ────────────────────────────────────────────
       if (plan.allNpmDeps.length > 0) {
-        const npmSpinner = ora("Installation des dépendances npm...").start();
+        const npmSpinner = ora(`Installation des dépendances npm via ${pm}...`).start();
         try {
-          installNpmPackages(plan.allNpmDeps, project.packageManager, cwd, options.dryRun);
+          installNpmPackages(plan.allNpmDeps, pm, cwd, options.dryRun);
           npmSpinner.succeed("Dépendances npm installées");
         } catch (err) {
           npmSpinner.fail("Échec de l'installation npm");
           console.error(err);
+        }
+      }
+
+      // ── 6b. Point 5 : Assurer les fichiers de logique et utilitaires requis (ex: lib/upload)
+      const needsUploadLib = newComponents.some((c) =>
+        c.name === "upload-image" || c.name === "upload-video" || (c.entry.files || []).some((f) => f.includes("upload"))
+      );
+      if (needsUploadLib && !options.dryRun) {
+        const useSrc = config.componentsPath.startsWith("src/") || existsSync(join(cwd, "src"));
+        const uploadTargetDir = join(cwd, useSrc ? "src/lib/upload" : "lib/upload");
+        if (!existsSync(uploadTargetDir)) {
+          const uploadSpinner = ora("Copie des utilitaires d'upload (lib/upload)...").start();
+          const uploadSourceDir = join(resolved.sourceRoot, "lib", "upload");
+          if (existsSync(uploadSourceDir)) {
+            const copyDirRecursive = (src: string, dest: string) => {
+              if (!existsSync(dest)) mkdirSync(dest, { recursive: true });
+              const entries = readdirSync(src, { withFileTypes: true });
+              for (const entry of entries) {
+                const s = join(src, entry.name);
+                const d = join(dest, entry.name);
+                if (entry.isDirectory()) {
+                  copyDirRecursive(s, d);
+                } else if (entry.isFile()) {
+                  copyFileSync(s, d);
+                }
+              }
+            };
+            copyDirRecursive(uploadSourceDir, uploadTargetDir);
+            uploadSpinner.succeed("Utilitaires lib/upload installés");
+          }
         }
       }
 
@@ -270,9 +327,38 @@ export function addCommand(): Command {
 
       for (const comp of newComponents) {
         const copySpinner = ora(`Copie de ${comp.name}...`).start();
+
+        if (resolved.isRemote) {
+          await ensureComponentDownloaded(comp.name, {
+            registryUrl: resolved.registryUrl,
+            registryRoot: resolved.registryRoot,
+            sourceRoot: resolved.sourceRoot,
+          });
+        }
+
+        // ── F-3 : Mode --diff (aperçu des différences avant écrasement)
+        if (options.diff && Array.isArray(comp.entry.files)) {
+          for (const relFile of comp.entry.files) {
+            const cleanRel = relFile.replace(/^components\/ui\//, "");
+            const localDest = join(targetDir, cleanRel);
+            const sourcePath = join(resolved.sourceRoot, relFile);
+            if (existsSync(localDest) && existsSync(sourcePath)) {
+              const oldCode = readFileSync(localDest, "utf-8");
+              const newCode = readFileSync(sourcePath, "utf-8");
+              if (oldCode !== newCode) {
+                copySpinner.stop();
+                console.log(chalk.bold.yellow(`\n  [diff] ${cleanRel} (local vs registre) :`));
+                console.log(formatDiffOutput(computeLineDiff(oldCode, newCode)));
+                console.log();
+                copySpinner.start();
+              }
+            }
+          }
+        }
+
         const results = copyComponentFiles(
           comp.entry.files,
-          SOURCE_ROOT,
+          resolved.sourceRoot,
           targetDir,
           { overwrite, dryRun: options.dryRun },
         );
@@ -280,8 +366,6 @@ export function addCommand(): Command {
         const ok = results.every((r) => r.status !== "failed");
         if (ok) {
           // ── Objectif B.2 : SEULS les composants explicitement demandés sont "marqués installés" dans config.components
-          // Les deps transitives (liquid/*, text, view, ...) ne vont PAS dans config.components
-          // (ce sont des fichiers core copiés à chaque init)
           if (requestedSet.has(comp.name)) {
             copySpinner.succeed(`${chalk.green("✔")} ${comp.name}@${comp.entry.version} ajouté`);
             updatedConfig = markComponentInstalled(updatedConfig, comp.name, comp.entry.version);
@@ -293,14 +377,17 @@ export function addCommand(): Command {
         }
       }
 
-      // ── 8. Update config ───────────────────────────────────────────────
+      // ── 8. Régénérer index.ts du dossier UI & synchroniser la config ────
       if (!options.dryRun) {
+        generateUiIndex(targetDir, Object.keys(updatedConfig.components), options.dryRun);
+        updateTsconfig(cwd, options.dryRun);
         writeConfig(project.rashwrightConfigPath, updatedConfig);
       }
 
       // ── 9. Summary ─────────────────────────────────────────────────────
       console.log();
       console.log(chalk.bold.green("  ✔ Installation terminée"));
+      console.log(chalk.dim(`    ✔ index.ts synchronisé avec ${Object.keys(updatedConfig.components).length} composants`));
       console.log();
 
       if (plan.requiresRebuild) {

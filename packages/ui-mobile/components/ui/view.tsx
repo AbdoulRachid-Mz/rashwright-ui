@@ -33,7 +33,7 @@ const ThemedView = forwardRef<RNView, ThemedViewProps>(
 
     return (
       <Animated.View
-        ref={ref as unknown as React.ForwardedRef<unknown>}
+        ref={ref as unknown as React.ComponentPropsWithRef<typeof Animated.View>["ref"]}
         style={[
           { backgroundColor },
           style,

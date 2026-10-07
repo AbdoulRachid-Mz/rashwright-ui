@@ -57,8 +57,8 @@ export class VercelBlobProvider implements IUploadProvider {
       },
       body: (source.file ||
         (source.uri
-          ? ({ uri: source.uri } as unknown as BodyInit_)
-          : (source.base64 as BodyInit_))) as BodyInit_,
+          ? ({ uri: source.uri } as any)
+          : source.base64)) as any,
     });
     if (!response.ok) throw new UploadError(`Vercel Blob direct upload failed (${response.status})`);
     const json = await response.json();

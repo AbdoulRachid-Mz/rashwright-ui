@@ -56,12 +56,12 @@ const TextInput = forwardRef<React.ElementRef<typeof RNTextInput>, TextInputProp
 
     const borderWidth = isFocused || hasError ? 1.5 : 1;
 
-    const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    const handleFocus: TextInputProps["onFocus"] = (e) => {
       setIsFocused(true);
       onFocus?.(e);
     };
 
-    const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    const handleBlur: TextInputProps["onBlur"] = (e) => {
       setIsFocused(false);
       onBlur?.(e);
     };

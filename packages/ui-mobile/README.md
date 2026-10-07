@@ -2,10 +2,10 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile" width="180" />
 </p>
 
-# @rashwright/ui-mobile — v0.1.2
+# @rashwright/ui-mobile — v0.2.0
 
-[![npm version](https://img.shields.io/badge/npm-%400.1.2-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
-[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2058-000000?logo=expo)](#)
+[![npm version](https://img.shields.io/badge/npm-%400.2.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2059-000000?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6?logo=typescript)](#)
 
 > **⚠️ Pour les développeurs UTILISATEURS de Rashwright UI : vous n'avez JAMAIS besoin d'installer ce package directement.**
@@ -15,52 +15,51 @@
 > ```bash
 > bun add -g @rashwright/cli        # ou npm install -g @rashwright/cli
 > rs-ui init --yes                  # initialiser dans un projet Expo
-> rs-ui add button card drawer      # ajouter des composants
+> rs-ui add button card accordion   # ajouter des composants
 > ```
 
-Ce package `@rashwright/ui-mobile` est un **package fournisseur de code source**. Il est utilisé en interne par `@rashwright/cli` pour livrer :
-- le **registry JSON central** (55 composants, 5 matrices Expo SDK)
-- le **code source TypeScript** de chaque composant (copié par le CLI dans le projet de l'utilisateur)
+Ce package `@rashwright/ui-mobile` est le **fournisseur de code source** de l'écosystème Rashwright. Il est consommé par `@rashwright/cli` (localement ou via CDN unpkg) pour fournir :
+- le **registry JSON central** (61 composants, matrices Expo SDK 54 à 59)
+- le **code source TypeScript** de chaque composant (copié directement par le CLI dans votre projet)
 - le **moteur Liquid Glass** (8 primitives sous `components/ui/liquid/`)
 - le **moteur d'upload** Rashwright (`lib/upload/`) avec 5 providers inlinés (Cloudinary, Firebase Storage, Vercel Blob, Local, Mock)
-- les **tokens de thème** + 6 presets (default, emerald, violet, amber, rose, slate)
-- les **contexts** (`ThemeProvider`, `TabBarProvider`) et store Zustand (`theme-store`)
+- les **tokens de thème** et les 6 presets (default, emerald, violet, amber, rose, slate)
+- les **contexts** (`ThemeProvider`, `TabBarProvider`) et le store Zustand (`theme-store`)
 
 ---
 
-## À quoi sert ce package ?
+## 🏗 Philosophie de distribution
 
-Le fonctionnement général de Rashwright est "shadcn/ui pour React Native". Le CLI (`rs-ui`) :
-
+Rashwright adopte le modèle shadcn/ui appliqué à React Native :
 ```
 rs-ui add button
       │
-      ├─ recherche "button.json" dans le registry @rashwright/ui-mobile
-      ├─ copie components/ui/button.tsx + requiresComponents transitifs
-      ├─ détecte Expo SDK du projet et installe versions natives COMPATIBLES
-      │   (react-native-reanimated, expo-blur, expo-linear-gradient...)
-      └─ le code BUTTON.tsx est maintenant DANS le projet user — il le possède.
+      ├─ Recherche la définition "button.json" dans le registry
+      ├─ Copie components/ui/button.tsx et ses dépendances transitives
+      ├─ Détecte la version d'Expo SDK du projet (SDK 54 → 59)
+      ├─ Installe les modules natifs requis (reanimated, blur, linear-gradient...)
+      └─ Le code source appartient désormais à votre projet (components/ui/button.tsx).
 ```
-
-Ce modèle de distribution (**code copié, pas de dépendance opaque npm**) permet de customiser complètement les composants.
 
 ---
 
-## Contenu détaillé publié dans ce package
+## 📦 Contenu distribué dans ce package
 
 ```
-@rashwright/ui-mobile@0.1.2/
-├── index.ts                     → Barrel (theme tokens, contexts, stores, hooks, UI barrel)
+@rashwright/ui-mobile@0.2.0/
+├── index.ts                     → Barrel principal (thème, contextes, stores, hooks, UI)
 ├── components/
-│   └── ui/                      → 63 fichiers
-│       ├── liquid/              → 8 primitives Liquid Glass
-│       │   ├── liquid-types.ts · liquid-shadow.ts
-│       │   ├── liquid-surface.tsx · liquid-pressable.tsx
-│       │   ├── liquid-highlight.tsx · liquid-border.tsx
-│       │   ├── liquid-glow.tsx · liquid-blob.tsx
+│   └── ui/                      → 69 fichiers sources
+│       ├── liquid/              → 8 primitives Liquid Glass (surface, pressable, highlight, border...)
+│       ├── accordion.tsx        → 🆕 Sections dépliables Reanimated
+│       ├── collapsible.tsx      → 🆕 Section repliable individuelle
+│       ├── data-table.tsx       → 🆕 Tableau FlatList avec tri et filtrage
+│       ├── form.tsx             → 🆕 Primitives de formulaire (Form, Field, Label, Message...)
+│       ├── otp-input.tsx        → 🆕 Champ OTP à focus automatique
+│       ├── rating.tsx           → 🆕 Étoiles interactives et demi-étoiles
 │       ├── upload-image.tsx · upload-video.tsx
-│       ├── card.tsx · button.tsx · drawer.tsx · modal.tsx · ... (55 total)
-│       └── index.ts             → ThemedView/ThemedText (plus View/Text collision RN)
+│       ├── button.tsx · card.tsx · modal.tsx · ... (61 composants au total)
+│       └── index.ts             → ThemedView, ThemedText et barrel des 61 composants
 │
 ├── constants/                   → theme.ts + glass-theme.ts
 ├── contexts/                    → ThemeProvider + TabBarProvider
@@ -72,70 +71,63 @@ Ce modèle de distribution (**code copié, pas de dépendance opaque npm**) perm
 │   └── themes/                  → 7 presets : default · emerald · violet · amber · rose · slate · glass
 │
 ├── types/
-│   ├── ambient.d.ts             → 🚩 ZÉRO any — déclarations ambiantes peerDeps mockées (mode DEV ui-mobile, sans que reanimated/expo-blur/... soient installés)
+│   ├── ambient.d.ts             → ZÉRO any (déclarations ambiantes peerDeps pour le développement)
 │   └── index.ts
 │
-├── registry/                    → Registry JSON synchronisé 1:1 avec code source
-│   ├── index.json               → 55 composants, 10 catégories, 5 SDK (54→58)
-│   ├── components/  (55 JSON)   → 1 par composant
-│   └── versions/  (5 JSON)      → matrices compatibilité Expo SDK 54 · 55 · 56 · 57 · 58
+├── registry/                    → Registry JSON synchronisé 1:1 avec les sources
+│   ├── index.json               → 61 composants, 10 catégories, SDK 54 à 59
+│   ├── components/  (61 JSON)   → Définition complète de chaque composant
+│   └── versions/  (6 JSON)      → Matrices de compatibilité Expo SDK 54, 55, 56, 57, 58, 59
 │
-├── lib/upload/                  → Moteur Upload Rashwright INLINE (plus de package séparé)
-│   ├── types.ts                 → IUploadProvider · UploadSource · UploadResult
-│   ├── errors.ts                → UploadError
-│   ├── upload-manager.ts        → UploadManager orchestrateur
-│   ├── index.ts                 → barrel providers + types
-│   └── providers/               → Cloudinary · Firebase Storage · Vercel Blob · Local · Mock
-│
-├── skills/ (10 dossiers)        → SKILL.md par composant (guides IA + documentation)
-└── assets/                      → primary.png · svg/primary.svg (logo Rashwright)
+├── lib/upload/                  → Moteur d'upload inliné avec 5 providers
+└── assets/                      → primary.png · svg/primary.svg
 ```
 
-Tous les fichiers ci-dessus sont déclarés dans `files:[]` de `package.json` et sont **accessibles après `npm install @rashwright/ui-mobile`**.
+---
+
+## 🆕 Nouveautés de la version v0.2.0
+
+- 🧩 **6 Nouveaux composants** :
+  - `accordion` : Sections accordéon avec animation fluide Reanimated et support Glass.
+  - `collapsible` : Section repliable individuelle avec en-tête pressable.
+  - `data-table` : Tableau basé sur FlatList avec colonnes triables, filtre de recherche et striped rows.
+  - `form` : Primitives formulaires prêtes à l'emploi compatibles React Hook Form ou en mode autonome.
+  - `otp-input` : Saisie sécurisée de code OTP avec auto-focus, gestion du backspace et retour haptique.
+  - `rating` : Composant de notation avec demi-étoiles, retour haptique et échelle animée.
+- 📱 **Support d'Expo SDK 59** : Ajout de la matrice de compatibilité native `expo-59.json`.
+- 🌐 **Compatibilité Remote Registry** : Structure du package optimisée pour la distribution via CDN unpkg.
+- 📦 **Exhaustivité des peerDependenciesMeta** : Déclaration de toutes les dépendances natives secondaires comme optionnelles (`optional: true`).
 
 ---
 
-## Bonnes pratiques
+## 📊 Matrice des dépendances (peerDependencies)
 
-1. **Ne jamais coder de logique métier dans ce package** : c'est un catalogue distribuable. Les logiques spécifiques (PropertyCard, UserProfileCard...) appartiennent aux projets consommateurs.
-2. **Si tu es contributeur** → docs racine monorepo : [CONTRIBUTOR.md](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/CONTRIBUTOR.md) · [Quick-Start.md](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/Quick-Start.md).
-3. **Si tu rencontres un bug avec `rs-ui`** → ouvrir une issue sur [GitHub AbdoulRachid-Mz/rashwright-ui](https://github.com/AbdoulRachid-Mz/rashwright-ui/issues).
-
----
-
-## Nouveautés v0.1.2
-
-- **Zéro `any`** : 67 occurrences éliminées dans 34 composants (forwardRef, cloneElement, event handlers...)
-- **75 imports migrés** vers alias `@/` (contexts, constants, lib) — plus d'imports relatifs `../../`
-- **Architecture CLI renforcée** : `detectProject()`, `createExpoProject()`, `mergeRashwrightConfigs()`, `generateShowcaseScreen()` dual mode
-- **Version CLI dynamique** : `rs-ui --version` lit depuis `package.json` (plus hardcodée)
-- **Registry synchro** : `registry/index.json` version `0.1.2`
-- **Quality gate** : `bun run quality` 100% exit 0 (validate-registry + check-types + build + smoke)
-
----
-
-## Compatibilité Expo SDK
-
-Matrices de compatibilité testées : Expo SDK 54, 55, 56 (status 🟢 Tested). SDK 57/58 → 🟡 Experimental (registry fourni mais tests physiques en cours).
-
-| Package peer | Version min recommandée |
-|---|---|
-| `expo` | >= 54.0.0 |
-| `react` | >= 18.3.0 |
-| `react-native` | >= 0.73.0 |
-| `react-native-reanimated` | >= 3.0.0 (optionnel peerDepMeta) |
-| `react-native-safe-area-context` | >= 4.0.0 (optionnel peerDepMeta) |
-| `zustand` | >= 5.0.0 |
+| Dépendance | Version minimale | Statut |
+|---|---|---|
+| `expo` | `>= 54.0.0` | Obligatoire |
+| `react` | `>= 18.3.0` | Obligatoire |
+| `react-native` | `>= 0.73.0` | Obligatoire |
+| `react-native-reanimated` | `>= 3.0.0` | Optionnel (requis pour Liquid & animations) |
+| `react-native-safe-area-context` | `>= 4.0.0` | Optionnel |
+| `react-native-gesture-handler` | `>= 2.16.0` | Optionnel (requis pour Drawer, BottomSheet) |
+| `expo-blur` | `>= 13.0.0` | Optionnel (requis pour Liquid Glass) |
+| `expo-linear-gradient` | `>= 13.0.0` | Optionnel (requis pour Liquid Glass) |
+| `expo-haptics` | `>= 13.0.0` | Optionnel |
+| `expo-image` | `>= 1.12.0` | Optionnel |
+| `expo-video` | `>= 1.0.0` | Optionnel |
+| `expo-image-picker` | `>= 15.0.0` | Optionnel |
+| `@expo/vector-icons` | `>= 14.0.0` | Optionnel |
+| `zustand` | `>= 5.0.0` | Optionnel |
 
 ---
 
-## Liens utiles
+## 🔗 Liens utiles
 
-- [Dépôt GitHub source](https://github.com/AbdoulRachid-Mz/rashwright-ui)
-- [Guide utilisateur (README monorepo racine)](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/README.md)
-- [ANALYSIS.md — architecture + corrections P0/P1 appliquées](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/ANALYSIS.md)
-- [VALIDATION.md — checklist release 0.1.0](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/VALIDATION.md)
+- [Dépôt GitHub officiel](https://github.com/AbdoulRachid-Mz/rashwright-ui)
+- [Documentation globale et guide utilisateur](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/README.md)
+- [Guide des contributeurs](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/CONTRIBUTOR.md)
+- [Rapport d'analyse v0.2.0](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/ANALYSIS.md)
 
 ---
 
-**Licence MIT · Fait avec ❤️ par l'équipe Rashwright office.**
+**Licence MIT · Rashwright office.**

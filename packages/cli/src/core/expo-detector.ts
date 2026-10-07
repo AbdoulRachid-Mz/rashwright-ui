@@ -1,8 +1,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const SUPPORTED_SDK_VERSIONS = [54, 55, 56, 57, 58] as const;
-const MINIMUM_SDK_VERSION = 54;
+export const SUPPORTED_SDK_VERSIONS = [54, 55, 56, 57, 58, 59] as const;
+export const MINIMUM_SDK_VERSION = 54;
 
 export type SupportedSdk = (typeof SUPPORTED_SDK_VERSIONS)[number];
 

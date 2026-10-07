@@ -5,10 +5,10 @@ import { confirm, input, select } from "@inquirer/prompts";
 import { basename, join } from "node:path";
 import { existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
 import { execSync } from "node:child_process";
-import { detectProject } from "../core/project-detector.js";
+import { detectProject, isDefaultExpoTemplate } from "../core/project-detector.js";
 import { detectExpo } from "../core/expo-detector.js";
 import { readConfig, writeConfig, mergeRashwrightConfigs } from "../core/config-manager.js";
-import { detectPackageManager, installExpoPackages, installNpmPackages } from "../core/package-manager.js";
+import { detectPackageManager, installExpoPackages, installNpmPackages, type PackageManager } from "../core/package-manager.js";
 import {
   copyRashwrightAssets,
   resetExpoProject,
@@ -29,13 +29,17 @@ const CORE_EXPO_DEPS = [
   "@react-native-async-storage/async-storage",
   "expo-image-picker",
   "expo-image-manipulator",
+  "expo-application",
+  "expo-blur",
+  "expo-linear-gradient",
 ];
 
-const GLASS_EXTRA_DEPS = ["expo-blur", "expo-linear-gradient"];
+const GLASS_EXTRA_DEPS: string[] = [];
 
 // Dépendances npm (non Expo) installées systématiquement (store zustand)
 const CORE_NPM_DEPS = ["zustand"];
 
+const SUPPORTED_PACKAGE_MANAGERS: PackageManager[] = ["npm", "bun", "pnpm", "yarn"];
 
 function isDirectoryEmpty(dir: string): boolean {
   if (!existsSync(dir)) return true;
@@ -71,6 +75,7 @@ export function initCommand(): Command {
     .option("--sdk <version>", "Version Expo SDK pour un nouveau projet (ex: 57, 58 ou 'latest')", "latest")
     .option("--theme <preset>", "Choisir parmi les 6 thèmes : default, emerald, violet, amber, rose, slate", "default")
     .option("--glass", "Activer le thème Glass UI (expo-blur, expo-linear-gradient)")
+    .option("--pm <manager>", "Gestionnaire de paquets à utiliser : npm, bun, pnpm, yarn (défaut : npm)")
     .option("--all", "Installer tous les composants après initialisation")
     .option("--showcase", "Générer un écran d'accueil avec Rashwright UI & logo RS")
     .option("--no-showcase", "Ne pas générer l'écran de démo")
@@ -83,6 +88,31 @@ export function initCommand(): Command {
       console.log();
       console.log(chalk.bold.cyan("  Rashwright UI Mobile") + chalk.dim(" — rs-ui init"));
       console.log();
+
+      // ── 0. Sélection du gestionnaire de paquets (Point 3) ────────────────
+      let selectedPm: PackageManager = "npm";
+      if (options.pm) {
+        const pmCandidate = options.pm.toLowerCase() as PackageManager;
+        if (SUPPORTED_PACKAGE_MANAGERS.includes(pmCandidate)) {
+          selectedPm = pmCandidate;
+        } else {
+          console.log(chalk.yellow(`  ⚠ Gestionnaire "${options.pm}" non reconnu. Utilisation de "npm".`));
+          selectedPm = "npm";
+        }
+      } else if (!options.yes) {
+        selectedPm = await select<PackageManager>({
+          message: "Choisir le gestionnaire de paquets :",
+          choices: [
+            { name: "npm (Recommandé par défaut)", value: "npm" },
+            { name: "bun", value: "bun" },
+            { name: "pnpm", value: "pnpm" },
+            { name: "yarn", value: "yarn" },
+          ],
+          default: "npm",
+        });
+      } else {
+        selectedPm = detectPackageManager(cwd);
+      }
 
       // ── 1. Vérifier si un projet React Native existe déjà ────────────────
       const spinner = ora("Analyse de l'environnement...").start();
@@ -152,8 +182,7 @@ export function initCommand(): Command {
         } else {
           const sdkFlag = options.sdk === "latest" ? "latest" : options.sdk;
           targetDir = join(cwd, projectName!);
-          const pm = detectPackageManager(cwd);
-          const runner = pm === "bun" ? "bunx" : "npx";
+          const runner = selectedPm === "bun" ? "bunx" : "npx";
 
           if (existsSync(targetDir) && !isDirectoryEmpty(targetDir)) {
             if (!options.yes) {
@@ -173,7 +202,7 @@ export function initCommand(): Command {
           }
 
           console.log();
-          console.log(chalk.bold(`  Création du projet Expo dans le dossier (${chalk.cyan(projectName!)}) SDK ${chalk.green(sdkFlag)}...`));
+          console.log(chalk.bold(`  Création du projet Expo dans le dossier (${chalk.cyan(projectName!)}) SDK ${chalk.green(sdkFlag)} via ${chalk.magenta(selectedPm)}...`));
 
           const createCmd = `${runner} create-expo-app@${sdkFlag} ${projectName!} --template default`;
 
@@ -193,23 +222,21 @@ export function initCommand(): Command {
           }
         }
 
-        // Juste après create-expo-app (ou installation dans dossier courant existant vide via template)
-        // on marque le flag isFreshProject pour savoir qu'on peut (doit) reset le template.
         const isFreshProject = !useCurrentDirectory ? true : false;
 
         cwd = targetDir;
         project = detectProject(cwd);
         expo = detectExpo(cwd);
 
-        // ── 2bis. Objectif A : reset template Expo (SEULMENT SI !options.reset + projet vient d'être créé)
+        // ── 2bis. Objectif A / Point 1 : reset template Expo & standardisation /src
         const shouldResetTemplate = options.reset !== false && (isFreshProject || useCurrentDirectory);
         if (!options.dryRun && shouldResetTemplate) {
-          const resetSpinner = ora("Nettoyage du template Expo par défaut...").start();
+          const resetSpinner = ora("Nettoyage du template Expo et mise en place de l'architecture /src (architecture.md)...").start();
           resetExpoProject(cwd, options.dryRun);
-          resetSpinner.succeed("Template Expo par défaut nettoyé");
+          resetSpinner.succeed("Template Expo par défaut nettoyé et architecture /src en place");
         }
 
-        // ── 2ter. Toujours (même projet existant) : writeBabelConfig + updateTsconfig
+        // ── 2ter. Toujours : writeBabelConfig + updateTsconfig
         if (!options.dryRun) {
           const cfgSpinner = ora("Configuration babel.config.js + tsconfig.json (Reanimated, @/ paths)...").start();
           writeBabelConfig(cwd, options.dryRun);
@@ -222,8 +249,24 @@ export function initCommand(): Command {
           console.log(chalk.green(`  ✔ Expo SDK ${expo.sdkVersion}`));
         }
 
-        // Projet EXISTANT : on NE reset PAS (car utilisateur a son code),
-        // MAIS on configure quand même babel (reanimated plugin) + tsconfig (@/* paths)
+        // ── Point 1 : Détection d'un template standard officiel sur projet existant
+        const isDefaultTemplate = isDefaultExpoTemplate(cwd);
+        if (isDefaultTemplate && options.reset !== false) {
+          console.log(chalk.cyan("  ℹ Template standard par défaut détecté (éléments d'exemple Expo natifs)."));
+          let doReset = true;
+          if (!options.yes) {
+            doReset = await confirm({
+              message: "Nettoyer les fichiers d'exemple par défaut d'Expo et appliquer l'architecture standardisée /src ?",
+              default: true,
+            });
+          }
+          if (doReset && !options.dryRun) {
+            const resetSpinner = ora("Réinitialisation selon expo-rn-reset & architecture.md...").start();
+            resetExpoProject(cwd, options.dryRun);
+            resetSpinner.succeed("Projet réinitialisé et architecture /src en place");
+          }
+        }
+
         if (!options.dryRun) {
           const cfgSpinner = ora("Vérification babel.config.js + tsconfig.json...").start();
           writeBabelConfig(cwd, options.dryRun);
@@ -235,7 +278,11 @@ export function initCommand(): Command {
       // ── 3. Options interactives (Thème, Glass, dossier composants) ──────
       let glassEnabled = options.glass ?? false;
       let themePreset = options.theme || "default";
-      let componentsPath = project.componentsPath || "components/ui";
+
+      // Si le projet a un dossier src/ (ou vient d'être réinitialisé), default: src/components/ui
+      const hasSrc = existsSync(join(cwd, "src"));
+      let defaultComponentsPath = hasSrc ? "src/components/ui" : (project.componentsPath || "components/ui");
+      let componentsPath = defaultComponentsPath;
 
       if (!options.yes) {
         if (!options.glass) {
@@ -265,7 +312,7 @@ export function initCommand(): Command {
 
         componentsPath = await input({
           message: "Chemin d'installation des composants UI :",
-          default: componentsPath,
+          default: defaultComponentsPath,
         });
       } else {
         glassEnabled = options.glass !== undefined ? options.glass : true;
@@ -280,9 +327,10 @@ export function initCommand(): Command {
 
       console.log();
       console.log(chalk.bold("  Configuration appliquée :"));
+      console.log(chalk.dim(`  • Gestionnaire    : ${selectedPm}`));
       console.log(chalk.dim(`  • Dossier composants : ${componentsPath}`));
-      console.log(chalk.dim(`  • Thème : ${themePreset}`));
-      console.log(chalk.dim(`  • Style : ${glassEnabled ? "Liquid Glass" : "Default"}`));
+      console.log(chalk.dim(`  • Thème           : ${themePreset}`));
+      console.log(chalk.dim(`  • Style           : ${glassEnabled ? "Liquid Glass" : "Default"}`));
       console.log(chalk.dim(`  • Dépendances Expo : ${expoDepsToInstall.join(", ")}`));
       console.log(chalk.dim(`  • Dépendances NPM  : ${npmDepsToInstall.join(", ")}`));
       console.log();
@@ -293,9 +341,9 @@ export function initCommand(): Command {
       }
 
       // ── 5. Installer les dépendances Expo (1/2) + npm (2/2) ────────────────
-      const installSpinner = ora("Installation des dépendances Expo compatibles...").start();
+      const installSpinner = ora(`Installation des dépendances Expo compatibles via ${selectedPm}...`).start();
       try {
-        installExpoPackages(expoDepsToInstall, project.packageManager, cwd, options.dryRun);
+        installExpoPackages(expoDepsToInstall, selectedPm, cwd, options.dryRun);
         installSpinner.succeed("Dépendances Expo installées");
       } catch (err) {
         installSpinner.fail("Échec de l'installation des dépendances Expo");
@@ -303,9 +351,9 @@ export function initCommand(): Command {
       }
 
       if (npmDepsToInstall.length > 0) {
-        const npmInstallSpinner = ora("Installation des dépendances NPM (zustand, ...)...").start();
+        const npmInstallSpinner = ora(`Installation des dépendances NPM (zustand, ...) via ${selectedPm}...`).start();
         try {
-          installNpmPackages(npmDepsToInstall, project.packageManager, cwd, options.dryRun);
+          installNpmPackages(npmDepsToInstall, selectedPm, cwd, options.dryRun);
           npmInstallSpinner.succeed(`Dépendances NPM installées (${npmDepsToInstall.join(", ")})`);
         } catch (err) {
           npmInstallSpinner.fail("Échec installation dépendances NPM");
@@ -352,6 +400,7 @@ export function initCommand(): Command {
         themePreset,
         glass: glassEnabled,
         typescript: project.hasTypeScript,
+        packageManager: selectedPm,
         components: componentsRecord,
       });
       writeConfig(join(cwd, "rashwright-ui.json"), config);
@@ -362,6 +411,8 @@ export function initCommand(): Command {
       console.log();
       console.log(chalk.dim("  Éléments prêts :"));
       console.log(chalk.dim(`    ✔ ${componentsPath}/ (Bouton, Card, GlassCard, Badge, Input, Logo RS)`));
+      console.log(chalk.dim(`    ✔ index.ts exportant les composants configurés`));
+      console.log(chalk.dim(`    ✔ Gest. de paquets : ${selectedPm}`));
       console.log(chalk.dim(`    ✔ theme/ (Tokens, presets Light/Dark/Glass)`));
       console.log(chalk.dim(`    ✔ contexts/theme-context.tsx & stores/theme-store.ts`));
       console.log(chalk.dim(`    ✔ assets/svg/primary.svg & assets/primary.png`));

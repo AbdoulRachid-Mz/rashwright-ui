@@ -46,7 +46,7 @@ export class FirebaseStorageProvider implements IUploadProvider {
       throw new UploadError("Aucune source valide fournie pour l'upload Firebase.");
     }
 
-    const response = await fetch(uploadUrl, { method: "POST", headers, body: bodyData as BodyInit_ });
+    const response = await fetch(uploadUrl, { method: "POST", headers, body: bodyData as any });
     if (!response.ok) {
       const errorText = await response.text();
       throw new UploadError(

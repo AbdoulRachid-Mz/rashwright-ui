@@ -2,262 +2,154 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v0.1.2 · Commande `rs-ui`
+# @rashwright/cli — v0.2.0 · Commande `rs-ui`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
 >
-> Plus de node_modules opaque. Plus de surprise quant à la compatibilité Expo SDK.
+> Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-0.1.2-blue)](#)
+[![version](https://img.shields.io/badge/version-0.2.0-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
-[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000020?logo=expo)](#)
+[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2059-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
 
 ---
 
-## ⚡ Installer + Prêt en 30 secondes
+## ⚡ Prise en main en 30 secondes
 
 ### 1) Installer le CLI
 
 ```bash
-# Option A — Global (recommandé : commande rs-ui disponible partout)
+# Option A — Global (recommandé)
 bun add -g @rashwright/cli
-# ou :
+# ou avec npm :
 npm install -g @rashwright/cli
 
-# Option B — Exécution ponctuelle
-bunx @rashwright/cli --help
-npx @rashwright/cli --help
+# Option B — Exécution directe sans installation
+bunx @rashwright/cli <commande>
+# ou :
+npx @rashwright/cli <commande>
 ```
 
 ### 2) Initialiser Rashwright dans un projet Expo
 
 ```bash
 # Dans un projet Expo existant :
-cd ton-app-expo/
+cd mon-app-expo/
 rs-ui init --yes
 
-# Nouveau projet Expo, thème Glass + Emerald, zéro question :
-rs-ui init --glass --theme emerald --yes
+# Nouveau projet Expo complet (SDK 58, Liquid Glass, thème émeraude) :
+rs-ui init --glass --theme emerald --sdk 58 --yes
 ```
 
 ### 3) Ajouter des composants
 
 ```bash
-rs-ui add button card drawer text-input
-# Ou interactif (coche multi-sélection) :
-rs-ui add
-# (↑ / ↓ pour naviguer, ESPACE cocher, A tout cocher, ENTRÉE installer)
+# Ajout direct
+rs-ui add button card accordion form
 
-# Ajouter TOUS les composants :
+# Prévisualiser les modifications avant d'écraser un composant personnalisé
+rs-ui add button --diff
+
+# Mode interactif avec cases à cocher :
+rs-ui add
+
+# Ajouter l'ensemble du catalogue (61 composants) :
 rs-ui add --all
 ```
 
 ---
 
-## 📋 Toutes les commandes
+## 📋 Commandes disponibles
 
 ```bash
 rs-ui --help
 ```
 
-| Commande | Usage typique |
+| Commande | Description |
 |---|---|
-| `rs-ui init [project-name]` | Initialiser Rashwright (dans un projet existant) ou créer un nouveau projet Expo + initialiser. |
-| `rs-ui add [components...]` | Ajouter un ou plusieurs composants. Résout automatiquement composants transitifs + dépendances Expo natives COMPATIBLES SDK. Sans argument → mode interactif checkbox. |
-| `rs-ui list` | Catalogue interactif : composants installés ✔ / non installés ○. `rs-ui list --json` → machine-readable. |
-| `rs-ui info <component>` | Détails : version, deps, providers, plateformes, `nativeRebuildRequired` ou pas. |
-| `rs-ui doctor` | Diagnostic complet de l'installation + environnement Expo SDK + package manager + TS. |
-| `rs-ui remove <component>` | Retirer un composant (AVERTIT si d'autres composants en dépendent). |
-| `rs-ui update [components...]` | Mettre à jour un ou plusieurs composants installés. Garde les modifications locales si tu en as fait. |
-| `rs-ui help <commande>` | Aide détaillée par commande. |
+| `rs-ui init [name]` | Configure Rashwright dans un projet existant ou initialise un nouveau projet Expo. |
+| `rs-ui add [components...]` | Ajoute un ou plusieurs composants en résolvant l'arbre de dépendances et les modules natifs Expo. |
+| `rs-ui list` | Liste les composants du catalogue avec statut d'installation. Supporte `-i` / `--interactive`. |
+| `rs-ui info <component>` | Affiche la fiche technique détaillée d'un composant (versions, dépendances, plateformes, etc.). |
+| `rs-ui doctor` | Évalue l'environnement (SDK, gestionnaire de paquets, types) et signale les composants obsolètes. |
+| `rs-ui remove <component>` | Supprime un composant et avertit si d'autres composants installés en dépendent. |
+| `rs-ui update [components...]` | Met à jour les composants à partir du Registry avec analyse de diff par hash SHA-256. |
 
 ---
 
-## 🔧 Options utiles (à connaître)
+## 🔧 Options détaillées
 
-### Pour `rs-ui init`
+### Options globales
+- `--registry <url>` : URL d'un registre distant personnalisé.
+- `--fresh` : Contourne le cache local de 24h (`~/.rs-ui/cache`) pour forcer un rafraîchissement réseau.
 
-| Option | Valeur par défaut | Rôle |
-|---|---|---|
-| `--sdk <version>` | `latest` | SDK Expo pour nouveau projet (54, 55, 56, 57, 58). |
-| `--theme <preset>` | `default` | Un parmi 6 prêts à l'emploi : `default` · `emerald` · `violet` · `amber` · `rose` · `slate`. |
-| `--glass` | `false` | Activer le moteur Liquid Glass (ajoute expo-blur + expo-linear-gradient). |
-| `--all` | `false` | Installer tous les composants Rashwright immédiatement après init. |
-| `--showcase` / `--no-showcase` | activé | Générer un écran d'accueil `app/index.tsx` avec showcase Rashwright + logo RS. |
-| `--yes` | désactivé | Répondre OUI à TOUT (mode CI/script). |
-| `--no-reset` | désactivé | **Très important** : si tu utilises Rashwright sur un projet EXISTANT, ne PAS écraser le template Expo. |
-| `--dry-run` | désactivé | Montrer ce qui va être fait, sans toucher aux fichiers. |
+### Options pour `rs-ui add`
+- `--diff` : Affiche un diff textuel (LCS) avant de remplacer un composant existant modifié localement.
+- `--all` : Installe l'intégralité des 61 composants disponibles.
+- `--force` : Réinstalle les composants même s'ils sont déjà présents, sans confirmation.
+- `--dry-run` : Affiche le plan d'installation détaillé sans écrire sur le disque.
+- `-i, --interactive` : Ouvre la sélection interactive à cases à cocher.
 
-### Pour `rs-ui add`
+### Options pour `rs-ui list`
+- `-i, --interactive` : Navigation interactive par catégorie dans le terminal.
+- `--json` : Sortie structurée au format JSON pour outils d'automatisation.
 
-| Option | Rôle |
-|---|---|
-| `--all` | Ajouter TOUS les composants disponibles. |
-| `--force` | Réinstaller les composants même si déjà installés (perte des modifications locales éventuelles). |
-| `--yes` | Mode non interactif (pas de confirmation). |
-| `--dry-run` | Montrer le plan d'installation, sans toucher aux fichiers. |
-| `--interactive` / `--no-interactive` | Par défaut interactif si pas d'arguments. `--non-interactive` est un alias de `--no-interactive`. |
-
----
-
-## 🧩 Ce que `rs-ui init` installe concrètement
-
-Le CLI ne se contente PAS d'installer un npm package. Il prépare un projet Rashwright cohérent :
-
-```
-ton-projet-expo/
-├── app/
-│   ├── _layout.tsx              ← <ThemeProvider initialMode="system"><Slot /></ThemeProvider>
-│   └── index.tsx                ← Écran showcase Rashwright (--no-showcase pour sauter)
-├── components/
-│   └── ui/
-│       ├── text.tsx · view.tsx  ← ThemedText / ThemedView
-│       ├── liquid/ (8 fichiers) ← Liquid Glass primitives
-│       └── (autres composants si --all)
-├── constants/
-│   ├── theme.ts · glass-theme.ts
-├── contexts/
-│   ├── theme-context.tsx        ← ThemeProvider (clair/sombre/Glass)
-│   └── tab-bar-context.tsx
-├── hooks/ · stores/ · theme/
-├── lib/upload/ (8 fichiers)     ← UploadManager + 5 providers (Cloudinary, Firebase, Vercel Blob, Local, Mock)
-├── assets/ (logo RS)
-├── rashwright-ui.json           ← Fichier de configuration Rashwright
-├── tsconfig.json                ← paths {"@/*": ["./*"]} + jsx react-native
-├── babel.config.js              ← plugin reanimated EN DERNIER (obligatoire Metro)
-└── package.json                 ← zustand, reanimated, gesture-handler, safe-area-context, expo-blur, expo-haptics, vector-icons, async-storage... installés en versions COMPATIBLES SDK.
-```
+### Options pour `rs-ui init`
+- `--sdk <version>` : Version cible du SDK Expo (`54`, `55`, `56`, `57`, `58`, `59`).
+- `--theme <preset>` : Preset de couleurs initial (`default`, `emerald`, `violet`, `amber`, `rose`, `slate`).
+- `--glass` : Active le moteur Liquid Glass (installe `expo-blur` et `expo-linear-gradient`).
+- `--no-reset` : Conserve les fichiers existants sans réinitialiser le template Expo.
+- `--dry-run` : Simule l'initialisation sans modifier le projet.
 
 ---
 
-## 👁️‍🗨️ Diagnostic avant de rapporter un bug
+## 🔒 Lockfile `rashwright-ui.json` versionné
 
-Lance :
-```bash
-rs-ui doctor
-```
+Depuis la version v0.2.0, le fichier de configuration enregistre la version et la date de chaque composant installé :
 
-Réponse type si tout va bien :
-```
-✔ package.json
-✔ Expo SDK 57
-✔ Package manager detected: bun
-✔ TypeScript
-✔ rashwright-ui.json trouvée
-✔ Dossier composants: components/ui
-✔ 12 composants Rashwright installés
-✔ react-native-reanimated ~4.3.1
-✔ react-native-gesture-handler ~2.31.2
-✔ react-native-safe-area-context ~5.7.0
-✔ expo-blur ~56.0.4
-✔ expo-linear-gradient ~56.0.0
-Tout est en ordre!
-```
-
-En cas de doute, `rs-ui doctor --json` donne le résultat brut en JSON (scripts / IA).
-
----
-
-## 🪛 Problèmes fréquents
-
-### 1. Reanimated plante au démarrage de l'app
-
-**Solution** : Le plugin Babel `react-native-reanimated/plugin` **doit être le dernier des plugins**. Rashwright l'écrit déjà en dernier quand tu fais `rs-ui init`. Si tu as modifié `babel.config.js`, vérifie :
-
-```js
-module.exports = function (api) {
-  api.cache(true);
-  return {
-    presets: ['babel-preset-expo'],
-    plugins: [
-      // ... tes autres plugins (tsconfig-paths/resolver/etc.)
-      'react-native-reanimated/plugin',  // ← DOIT rester dernier
-    ],
-  };
-};
-```
-Puis relancer Metro en vidant le cache : `bunx expo start --clear`
-
-### 2. Ajout d'un composant qui utilise react-native-gesture-handler : Drawer, BottomSheet, Slider…
-
-Rashwright installera `react-native-gesture-handler` automatiquement. Si tu rencontres un crash au toucher, il faut **envelopper ton app avec GestureHandlerRootView**. Rashwright pose `ThemeProvider` dans `_layout.tsx`. Pour plus de sécurité, enveloppe le tout :
-
-```tsx
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { ThemeProvider } from "@/contexts/theme-context";
-import { Slot } from "expo-router";
-
-export default function RootLayout() {
-  return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider initialMode="system" initialPreset="default">
-        <Slot />
-      </ThemeProvider>
-    </GestureHandlerRootView>
-  );
+```json
+{
+  "sdkVersion": 58,
+  "packageManager": "bun",
+  "liquidGlass": true,
+  "theme": "emerald",
+  "components": {
+    "button": {
+      "version": "0.2.0",
+      "installedAt": "2026-10-07T13:45:00.000Z"
+    },
+    "accordion": {
+      "version": "0.2.0",
+      "installedAt": "2026-10-07T13:46:12.000Z"
+    }
+  }
 }
 ```
-
-### 3. Un composant "glass" ne fait pas de flou sur Android
-
-C'est normal. Android n'a pas de support matériel natif UIVisualEffectView comme iOS. Rashwright applique **automatiquement un fallback physique semi-transparent adaptatif** (couleur de fond + bordure translucide) pour garantir une lisibilité parfaite sans perte de performance. Tu n'as rien à faire.
-
-### 4. Après ajout d'un composant natif : crash "Invariant Violation"
-
-Les composants marqués `nativeRebuildRequired: true` (Drawer, BottomSheet...) ont besoin d'un rebuild natif. Quand Rashwright signale ce warning, utilise :
-
-```bash
-bunx expo run:ios       # ou
-bunx expo run:android
-```
+*La rétrocompatibilité avec les versions antérieures (tableau simple de chaînes) est totalement assurée.*
 
 ---
 
-## 📚 Les 6 thèmes Rashwright
+## 🆕 Nouveautés v0.2.0
 
-```
-default  → Bleu tech #2563eb  (corporate, SaaS)
-emerald  → Vert #059669        (immobilier, fintech, écologie)
-violet   → Violet profond #7c3aed (design, IA, créatif, divertissement)
-amber    → Ambre #d97706        (logistique, food, alertes)
-rose     → Rose #e11d48         (lifestyle, e-commerce, beauté)
-slate    → Neutre #475569       (minimal, sobre, luxe discret)
-```
-
-Et **Glass UI** en plus (`--glass` dans init) — chaque thème peut être combiné avec Glass.
+- **Prévisualisation de modifications (`--diff`)** : Moteur de comparaison LCS intégré signalant les suppressions et ajouts avant écrasement.
+- **Remote Registry & CDN Cache** : Téléchargement dynamique des composants depuis un CDN distant (`https://unpkg.com/@rashwright/ui-mobile@latest`) avec cache local persistant (`~/.rs-ui/cache`).
+- **Compatibilité Expo SDK 59** : Détection et support des versions natives pour React Native 0.77+.
+- **Catalogue enrichi à 61 composants** : Ajout de `accordion`, `collapsible`, `data-table`, `form`, `otp-input` et `rating`.
+- **Mode interactif pour `rs-ui list`** : Navigation fluide par catégories directement dans le terminal.
+- **Diagnostic enrichi (`rs-ui doctor`)** : Détection automatique des composants locaux obsolètes par rapport au registre.
+- **Fiabilisation des mises à jour** : Utilisation d'un hash normalisé SHA-256 et réinstallation automatique des modules natifs avec `expo install`.
 
 ---
 
-## 🧠 Modèle économique / philosophie
+## 🆘 Support & Liens
 
-> À la shadcn/ui : **tu payes 0 abonnement**. Tu récupères les fichiers sources. Tu es propriétaire. Tu modifies librement.
-
-Tu veux renommer 16 tokens de couleurs ? Forker un `Button` en 3 variants business différents ? Rashwright est fait pour ça.
-
-Le CLI est juste l'installeur. **La connaissance t'appartient.**
+- **Bugs et suggestions** : [GitHub Issues](https://github.com/AbdoulRachid-Mz/rashwright-ui/issues)
+- **Documentation contributeur** : [CONTRIBUTOR.md](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/CONTRIBUTOR.md)
+- **Guide de démarrage rapide** : [Quick-Start.md](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/Quick-Start.md)
 
 ---
 
-## 🆕 Nouveautés v0.1.2
-
-- **`detectProject()`** : Détection intelligente du projet (InitMode new/existing, package manager, SDK version)
-- **`createExpoProject()`** : Création projet Expo avec pin SDK 54→58 et runner bunx/npx
-- **`mergeRashwrightConfigs()`** : Fusion profonde existing.components (plus d'écrasement)
-- **`generateShowcaseScreen()`** : Dual mode — Expo Router (`app/_layout.tsx` + `app/index.tsx`) OU App.tsx classique
-- **`rs-ui --version` dynamique** : Lit la version depuis `package.json` (plus hardcodée `"0.1.0"`)
-- **Quality gate complet** : `prepublishOnly` = build + check-types TypeScript strict
-
----
-
-## 🆘 Support / Contribution
-
-- **Bugs / Questions** : [GitHub Issues](https://github.com/AbdoulRachid-Mz/rashwright-ui/issues)
-- **Contribuer (ajouter un composant / corriger un bug)** : [CONTRIBUTOR.md](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/CONTRIBUTOR.md) + [Quick-Start.md](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/Quick-Start.md)
-- **Spécifications v0.1.0 et corrections 13 P0/P1** : [ANALYSIS.md](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/ANALYSIS.md) · [errors.md](https://github.com/AbdoulRachid-Mz/rashwright-ui/blob/main/errors.md)
-
----
-
-**Licence MIT · Fait avec ❤️ par l'équipe Rashwright office.**
+**Licence MIT · Rashwright office.**

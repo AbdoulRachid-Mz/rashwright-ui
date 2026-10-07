@@ -7,12 +7,15 @@ import { detectProject } from "../core/project-detector.js";
 import { readConfig, writeConfig, markComponentRemoved, isComponentInstalled } from "../core/config-manager.js";
 import { loadAllComponentEntries } from "../core/dependency-resolver.js";
 import { REGISTRY_ROOT } from "../core/paths.js";
+import { generateUiIndex } from "../core/starter-generator.js";
+import { resolveRegistry } from "../core/remote-registry.js";
 
 export function removeCommand(): Command {
   const cmd = new Command("remove");
   cmd
     .description("Retirer un composant Rashwright UI du projet")
     .argument("<component>", "Nom du composant à retirer")
+    .option("--registry <url>", "URL du registre distant (ex: https://unpkg.com/@rashwright/ui-mobile@latest)")
     .option("--yes", "Confirmer sans demander")
     .option("--dry-run", "Afficher sans exécuter")
     .action(async (name: string, options) => {
@@ -31,8 +34,10 @@ export function removeCommand(): Command {
         return;
       }
 
+      const resolved = await resolveRegistry({ registryUrl: options.registry });
+
       // Check which components depend on this one
-      const allEntries = loadAllComponentEntries(REGISTRY_ROOT);
+      const allEntries = loadAllComponentEntries(resolved.registryRoot);
       const dependents = allEntries.filter(
         (e) => isComponentInstalled(config, e.name) && e.requiresComponents.includes(name)
       );
@@ -65,6 +70,8 @@ export function removeCommand(): Command {
           console.log(chalk.dim(`  ✔ Fichier supprimé: ${compPath}`));
         }
         const updated = markComponentRemoved(config, name);
+        const targetDir = join(cwd, config.componentsPath);
+        generateUiIndex(targetDir, Object.keys(updated.components), options.dryRun);
         writeConfig(project.rashwrightConfigPath, updated);
       }
 

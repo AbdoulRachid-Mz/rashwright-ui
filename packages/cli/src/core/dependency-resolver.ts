@@ -39,20 +39,38 @@ export interface DependencyPlan {
 }
 
 /**
+ * C-2 — Détection des conflits de versions Expo.
+ * Compare la version installée avec la version requise par le SDK.
+ */
+export interface VersionConflict {
+  pkg: string;
+  installed: string;
+  required: string;
+}
+
+/**
+ * Extrait le prefixe majeur.mineur d'un range semver ("~55.0.0" → "55.0", "^2.1.0" → "2.1").
+ */
+function extractMajorMinor(version: string): string {
+  return version.replace(/^[\^~>=\s]+/, "").split(".").slice(0, 2).join(".");
+}
+
+/**
  * Resolve all dependencies for a list of component names.
- * Returns the full dependency plan including transitive component deps.
+ * Returns the full dependency plan including transitive component deps and version conflicts.
  */
 export function resolveDependencies(
   componentNames: string[],
   sdkVersion: SupportedSdk | null,
   registryRoot: string,
   installed: Record<string, string> = {}
-): DependencyPlan {
+): DependencyPlan & { versionConflicts: VersionConflict[] } {
   const compatMatrix = sdkVersion ? readCompatibilityMatrix(sdkVersion, registryRoot) : null;
 
   const resolved = new Map<string, ResolvedComponent>();
   const queue = [...componentNames];
   const seen = new Set<string>();
+  const versionConflicts: VersionConflict[] = [];
 
   while (queue.length > 0) {
     const name = queue.shift()!;
@@ -62,12 +80,22 @@ export function resolveDependencies(
     const entry = loadComponentEntry(name, registryRoot);
     if (!entry) continue;
 
-    // Resolve Expo dependency versions from compatibility matrix
+    // ── C-2 : Résolution Expo deps avec détection de conflits de versions
     const expoDepsWithVersions: Record<string, string> = {};
     for (const dep of entry.expoDependencies) {
-      if (dep in installed) continue; // skip already installed
-      const version = compatMatrix?.[dep] ?? "latest";
-      expoDepsWithVersions[dep] = version;
+      const requiredVersion = compatMatrix?.[dep] ?? "latest";
+
+      if (dep in installed) {
+        // Vérifier compatibilité majeur.mineur entre version installée et requise
+        if (
+          requiredVersion !== "latest" &&
+          extractMajorMinor(installed[dep]) !== extractMajorMinor(requiredVersion)
+        ) {
+          versionConflicts.push({ pkg: dep, installed: installed[dep], required: requiredVersion });
+        }
+        continue; // ne pas re-installer
+      }
+      expoDepsWithVersions[dep] = requiredVersion;
     }
 
     // Resolve npm (non-expo) deps
@@ -105,8 +133,10 @@ export function resolveDependencies(
     allExpoDeps,
     requiresRebuild,
     allRequiredComponents,
+    versionConflicts,
   };
 }
+
 
 export function loadComponentEntry(
   name: string,

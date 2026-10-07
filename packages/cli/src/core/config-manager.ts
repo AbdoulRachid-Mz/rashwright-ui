@@ -1,6 +1,13 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 
+export interface ComponentLockInfo {
+  version: string;
+  installedAt?: string;
+}
+
+export type InstalledComponentsMap = Record<string, string | ComponentLockInfo>;
+
 export interface RashwrightConfig {
   version: number;
   componentsPath: string;
@@ -8,20 +15,22 @@ export interface RashwrightConfig {
   themePreset?: string;
   glass: boolean;
   typescript: boolean;
+  packageManager?: "bun" | "pnpm" | "yarn" | "npm";
   aliases: {
     components: string;
     lib: string;
     theme: string;
   };
-  components: Record<string, string>; // name → version installed
+  components: InstalledComponentsMap; // name → version or lock metadata
 }
 
 const DEFAULT_CONFIG: RashwrightConfig = {
   version: 1,
-  componentsPath: "components/ui",
+  componentsPath: "src/components/ui",
   theme: "default",
   glass: false,
   typescript: true,
+  packageManager: "npm",
   aliases: {
     components: "@/components",
     lib: "@/lib",
@@ -54,7 +63,7 @@ export function writeConfig(configPath: string, config: RashwrightConfig): void 
 }
 
 /**
- * Mark a component as installed in the config.
+ * Mark a component as installed in the config with version lock and timestamp.
  */
 export function markComponentInstalled(
   config: RashwrightConfig,
@@ -65,7 +74,10 @@ export function markComponentInstalled(
     ...config,
     components: {
       ...config.components,
-      [name]: version,
+      [name]: {
+        version,
+        installedAt: new Date().toISOString(),
+      },
     },
   };
 }
@@ -90,18 +102,33 @@ export function isComponentInstalled(config: RashwrightConfig, name: string): bo
 }
 
 /**
- * Get the installed version of a component.
+ * Get the installed version of a component (handles both string and lock object format).
  */
 export function getInstalledVersion(
   config: RashwrightConfig,
   name: string
 ): string | null {
-  return config.components[name] ?? null;
+  const item = config.components[name];
+  if (!item) return null;
+  if (typeof item === "string") return item;
+  return item.version ?? null;
+}
+
+/**
+ * Get the installation timestamp of a component if available.
+ */
+export function getInstalledAt(
+  config: RashwrightConfig,
+  name: string
+): string | null {
+  const item = config.components[name];
+  if (!item || typeof item === "string") return null;
+  return item.installedAt ?? null;
 }
 
 export function mergeRashwrightConfigs(
   existing: RashwrightConfig,
-  overrides: Partial<RashwrightConfig> & { components?: Record<string, string> },
+  overrides: Partial<RashwrightConfig> & { components?: InstalledComponentsMap },
 ): RashwrightConfig {
   const { components: overrideComponents, ...restOverrides } = overrides;
   const merged: RashwrightConfig = {

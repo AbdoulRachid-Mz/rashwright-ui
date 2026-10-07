@@ -1,29 +1,30 @@
-# CONTRIBUTOR.md — Guide développeur-contributeur Rashwright UI Mobile
+# CONTRIBUTOR.md — Guide développeur-contributeur Rashwright UI Mobile (v0.2.0)
 
 > **Public cible** : développeur·se qui souhaite :
 > - cloner le dépôt source ;
-> - corriger un bug ;
-> - ajouter un composant ;
-> - publier une mise à jour.
+> - corriger un bug ou optimiser les performances ;
+> - ajouter un nouveau composant ou faire évoluer le moteur Liquid Glass ;
+> - exécuter la suite de tests unitaires Vitest ;
+> - publier une version sur npm.
 >
-> **Guide utilisateur** (intégrer Rashwright dans ton app) → [README.md](./README.md).
+> **Guide utilisateur** (intégrer Rashwright dans une application Expo) → [README.md](./README.md).
 
 ---
 
 ## 1. Monorepo Bun Workspaces
 
-1 dépôt GitHub (`AbdoulRachid-Mz/rashwright-ui`) = **2 packages npm publiés** :
+Le dépôt GitHub (`AbdoulRachid-Mz/rashwright-ui`) gère **2 packages npm complémentaires** :
 
-| Package npm | But | Installé par user ? |
+| Package npm | But | Installé par l'utilisateur final ? |
 |---|---|---|
-| `@rashwright/ui-mobile` | Registry + code source composants + Liquid primitives + upload inline | Jamais directement → le CLI dépend de ce package, l'utilise comme fournisseur de code. |
-| `@rashwright/cli` | Commande `rs-ui` : init, add, list, info, doctor, remove, update | OUI, globalement ou par projet. |
+| `@rashwright/ui-mobile` | Registry central + code source des 61 composants + 8 primitives Liquid + moteur d'upload | Jamais directement → `@rashwright/cli` l'utilise comme source de distribution de code. |
+| `@rashwright/cli` | Commande `rs-ui` : `init`, `add`, `list`, `info`, `doctor`, `remove`, `update` | OUI, globalement (`bun add -g`) ou ponctuellement via `npx`/`bunx`. |
 
-Règle impérative : **on publie TOUJOURS ui-mobile PUIS cli.**
+⚠️ **Règle impérative de publication : on publie TOUJOURS `@rashwright/ui-mobile` EN PREMIER, puis `@rashwright/cli` après propagation CDN.**
 
 ---
 
-## 2. Démarrer en 3 commandes
+## 2. Démarrage rapide en 3 commandes
 
 ```bash
 git clone https://github.com/AbdoulRachid-Mz/rashwright-ui.git
@@ -31,123 +32,166 @@ cd rashwright-ui
 bun install
 ```
 
-Quick-Start détaillé (scripts, ajouter composant, publication manuelle + CI, règle zero-any) → **[Quick-Start.md](./Quick-Start.md)**.
-
 ---
 
-## 3. Structure des 2 packages
+## 3. Structure détaillée du monorepo
 
-### 3.1 `packages/ui-mobile/` (Registry + Code composants)
+### 3.1 `packages/ui-mobile/` (Registry & Composants)
 ```
-components/ui/        → 55 composants tsx + liquid/ (8 primitives Liquid Glass)
+components/ui/        → 61 composants tsx + liquid/ (8 primitives Liquid Glass)
+  ├── accordion.tsx   → 🆕 v0.2.0
+  ├── collapsible.tsx → 🆕 v0.2.0
+  ├── data-table.tsx  → 🆕 v0.2.0
+  ├── form.tsx        → 🆕 v0.2.0
+  ├── otp-input.tsx   → 🆕 v0.2.0
+  ├── rating.tsx      → 🆕 v0.2.0
+  └── liquid/         → surface, pressable, highlight, border, glow, blob, shadow, types
 constants/            → theme.ts + glass-theme.ts
 contexts/             → ThemeProvider + TabBarProvider
 hooks/                → use-device + useBackHandler + useScrollAwareTabBar
-stores/               → theme-store (zustand)
-theme/                → tokens colors, radius, spacing, shadow, glass, typography · presets (default emerald violet amber rose slate glass)
+stores/               → theme-store (zustand v5)
+theme/                → tokens & presets (default, emerald, violet, amber, rose, slate, glass)
 types/
-  └── ambient.d.ts    → 🚩 ZÉRO `any`. Mock peerDeps pour ts strict (profile utilisateur).
+  └── ambient.d.ts    → 🚩 ZÉRO `any`. Mock peerDeps strict pour TS.
 registry/
-  ├── index.json      → 55 composants, 10 catégories, 5 SDK
-  ├── components/*.json (55)
-  └── versions/expo-{54,55,56,57,58}.json
-lib/upload/           → @rashwright/upload INLINÉ (8 fichiers, 5 providers : Cloudinary, Firebase Storage, Vercel Blob, Local, Mock + stub upload-manager)
-skills/               → 10 SKILL.md composants
-assets/               → primary.png · svg/primary.svg (logo Rashwright)
-index.ts              → barrel theme/contexts/stores/hooks/ui barrel
-README.md             → README npm dédié (utilisateur final)
-package.json          → files[]: components/**, constants/**, ..., lib/**, index.ts, README.md
+  ├── index.json      → 61 composants, 10 catégories, SDK 54 à 59
+  ├── components/*.json (61 JSON individuels)
+  └── versions/expo-{54,55,56,57,58,59}.json
+lib/upload/           → Moteur upload inliné (Cloudinary, Firebase, Vercel Blob, Local, Mock)
+skills/               → Guides IA par composant
+assets/               → primary.png · svg/primary.svg (logo officiel)
+index.ts              → Barrel principal
+package.json          → version 0.2.0, peerDependencies & peerDependenciesMeta
 ```
 
-### 3.2 `packages/cli/` (Commande `rs-ui`)
-
+### 3.2 `packages/cli/` (CLI `rs-ui`)
 ```
-src/index.ts              → Commander program, shebang L1 : #!/usr/bin/env node
+src/index.ts          → Commander program (shebang unique #!/usr/bin/env node)
 src/commands/
-  ├── init.ts             → rs-ui init (resetExpoProject + writeBabelConfig + updateTsconfig + writeExpoRouterLayout + setupFoundations + setupStarterComponents
-  ├── add.ts              → rs-ui add (checkbox interactif @inquirer · Objectif B + D)
-  ├── list.ts info.ts doctor.ts remove.ts update.ts
+  ├── init.ts         → rs-ui init (reset Expo complet, tsconfig baseUrl, foundations, template)
+  ├── add.ts          → rs-ui add (mode interactif, support --diff, résolution transitive)
+  ├── list.ts         → rs-ui list (affichage enrichi par catégorie, mode interactif -i)
+  ├── info.ts         → Détails techniques du composant
+  ├── doctor.ts       → Diagnostic environnement + détection des composants obsolètes
+  ├── remove.ts       → Désinstallation sécurisée
+  └── update.ts       → Diff hash SHA-256 + réinstallation automatique expoDependencies
 src/core/
-  ├── paths.ts            → 🧭 Central : PROD require.resolve("@rashwright/ui-mobile/package.json") + fallback DEV workspace bun
-  ├── registry.ts         → load registry entries (export RegistryEntry + ResolvedComponent — CLI TS strict)
-  ├── file-manager.ts     → P0-1: préserve liquid/ sous-dossier
-  ├── starter-generator.ts→ setupFoundations + setupCoreUi + walkCopy upload/inline
-  ├── dependency-resolver.ts · expo-detector.ts · project-detector.ts · package-manager.ts · config-manager.ts
-dist/index.js             → ESM bundle bun build 50 modules 137 KB · prepublishOnly build + check-types
-README.md                 → README npm CLI (guide utilisateur)
-package.json              → "@rashwright/ui-mobile": "^0.1.1" (PAS workspace:*)
+  ├── diff.ts         → 🆕 Algorithme de diff LCS sans dépendance externe
+  ├── remote-registry.ts → 🆕 Cache local 24h (~/.rs-ui/cache) + fallback CDN unpkg
+  ├── paths.ts        → Résolution PROD require.resolve vs DEV workspace fallback
+  ├── registry.ts     → Chargement et validation du registry
+  ├── starter-generator.ts → Nettoyage template, setupFoundations, validation SDK post-create
+  ├── dependency-resolver.ts → Détection conflits versions Expo
+  ├── expo-detector.ts → Prise en charge des SDK 54, 55, 56, 57, 58, 59
+  ├── config-manager.ts → Lockfile { version, installedAt } avec rétrocompatibilité
+  ├── file-manager.ts → Préservation arborescence sous-dossiers liquid/
+  └── package-manager.ts → Exécution bun, npm, yarn, pnpm
+tests/                → 🆕 10 suites de tests Vitest (55 tests unitaires)
+dist/index.js         → ESM bundle autonome
+package.json          → version 0.2.0, dépendance "@rashwright/ui-mobile": "^0.2.0"
 ```
 
 ---
 
-## 4. Workflow typique d'une modification
+## 4. Commandes de développement & Quality Gate
 
-1. **Modifications code**.
-2. `bun run sync-registry` **si tu as changé des imports dans composant .tsx** (met à jour requiresComponents + expoDependencies + supportsGlass + nativeRebuildRequired sur les 55 JSON).
-3. `bun run validate-registry` — doit sortir `0 erreur`.
-4. `bun run check-types` — doit sortir `exit 0`.
-5. `bun run build:cli` — smoke test : `node packages/cli/dist/index.js --help`.
+Le monorepo intègre une chaîne de validation complète accessible à la racine :
+
+```bash
+# 🧪 Lancer la suite de tests unitaires Vitest (CLI)
+bun run test
+
+# 📊 Lancer les tests avec rapport de couverture de code
+bun run test:coverage
+
+# 🔎 Vérification des types TypeScript (CLI + UI-Mobile)
+bun run check-types
+
+# 🔄 Synchroniser le registry avec les fichiers sources
+bun run sync-registry
+
+# ✅ Valider l'intégrité du registry (61 composants)
+bun run validate-registry
+
+# 📦 Compiler le CLI vers packages/cli/dist/index.js
+bun run build:cli
+
+# 🚀 Quality Gate complet (exécuté avant toute publication)
+bun run quality
+```
+
+La commande `bun run quality` exécute successivement :
+1. `validate-registry`
+2. `check-types`
+3. `test` (Vitest)
+4. `build:cli`
+5. `smoke:all` (vérification version 0.2.0, ESM strict, shebang unique, semver réelle)
 
 ---
 
-## 5. Règle d'or : interdiction catégorique du type `any`
+## 5. Règle absolue : tolérance zéro pour le type `any`
 
-Profil utilisateur catégorique. **Pas d'exception** :
+Tout contributeur doit respecter un typage TypeScript strict :
 
-| Cas | Bon remplacement |
+| Cas rencontré | Solution appliquée |
 |---|---|
-| `forwardRef<any, Props>` | `forwardRef<unknown, Props>` |
-| `(e: any) => ...` | `(e: unknown) => (e as TargetType).xxx` |
-| `export const X: (cfg: any) => any` | Generics : `export const X: <T>(cfg: T) => SomeReturnType<T>` OU `(cfg: unknown) => unknown` avec signatures précises. |
-| `icon.props as any` | `(icon as React.ReactElement<{ size?: number; color?: string }>).props.color ?? iconColor` + type guards. |
-| Ambient peerDeps mockés (pas installés localement) | Helper `PermissiveComponentProps = { children?: unknown; style?: unknown; ref?: unknown; [k: string]: unknown }` — appliqué sur Animated.View / BlurView / VideoView / GestureHandlerRootView. |
-
-Fichiers critiques où `any` est impossible à la moindre régression :
-- `packages/ui-mobile/types/ambient.d.ts` → grep doit toujours renvoyer 0.
-- `packages/cli/src/**/*.ts` → `require(` doit toujours renvoyer 0 (ESM strict).
-- Tout fichier `.ts/.tsx` touché dans la PR/correction courante.
+| `forwardRef<any, Props>` | `React.ElementRef<typeof X>` ou `unknown` ciblé |
+| `(e: any) => void` | `(e: unknown) => ...` avec narrowing explicite |
+| `cloneElement(child as any, ...)` | `ReactElement<{ color?: string; size?: number }>` |
+| `style?: any` | `StyleProp<ViewStyle>` ou `StyleProp<TextStyle>` |
+| `catch (err: any)` | `catch (err: unknown)` suivi de `if (err instanceof Error)` |
+| Peer dependencies mockées | `PermissiveComponentProps` avec indexation typée |
 
 ---
 
-## 6. Comment ajouter un composant au catalogue (7 étapes)
+## 6. Procédure pour ajouter un nouveau composant
 
-Détaillé dans [Quick-Start.md §5](./Quick-Start.md#5-ajouter-un-composant-au-registry-nouveau-composant) :
-1. Code le composant .tsx → imports relatifs, jamais @/.
-2. Crée JSON → `registry/components/my-component.json` (version 1.0.0, category, files, expoDeps, requires, supportsGlass...).
-3. Màj `registry/index.json` → ajoute composant dans catégorie.
-4. Crée SKILL.md.
-5. `bun run sync-registry` + `bun run validate-registry`.
-6. Rebuild CLI : `bun run build:cli` + `bun run cli info my-component`.
-7. `bun run check-types` → commit.
-
----
-
-## 7. Debug / diagnostic erreurs TS fréquentes après changement ambient
-
-### Erreurs fréquentes (histoire connue)
-| Erreur TS | Cause | Fix |
-|---|---|---|
-| "This expression is not callable. Type '{}' has no call signatures." sur `props.onLoad(e)` | L'index signature `[k: string]: unknown` d'`ImageProps` masque le type callback. | Soit retirer l'index signature de l'interface et list explicitement toutes les props (plus lourd), soit cast côté consommateur : `(props.onLoad as ((e: unknown) => void) | undefined)?.(e)`. |
-| "Referenced directly or indirectly in its own type annotation" sur typeof player dans forwardRef/computed | TypeScript inférence circulaire. | Remplace `typeof player` par `ReturnType<typeof useVideoPlayer>` — force la résolution avant inférence du paramètre casté. |
-| animated.style array VS StyleProp<X> | AnimatedStyle + static style fusion array dans JSX → TS refuse union `AnimatedStyle & {opacity: SharedValue<number>}`. | Cast intermédiaire : `const combinedStyle = [a, b, c] as unknown;` → puis `style={combinedStyle as StyleProp<ImageStyle>}`. Permet de respecter zero-any. |
-| "`unknown` is not assignable to `boolean`" dans setup player.loop | `loop` optionnel vient de prop boolean|undefined → `VideoPlayer.loop = boolean` strict. | Enrober : `videoPlayer.loop = Boolean(loop)`. |
-| Build CLI bun ne trouve pas require.resolve("@rashwright/ui-mobile/package") en mode workspace (DEV) | PROD pas activé : `createRequire.resolve` échoue quand package pas installé local. | `core/paths.ts` : `try/catch` → fallback `join(PACKAGE_ROOT, "..", "ui-mobile")` (monorepo bun). Toujours tester `node dist/index.js list --json` après build. |
+1. **Créer le fichier TSX** dans `packages/ui-mobile/components/ui/<nom>.tsx` en utilisant `useTheme()` et des imports relatifs.
+2. **Créer la définition JSON** dans `packages/ui-mobile/registry/components/<nom>.json`.
+3. **Ajouter le composant** dans la catégorie appropriée de `packages/ui-mobile/registry/index.json`.
+4. **Exporter le composant** dans `packages/ui-mobile/components/ui/index.ts` et dans `COMPONENT_EXPORTS_MAP` (`starter-generator.ts`).
+5. **Créer le fichier SKILL.md** dans `packages/ui-mobile/skills/<nom>/SKILL.md`.
+6. **Lancer la synchronisation et la validation** :
+   ```bash
+   bun run sync-registry
+   bun run validate-registry
+   ```
+7. **Ajouter un test unitaire** dans `packages/cli/tests/` si le composant introduit une nouvelle logique de résolution.
+8. **Vérifier le Quality Gate** :
+   ```bash
+   bun run quality
+   ```
 
 ---
 
-## 8. Procédure de publication (release)
+## 7. Procédure de publication (Release v0.2.0)
 
-**Voir** :
-- [Quick-Start.md §7](./Quick-Start.md#7-procédure-de-publication-manuelle-recommandée-v0x) (manuel / CI)
-- [VALIDATION.md §5](./VALIDATION.md#5-dry-run-npm-publish-vérification-pre-publish) (dry-run pre-publish)
-
-**Règle ordre** :
-1. Publier `@rashwright/ui-mobile` sur npm **D'ABORD**.
-2. Attendre **2-5 min** le CDN npm.
-3. Puis publier `@rashwright/cli`.
-
-CI/CD disponible : `.github/workflows/publish.yml` (trigger : `git push origin main --follow-tags` avec tag `vX.Y.Z`).
+1. **Vérifier le Quality Gate** :
+   ```bash
+   bun run quality   # Doit terminer avec le code 0
+   ```
+2. **Tester le dry-run npm** :
+   ```bash
+   bun run dry-run   # Simule la publication de ui-mobile puis cli
+   ```
+3. **Publier sur npm** :
+   - Publier `@rashwright/ui-mobile` :
+     ```bash
+     cd packages/ui-mobile
+     npm publish --access public
+     ```
+   - Attendre 2 à 5 minutes la réplication CDN.
+   - Publier `@rashwright/cli` :
+     ```bash
+     cd ../../packages/cli
+     npm publish --access public
+     ```
+4. **Créer le tag git et pusher** :
+   ```bash
+   git tag -a v0.2.0 -m "Release v0.2.0: 61 components, SDK 59, Vitest suite, Remote Registry"
+   git push origin main --follow-tags
+   ```
 
 ---
 
-**FIN CONTRIBUTOR.md.**
+**Licence MIT · Rashwright office.**

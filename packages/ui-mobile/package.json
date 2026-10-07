@@ -1,12 +1,12 @@
 {
   "name": "@rashwright/ui-mobile",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Rashwright UI Mobile — Composants React Native / Expo distribuables",
   "license": "MIT",
   "author": "Rashwright office",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AbdoulRachid-Mz/rashwright-ui.git"
+    "url": "git+https://github.com/AbdoulRachid-Mz/rashwright-ui/tree/main/packages/ui-mobile"
   },
   "keywords": ["react-native", "expo", "ui", "components", "shadcn", "liquid-glass", "registry"],
   "type": "module",
@@ -43,16 +43,33 @@
     "zustand": "^5.0.0"
   },
   "peerDependencies": {
+    "@expo/vector-icons": ">=14.0.0",
     "expo": ">=54.0.0",
+    "expo-blur": ">=13.0.0",
+    "expo-haptics": ">=13.0.0",
+    "expo-image": ">=1.12.0",
+    "expo-image-picker": ">=15.0.0",
+    "expo-linear-gradient": ">=13.0.0",
+    "expo-video": ">=1.0.0",
     "react": ">=18.3.0",
     "react-native": ">=0.73.0",
+    "react-native-gesture-handler": ">=2.16.0",
     "react-native-reanimated": ">=3.0.0",
     "react-native-safe-area-context": ">=4.0.0",
     "zustand": ">=5.0.0"
   },
   "peerDependenciesMeta": {
+    "@expo/vector-icons": { "optional": true },
+    "expo-blur": { "optional": true },
+    "expo-haptics": { "optional": true },
+    "expo-image": { "optional": true },
+    "expo-image-picker": { "optional": true },
+    "expo-linear-gradient": { "optional": true },
+    "expo-video": { "optional": true },
+    "react-native-gesture-handler": { "optional": true },
     "react-native-reanimated": { "optional": true },
-    "react-native-safe-area-context": { "optional": true }
+    "react-native-safe-area-context": { "optional": true },
+    "zustand": { "optional": true }
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

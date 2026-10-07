@@ -1,34 +1,113 @@
-# Prompt maître — Rashwright UI Mobile v0.1.0 (STABILISÉ)
+PS C:\Users\user\Desktop\abdoul\dev\ui-test> bun x tsc --noEmit
+src/app/explore.tsx:11:10 - error TS2305: Module '"@/constants/theme"' has no exported member 'BottomTabInset'.
 
-> **⚠️ Ce document est la spécification ORIGINELLE (hors champ). Une grande partie a été implémentée.**
->
-> - Si tu **ajoutes un composant** → références-toi à CONTRIBUTOR.md (§Ajouter un composant)
-> - Si tu **corrige un bug** → 1) reproduis via `rs-ui doctor`, 2) lis CONTRIBUTOR.md §Debug, 3) utilise `check-types` + `validate-registry` après chaque changement.
-> - Si tu **publies** → ordre : ui-mobile PUIS cli (CLI dépend de @rashwright/ui-mobile).
+11 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+            ~~~~~~~~~~~~~~
 
----
+src/app/explore.tsx:11:26 - error TS2305: Module '"@/constants/theme"' has no exported member 'MaxContentWidth'.
 
-## Ce prompt ne contient PAS les dernières corrections de bugs réels.
+11 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+                            ~~~~~~~~~~~~~~~
 
-Utilise ces docs comme source de vérité **actuelle** :
+src/app/explore.tsx:11:43 - error TS2305: Module '"@/constants/theme"' has no exported member 'Spacing'.
 
-| Document | Usage |
-|---|---|
-| `ANALYSIS.md §4/5/6` | P0/P1 100% résolus, P2 détectés encore à faire |
-| `PLAN.md §4 §5` | Vérifications post-tâches + checklist pre-publish |
-| `errors.md §1 §2 §3` | Objectifs atteints + restant |
-| `CONTRIBUTOR.md` | Comment contribuer : scripts, tsconfig, ajouter composant, publier |
-| `Quick-Start.md` | Démarrer workspace |
-| `README.md (racine)` | Guide développeur utilisateur final |
+11 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+                                             ~~~~~~~
 
----
+src/components/app-tabs.tsx:4:10 - error TS2305: Module '"@/constants/theme"' has no exported member 'Colors'.
 
-## Rappel du scope original (sections 1→110)
+4 import { Colors } from '@/constants/theme';
+           ~~~~~~
 
-Voir l'historique git pour la version complète. Les sections 0 → 110 décrivent :
-- la mission (système UI distribuable à la shadcn/ui pour React Native/Expo)
-- la philosophie (code copié dans projet user, propriété totale)
-- les commandes officielles CLI : init, add, list, info, doctor, remove, update, avec `--yes`, `--dry-run`, `--json`, `--glass`, `--all`, `--theme`, `--force`, `--no-reset`, `--no-interactive`, `--non-interactive` (alias).
-- le registry central JSON (55 composants), la compatibilité matricielle Expo SDK 54-58, les 8 liquid primitives (glass border/blur/blob/highlight/surface/pressable/glow/shadow), le moteur thèmes (6 presets default/emerald/violet/amber/rose/slate).
+src/components/app-tabs.web.tsx:16:10 - error TS2305: Module '"@/constants/theme"' has no exported member 'Colors'.
 
-Tout est implémenté dans v0.1.0 publié.
+16 import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
+            ~~~~~~
+
+src/components/app-tabs.web.tsx:16:18 - error TS2305: Module '"@/constants/theme"' has no exported member 'MaxContentWidth'.
+
+16 import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
+                    ~~~~~~~~~~~~~~~
+
+src/components/app-tabs.web.tsx:16:35 - error TS2305: Module '"@/constants/theme"' has no exported member 'Spacing'.
+
+16 import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
+                                     ~~~~~~~
+
+src/components/hint-row.tsx:7:10 - error TS2305: Module '"@/constants/theme"' has no exported member 'Spacing'.
+
+7 import { Spacing } from '@/constants/theme';
+           ~~~~~~~
+
+src/components/themed-text.tsx:3:10 - error TS2305: Module '"@/constants/theme"' has no exported member 'Fonts'.
+
+3 import { Fonts, ThemeColor } from '@/constants/theme';
+           ~~~~~
+
+src/components/themed-text.tsx:3:17 - error TS2305: Module '"@/constants/theme"' has no exported member 'ThemeColor'.
+
+3 import { Fonts, ThemeColor } from '@/constants/theme';
+                  ~~~~~~~~~~
+
+src/components/themed-view.tsx:3:10 - error TS2305: Module '"@/constants/theme"' has no exported member 'ThemeColor'.
+
+3 import { ThemeColor } from '@/constants/theme';
+           ~~~~~~~~~~
+
+src/components/ui/collapsible.tsx:8:10 - error TS2305: Module '"@/constants/theme"' has no exported member 'Spacing'.
+
+8 import { Spacing } from '@/constants/theme';
+           ~~~~~~~
+
+src/components/ui/liquid/liquid-glow.tsx:9:32 - error TS2307: Cannot find module 'expo-linear-gradient' or its corresponding type declarations.
+
+9 import { LinearGradient } from "expo-linear-gradient";
+                                 ~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/ui/liquid/liquid-highlight.tsx:12:32 - error TS2307: Cannot find module 'expo-linear-gradient' or its corresponding type declarations.
+
+12 import { LinearGradient } from 'expo-linear-gradient';
+                                  ~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/ui/liquid/liquid-surface.tsx:23:26 - error TS2307: Cannot find module 'expo-blur' or its corresponding type declarations.
+
+23 import { BlurView } from "expo-blur";
+                            ~~~~~~~~~~~
+
+src/components/web-badge.tsx:8:10 - error TS2305: Module '"@/constants/theme"' has no exported member 'Spacing'.
+
+8 import { Spacing } from '@/constants/theme';
+           ~~~~~~~
+
+src/hooks/use-theme.ts:6:10 - error TS2305: Module '"@/constants/theme"' has no exported member 'Colors'.
+
+6 import { Colors } from '@/constants/theme';
+           ~~~~~~
+
+
+Found 17 errors in 12 files.
+
+Errors  Files
+     3  src/app/explore.tsx:11
+     1  src/components/app-tabs.tsx:4
+     3  src/components/app-tabs.web.tsx:16
+     1  src/components/hint-row.tsx:7
+     2  src/components/themed-text.tsx:3
+     1  src/components/themed-view.tsx:3
+     1  src/components/ui/collapsible.tsx:8
+     1  src/components/ui/liquid/liquid-glow.tsx:9
+     1  src/components/ui/liquid/liquid-highlight.tsx:12
+     1  src/components/ui/liquid/liquid-surface.tsx:23
+     1  src/components/web-badge.tsx:8
+     1  src/hooks/use-theme.ts:6
+PS C:\Users\user\Desktop\abdoul\dev\ui-test> bun x tsc --noEmit
+tsconfig.json:15:5 - error TS5101: Option 'baseUrl' is deprecated and will stop functioning in TypeScript 7.0. Specify compilerOption '"ignoreDeprecations": "6.0"' to silence this error.
+  Visit https://aka.ms/ts6 for migration information.
+
+15     "baseUrl": "."
+       ~~~~~~~~~
+
+
+Found 1 error in tsconfig.json:15
+
+PS C:\Users\user\Desktop\abdoul\dev\ui-test>

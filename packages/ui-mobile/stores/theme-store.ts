@@ -8,10 +8,11 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { createRequire } from "node:module";
 import type { ThemeMode } from "../constants/theme";
 import type { ThemePresetName } from "../theme/themes/default";
 import { DEFAULT_THEME_NAME } from "../theme/themes/default";
+
+declare const require: unknown;
 
 export interface ThemeStoreState {
   /** Mode d'apparence : light, dark ou synchronisé avec le système */
@@ -47,8 +48,9 @@ const fallbackMemoryStorage: StorageAdapter = {
  */
 export function getDefaultStorage(): StorageAdapter {
   try {
-    const require = createRequire(import.meta.url);
-    const AsyncStorage = require("@react-native-async-storage/async-storage").default;
+    const req = typeof require === "function" ? (require as (id: string) => { default?: StorageAdapter }) : null;
+    const mod = req ? req("@react-native-async-storage/async-storage") : null;
+    const AsyncStorage = mod?.default ?? (mod as unknown as StorageAdapter);
     if (AsyncStorage && typeof AsyncStorage.getItem === "function") {
       return AsyncStorage;
     }

@@ -1,6 +1,7 @@
 {
-  "version": "0.1.2",
+  "version": "0.2.0",
   "components": [
+    "accordion",
     "actions-grid",
     "activity-indicator",
     "alert",
@@ -13,7 +14,9 @@
     "carousel",
     "checkbox",
     "chip",
+    "collapsible",
     "confirm",
+    "data-table",
     "divider",
     "dot",
     "drawer",
@@ -23,6 +26,7 @@
     "fab-menu",
     "flat-list",
     "floating-action-button",
+    "form",
     "glass-card",
     "icon",
     "icon-button",
@@ -30,11 +34,13 @@
     "keyboard-avoiding-view",
     "loading-state",
     "modal",
+    "otp-input",
     "particles",
     "popup",
     "progress",
     "radio",
     "rashwright-logo",
+    "rating",
     "safe-area-view",
     "screen-skeleton",
     "scroll-view",
@@ -59,17 +65,17 @@
   ],
   "categories": {
     "Basic": ["badge", "avatar", "avatar-group", "dot", "icon", "icon-button", "rashwright-logo"],
-    "Layout": ["card", "divider", "keyboard-avoiding-view", "safe-area-view", "scroll-view", "spacer", "stat-card"],
-    "Forms": ["checkbox", "chip", "radio", "search-input", "segmented-control", "select", "slider", "switch", "text-input", "time-picker"],
+    "Layout": ["accordion", "card", "collapsible", "divider", "keyboard-avoiding-view", "safe-area-view", "scroll-view", "spacer", "stat-card"],
+    "Forms": ["checkbox", "chip", "form", "otp-input", "radio", "rating", "search-input", "segmented-control", "select", "slider", "switch", "text-input", "time-picker"],
     "Navigation": ["actions-grid", "bottom-sheet", "carousel", "drawer", "dropdown-menu", "fab-menu", "floating-action-button", "tabs"],
     "Feedback": ["alert", "confirm", "modal", "popup", "progress", "tooltip"],
     "States": ["activity-indicator", "empty-state", "error-state", "loading-state", "screen-skeleton", "shimmer", "skeleton"],
-    "Data": ["flat-list", "section-list"],
+    "Data": ["data-table", "flat-list", "section-list"],
     "Media": ["image", "upload-image", "upload-video", "video"],
     "Glass": ["glass-card", "particles"],
     "Starter": ["button", "showcase-screen"]
   },
   "themes": ["default", "emerald", "violet", "amber", "rose", "slate", "glass"],
-  "totalComponents": 55,
-  "sdkVersions": [54, 55, 56, 57, 58]
+  "totalComponents": 61,
+  "sdkVersions": [54, 55, 56, 57, 58, 59]
 }

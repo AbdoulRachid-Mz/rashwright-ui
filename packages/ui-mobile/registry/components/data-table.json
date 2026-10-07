@@ -1,0 +1,21 @@
+{
+  "name": "data-table",
+  "version": "1.0.0",
+  "description": "Tableau de données avec tri par colonnes, recherche et support Glass.",
+  "category": "Data",
+  "files": ["components/ui/data-table.tsx"],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": ["search-input"],
+  "providers": ["ThemeProvider"],
+  "supportsGlass": true,
+  "platforms": ["ios", "android"],
+  "nativeRebuildRequired": false,
+  "props": {
+    "searchable": "boolean",
+    "striped": "boolean",
+    "variant": ["default", "bordered", "glass"],
+    "onRowPress": "function"
+  }
+}

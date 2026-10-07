@@ -7,6 +7,8 @@ import { readConfig } from "../core/config-manager.js";
 import { readCompatibilityMatrix } from "../core/expo-detector.js";
 import { existsSync as fsExists, readFileSync } from "node:fs";
 import { REGISTRY_ROOT } from "../core/paths.js";
+import { loadComponentEntry } from "../core/dependency-resolver.js";
+import { resolveRegistry, ensureCompatibilityMatrixDownloaded } from "../core/remote-registry.js";
 
 interface CheckResult {
   label: string;
@@ -18,10 +20,12 @@ export function doctorCommand(): Command {
   const cmd = new Command("doctor");
   cmd
     .description("Diagnostiquer l'état de Rashwright UI dans le projet courant")
+    .option("--registry <url>", "URL du registre distant (ex: https://unpkg.com/@rashwright/ui-mobile@latest)")
     .option("--json", "Sortie JSON")
-    .action((options) => {
+    .action(async (options) => {
       const cwd = process.cwd();
       const checks: CheckResult[] = [];
+      const resolved = await resolveRegistry({ registryUrl: options.registry });
 
       // ── Project checks ─────────────────────────────────────────────────
       const project = detectProject(cwd);
@@ -82,13 +86,36 @@ export function doctorCommand(): Command {
           detail: compCount === 0 ? "Aucun composant installé — exécutez: rs-ui add" : undefined,
         });
 
+        // ── U-3 : Vérification des versions des composants installés (lockfile check)
+        const outdated: string[] = [];
+        for (const [name, val] of Object.entries(config.components)) {
+          const installedVer = typeof val === "string" ? val : val.version;
+          const regEntry = loadComponentEntry(name, resolved.registryRoot);
+          if (regEntry && regEntry.version !== installedVer) {
+            outdated.push(`${name} (v${installedVer} → v${regEntry.version})`);
+          }
+        }
+        if (outdated.length > 0) {
+          checks.push({
+            label: "Mises à jour disponibles",
+            status: "warn",
+            detail: `${outdated.join(", ")} — exécutez: rs-ui update`,
+          });
+        }
+
         // ── Key native deps ──────────────────────────────────────────────
         const pkgPath = join(cwd, "package.json");
         if (fsExists(pkgPath)) {
           const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
-          const allDeps = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
+          const allDeps: Record<string, string> = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
+          if (expo.supportedVersion && resolved.isRemote) {
+            await ensureCompatibilityMatrixDownloaded(expo.supportedVersion, {
+              registryUrl: resolved.registryUrl,
+              registryRoot: resolved.registryRoot,
+            });
+          }
           const matrix = expo.supportedVersion
-            ? readCompatibilityMatrix(expo.supportedVersion, REGISTRY_ROOT)
+            ? readCompatibilityMatrix(expo.supportedVersion, resolved.registryRoot)
             : null;
 
           const checkDep = (dep: string) => {

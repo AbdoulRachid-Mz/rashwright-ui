@@ -55,32 +55,54 @@ export function createExpoProject(params: {
   }
 
   const sdkStr = String(sdkVersion);
-  if (sdkStr.toLowerCase() === "latest") {
-    return;
+  const isLatest = sdkStr.toLowerCase() === "latest";
+  const sdkNum = isLatest ? NaN : parseInt(sdkStr, 10);
+
+  // ── C-3 : Validation post-create du SDK réel installé
+  if (!dryRun) {
+    try {
+      const projectPkgPath = join(targetDir, "package.json");
+      if (existsSync(projectPkgPath)) {
+        const projectPkg = JSON.parse(readFileSync(projectPkgPath, "utf-8")) as {
+          dependencies?: Record<string, string>;
+        };
+        const expoVersion = projectPkg.dependencies?.["expo"] ?? "";
+        // Extraire numéro SDK depuis "~54.0.0" ou "54.0.0" ou "^54.1.0"
+        const detectedSdk = parseInt(expoVersion.replace(/^[\^~>=\s]+/, ""), 10);
+        const SUPPORTED = [54, 55, 56, 57, 58];
+        if (!isNaN(detectedSdk) && !SUPPORTED.includes(detectedSdk)) {
+          console.log(
+            `  ⚠ SDK Expo détecté (${detectedSdk}) hors de la plage supportée (54→58). Certains composants peuvent ne pas fonctionner correctement.`
+          );
+        } else if (!isNaN(detectedSdk)) {
+          console.log(`  ✔ SDK Expo ${detectedSdk} détecté — version supportée.`);
+        }
+      }
+    } catch {
+      // Non-bloquant : si on ne peut pas lire le package.json, on continue
+    }
   }
 
-  const sdkNum = parseInt(sdkStr, 10);
-  if (isNaN(sdkNum) || sdkNum < 54 || sdkNum > 58) {
-    return;
-  }
+  // Si un SDK spécifique (non-latest) est demandé, le pinner via expo install
+  if (!isLatest && !isNaN(sdkNum) && sdkNum >= 54 && sdkNum <= 58) {
+    const pinCmd = `npx expo install expo@~${sdkNum}.0.0 -- --non-interactive`;
 
-  const pinCmd = `npx expo install expo@~${sdkNum}.0.0 -- --non-interactive`;
-
-  if (dryRun) {
-    console.log(`  [dry-run] ${pinCmd}`);
-    console.log(`  [dry-run]   cwd: ${targetDir}`);
-  } else {
-    execSync(pinCmd, { cwd: targetDir, stdio: "inherit" });
+    if (dryRun) {
+      console.log(`  [dry-run] ${pinCmd}`);
+      console.log(`  [dry-run]   cwd: ${targetDir}`);
+    } else {
+      execSync(pinCmd, { cwd: targetDir, stdio: "inherit" });
+    }
   }
 }
 
+
 /**
  * ⚡ Objectif A.2 (errors.md) — resetExpoProject
- * Nettoie les fichiers d'exemple du template Expo create-expo-app (default) pour
- * laisser place à Rashwright. Cross-platform (fs.rmSync, pas de rm -rf).
- * NE TOUCHE PAS : package.json, app.json, tsconfig.json, babel.config.js (on les
- *   met à jour via updateTsconfig / writeBabelConfig plus loin), node_modules,
- *   .git, bun.lock, package-lock.json, yarn.lock.
+ * Nettoie les fichiers et dossiers d'exemple du template Expo standard
+ * (conforme aux spécifications de expo-rn-reset.js et architecture.md).
+ * Cross-platform (fs.rmSync, pas de rm -rf).
+ * Prépare la structure standardisée /src pour une isolation optimale.
  */
 export function resetExpoProject(
   targetProjectRoot: string,
@@ -88,42 +110,127 @@ export function resetExpoProject(
 ): void {
   if (dryRun) return;
 
-  /**
-   * Helper safe-rm : supprime en récursif seulement si le chemin existe.
-   * Cross-platform Win/macOS/Linux via Node fs.rmSync (pas d'invocation shell).
-   */
   const safeRm = (rel: string, isDir = false): void => {
     const abs = join(targetProjectRoot, rel);
     if (!existsSync(abs)) return;
     try {
-      rmSync(abs, { recursive: true, force: true, maxRetries: 2 });
+      rmSync(abs, { recursive: true, force: true, maxRetries: 3 });
     } catch (err) {
-      // On ne plante pas init pour un échec de cleanup d'exemple.
       console.warn(`    ⚠ Impossible de nettoyer ${rel}:`, (err as Error).message);
     }
     void isDir;
   };
 
-  // Pages & routeurs template Expo Router
+  // 1. Script reset-project natif Expo
+  safeRm("scripts/reset-project.js");
+
+  // 2. Pages & routeurs template Expo Router (racine et src/)
+  //    Inclut les nouvelles pages du template 2025 : explore.tsx, +not-found.tsx, etc.
   safeRm("app/index.tsx");
   safeRm("app/_layout.tsx");
   safeRm("app/(tabs)", true);
   safeRm("app/+html.tsx");
   safeRm("app/+not-found.tsx");
+  safeRm("app/explore.tsx");
 
-  // App template classique (non routeur)
+  safeRm("src/app/index.tsx");
+  safeRm("src/app/_layout.tsx");
+  safeRm("src/app/(tabs)", true);
+  safeRm("src/app/+html.tsx");
+  safeRm("src/app/+not-found.tsx");
+  safeRm("src/app/explore.tsx");       // ← page onglet "Explore" du template 2025
+
+  // 3. App template classique (non routeur)
   safeRm("App.tsx");
   safeRm("App.js");
   safeRm("App.jsx");
+  safeRm("src/App.tsx");
+  safeRm("src/App.js");
+  safeRm("src/App.jsx");
 
-  // Dossiers exemples du template
+  // 4. Composants template Expo à la racine components/
   safeRm("components", true);
-  safeRm("hooks", true);
-  safeRm("constants", true);
 
-  // Assets exemples (sauf collisions : assets/images/ logo template)
-  safeRm("assets/images", true);
-  safeRm("assets/images", true);
+  // 5. Composants template Expo dans src/components/ — liste exhaustive du template 2025
+  //    Ces fichiers importent Colors/Spacing/Fonts/ThemeColor depuis @/constants/theme
+  //    qui n'existent PAS dans Rashwright → erreurs TS après init si non supprimés
+  safeRm("src/components/Collapsible.tsx");
+  safeRm("src/components/ExternalLink.tsx");
+  safeRm("src/components/HelloWave.tsx");
+  safeRm("src/components/ParallaxScrollView.tsx");
+  safeRm("src/components/ThemedText.tsx");
+  safeRm("src/components/ThemedView.tsx");
+  safeRm("src/components/animated-icon.web.tsx");
+  safeRm("src/components/animated-icon.module.css");
+  safeRm("src/components/navigation", true);
+  // Nouveaux fichiers du template 2025 (app-tabs, web-badge, hint-row, themed-*)
+  safeRm("src/components/app-tabs.tsx");
+  safeRm("src/components/app-tabs.web.tsx");
+  safeRm("src/components/hint-row.tsx");
+  safeRm("src/components/themed-text.tsx");
+  safeRm("src/components/themed-view.tsx");
+  safeRm("src/components/web-badge.tsx");
+  // Nettoyage complet préventif de tous les composants d'exemple dans src/components SAUF ui
+  const srcComponentsDir = join(targetProjectRoot, "src", "components");
+  if (existsSync(srcComponentsDir)) {
+    try {
+      const entries = readdirSync(srcComponentsDir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (entry.name !== "ui") {
+          rmSync(join(srcComponentsDir, entry.name), { recursive: true, force: true });
+        }
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  // 6. Hooks template Expo
+  safeRm("hooks/useColorScheme.ts");
+  safeRm("hooks/useThemeColor.ts");
+  safeRm("src/hooks/useColorScheme.ts");
+  safeRm("src/hooks/useThemeColor.ts");
+  safeRm("src/hooks/use-theme.ts");    // ← nouveau hook du template 2025
+
+  // 7. Constants template Expo
+  safeRm("constants/Colors.ts");
+  safeRm("src/constants/Colors.ts");
+
+  // 5. Assets template exemple
+  safeRm("assets/images/react-logo.png");
+  safeRm("assets/images/partial-react-logo.png");
+
+  // 6. Supprimer le script "reset-project" de package.json s'il existe
+  const pkgPath = join(targetProjectRoot, "package.json");
+  if (existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+      if (pkg.scripts && "reset-project" in pkg.scripts) {
+        delete pkg.scripts["reset-project"];
+        writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n", "utf-8");
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+
+  // 7. Initialiser l'arborescence standardisée /src définie dans architecture.md
+  const standardDirs = [
+    "src/app",
+    "src/components/ui",
+    "src/constants",
+    "src/contexts",
+    "src/hooks",
+    "src/stores",
+    "src/theme",
+    "src/lib/upload",
+  ];
+  for (const dir of standardDirs) {
+    const fullDir = join(targetProjectRoot, dir);
+    if (!existsSync(fullDir)) {
+      mkdirSync(fullDir, { recursive: true });
+    }
+  }
 }
 
 /**
@@ -145,8 +252,6 @@ export function writeBabelConfig(
 
   if (existsSync(path)) {
     originalContent = readFileSync(path, "utf-8");
-    // Parser naive mais robuste pour template Expo default / Expo Router
-    // Format attendu : module.exports = function (api) { api.cache(true); return { presets: [...], plugins: [...] }; }
     try {
       const presetsMatch = originalContent.match(/presets\s*:\s*\[([\s\S]*?)\]/);
       const pluginsMatch = originalContent.match(/plugins\s*:\s*\[([\s\S]*?)\]/);
@@ -171,7 +276,7 @@ export function writeBabelConfig(
         );
       }
     } catch {
-      // Si parse impossible, on gardera originalContent en fallback + append commentaire
+      // Fallback
     }
   }
 
@@ -179,7 +284,6 @@ export function writeBabelConfig(
   plugins = plugins.filter((p) => p !== "react-native-reanimated/plugin");
   plugins.push("react-native-reanimated/plugin");
 
-  // Si Expo Router était là, on garde son plugin
   if (originalContent && originalContent.includes("expo-router/babel") && !plugins.includes("expo-router/babel")) {
     plugins.unshift("expo-router/babel");
   }
@@ -198,11 +302,13 @@ export function writeBabelConfig(
 
 /**
  * ⚡ Objectif A.4 — updateTsconfig
- * Lit/mets à jour tsconfig.json pour ajouter:
+ * Lit/met à jour tsconfig.json pour ajouter:
  *   - compilerOptions.jsx = "react-native" (si absent)
- *   - compilerOptions.paths."@/*" = ["./*"] pour résoudre les imports @/...
- *     (format standard Expo SDK 54+ avec tsconfig expo/tsconfig.base)
- * Crée un tsconfig minimal (extends: "expo/tsconfig.base") sinon.
+ *   - compilerOptions.paths."@/*" = ["./src/*", "./*"] pour résoudre les imports @/...
+ *   - compilerOptions.ignoreDeprecations = "6.0" pour supprimer le warning baseUrl TS7
+ *
+ * NOTE: baseUrl est déprécié en TypeScript 7+. On utilise paths seuls avec rootDirs
+ * pour la résolution d'alias, sans baseUrl.
  */
 export function updateTsconfig(
   targetProjectRoot: string,
@@ -219,6 +325,7 @@ export function updateTsconfig(
       jsx?: string;
       paths?: Record<string, string[]>;
       baseUrl?: string;
+      ignoreDeprecations?: string;
       [k: string]: unknown;
     };
     include?: string[];
@@ -230,23 +337,26 @@ export function updateTsconfig(
   if (existsSync(path)) {
     try {
       cfg = JSON.parse(readFileSync(path, "utf-8")) as TsConfig;
-    } catch (err) {
-      throw new Error(`tsconfig.json invalide dans ${path}: ` + (err as Error).message);
+    } catch {
+      cfg = { extends: "expo/tsconfig.base", compilerOptions: { strict: true } };
     }
   } else {
     cfg = { extends: "expo/tsconfig.base", compilerOptions: { strict: true } };
   }
 
   if (!cfg.compilerOptions) cfg.compilerOptions = {};
-  if (!cfg.compilerOptions.jsx || cfg.compilerOptions.jsx.toLowerCase() !== "react-native") {
-    cfg.compilerOptions.jsx = "react-native";
-  }
+  cfg.compilerOptions.jsx = "react-native";
+  cfg.compilerOptions.baseUrl = ".";
+
+  // Silencer le warning TS5101 pour TypeScript 6.0/7.0 (baseUrl deprecated)
+  cfg.compilerOptions.ignoreDeprecations = "6.0";
+
   if (!cfg.compilerOptions.paths || typeof cfg.compilerOptions.paths !== "object") {
     cfg.compilerOptions.paths = {};
   }
-  if (!Array.isArray(cfg.compilerOptions.paths["@/*"]) || cfg.compilerOptions.paths["@/*"].length === 0) {
-    cfg.compilerOptions.paths["@/*"] = ["./*"];
-  }
+  // Alias robuste : résout @/... vers src/ en priorité, puis racine
+  cfg.compilerOptions.paths["@/*"] = ["./src/*", "./*"];
+
   if (!cfg.include || !Array.isArray(cfg.include) || cfg.include.length === 0) {
     cfg.include = ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"];
   }
@@ -254,25 +364,152 @@ export function updateTsconfig(
   writeFileSync(path, JSON.stringify(cfg, null, 2) + "\n", "utf-8");
 }
 
+
 /**
- * ⚡ Objectif A.5 + A.3 — writeExpoRouterLayout + génération app/ index
- * Pour le template Expo Router (app/):
- *   - app/_layout.tsx: <ThemeProvider><Slot /></ThemeProvider>
- *   - app/index.tsx : <RashwrightShowcaseScreen />
- * Les imports utilisent systématiquement l'alias @/ (indépendant de componentsPath).
+ * Table des déclarations d'export individuelles pour chaque composant UI Rashwright.
+ * Permet de générer dynamiquement index.ts en n'exportant que les composants installés.
  */
-export function writeExpoRouterLayout(
-  targetProjectRoot: string,
-  componentsPath: string = "components/ui",
+export const COMPONENT_EXPORTS_MAP: Record<string, string> = {
+  "actions-grid": 'export { ActionsGrid } from "./actions-grid";',
+  "activity-indicator": 'export { default as ActivityIndicator } from "./activity-indicator";',
+  alert: 'export { Alert } from "./alert";',
+  avatar: 'export { default as Avatar } from "./avatar";',
+  "avatar-group": 'export { default as AvatarGroup } from "./avatar-group";',
+  badge: 'export { default as Badge } from "./badge";',
+  "bottom-sheet": 'export { default as BottomSheet } from "./bottom-sheet";',
+  button: 'export { default as Button } from "./button";',
+  card: 'export { default as Card } from "./card";',
+  carousel: 'export { Carousel } from "./carousel";',
+  checkbox: 'export { default as Checkbox } from "./checkbox";',
+  chip: 'export { default as Chip } from "./chip";',
+  confirm: 'export { ConfirmProvider, useConfirm } from "./confirm";',
+  divider: 'export { default as Divider } from "./divider";',
+  dot: 'export { default as Dot } from "./dot";',
+  drawer: 'export { default as Drawer } from "./drawer";',
+  "dropdown-menu": 'export { default as DropdownMenu } from "./dropdown-menu";',
+  "empty-state": 'export { default as EmptyState } from "./empty-state";',
+  "error-state": 'export { default as ErrorState } from "./error-state";',
+  "fab-menu": 'export { default as FabMenu } from "./fab-menu";',
+  "flat-list": 'export { default as FlatList } from "./flat-list";',
+  "floating-action-button": 'export { default as FloatingActionButton } from "./floating-action-button";',
+  "glass-card": 'export { default as GlassCard } from "./glass-card";',
+  icon: 'export { default as Icon } from "./icon";',
+  "icon-button": 'export { default as IconButton } from "./icon-button";',
+  image: 'export { default as Image } from "./image";',
+  "keyboard-avoiding-view": 'export { default as KeyboardAvoidingView } from "./keyboard-avoiding-view";',
+  "loading-state": 'export { default as LoadingState } from "./loading-state";',
+  modal: 'export { default as Modal } from "./modal";',
+  particles: 'export { Particles } from "./particles";',
+  popup: 'export { default as Popup } from "./popup";',
+  progress: 'export { default as Progress } from "./progress";',
+  radio: 'export { Radio, RadioGroup } from "./radio";',
+  "rashwright-logo": 'export { RashwrightLogo } from "./rashwright-logo";',
+  "safe-area-view": 'export { default as SafeAreaView } from "./safe-area-view";',
+  "screen-skeleton": 'export { ScreenSkeleton, DashboardSkeleton } from "./screen-skeleton";',
+  "scroll-view": 'export { default as ScrollView } from "./scroll-view";',
+  "search-input": 'export { default as SearchInput } from "./search-input";',
+  "section-list": 'export { default as SectionList } from "./section-list";',
+  "segmented-control": 'export { default as SegmentedControl } from "./segmented-control";',
+  select: 'export { default as Select } from "./select";',
+  shimmer: 'export { default as Shimmer } from "./shimmer";',
+  "showcase-screen": 'export { RashwrightShowcaseScreen } from "./showcase-screen";',
+  skeleton: 'export { Skeleton, SkeletonCircle, SkeletonText, SkeletonCard } from "./skeleton";',
+  slider: 'export { default as Slider } from "./slider";',
+  spacer: 'export { default as Spacer } from "./spacer";',
+  "stat-card": 'export { default as StatCard } from "./stat-card";',
+  switch: 'export { default as Switch } from "./switch";',
+  tabs: 'export { Tabs, TabsList, TabsTrigger, TabsContent } from "./tabs";',
+  "text-input": 'export { default as TextInput } from "./text-input";',
+  "time-picker": 'export { TimePicker } from "./time-picker";',
+  tooltip: 'export { Tooltip, TooltipTrigger, TooltipContent } from "./tooltip";',
+  "upload-image": 'export { UploadImage } from "./upload-image";',
+  "upload-video": 'export { UploadVideo } from "./upload-video";',
+  video: 'export { default as Video } from "./video";',
+  // ── Phase 2 — Nouveaux composants v0.2.0 ───────────────────────────────────
+  accordion: 'export { Accordion } from "./accordion";',
+  collapsible: 'export { Collapsible } from "./collapsible";',
+  "data-table": 'export { DataTable } from "./data-table";',
+  form: 'export { Form, FormField, FormLabel, FormMessage, FormDescription, useFormField } from "./form";',
+  "otp-input": 'export { OtpInput } from "./otp-input";',
+  rating: 'export { Rating } from "./rating";',
+};
+
+/**
+ * ⚡ Point 4 — Génération dynamique de components/ui/index.ts
+ * Ne référence et n'exporte QUE les composants effectivement installés dans le projet.
+ */
+export function generateUiIndex(
+  targetComponentsRoot: string,
+  installedComponents: string[],
   dryRun = false,
 ): void {
   if (dryRun) return;
 
-  const appDir = join(targetProjectRoot, "app");
+  const lines = [
+    '// @/components/ui/index.ts',
+    '//',
+    '// Barrel d\'exportation dynamique Rashwright UI Mobile.',
+    '// Exporte les primitives Liquid Glass, les vues de base et uniquement les composants installés.',
+    '',
+    '// ---------------------------------------------------------------------------',
+    '// 1. Primitives Liquid Glass',
+    '// ---------------------------------------------------------------------------',
+    'export { default as LiquidSurface } from "./liquid/liquid-surface";',
+    'export { default as LiquidPressable } from "./liquid/liquid-pressable";',
+    'export { default as LiquidHighlight } from "./liquid/liquid-highlight";',
+    'export { default as LiquidBorder } from "./liquid/liquid-border";',
+    'export { default as LiquidGlow } from "./liquid/liquid-glow";',
+    'export { default as LiquidBlob } from "./liquid/liquid-blob";',
+    'export { getLiquidShadow, mergeShadows } from "./liquid/liquid-shadow";',
+    'export * from "./liquid/liquid-types";',
+    '',
+    '// ---------------------------------------------------------------------------',
+    '// 2. Vues Thématiques de Base',
+    '// ---------------------------------------------------------------------------',
+    'export { default as ThemedView } from "./view";',
+    'export { default as ThemedText } from "./text";',
+    'export { createGlassTheme } from "@/constants/glass-theme";',
+    '',
+    '// ---------------------------------------------------------------------------',
+    '// 3. Composants Installés',
+    '// ---------------------------------------------------------------------------',
+  ];
+
+  const uniqueInstalled = Array.from(new Set(installedComponents)).sort();
+  for (const name of uniqueInstalled) {
+    const exportStatement = COMPONENT_EXPORTS_MAP[name];
+    if (exportStatement) {
+      lines.push(exportStatement);
+    }
+  }
+
+  lines.push("");
+  const content = lines.join("\n");
+  const targetFile = join(targetComponentsRoot, "index.ts");
+  const dir = dirname(targetFile);
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  writeFileSync(targetFile, content, "utf-8");
+}
+
+/**
+ * ⚡ Objectif A.5 + A.3 — writeExpoRouterLayout + génération app/ index
+ * Pour le template Expo Router (app/ ou src/app/):
+ *   - _layout.tsx: <ThemeProvider><Slot /></ThemeProvider>
+ *   - index.tsx : <RashwrightShowcaseScreen />
+ */
+export function writeExpoRouterLayout(
+  targetProjectRoot: string,
+  componentsPath: string = "src/components/ui",
+  dryRun = false,
+): void {
+  if (dryRun) return;
+
+  const useSrc = componentsPath.startsWith("src/") || existsSync(join(targetProjectRoot, "src"));
+  const appDir = join(targetProjectRoot, useSrc ? "src/app" : "app");
   if (!existsSync(appDir)) mkdirSync(appDir, { recursive: true });
 
-  const normalize = (p: string): string => p.replace(/\\/g, "/").replace(/\/+/g, "/");
-  const showcaseCompImportPath = `@/${normalize(componentsPath)}/showcase-screen`;
+  const cleanComponentsPath = componentsPath.replace(/^src\//, "");
+  const showcaseCompImportPath = `@/${cleanComponentsPath}/showcase-screen`;
 
   const layoutContent = `import { Slot } from "expo-router";
 import React from "react";
@@ -299,50 +536,52 @@ export default function Index() {
 }
 
 /**
- * Setup foundational files (constants/theme, constants/glass-theme, stores/theme-store, contexts/theme-context)
- * and core UI primitives (text, view, liquid/*) + lib/upload in the target project.
+ * Setup foundational files (constants, stores, contexts, hooks, theme, lib/upload)
+ * and core UI primitives (text, view, liquid/*) in the target project.
+ * Conforme à architecture.md : si src/ est utilisé, installe dans src/.
  */
 export function setupFoundations(
   sourceRoot: string,
   targetProjectRoot: string,
-  componentsPath: string = "components/ui",
-  dryRun = false
+  componentsPath: string = "src/components/ui",
+  dryRun = false,
 ): void {
   if (dryRun) return;
 
+  const useSrc = componentsPath.startsWith("src/") || existsSync(join(targetProjectRoot, "src"));
+  const basePrefix = useSrc ? "src" : "";
+
   const filesToCopy: Array<{ src: string; dest: string }> = [
-    { src: "constants/theme.ts", dest: "constants/theme.ts" },
-    { src: "constants/glass-theme.ts", dest: "constants/glass-theme.ts" },
-    { src: "stores/theme-store.ts", dest: "stores/theme-store.ts" },
-    { src: "contexts/theme-context.tsx", dest: "contexts/theme-context.tsx" },
-    { src: "contexts/tab-bar-context.tsx", dest: "contexts/tab-bar-context.tsx" },
-    { src: "hooks/use-device.ts", dest: "hooks/use-device.ts" },
-    { src: "hooks/useBackHandler.ts", dest: "hooks/useBackHandler.ts" },
-    { src: "hooks/useScrollAwareTabBar.ts", dest: "hooks/useScrollAwareTabBar.ts" },
-    { src: "theme/index.ts", dest: "theme/index.ts" },
-    { src: "theme/tokens/colors.ts", dest: "theme/tokens/colors.ts" },
-    { src: "theme/tokens/glass.ts", dest: "theme/tokens/glass.ts" },
-    { src: "theme/tokens/radius.ts", dest: "theme/tokens/radius.ts" },
-    { src: "theme/tokens/spacing.ts", dest: "theme/tokens/spacing.ts" },
-    { src: "theme/tokens/typography.ts", dest: "theme/tokens/typography.ts" },
-    { src: "theme/themes/default.ts", dest: "theme/themes/default.ts" },
-    { src: "theme/themes/glass.ts", dest: "theme/themes/glass.ts" },
-    { src: "theme/themes/emerald.ts", dest: "theme/themes/emerald.ts" },
-    { src: "theme/themes/violet.ts", dest: "theme/themes/violet.ts" },
-    { src: "theme/themes/amber.ts", dest: "theme/themes/amber.ts" },
-    { src: "theme/themes/rose.ts", dest: "theme/themes/rose.ts" },
-    { src: "theme/themes/slate.ts", dest: "theme/themes/slate.ts" },
+    { src: "constants/theme.ts", dest: join(basePrefix, "constants/theme.ts").replace(/\\/g, "/") },
+    { src: "constants/glass-theme.ts", dest: join(basePrefix, "constants/glass-theme.ts").replace(/\\/g, "/") },
+    { src: "stores/theme-store.ts", dest: join(basePrefix, "stores/theme-store.ts").replace(/\\/g, "/") },
+    { src: "contexts/theme-context.tsx", dest: join(basePrefix, "contexts/theme-context.tsx").replace(/\\/g, "/") },
+    { src: "contexts/tab-bar-context.tsx", dest: join(basePrefix, "contexts/tab-bar-context.tsx").replace(/\\/g, "/") },
+    { src: "hooks/use-device.ts", dest: join(basePrefix, "hooks/use-device.ts").replace(/\\/g, "/") },
+    { src: "hooks/useBackHandler.ts", dest: join(basePrefix, "hooks/useBackHandler.ts").replace(/\\/g, "/") },
+    { src: "hooks/useScrollAwareTabBar.ts", dest: join(basePrefix, "hooks/useScrollAwareTabBar.ts").replace(/\\/g, "/") },
+    { src: "theme/index.ts", dest: join(basePrefix, "theme/index.ts").replace(/\\/g, "/") },
+    { src: "theme/tokens/colors.ts", dest: join(basePrefix, "theme/tokens/colors.ts").replace(/\\/g, "/") },
+    { src: "theme/tokens/glass.ts", dest: join(basePrefix, "theme/tokens/glass.ts").replace(/\\/g, "/") },
+    { src: "theme/tokens/radius.ts", dest: join(basePrefix, "theme/tokens/radius.ts").replace(/\\/g, "/") },
+    { src: "theme/tokens/spacing.ts", dest: join(basePrefix, "theme/tokens/spacing.ts").replace(/\\/g, "/") },
+    { src: "theme/tokens/typography.ts", dest: join(basePrefix, "theme/tokens/typography.ts").replace(/\\/g, "/") },
+    { src: "theme/themes/default.ts", dest: join(basePrefix, "theme/themes/default.ts").replace(/\\/g, "/") },
+    { src: "theme/themes/glass.ts", dest: join(basePrefix, "theme/themes/glass.ts").replace(/\\/g, "/") },
+    { src: "theme/themes/emerald.ts", dest: join(basePrefix, "theme/themes/emerald.ts").replace(/\\/g, "/") },
+    { src: "theme/themes/violet.ts", dest: join(basePrefix, "theme/themes/violet.ts").replace(/\\/g, "/") },
+    { src: "theme/themes/amber.ts", dest: join(basePrefix, "theme/themes/amber.ts").replace(/\\/g, "/") },
+    { src: "theme/themes/rose.ts", dest: join(basePrefix, "theme/themes/rose.ts").replace(/\\/g, "/") },
+    { src: "theme/themes/slate.ts", dest: join(basePrefix, "theme/themes/slate.ts").replace(/\\/g, "/") },
   ];
 
-  // Objectif C.2 + A.3 : inliner lib/upload/** dans le projet utilisateur aussi
-  // (car upload-image.tsx / upload-video.tsx l'importent via ../../lib/upload).
+  // Copier lib/upload dans le dossier cible
   const libUploadSourceDir = join(sourceRoot, "lib", "upload");
+  const uploadDestRel = join(basePrefix, "lib", "upload").replace(/\\/g, "/");
   if (existsSync(libUploadSourceDir)) {
     const walkCopy = (dir: string): void => {
       const srcDir = join(libUploadSourceDir, dir);
-      const destDir = join(targetProjectRoot, "lib", "upload", dir);
       if (!existsSync(srcDir)) return;
-      if (!existsSync(destDir)) mkdirSync(destDir, { recursive: true });
       const entries = readdirSync(srcDir, { withFileTypes: true });
       for (const e of entries) {
         const rel = join(dir, e.name);
@@ -350,8 +589,8 @@ export function setupFoundations(
           walkCopy(rel);
         } else if (e.isFile()) {
           filesToCopy.push({
-            src: join("lib", "upload", rel).split("\\").join("/"),
-            dest: join("lib", "upload", rel).split("\\").join("/"),
+            src: join("lib", "upload", rel).replace(/\\/g, "/"),
+            dest: join(uploadDestRel, rel).replace(/\\/g, "/"),
           });
         }
       }
@@ -379,7 +618,6 @@ export function setupFoundations(
 const CORE_UI_FILES = [
   "components/ui/text.tsx",
   "components/ui/view.tsx",
-  "components/ui/index.ts",
   "components/ui/liquid/liquid-types.ts",
   "components/ui/liquid/liquid-surface.tsx",
   "components/ui/liquid/liquid-pressable.tsx",
@@ -393,21 +631,24 @@ const CORE_UI_FILES = [
 export function setupCoreUi(
   sourceRoot: string,
   targetComponentsRoot: string,
-  dryRun = false
+  dryRun = false,
 ): void {
   copyComponentFiles(CORE_UI_FILES, sourceRoot, targetComponentsRoot, {
     overwrite: false,
     dryRun,
   });
+  // Initialise un index.ts propre (primitives + ThemedView/Text)
+  generateUiIndex(targetComponentsRoot, [], dryRun);
 }
 
 /**
  * Copy starter showcase components into target project components folder.
+ * Génère automatiquement index.ts avec les exports des composants installés.
  */
 export function setupStarterComponents(
   sourceRoot: string,
   targetComponentsRoot: string,
-  dryRun = false
+  dryRun = false,
 ): string[] {
   const starterComponents = [
     "components/ui/button.tsx",
@@ -426,7 +667,7 @@ export function setupStarterComponents(
     dryRun,
   });
 
-  return [
+  const installed = [
     "button",
     "card",
     "glass-card",
@@ -437,6 +678,11 @@ export function setupStarterComponents(
     "rashwright-logo",
     "showcase-screen",
   ];
+
+  // Met à jour components/ui/index.ts avec les starters effectivement installés
+  generateUiIndex(targetComponentsRoot, installed, dryRun);
+
+  return installed;
 }
 
 /**
@@ -447,21 +693,24 @@ export function setupStarterComponents(
 export function generateShowcaseScreen(
   targetProjectRoot: string,
   componentsPath: string,
-  dryRun = false
+  dryRun = false,
 ): string | null {
   if (dryRun) return null;
 
-  const hasExpoRouter = existsSync(join(targetProjectRoot, "app"));
+  const hasExpoRouter =
+    existsSync(join(targetProjectRoot, "src", "app")) ||
+    existsSync(join(targetProjectRoot, "app"));
 
   if (hasExpoRouter) {
     writeExpoRouterLayout(targetProjectRoot, componentsPath, dryRun);
-    return join(targetProjectRoot, "app", "index.tsx");
+    const useSrc = componentsPath.startsWith("src/") || existsSync(join(targetProjectRoot, "src"));
+    return join(targetProjectRoot, useSrc ? "src/app" : "app", "index.tsx");
   }
 
   // Mode classique : App.tsx (sans expo-router)
   const classicApp = join(targetProjectRoot, "App.tsx");
-  const normalize = (p: string): string => p.replace(/\\/g, "/").replace(/\/+/g, "/");
-  const showcaseRel = `@/${normalize(componentsPath)}/showcase-screen`;
+  const cleanComponentsPath = componentsPath.replace(/^src\//, "");
+  const showcaseRel = `@/${cleanComponentsPath}/showcase-screen`;
   const content = `import React from "react";
 import { ThemeProvider } from "@/contexts/theme-context";
 import { RashwrightShowcaseScreen } from "${showcaseRel}";

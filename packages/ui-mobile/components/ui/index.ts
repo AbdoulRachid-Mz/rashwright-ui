@@ -108,4 +108,14 @@ export { RashwrightShowcaseScreen } from "./showcase-screen";
 export { UploadImage } from "./upload-image";
 export { UploadVideo } from "./upload-video";
 
+// ---------------------------------------------------------------------------
+// 10. Nouveaux composants v0.2.0
+// ---------------------------------------------------------------------------
+export { Accordion } from "./accordion";
+export { Collapsible } from "./collapsible";
+export { DataTable } from "./data-table";
+export { Form, FormField, FormLabel, FormMessage, FormDescription, useFormField } from "./form";
+export { OtpInput } from "./otp-input";
+export { Rating } from "./rating";
+
 

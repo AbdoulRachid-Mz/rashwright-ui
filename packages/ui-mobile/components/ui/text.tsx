@@ -101,7 +101,7 @@ const ThemedText = forwardRef<RNText, TextProps>(
 
     return (
       <Animated.Text
-        ref={ref as unknown as React.ForwardedRef<unknown>}
+        ref={ref as unknown as React.ComponentPropsWithRef<typeof Animated.Text>["ref"]}
         style={[...baseStyles, animatedStyle]}
         numberOfLines={numberOfLines}
         selectable={selectable}

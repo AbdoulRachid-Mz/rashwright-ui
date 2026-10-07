@@ -3,15 +3,30 @@ import chalk from "chalk";
 import { join } from "node:path";
 import { loadComponentEntry } from "../core/dependency-resolver.js";
 import { REGISTRY_ROOT } from "../core/paths.js";
+import { resolveRegistry, ensureComponentDownloaded } from "../core/remote-registry.js";
 
 export function infoCommand(): Command {
   const cmd = new Command("info");
   cmd
     .description("Afficher les détails d'un composant")
     .argument("<component>", "Nom du composant")
+    .option("--registry <url>", "URL du registre distant (ex: https://unpkg.com/@rashwright/ui-mobile@latest)")
+    .option("--fresh", "Forcer le rafraîchissement du registre distant sans utiliser le cache")
     .option("--json", "Sortie JSON")
-    .action((name: string, options) => {
-      const entry = loadComponentEntry(name, REGISTRY_ROOT);
+    .action(async (name: string, options) => {
+      const resolved = await resolveRegistry({
+        registryUrl: options.registry,
+        fresh: options.fresh,
+      });
+
+      let entry = loadComponentEntry(name, resolved.registryRoot);
+      if (!entry && resolved.isRemote) {
+        entry = await ensureComponentDownloaded(name, {
+          registryUrl: resolved.registryUrl,
+          registryRoot: resolved.registryRoot,
+          sourceRoot: resolved.sourceRoot,
+        });
+      }
 
       if (!entry) {
         console.log(chalk.red(`  ✖ Composant "${name}" introuvable dans le registry.`));
