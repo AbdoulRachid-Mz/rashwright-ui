@@ -271,5 +271,50 @@ La commande unique `bun run quality` orchestre la chaîne complète :
 
 ---
 
-**Le projet Rashwright UI Mobile v0.3.0 est entièrement développé, testé et prêt pour publication.**
+## 10. RAPPORT TECHNIQUE DE LA VERSION v0.4.0 (PROJECT STATE & RELIABILITY ENGINE)
+
+**Date** : 2026-10-08  
+**Version** : `@rashwright/ui-mobile@0.4.0` & `@rashwright/cli@0.4.0`  
+**Statut** : ✅ **100% Validé — 90 Tests Vitest (18 fichiers) — Quality Gate exit 0**
+
+### 10.1 Synthèse des Réalisations v0.4.0
+
+1. **Lockfile d'État Réel (`rashwright-ui.lock`)** :
+   - Schéma standardisé avec `lockfileVersion: 1`, horodatage ISO et cartographie détaillée de chaque composant installé.
+   - Hash cryptographique SHA-256 normalisant les sauts de ligne CRLF/LF pour chaque fichier individuel.
+   - Détection chirurgicale de l'intégrité : statuts `clean`, `modified`, `missing`, `untracked`.
+   - Intégration automatique dans `rs-ui init`, `rs-ui add` (composants directs et dépendances transitives), `rs-ui remove` et audit en temps réel dans `rs-ui doctor`.
+
+2. **Moteur de Backup & Restore (`rs-ui backup` / `restore`)** :
+   - Module core `packages/cli/src/core/backup-manager.ts` opérant dans `.rashwright/backups/<timestamp>/`.
+   - Snapshots horodatés complets contenant `rashwright-ui.json`, `rashwright-ui.lock`, les fichiers composants et un `meta.json`.
+   - Commandes `rs-ui backup [label]` et `rs-ui restore [id] [--latest]`.
+   - Déclenchement automatique de snapshots de sécurité avant toute opération destructive ou sensible (`rs-ui update`, `rs-ui remove`, `rs-ui reset --delete`).
+
+3. **Smart Update Avancé (`rs-ui update`)** :
+   - Mode audit non-destructif `rs-ui update --check` affichant l'état des composants vs registre sans altérer aucun fichier.
+   - Mode interactif `rs-ui update -i / --interactive` avec sélection précise et volume de changements (+/- lignes).
+   - Protection contre l'écrasement des fichiers modifiés localement par le développeur avec prompt de confirmation.
+   - Option `--diff` affichant les lignes modifiées avant validation.
+   - Réinstallation automatique synchronisée des dépendances natives Expo (`expoDependencies`).
+
+4. **Inspecteur 360° & Graphe de Dépendances (`rs-ui info`, `deps`, `why`)** :
+   - `rs-ui info <composant>` enrichi avec vision 360° : version installée vs registre, intégrité locale, présence du Skill IA et compatibilité Expo.
+   - Commande `rs-ui deps <composant>` générant l'arbre arborescent ASCII des dépendances directes, transitives et Expo.
+   - Commande `rs-ui why <target>` offrant l'analyse inverse pour identifier quel composant requiert un paquet ou sous-composant.
+
+### 10.2 Métriques du Quality Gate v0.4.0
+
+- **Tests Vitest** : 90 tests exécutés et réussis sur 18 fichiers de test (100% pass).
+- **Validation Registre** : 61 composants vérifiés, 61 sources conformes, 0 erreur.
+- **Vérification TypeScript** : 0 erreur sur `@rashwright/cli` et `@rashwright/ui-mobile`.
+- **Bundle CLI** : 226.92 KB généré en 86ms (format ESM strict).
+- **Vérifications fumée** : 4/4 réussies (`smoke:version`, `lint:require`, `lint:shebang`, `smoke:dep-ui`).
+- **Dry-run npm** :
+  - `@rashwright/ui-mobile@0.4.0` : 249 fichiers empaquetés (taille compressée : 821.8 kB).
+  - `@rashwright/cli@0.4.0` : 3 fichiers empaquetés (taille compressée : 55.3 kB).
+
+---
+
+**Le projet Rashwright UI Mobile v0.4.0 est entièrement développé, validé et prêt pour publication.**
 

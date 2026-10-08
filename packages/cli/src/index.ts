@@ -10,6 +10,10 @@ import { doctorCommand } from "./commands/doctor.js";
 import { removeCommand } from "./commands/remove.js";
 import { updateCommand } from "./commands/update.js";
 import { resetCommand } from "./commands/reset.js";
+import { backupCommand } from "./commands/backup.js";
+import { restoreCommand } from "./commands/restore.js";
+import { depsCommand } from "./commands/deps.js";
+import { whyCommand } from "./commands/why.js";
 
 const require = createRequire(import.meta.url);
 const { version: CLI_VERSION } = require("../package.json") as {
@@ -31,6 +35,10 @@ program.addCommand(doctorCommand());
 program.addCommand(removeCommand());
 program.addCommand(updateCommand());
 program.addCommand(resetCommand());
+program.addCommand(backupCommand());
+program.addCommand(restoreCommand());
+program.addCommand(depsCommand());
+program.addCommand(whyCommand());
 
 // Support de l'alias direct binaire `rs-ui-reset`
 const invokedBin = basename(process.argv[1] || "");

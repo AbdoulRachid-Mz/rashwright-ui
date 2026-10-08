@@ -21,6 +21,7 @@ import {
   type CustomThemeColors,
 } from "../core/starter-generator.js";
 import { copyGlobalSkill, copyComponentSkill } from "../core/skills-manager.js";
+import { recordLockedComponent } from "../core/lock-manager.js";
 import { SOURCE_ROOT } from "../core/paths.js";
 
 const CORE_EXPO_DEPS = [
@@ -539,6 +540,19 @@ export function initCommand(): Command {
       });
       writeConfig(join(cwd, "rashwright-ui.json"), config);
 
+      // ── 10b. Enregistrer l'état initial dans rashwright-ui.lock ───────────
+      for (const comp of installedStarterComps) {
+        recordLockedComponent(
+          cwd,
+          comp,
+          "0.3.0",
+          [`${componentsPath}/${comp}.tsx`],
+          [],
+          [],
+          options.dryRun
+        );
+      }
+
       // ── 11. Résumé & instructions ────────────────────────────────────────
       console.log();
       console.log(chalk.bold.green("  ✔ Rashwright UI Mobile est opérationnel !"));
@@ -546,6 +560,7 @@ export function initCommand(): Command {
       console.log(chalk.dim("  Éléments prêts :"));
       console.log(chalk.dim(`    ✔ ${componentsPath}/ (Bouton, Card, GlassCard, Badge, Input, Logo RS)`));
       console.log(chalk.dim(`    ✔ index.ts exportant les composants configurés`));
+      console.log(chalk.dim(`    ✔ rashwright-ui.lock (Signatures SHA-256 et état réel)`));
       console.log(chalk.dim(`    ✔ Gest. de paquets : ${selectedPm}`));
       console.log(chalk.dim(`    ✔ theme/ (Tokens, presets Light/Dark/Glass)`));
       console.log(chalk.dim(`    ✔ contexts/theme-context.tsx & stores/theme-store.ts`));

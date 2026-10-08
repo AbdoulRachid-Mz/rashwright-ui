@@ -16,6 +16,7 @@ import { generateUiIndex, updateTsconfig } from "../core/starter-generator.js";
 import { resolveRegistry, ensureComponentDownloaded } from "../core/remote-registry.js";
 import { computeLineDiff, formatDiffOutput } from "../core/diff.js";
 import { copyComponentSkill } from "../core/skills-manager.js";
+import { recordLockedComponent } from "../core/lock-manager.js";
 
 export function addCommand(): Command {
   const cmd = new Command("add");
@@ -371,6 +372,20 @@ export function addCommand(): Command {
           if (options.skills !== false) {
             copyComponentSkill(comp.name, resolved.sourceRoot, cwd, options.dryRun);
           }
+          // ── Lockfile : enregistrement SHA-256 de TOUS les fichiers copiés (requestedSet + transitifs)
+          const lockFiles = (comp.entry.files ?? []).map((f: string) => {
+            const clean = f.replace(/^components\/ui\//, "");
+            return `${config.componentsPath}/${clean}`;
+          });
+          recordLockedComponent(
+            cwd,
+            comp.name,
+            comp.entry.version ?? "0.0.0",
+            lockFiles,
+            comp.entry.dependencies ?? [],
+            comp.entry.expoDependencies ?? [],
+            options.dryRun,
+          );
           // ── Objectif B.2 : SEULS les composants explicitement demandés sont "marqués installés" dans config.components
           if (requestedSet.has(comp.name)) {
             copySpinner.succeed(`${chalk.green("✔")} ${comp.name}@${comp.entry.version} ajouté`);

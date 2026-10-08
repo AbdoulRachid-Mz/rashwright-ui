@@ -1,6 +1,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
+export const SKILL_FILENAME = "SKILL.md";
+
 export interface SkillFrontmatter {
   name?: string;
   description?: string;

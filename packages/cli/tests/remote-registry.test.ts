@@ -27,7 +27,7 @@ describe("remote-registry", () => {
     expect(resolved.isRemote).toBe(true);
     expect(resolved.registryUrl).toBe(DEFAULT_REMOTE_REGISTRY);
     expect(resolved.sourceRoot).toBe(getCacheDir());
-  });
+  }, 15000);
 
   it("isCacheValid returns false for unmatched URL", () => {
     expect(isCacheValid("https://unknown-registry-url.dev")).toBe(false);

@@ -7,6 +7,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync, copyFileSyn
 import { detectProject } from "../core/project-detector.js";
 import { readConfig, writeConfig } from "../core/config-manager.js";
 import { generateUiIndex } from "../core/starter-generator.js";
+import { createBackup } from "../core/backup-manager.js";
 
 export interface ResetArtifact {
   relativePath: string;
@@ -173,6 +174,14 @@ export function resetCommand(): Command {
       if (options.dryRun) {
         spinner.info(`[dry-run] Opération ${action} simulée pour ${artifacts.length} fichiers.`);
         return;
+      }
+
+      if (action === "delete") {
+        const backup = createBackup(cwd, { trigger: "auto-reset", label: "pre-reset-delete" });
+        if (backup) {
+          spinner.info(`Backup automatique de précaution créé (${backup.id})`);
+          spinner.start();
+        }
       }
 
       const archiveBaseDir = join(cwd, "rs-ui-example");

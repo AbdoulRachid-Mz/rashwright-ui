@@ -1,43 +1,50 @@
 import { Command } from "commander";
 import chalk from "chalk";
-import { confirm } from "@inquirer/prompts";
+import { confirm, checkbox } from "@inquirer/prompts";
 import { join } from "node:path";
 import { existsSync, readFileSync } from "node:fs";
-import { createHash } from "node:crypto";
 import { execSync } from "node:child_process";
 import { detectProject } from "../core/project-detector.js";
 import { readConfig, writeConfig, markComponentInstalled, getInstalledVersion } from "../core/config-manager.js";
 import { loadComponentEntry } from "../core/dependency-resolver.js";
 import { copyComponentFiles } from "../core/file-manager.js";
-import { REGISTRY_ROOT, SOURCE_ROOT } from "../core/paths.js";
 import { resolveRegistry, ensureComponentDownloaded } from "../core/remote-registry.js";
+import { checkComponentIntegrity, recordLockedComponent } from "../core/lock-manager.js";
+import { createBackup } from "../core/backup-manager.js";
+import { computeLineDiff, formatDiffOutput } from "../core/diff.js";
+import { copyComponentSkill } from "../core/skills-manager.js";
 
-/**
- * C-1 — Comparaison par hash normalisé.
- * Strip les commentaires line-comment et normalise les espaces avant de hacher.
- * Évite les faux positifs quand l'utilisateur ajoute des commentaires ou reformate.
- */
-function contentHash(s: string): string {
-  return createHash("sha256")
-    .update(s.replace(/\/\/.*$/gm, "").replace(/\s+/g, " ").trim())
-    .digest("hex");
+interface ComponentUpdateStatus {
+  name: string;
+  installedVersion: string;
+  latestVersion: string;
+  hasUpdate: boolean;
+  isModified: boolean;
+  status: "clean" | "modified" | "missing" | "untracked";
+  diffStats?: { added: number; removed: number };
 }
 
 export function updateCommand(): Command {
   const cmd = new Command("update");
   cmd
-    .description("Mettre à jour les composants Rashwright UI installés")
-    .argument("[components...]", "Composants à mettre à jour (tous si non spécifié)")
+    .description("Mettre à jour intelligemment les composants Rashwright UI installés (Smart Update)")
+    .argument("[components...]", "Composants spécifiques à mettre à jour (tous si non spécifié)")
     .option("--registry <url>", "URL du registre distant (ex: https://unpkg.com/@rashwright/ui-mobile@latest)")
     .option("--fresh", "Forcer le rafraîchissement du registre distant sans utiliser le cache")
-    .option("--yes", "Écraser sans demander")
-    .option("--dry-run", "Afficher sans exécuter")
+    .option("--check", "Audit non-destructif : affiche les statuts de mise à jour sans modifier aucun fichier")
+    .option("-i, --interactive", "Sélectionner interactivement les composants à mettre à jour", false)
+    .option("--diff", "Afficher les différences détaillées avant d'écraser")
+    .option("--skills", "Mettre à jour également les Skills IA associés", true)
+    .option("--no-skills", "Ne pas mettre à jour les Skills IA")
+    .option("--yes", "Écraser sans demander confirmation")
+    .option("--dry-run", "Afficher les actions prévues sans les exécuter")
     .action(async (componentArgs: string[], options) => {
       const cwd = process.cwd();
       const project = detectProject(cwd);
 
       if (!project.hasRashwrightConfig) {
-        console.log(chalk.red("  ✖ Rashwright UI n'est pas initialisé."));
+        console.log(chalk.red("  ✖ Rashwright UI n'est pas initialisé dans ce projet."));
+        console.log(chalk.dim("    Exécutez d'abord: rs-ui init"));
         process.exit(1);
       }
 
@@ -45,11 +52,11 @@ export function updateCommand(): Command {
       const installed = Object.keys(config.components);
 
       if (installed.length === 0) {
-        console.log(chalk.dim("  Aucun composant installé."));
+        console.log(chalk.yellow("  ⚠ Aucun composant installé."));
         return;
       }
 
-      const toUpdate = componentArgs.length > 0 ? componentArgs : installed;
+      const targetList = componentArgs.length > 0 ? componentArgs : installed;
 
       const resolved = await resolveRegistry({
         registryUrl: options.registry,
@@ -57,18 +64,21 @@ export function updateCommand(): Command {
       });
 
       console.log();
-      console.log(chalk.bold.cyan("  Rashwright UI Mobile") + chalk.dim(" — rs-ui update"));
+      console.log(chalk.bold.cyan("  Rashwright UI Mobile") + chalk.dim(" — Smart Update"));
       if (resolved.isRemote) {
-        console.log(chalk.dim(`  ℹ Source registre : ${resolved.registryUrl}`));
+        console.log(chalk.dim(`  ℹ Registre : ${resolved.registryUrl}`));
       }
       console.log();
 
-      let updatedConfig = config;
+      // ── 1. Analyse d'intégrité et de version de chaque composant ─────────
+      const statuses: ComponentUpdateStatus[] = [];
 
-      for (const name of toUpdate) {
+      for (const name of targetList) {
         const installedVersion = getInstalledVersion(config, name);
         if (!installedVersion) {
-          console.log(chalk.dim(`  ○ ${name} — non installé, ignoré`));
+          if (componentArgs.length > 0) {
+            console.log(chalk.dim(`  ○ ${name} — non installé, ignoré`));
+          }
           continue;
         }
 
@@ -80,49 +90,163 @@ export function updateCommand(): Command {
             sourceRoot: resolved.sourceRoot,
           });
         }
+
         if (!entry) {
-          console.log(chalk.yellow(`  ⚠ ${name} — non trouvé dans le registry`));
+          console.log(chalk.yellow(`  ⚠ ${name} — non trouvé dans le registre`));
           continue;
         }
 
-        if (entry.version === installedVersion) {
-          console.log(chalk.dim(`  ✔ ${name} — déjà à jour (v${entry.version})`));
-          continue;
+        const integrity = checkComponentIntegrity(cwd, name);
+        const hasUpdate = entry.version !== installedVersion;
+        const isModified = integrity.status === "modified";
+
+        // Calcul du diff s'il existe
+        let diffStats: { added: number; removed: number } | undefined;
+        const compPath = join(cwd, config.componentsPath, `${name}.tsx`);
+        const srcPath = join(resolved.sourceRoot, `components/ui/${name}.tsx`);
+        if (existsSync(compPath) && existsSync(srcPath)) {
+          const localCode = readFileSync(compPath, "utf-8");
+          const regCode = readFileSync(srcPath, "utf-8");
+          const diffLines = computeLineDiff(localCode, regCode);
+          diffStats = {
+            added: diffLines.filter((l) => l.type === "added").length,
+            removed: diffLines.filter((l) => l.type === "removed").length,
+          };
         }
 
-        // ── C-1 : Comparaison par hash normalisé (strip commentaires + whitespace)
-        const targetDir = join(cwd, config.componentsPath);
-        const compFile = join(targetDir, `${name}.tsx`);
-        let isModified = false;
+        statuses.push({
+          name,
+          installedVersion,
+          latestVersion: entry.version,
+          hasUpdate,
+          isModified,
+          status: integrity.status,
+          diffStats,
+        });
+      }
 
-        if (resolved.isRemote) {
-          await ensureComponentDownloaded(name, {
-            registryUrl: resolved.registryUrl,
-            registryRoot: resolved.registryRoot,
-            sourceRoot: resolved.sourceRoot,
-          });
-        }
+      if (statuses.length === 0) {
+        console.log(chalk.yellow("  ⚠ Aucun composant valide sélectionné."));
+        return;
+      }
 
-        if (existsSync(compFile)) {
-          const localContent = readFileSync(compFile, "utf-8");
-          const srcPath = join(resolved.sourceRoot, `components/ui/${name}.tsx`);
-          if (existsSync(srcPath)) {
-            const srcContent = readFileSync(srcPath, "utf-8");
-            isModified = contentHash(localContent) !== contentHash(srcContent);
+      const updatable = statuses.filter((s) => s.hasUpdate);
+
+      // ── 2. Mode --check (Audit non-destructif) ───────────────────────────
+      if (options.check) {
+        console.log(chalk.bold(`  État des composants (${statuses.length} analysé(s)) :`));
+        console.log();
+        for (const s of statuses) {
+          const versionTag = `v${s.installedVersion} → v${s.latestVersion}`;
+          if (s.hasUpdate) {
+            const warningTag = s.isModified ? chalk.yellow(" (⚠ modifications locales)") : chalk.green(" (intact)");
+            console.log(`  ${chalk.cyan("▲")} ${chalk.bold(s.name)} : ${chalk.yellow(versionTag)}${warningTag}`);
+            if (s.diffStats) {
+              console.log(chalk.dim(`    Différence : +${s.diffStats.added} lignes, -${s.diffStats.removed} lignes`));
+            }
+          } else {
+            const statusDetail = s.isModified ? chalk.yellow(" (modifié localement)") : chalk.dim(" (à jour)");
+            console.log(`  ${chalk.green("✔")} ${s.name} : v${s.installedVersion}${statusDetail}`);
           }
         }
 
-        console.log(chalk.bold(`  ${name}`) + chalk.dim(` v${installedVersion} → v${entry.version}`));
+        console.log();
+        if (updatable.length > 0) {
+          console.log(chalk.yellow(`  ${updatable.length} composant(s) possèdent des mises à jour.`));
+          console.log(chalk.dim("  Exécutez 'rs-ui update' pour les appliquer."));
+        } else {
+          console.log(chalk.green("  Tous les composants installés sont à jour avec le registre."));
+        }
+        console.log();
+        return;
+      }
 
-        if (isModified && !options.yes) {
-          console.log(chalk.yellow("    ⚠ Modifications locales détectées (contenu fonctionnel différent)."));
-          const choice = await confirm({
-            message: `    Écraser ${name}.tsx?`,
-            default: false,
-          });
-          if (!choice) {
-            console.log(chalk.dim("    Ignoré — modifications conservées."));
-            continue;
+      // Si aucun composant n'a de mise à jour
+      if (updatable.length === 0) {
+        console.log(chalk.green("  ✔ Tous les composants ciblés sont déjà à jour avec le registre."));
+        console.log();
+        return;
+      }
+
+      console.log(chalk.bold(`  ${updatable.length} composant(s) possèdent des mises à jour :`));
+      for (const s of updatable) {
+        const modWarning = s.isModified ? chalk.yellow(" (⚠ modifications locales détectées)") : chalk.dim(" (intact)");
+        console.log(chalk.dim(`    • ${s.name} : v${s.installedVersion} → v${s.latestVersion}${modWarning}`));
+      }
+      console.log();
+
+      // ── 3. Sélection des composants à mettre à jour ──────────────────────
+      let selectedNames: string[] = updatable.map((u) => u.name);
+
+      if (options.interactive && !options.yes) {
+        const choices = updatable.map((u) => {
+          const modNote = u.isModified ? " [MODIFIÉ]" : "";
+          const diffNote = u.diffStats ? ` (+${u.diffStats.added}/-${u.diffStats.removed})` : "";
+          return {
+            name: `${u.name} (v${u.installedVersion} → v${u.latestVersion})${modNote}${diffNote}`,
+            value: u.name,
+            checked: true,
+          };
+        });
+
+        selectedNames = await checkbox({
+          message: "Sélectionnez les composants à mettre à jour :",
+          choices,
+        });
+
+        if (selectedNames.length === 0) {
+          console.log(chalk.dim("  Aucun composant sélectionné. Opération annulée."));
+          return;
+        }
+      }
+
+      // ── 4. Confirmation si des fichiers modifiés localement sont concernés
+      const modifiedSelected = updatable.filter((u) => selectedNames.includes(u.name) && u.isModified);
+      if (modifiedSelected.length > 0 && !options.yes && !options.dryRun) {
+        console.log(
+          chalk.yellow(
+            `  ⚠ Attention : ${modifiedSelected.length} composant(s) ont été modifiés localement (${modifiedSelected.map((m) => m.name).join(", ")}).`
+          )
+        );
+        const proceed = await confirm({
+          message: "Voulez-vous écraser vos modifications locales pour ces composants ?",
+          default: false,
+        });
+        if (!proceed) {
+          console.log(chalk.dim("  Mise à jour annulée pour préserver vos modifications."));
+          return;
+        }
+      }
+
+      // ── 5. Backup automatique de précaution ──────────────────────────────
+      if (!options.dryRun) {
+        const backup = createBackup(cwd, {
+          trigger: "auto-update",
+          label: `pre-update-${selectedNames.join("-").slice(0, 30)}`,
+        });
+        if (backup) {
+          console.log(chalk.green(`  ✔ Snapshot de sécurité automatique créé (${backup.id})`));
+          console.log();
+        }
+      }
+
+      // ── 6. Application des mises à jour ─────────────────────────────────
+      let updatedConfig = config;
+      const targetDir = join(cwd, config.componentsPath);
+
+      for (const name of selectedNames) {
+        const entry = loadComponentEntry(name, resolved.registryRoot);
+        if (!entry) continue;
+
+        if (options.diff) {
+          const compPath = join(targetDir, `${name}.tsx`);
+          const srcPath = join(resolved.sourceRoot, `components/ui/${name}.tsx`);
+          if (existsSync(compPath) && existsSync(srcPath)) {
+            const oldCode = readFileSync(compPath, "utf-8");
+            const newCode = readFileSync(srcPath, "utf-8");
+            console.log(chalk.bold.yellow(`\n  [diff] ${name}.tsx (local vs registre) :`));
+            console.log(formatDiffOutput(computeLineDiff(oldCode, newCode)));
+            console.log();
           }
         }
 
@@ -131,34 +255,52 @@ export function updateCommand(): Command {
             overwrite: true,
             dryRun: false,
           });
+
           const ok = results.every((r) => r.status !== "failed");
           if (ok) {
-            updatedConfig = markComponentInstalled(updatedConfig, name, entry.version);
-            console.log(chalk.green(`    ✔ Mis à jour`));
+            // Mettre à jour le skill IA si demandé
+            if (options.skills !== false) {
+              copyComponentSkill(name, resolved.sourceRoot, cwd, false);
+            }
 
-            // ── C-4 : Re-résoudre et réinstaller les expoDependencies si le composant a changé
-            if (entry.expoDependencies.length > 0) {
+            // Enregistrer dans rashwright-ui.lock
+            const lockFiles = (entry.files ?? []).map((f: string) => {
+              const clean = f.replace(/^components\/ui\//, "");
+              return `${config.componentsPath}/${clean}`;
+            });
+            recordLockedComponent(
+              cwd,
+              name,
+              entry.version,
+              lockFiles,
+              entry.dependencies ?? [],
+              entry.expoDependencies ?? [],
+              false
+            );
+
+            updatedConfig = markComponentInstalled(updatedConfig, name, entry.version);
+            console.log(chalk.green(`  ✔ ${name} mis à jour (v${entry.version})`));
+
+            // Réinstallation des expoDependencies
+            if (entry.expoDependencies && entry.expoDependencies.length > 0) {
               const pm = config.packageManager ?? project.packageManager ?? "npm";
               const runner = pm === "bun" ? "bunx" : "npx";
-              const depsToInstall = entry.expoDependencies.join(" ");
-              console.log(chalk.dim(`    ↻ Réinstallation des expoDeps : ${depsToInstall}`));
+              const depsStr = entry.expoDependencies.join(" ");
               try {
-                execSync(`${runner} expo install ${depsToInstall} -- --non-interactive`, {
+                execSync(`${runner} expo install ${depsStr} -- --non-interactive`, {
                   cwd,
-                  stdio: "inherit",
+                  stdio: "ignore",
                 });
+                console.log(chalk.dim(`    ✔ Dépendances Expo synchronisées (${depsStr})`));
               } catch {
-                console.log(chalk.yellow(`    ⚠ Réinstallation expoDeps échouée — lancez manuellement : ${runner} expo install ${depsToInstall}`));
+                console.log(chalk.yellow(`    ⚠ Échec install auto expo: ${runner} expo install ${depsStr}`));
               }
             }
           } else {
-            console.log(chalk.red(`    ✖ Échec de la mise à jour`));
+            console.log(chalk.red(`  ✖ Échec de la mise à jour pour ${name}`));
           }
         } else {
-          console.log(chalk.dim(`    [dry-run] Serait mis à jour`));
-          if (entry.expoDependencies.length > 0) {
-            console.log(chalk.dim(`    [dry-run] Re-installerait expoDeps : ${entry.expoDependencies.join(", ")}`));
-          }
+          console.log(chalk.dim(`  [dry-run] Serait mis à jour : ${name} → v${entry.version}`));
         }
       }
 
@@ -167,7 +309,7 @@ export function updateCommand(): Command {
       }
 
       console.log();
-      console.log(chalk.green("  ✔ Mise à jour terminée."));
+      console.log(chalk.bold.green("  ✔ Smart Update terminé avec succès !"));
       console.log();
     });
 

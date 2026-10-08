@@ -10,6 +10,7 @@ import { REGISTRY_ROOT } from "../core/paths.js";
 import { loadComponentEntry } from "../core/dependency-resolver.js";
 import { resolveRegistry, ensureCompatibilityMatrixDownloaded } from "../core/remote-registry.js";
 import { diagnoseSkills } from "../core/skills-manager.js";
+import { checkComponentIntegrity } from "../core/lock-manager.js";
 
 interface CheckResult {
   label: string;
@@ -132,6 +133,31 @@ export function doctorCommand(): Command {
               detail: issues.join(" | "),
             });
           }
+        }
+
+        // ── Intégrité Lockfile (SHA-256) ──────────────────────────────────
+        const integrityIssues: string[] = [];
+        for (const compName of Object.keys(config.components)) {
+          const integrity = checkComponentIntegrity(cwd, compName);
+          if (integrity.status === "missing") {
+            integrityIssues.push(`${compName}: fichier(s) manquant(s) [${integrity.missingFiles.join(", ")}]`);
+          } else if (integrity.status === "modified") {
+            integrityIssues.push(`${compName}: modifié [${integrity.modifiedFiles.join(", ")}]`);
+          }
+          // "untracked" (jamais enregistré dans le lockfile) et "clean" sont silencieux
+        }
+        if (integrityIssues.length > 0) {
+          checks.push({
+            label: `Intégrité Lockfile: ${integrityIssues.length} composant(s) altéré(s)`,
+            status: "warn",
+            detail: integrityIssues.join(" | "),
+          });
+        } else {
+          const trackedCount = Object.keys(config.components).length;
+          checks.push({
+            label: `Intégrité Lockfile: ${trackedCount} composant(s) intacts`,
+            status: "ok",
+          });
         }
 
         // ── Key native deps ──────────────────────────────────────────────

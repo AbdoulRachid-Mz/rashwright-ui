@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v0.3.0 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v0.4.0 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -10,7 +10,7 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-0.3.0-blue)](#)
+[![version](https://img.shields.io/badge/version-0.4.0-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2059-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
