@@ -6,12 +6,12 @@
 
 > Système moderne de composants **distribuables** pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie *shadcn/ui* : **vous copiez les composants dans votre codebase, vous en êtes propriétaire**.
 
-**Statut v0.4.0** : ✅ Version v0.4.0 — `@rashwright/cli@0.4.0` · `@rashwright/ui-mobile@0.4.0`  
-**Composants** : 61 composants UI + 8 primitives Liquid Glass · **Skills IA** : 61 skills composants + 4 modules + 1 global · **Fiabilité** : Lockfile SHA-256 (`rashwright-ui.lock`), Moteur Backup/Restore (`rs-ui backup/restore`), Smart Update chirurgical, Inspecteur 360° et Graphe de dépendances (`rs-ui info/deps/why`) · **SDK Expo** : SDK 54 à 59 · **Tests** : 90 tests unitaires Vitest · **Typing strict** : Zéro `any`.
+**Statut v0.5.0** : ✅ Version v0.5.0 — `@rashwright/cli@0.5.0` · `@rashwright/ui-mobile@0.5.0`  
+**Composants** : 61 composants UI + 8 primitives Liquid Glass + Support Composants Projet · **Skills IA** : 61 skills composants + 4 modules + 1 global · **Fiabilité** : Moteur de Migrations (`rs-ui migrate`), Lockfile SHA-256 (`rashwright-ui.lock`), Backup/Restore, Smart Update, Inspecteur 360°, Multi-Version (`@<version>`) et Gestion des Skills (`rs-ui skill`) · **SDK Expo** : SDK 54 à 59 · **Tests** : 107 tests unitaires Vitest · **Typing strict** : Zéro `any`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v0.4.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
-  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v0.4.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v0.5.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v0.5.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
   <a href="https://github.com/AbdoulRachid-Mz/rashwright-ui"><img src="https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github" alt="GitHub" /></a>
   <img src="https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2059-000000.svg?logo=expo" alt="Expo SDK" />
   <img src="https://img.shields.io/badge/Bun-1.4%2B-fbf0df.svg?logo=bun" alt="Bun" />

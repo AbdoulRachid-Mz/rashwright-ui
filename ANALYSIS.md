@@ -316,5 +316,47 @@ La commande unique `bun run quality` orchestre la chaîne complète :
 
 ---
 
-**Le projet Rashwright UI Mobile v0.4.0 est entièrement développé, validé et prêt pour publication.**
+## 11. RAPPORT TECHNIQUE DE LA VERSION v0.5.0 (MIGRATIONS, EXTENSIBILITY & MULTI-VERSION)
+
+**Date** : 2026-10-08  
+**Version** : `@rashwright/ui-mobile@0.5.0` & `@rashwright/cli@0.5.0`  
+**Statut** : ✅ **100% Validé — 107 Tests Vitest (23 fichiers) — Quality Gate exit 0**
+
+### 11.1 Synthèse des Réalisations v0.5.0
+
+1. **Moteur de Migrations Système (`rs-ui migrate`)** :
+   - Module d'orchestration séquentiel `packages/cli/src/core/migration-runner.ts`.
+   - Scripts de migration : `0.3.0-to-0.4.0` (création du lockfile rétroactif, structure starter) et `0.4.0-to-0.5.0` (support project components, skills metadata).
+   - Commande CLI `rs-ui migrate` avec modes `--check`, `--dry-run` et snapshot de sécurité automatique avant exécution.
+
+2. **Composants Projet Personnalisés (`rs-ui create component <nom>`)** :
+   - Scaffolding automatisé de composants TSX conformes aux tokens et primitives Glass (`toPascalCase`, styles normalisés).
+   - Génération instantanée et synchronisée du fichier de documentation IA `skills/rs-ui/<nom>/SKILL.md`.
+   - Enregistrement sous `projectComponents` dans `rashwright-ui.json` et scellement dans `rashwright-ui.lock`.
+
+3. **Registry Multi-Versions (`rs-ui add <nom>@<ver>`)** :
+   - Support de la syntaxe de version explicite dans le CLI (`rs-ui add button@0.3.0`).
+   - Flag `rs-ui list --versions <composant>` pour inspecter les versions disponibles et installées.
+
+4. **Gestion Décorrélée des Compétences IA (`rs-ui skill`)** :
+   - Commande `rs-ui skill list` avec diagnostic de synchronisation des skills.
+   - Commande `rs-ui skill update [nom] [--all]` permettant de rafraîchir les fichiers `SKILL.md` sans modifier le code source du projet.
+
+5. **Workspace & Monorepo Awareness** :
+   - Détection fine des monorepos Bun (`bun.lock`), pnpm (`pnpm-workspace.yaml`), Yarn et npm dans `project-detector.ts`.
+
+### 11.2 Métriques du Quality Gate v0.5.0
+
+- **Tests Vitest** : 107 tests exécutés et réussis sur 23 fichiers de test (100% pass).
+- **Validation Registre** : 61 composants vérifiés, 61 sources conformes, 0 erreur.
+- **Vérification TypeScript** : 0 erreur sur `@rashwright/cli` et `@rashwright/ui-mobile`.
+- **Bundle CLI** : 246.00 KB généré en 51ms (format ESM strict).
+- **Vérifications fumée** : 4/4 réussies (`smoke:version`, `lint:require`, `lint:shebang`, `smoke:dep-ui`).
+- **Dry-run npm** :
+  - `@rashwright/ui-mobile@0.5.0` : 249 fichiers empaquetés (taille compressée : 821.8 kB).
+  - `@rashwright/cli@0.5.0` : 3 fichiers empaquetés (taille compressée : 59.3 kB).
+
+---
+
+**Le projet Rashwright UI Mobile v0.5.0 est entièrement développé, validé et prêt pour publication.**
 

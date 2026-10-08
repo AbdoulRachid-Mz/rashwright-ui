@@ -67,8 +67,18 @@ export function addCommand(): Command {
         console.log(chalk.dim(`  ℹ Source registre : ${resolved.registryUrl}`));
       }
 
-      // ── 2. Resolve component list ──────────────────────────────────────
-      let componentNames: string[] = componentArgs;
+      // ── 2. Resolve component list & version tags (ex: button@0.3.0) ───
+      const requestedVersions = new Map<string, string>();
+      let componentNames: string[] = componentArgs.map((arg) => {
+        if (arg.includes("@")) {
+          const [name, ver] = arg.split("@");
+          if (name && ver) {
+            requestedVersions.set(name, ver);
+            return name;
+          }
+        }
+        return arg;
+      });
 
       const interactive = Boolean(options.interactive) && !options.yes && !options.dryRun && !options.nonInteractive;
 
@@ -373,6 +383,7 @@ export function addCommand(): Command {
             copyComponentSkill(comp.name, resolved.sourceRoot, cwd, options.dryRun);
           }
           // ── Lockfile : enregistrement SHA-256 de TOUS les fichiers copiés (requestedSet + transitifs)
+          const targetVersion = requestedVersions.get(comp.name) || comp.entry.version || "1.0.0";
           const lockFiles = (comp.entry.files ?? []).map((f: string) => {
             const clean = f.replace(/^components\/ui\//, "");
             return `${config.componentsPath}/${clean}`;
@@ -380,7 +391,7 @@ export function addCommand(): Command {
           recordLockedComponent(
             cwd,
             comp.name,
-            comp.entry.version ?? "0.0.0",
+            targetVersion,
             lockFiles,
             comp.entry.dependencies ?? [],
             comp.entry.expoDependencies ?? [],
@@ -388,8 +399,8 @@ export function addCommand(): Command {
           );
           // ── Objectif B.2 : SEULS les composants explicitement demandés sont "marqués installés" dans config.components
           if (requestedSet.has(comp.name)) {
-            copySpinner.succeed(`${chalk.green("✔")} ${comp.name}@${comp.entry.version} ajouté`);
-            updatedConfig = markComponentInstalled(updatedConfig, comp.name, comp.entry.version);
+            copySpinner.succeed(`${chalk.green("✔")} ${comp.name}@${targetVersion} ajouté`);
+            updatedConfig = markComponentInstalled(updatedConfig, comp.name, targetVersion);
           } else {
             copySpinner.succeed(`${chalk.cyan("…")} ${comp.name}@${comp.entry.version} copié (core / dépendance transitive)`);
           }

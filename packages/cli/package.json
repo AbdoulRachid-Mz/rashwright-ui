@@ -1,6 +1,6 @@
 {
   "name": "@rashwright/cli",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "CLI rs-ui pour Rashwright UI Mobile",
   "license": "MIT",
   "author": "Rashwright office",
@@ -44,7 +44,7 @@
     "publish:npm": "echo \"ATTENTION: lancer 'npm publish --access public' (avec --otp=XXXXXX si 2FA) depuis packages/cli/ — IMPÉRATIVEMENT APRÈS publication de @rashwright/ui-mobile + 2-5 min CDN\""
   },
   "dependencies": {
-    "@rashwright/ui-mobile": "^0.4.0",
+    "@rashwright/ui-mobile": "^0.5.0",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "inquirer": "^12.5.0",

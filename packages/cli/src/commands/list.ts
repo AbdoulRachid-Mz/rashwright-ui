@@ -15,8 +15,9 @@ export function listCommand(): Command {
     .option("--registry <url>", "URL du registre distant (ex: https://unpkg.com/@rashwright/ui-mobile@latest)")
     .option("--fresh", "Forcer le rafraîchissement du registre distant sans utiliser le cache")
     .option("-i, --interactive", "Mode interactif : parcourir et inspecter un composant")
+    .option("--versions <component>", "Afficher les versions disponibles d'un composant")
     .option("--json", "Sortie JSON")
-    .action(async (options) => {
+    .action(async (options: { registry?: string; fresh?: boolean; interactive?: boolean; versions?: string; json?: boolean }) => {
       const cwd = process.cwd();
       const project = detectProject(cwd);
       const config = project.hasRashwrightConfig ? readConfig(project.rashwrightConfigPath) : { components: {}, componentsPath: "", version: 1, theme: "default" as const, glass: false, typescript: true, aliases: { components: "@/components", lib: "@/lib", theme: "@/theme" } };
@@ -25,6 +26,27 @@ export function listCommand(): Command {
         registryUrl: options.registry,
         fresh: options.fresh,
       });
+
+      // ── Option --versions <component> ──────────────────────────────────
+      if (options.versions) {
+        const compName = options.versions;
+        const all = getAllComponents(resolved.registryRoot);
+        const entry = all.find((c) => c.name === compName);
+        console.log();
+        console.log(chalk.bold.cyan("  Rashwright UI") + chalk.dim(` — Versions disponibles pour ${compName}`));
+        console.log();
+        if (!entry) {
+          console.log(chalk.red(`  ✖ Composant "${compName}" introuvable dans le registre.`));
+        } else {
+          const installedVer = getInstalledVersion(config, compName);
+          console.log(`  ${chalk.green("•")} v${entry.version} (latest / registre)${installedVer === entry.version ? chalk.green(" [installé]") : ""}`);
+          if (installedVer && installedVer !== entry.version) {
+            console.log(`  ${chalk.dim("•")} v${installedVer} [installé localement]`);
+          }
+        }
+        console.log();
+        return;
+      }
 
       const index = loadRegistryIndex(resolved.registryRoot);
       const allEntries = getAllComponents(resolved.registryRoot);

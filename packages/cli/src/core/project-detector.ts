@@ -16,6 +16,9 @@ export interface ProjectInfo {
   componentsPath: string;
   hasRashwrightConfig: boolean;
   rashwrightConfigPath: string;
+  isWorkspace: boolean;
+  workspaceType: "bun" | "pnpm" | "yarn" | "npm" | null;
+  workspacePackages?: string[];
 }
 
 export function detectProject(cwd: string = process.cwd()): ProjectInfo {
@@ -36,6 +39,8 @@ export function detectProject(cwd: string = process.cwd()): ProjectInfo {
       componentsPath: "components/ui",
       hasRashwrightConfig: false,
       rashwrightConfigPath: join(cwd, "rashwright-ui.json"),
+      isWorkspace: false,
+      workspaceType: null,
     };
   }
 
@@ -90,6 +95,24 @@ export function detectProject(cwd: string = process.cwd()): ProjectInfo {
     componentsPath = "app/components/ui";
   }
 
+  // Detect workspace / monorepo
+  let isWorkspace = false;
+  let workspaceType: "bun" | "pnpm" | "yarn" | "npm" | null = null;
+  let workspacePackages: string[] | undefined;
+
+  if (Array.isArray(pkg.workspaces)) {
+    isWorkspace = true;
+    workspacePackages = pkg.workspaces;
+    workspaceType = packageManager;
+  } else if (pkg.workspaces && Array.isArray(pkg.workspaces.packages)) {
+    isWorkspace = true;
+    workspacePackages = pkg.workspaces.packages;
+    workspaceType = packageManager;
+  } else if (existsSync(join(cwd, "pnpm-workspace.yaml"))) {
+    isWorkspace = true;
+    workspaceType = "pnpm";
+  }
+
   const rashwrightConfigPath = join(cwd, "rashwright-ui.json");
   const hasRashwrightConfig = existsSync(rashwrightConfigPath);
 
@@ -106,6 +129,9 @@ export function detectProject(cwd: string = process.cwd()): ProjectInfo {
     componentsPath,
     hasRashwrightConfig,
     rashwrightConfigPath,
+    isWorkspace,
+    workspaceType,
+    workspacePackages,
   };
 }
 

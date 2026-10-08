@@ -31,6 +31,18 @@ export interface RashwrightConfig {
     theme: string;
   };
   components: InstalledComponentsMap; // name → version or lock metadata
+  projectComponents?: Record<
+    string,
+    {
+      version: string;
+      createdAt?: string;
+      category?: string;
+    }
+  >;
+  skills?: {
+    enabled: boolean;
+    directory?: string;
+  };
 }
 
 const DEFAULT_CONFIG: RashwrightConfig = {
