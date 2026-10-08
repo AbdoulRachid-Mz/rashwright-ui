@@ -1,6 +1,17 @@
 ---
 name: rs-ui/modal
-description: Modal plein écran ou en bas de page avec animations et backdrop
+description: Modal générique avec animations d'entrée/sortie.
+version: 0.3.0
+componentVersion: 0.3.0
+category: Overlay
+dependencies:
+  - none
+expoDependencies:
+  - expo-blur
+  - react-native-reanimated
+requiresComponents:
+  - none
+supportsGlass: false
 ---
 
 # Modal — Rashwright UI Mobile

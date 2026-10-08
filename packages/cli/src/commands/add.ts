@@ -15,6 +15,7 @@ import { REGISTRY_ROOT, SOURCE_ROOT } from "../core/paths.js";
 import { generateUiIndex, updateTsconfig } from "../core/starter-generator.js";
 import { resolveRegistry, ensureComponentDownloaded } from "../core/remote-registry.js";
 import { computeLineDiff, formatDiffOutput } from "../core/diff.js";
+import { copyComponentSkill } from "../core/skills-manager.js";
 
 export function addCommand(): Command {
   const cmd = new Command("add");
@@ -25,6 +26,8 @@ export function addCommand(): Command {
     .option("--fresh", "Forcer le rafraîchissement du registre distant sans utiliser le cache")
     .option("--diff", "Afficher les différences (diff) avant d'écraser un composant déjà existant")
     .option("--all", "Ajouter tous les composants disponibles")
+    .option("--skills", "Installer automatiquement le skill IA associé au composant", true)
+    .option("--no-skills", "Désactiver l'installation des skills IA")
     .option("--force", "Forcer la réinstallation (écraser les fichiers existants)")
     .option("--yes", "Répondre Oui à toutes les questions (mode non interactif)")
     .option("--dry-run", "Afficher les actions sans les exécuter")
@@ -365,6 +368,9 @@ export function addCommand(): Command {
 
         const ok = results.every((r) => r.status !== "failed");
         if (ok) {
+          if (options.skills !== false) {
+            copyComponentSkill(comp.name, resolved.sourceRoot, cwd, options.dryRun);
+          }
           // ── Objectif B.2 : SEULS les composants explicitement demandés sont "marqués installés" dans config.components
           if (requestedSet.has(comp.name)) {
             copySpinner.succeed(`${chalk.green("✔")} ${comp.name}@${comp.entry.version} ajouté`);

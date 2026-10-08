@@ -6,12 +6,12 @@
 
 > Système moderne de composants **distribuables** pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie *shadcn/ui* : **vous copiez les composants dans votre codebase, vous en êtes propriétaire**.
 
-**Statut v0.2.0** : ✅ Version v0.2.0 — `@rashwright/cli@0.2.0` · `@rashwright/ui-mobile@0.2.0`  
-**Composants** : 61 composants UI + 8 primitives Liquid Glass · **SDK Expo** : SDK 54 à 59 · **Tests** : 55 tests unitaires Vitest · **Typing strict** : Zéro `any`.
+**Statut v0.3.0** : ✅ Version v0.3.0 — `@rashwright/cli@0.3.0` · `@rashwright/ui-mobile@0.3.0`  
+**Composants** : 61 composants UI + 8 primitives Liquid Glass · **Skills IA** : 61 skills composants + 4 modules + 1 global · **Thèmes** : 9 presets intégrés + Moteur Custom · **SDK Expo** : SDK 54 à 59 · **Tests** : 71 tests unitaires Vitest · **Typing strict** : Zéro `any`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v0.2.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
-  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v0.2.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v0.3.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v0.3.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
   <a href="https://github.com/AbdoulRachid-Mz/rashwright-ui"><img src="https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github" alt="GitHub" /></a>
   <img src="https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2059-000000.svg?logo=expo" alt="Expo SDK" />
   <img src="https://img.shields.io/badge/Bun-1.4%2B-fbf0df.svg?logo=bun" alt="Bun" />
@@ -28,66 +28,96 @@ bun add -g @rashwright/cli
 # ou : npm install -g @rashwright/cli
 
 # 2. Initialiser Rashwright UI Mobile dans un projet Expo existant (ou nouveau)
-rs-ui init --glass --theme emerald --yes
+rs-ui init --glass --theme cyan --yes
 
-# 3. Ajouter des composants
-rs-ui add button
+# 3. Ajouter des composants (avec leurs Skills IA automatiquement associés)
+rs-ui add button drawer
 rs-ui add card accordion form otp-input
 
-# ✅ C'est prêt. Plus besoin de comprendre l'architecture interne.
+# 4. Nettoyer les fichiers de démo quand vous êtes prêt
+rs-ui reset
 ```
 
-> 💡 **Rien à comprendre du monorepo.** `@rashwright/cli` est **votre unique point d'entrée** : il va chercher les composants dans le Registry `@rashwright/ui-mobile` (localement ou via CDN distant avec cache de 24h), résout les versions natives compatibles avec votre SDK Expo et copie le code source directement dans votre projet. Pas de `node_modules` opaque.
+> 💡 **Rien à comprendre du monorepo.** `@rashwright/cli` est **votre unique point d'entrée** : il va chercher les composants dans le Registry `@rashwright/ui-mobile` (localement ou via CDN distant avec cache de 24h), résout les versions natives compatibles avec votre SDK Expo et copie le code source directement dans votre projet avec sa documentation IA contextuelle (`skills/rs-ui/`). Pas de `node_modules` opaque.
 
 ---
 
 ## 📑 Sommaire — Guide utilisateur
 
 1. [Pourquoi Rashwright ?](#-pourquoi-rashwright-)
-2. [Nouveautés de la version v0.2.0](#-nouveautés-de-la-version-v020)
-3. [Prérequis](#-prérequis)
-4. [Installation du CLI `rs-ui`](#-installation-du-cli-rs-ui)
-5. [Initialiser un projet (`rs-ui init`)](#-initialiser-un-projet-rs-ui-init)
-6. [Ajouter des composants (`rs-ui add / list / info`)](#-ajouter-des-composants-rs-ui-add--list--info)
-7. [Les 6 thèmes prédéfinis](#-les-6-thèmes-prédéfinis)
-8. [Composants d'upload et providers](#-composants-dupload-et-providers)
-9. [Diagnostic (`rs-ui doctor`)](#-diagnostic-rs-ui-doctor)
-10. [Matrice de compatibilité Expo SDK](#-matrice-de-compatibilité-expo-sdk)
-11. [Dépannage & FAQ](#-dépannage--faq)
-12. [Architecture & Dépôt `rashwright-ui`](#-architecture--dépôt-rashwright-ui)
+2. [Nouveautés de la version v0.3.0](#-nouveautés-de-la-version-v030)
+3. [Système de Skills IA](#-système-de-skills-ia)
+4. [Prérequis](#-prérequis)
+5. [Installation du CLI `rs-ui`](#-installation-du-cli-rs-ui)
+6. [Initialiser un projet (`rs-ui init`)](#-initialiser-un-projet-rs-ui-init)
+7. [Ajouter des composants (`rs-ui add / list / info`)](#-ajouter-des-composants-rs-ui-add--list--info)
+8. [Réinitialiser le projet starter (`rs-ui reset`)](#-réinitialiser-le-projet-starter-rs-ui-reset)
+9. [Les 9 thèmes prédéfinis & Moteur Custom](#-les-9-thèmes-prédéfinis--moteur-custom)
+10. [Composants d'upload et providers](#-composants-dupload-et-providers)
+11. [Diagnostic (`rs-ui doctor`)](#-diagnostic-rs-ui-doctor)
+12. [Matrice de compatibilité Expo SDK](#-matrice-de-compatibilité-expo-sdk)
+13. [Architecture & Dépôt `rashwright-ui`](#-architecture--dépôt-rashwright-ui)
 
-> 🛠️ **Vous voulez contribuer (ajouter un composant, faire évoluer le CLI) ?** → Consulter **[CONTRIBUTOR.md](./CONTRIBUTOR.md)** et **[Quick-Start.md](./Quick-Start.md)**.
+> 🛠️ **Vous voulez contribuer ?** → Consulter **[CONTRIBUTOR.md](./CONTRIBUTOR.md)** et **[Quick-Start.md](./Quick-Start.md)**.
 
 ---
 
 ## ❓ Pourquoi Rashwright ?
 
-Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`**. C'est un **système de distribution de code source directe** à la *shadcn/ui* :
+Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`**. C'est un **système de distribution de code source directe** à la *shadcn/ui* enrichi d'un **système de Skills IA** :
 
 - ✅ **Propriété totale du code** : Chaque composant installé via `rs-ui add` est **copié** dans ton projet (`components/ui/`). Tu peux l'éditer, l'adapter, le personnaliser sans contrainte.
+- ✅ **Support IA natif** : Chaque composant s'accompagne de son `SKILL.md` (`skills/rs-ui/<component>/`) pour donner le contexte parfait à Antigravity, Cursor, Gemini CLI, Claude Code et Copilot.
 - ✅ **Résolution automatique Expo SDK** : Le CLI détecte ta version d'Expo (**SDK 54 à 59**) et installe les versions natives **testées** pour `react-native-reanimated`, `expo-blur`, `expo-linear-gradient`, etc.
 - ✅ **Moteur Liquid Glass intégré** : Effets de flou dynamique, reflets physiques, bordures translucides, rebonds tactiles haptiques — activable via `--glass` dans `rs-ui init`.
-- ✅ **6 thèmes prêts à l'emploi (clair + sombre)** : `default` · `emerald` · `violet` · `amber` · `rose` · `slate`.
-- ✅ **Zéro blocage persistance** : Détection dynamique de `@react-native-async-storage/async-storage` avec fallback mémoire sécurisé.
+- ✅ **9 thèmes + Custom Engine** : `default`, `emerald`, `violet`, `amber`, `rose`, `slate`, `green`, `red`, `cyan`, et création de thème custom.
+- ✅ **Commande `rs-ui reset`** : Archivage ou suppression en une commande des fichiers de démonstration du starter.
 - ✅ **61 composants** au catalogue avec typage strict TypeScript et zéro `any`.
 
 ---
 
-## 🆕 Nouveautés de la version v0.2.0
+## 🆕 Nouveautés de la version v0.3.0
 
-- 🧩 **6 Nouveaux composants (61 total)** :
-  - `accordion` : Sections repliables avec animations fluides Reanimated et options multi-items.
-  - `collapsible` : Section repliable individuelle interactive.
-  - `data-table` : Tableau de données FlatList avec tri par colonnes, filtre de recherche et style Glass.
-  - `form` : Primitives de formulaire typées (`Form`, `FormField`, `FormLabel`, `FormMessage`, etc.).
-  - `otp-input` : Saisie OTP à cases individuelles avec focus automatique et retour haptique.
-  - `rating` : Notation par étoiles interactive (support des demi-étoiles).
-- 🌐 **Remote Registry & Cache CDN** : Fallback automatique vers le CDN unpkg (`https://unpkg.com/@rashwright/ui-mobile@latest`) avec cache local sur disque (`~/.rs-ui/cache`, TTL 24h) et options `--registry <url>` / `--fresh`.
-- 🔍 **Prévisualisation par Diff (`rs-ui add --diff`)** : Comparaison ligne par ligne avant d'écraser un composant existant.
-- 📱 **Support d'Expo SDK 59** : Ajout de la matrice de compatibilité `expo-59.json` pour React Native 0.77+.
-- 🧪 **Suite de tests Vitest** : 55 tests unitaires intégrés au pipeline de validation.
-- 🔒 **Lockfile `rashwright-ui.json` versionné** : Stockage du numéro de version et de la date d'installation de chaque composant.
-- 🎨 **Exploration interactive** : `rs-ui list -i` pour naviguer dans le catalogue par catégorie.
+- 🤖 **Système de Skills IA pour agents de code** :
+  - **Skill Global** (`skills/rs-ui/SKILL.md`) installé automatiquement par `rs-ui init`.
+  - **61 Skills de composants** (`skills/rs-ui/<component>/SKILL.md`) installés automatiquement par `rs-ui add`.
+  - Options CLI `--skills` (activé par défaut) et `--no-skills`.
+  - 4 skills modules core : `liquid`, `upload`, `theme`, `cli`.
+- 🎨 **Moteur de Thèmes Élargi & Custom Engine** :
+  - 3 nouveaux presets : `green` (Forest Green), `red` (Crimson Red), `cyan` (Cyber Cyan).
+  - Flags CLI `--primary`, `--dark-primary`, `--secondary`, etc. pour injecter vos couleurs en ligne de commande.
+  - Assistant interactif à 2 étapes (couleurs obligatoires puis facultatives avec valeurs par défaut).
+- 🔄 **Commande `rs-ui reset` & alias `rs-ui-reset`** :
+  - Archivage réversible par défaut vers `rs-ui-example/`.
+  - Option de suppression définitive `--delete` / `--hard`.
+  - Écran minimal d'accueil propre généré avec `useTheme()`.
+- 🩺 **Diagnostic enrichi `rs-ui doctor`** :
+  - Contrôle automatique de la présence et de la synchronisation des versions des Skills IA.
+- 🛠️ **Correctifs & TypeScript** :
+  - Correction de l'option `ignoreDeprecations: "5.0"` supportée par TypeScript 5.x.
+  - Remplacement de `SafeAreaView` déprécié par `react-native-safe-area-context` dans le starter.
+  - Chemin d'asset du logo normalisé vers `@/assets/primary.png`.
+
+---
+
+## 🤖 Système de Skills IA
+
+Rashwright UI Mobile équipe les agents IA d'un contexte de développement exhaustif :
+
+```text
+mon-projet-expo/
+├── skills/
+│   └── rs-ui/
+│       ├── SKILL.md            # Skill Global (architecture, tokens, Glass UI)
+│       ├── button/
+│       │   └── SKILL.md        # Skill Button (props, types, Reanimated)
+│       └── drawer/
+│           └── SKILL.md        # Skill Drawer (props, gesture handler)
+```
+
+Chaque skill contient :
+1. Un **frontmatter YAML** exploitable par les outils IA.
+2. Une **documentation Markdown** détaillée (props, types, pièges fréquents, exemples d'utilisation).
 
 ---
 
@@ -120,40 +150,37 @@ npx @rashwright/cli <commande>
 Vérifier l'installation :
 ```bash
 rs-ui --version
-# Affiche 0.2.0
+# Affiche 0.3.0
 ```
 
 ---
 
 ## 🚀 Initialiser un projet (`rs-ui init`)
 
-`rs-ui init` prend en charge deux contextes :
-1. **Dans un projet Expo existant** : configure Rashwright, crée `rashwright-ui.json`, installe les dépendances natives compatibles SDK, pose `ThemeProvider` et copie l'écran démo interactif.
-2. **Dans un dossier vide** : initialise un projet Expo propre (SDK 54 à 59) puis configure Rashwright.
-
 ```bash
-# Mode interactif
+# Mode interactif avec choix de thème et assistant custom
 rs-ui init
 
-# Mode automatique complet (Liquid Glass + thème émeraude + SDK 58)
-rs-ui init --glass --theme emerald --sdk 58 --yes
+# Mode automatique complet avec thème Cyber Cyan & Liquid Glass
+rs-ui init --glass --theme cyan --sdk 58 --yes
 
-# Simulation sans toucher aux fichiers
-rs-ui init --dry-run
+# Thème personnalisé en ligne de commande
+rs-ui init --theme custom --primary "#00D9FF" --secondary "#1E293B" --dark-primary "#38BDF8"
 ```
 
 ---
 
 ## 🧩 Ajouter des composants (`rs-ui add` / `list` / `info`)
 
-Le CLI résout automatiquement tout l'arbre de dépendances (composants enfants, modules natifs Expo et providers) :
-
 ```bash
-# Ajouter un composant
-rs-ui add button
+# Ajouter un composant et son skill IA
+rs-ui add drawer
+
+# Ajouter sans installer le skill IA
+rs-ui add drawer --no-skills
 
 # Ajouter plusieurs composants
-rs-ui add card modal text-input accordion form
+rs-ui add button card modal accordion form
 
 # Prévisualiser les modifications avant écrasement
 rs-ui add button --diff
@@ -162,94 +189,42 @@ rs-ui add button --diff
 rs-ui add --all
 ```
 
-**Explorer le catalogue :**
+---
+
+## 🔄 Réinitialiser le projet starter (`rs-ui reset`)
+
+Une fois le starter pris en main, supprimez ou archivez le showcase démo en une commande :
+
 ```bash
-# Catalogue standard par catégorie
-rs-ui list
+# Mode interactif sûr (archivage par défaut dans rs-ui-example/)
+rs-ui reset
 
-# Mode interactif
-rs-ui list -i
-
-# Format JSON pour scripts et CI
-rs-ui list --json
-
-# Détails complets d'un composant
-rs-ui info accordion
-rs-ui info data-table
+# Suppression définitive explicite
+rs-ui reset --delete
 ```
 
 ---
 
-## 🎨 Les 6 thèmes prédéfinis
+## 🎨 Les 9 thèmes prédéfinis & Moteur Custom
 
 | Thème | Couleur primaire | Usage recommandé |
 |---|---|---|
-| `default` | Bleu tech (`#2563eb`) | Applications corporate, SaaS, productivité |
-| `emerald` | Vert émeraude (`#059669`) | Immobilier, fintech, écologie, santé |
-| `violet` | Violet profond (`#7c3aed`) | Créativité, design, IA, divertissement |
-| `amber` | Ambre chaud (`#d97706`) | Alimentation, logistique, alertes |
-| `rose` | Rose vif (`#e11d48`) | Lifestyle, beauté, e-commerce |
-| `slate` | Ardoise neutre (`#475569`) | Minimalisme, luxe sobre, utilitaires |
-
-```tsx
-import { ThemeProvider, useTheme } from "@/contexts/theme-context";
-import { Button } from "@/components/ui/button";
-
-export default function App() {
-  return (
-    <ThemeProvider initialMode="system" initialPreset="emerald">
-      <MainScreen />
-    </ThemeProvider>
-  );
-}
-
-function MainScreen() {
-  const { setThemePreset } = useTheme();
-
-  return (
-    <Button variant="default" onPress={() => setThemePreset("violet")}>
-      Changer pour le thème Violet
-    </Button>
-  );
-}
-```
-
----
-
-## 📤 Composants d'upload et providers
-
-Les composants `UploadImage` et `UploadVideo` embarquent directement le moteur d'upload Rashwright inliné dans `lib/upload/` (aucun package externe requis). 5 providers sont fournis : **Cloudinary**, **Firebase Storage**, **Vercel Blob**, **Local FS**, **Mock**.
-
-```tsx
-import { UploadImage } from "@/components/ui/upload-image";
-import { FirebaseStorageProvider } from "@/lib/upload";
-import { useState } from "react";
-
-const firebaseUploader = new FirebaseStorageProvider({
-  storageBucket: "votre-app.appspot.com",
-  basePath: "uploads/images",
-});
-
-export function ProfileForm() {
-  const [images, setImages] = useState<string[]>([]);
-
-  return (
-    <UploadImage
-      value={images}
-      onChange={setImages}
-      uploader={firebaseUploader}
-      maxImages={5}
-      autoUpload={true}
-    />
-  );
-}
-```
+| `default` | Bleu tech (`#2563EB` / `#3B82F6`) | Applications corporate, SaaS, productivité |
+| `emerald` | Vert émeraude (`#059669` / `#10B981`) | Immobilier, fintech, écologie |
+| `violet` | Violet profond (`#7C3AED` / `#8B5CF6`) | Créativité, design, IA |
+| `amber` | Ambre chaud (`#D97706` / `#F59E0B`) | Alimentation, logistique, alertes |
+| `rose` | Rose vif (`#E11D48` / `#F43F5E`) | Lifestyle, beauté, e-commerce |
+| `slate` | Ardoise neutre (`#475569` / `#64748B`) | Minimalisme, luxe sobre, utilitaires |
+| `green` | Vert forêt (`#16A34A` / `#22C55E`) | Nature, santé, développement durable |
+| `red` | Rouge rubis (`#DC2626` / `#EF4444`) | Urgences, sport, fintech |
+| `cyan` | Cyber cyan (`#0891B2` / `#00D9FF`) | Tech, IA, signature Rashwright |
+| `custom` | Personnalisé | Votre propre charte graphique générée dynamiquement |
 
 ---
 
 ## 🛠 Diagnostic (`rs-ui doctor`)
 
-Lance un diagnostic complet de l'environnement, des versions natives et de l'état des composants installés :
+Lance un diagnostic complet de l'environnement, des versions natives et des Skills IA :
 
 ```bash
 rs-ui doctor
@@ -263,8 +238,10 @@ rs-ui doctor
   ✔ Package manager: bun
   ✔ TypeScript
   ✔ rashwright-ui.json
-  ✔ Dossier composants: components/ui
-  ✔ Composants installés: 18 (tous à jour)
+  ✔ Dossier composants: src/components/ui
+  ✔ Composants installés: 12 (tous à jour)
+  ✔ Skill IA Global (skills/rs-ui/SKILL.md)
+  ✔ Skills IA Composants: 12/12 synchronisés
   ✔ react-native-reanimated — v~4.3.2
   ✔ react-native-gesture-handler — v~2.31.2
   ✔ react-native-safe-area-context — v~5.7.0
@@ -287,28 +264,6 @@ rs-ui doctor
 | SDK 58 | 🟢 Tested |
 | SDK 59 | 🟡 Experimental (Matrice prête) |
 
-La matrice complète est disponible dans `registry/versions/expo-{54,55,56,57,58,59}.json`.
-
----
-
-## ❓ Dépannage & FAQ
-
-### 1. `react-native-reanimated` plante au démarrage
-> **Solution** : Placez le plugin Reanimated dans votre `babel.config.js` **impérativement en dernier** :
-> ```javascript
-> module.exports = function (api) {
->   api.cache(true);
->   return {
->     presets: ['babel-preset-expo'],
->     plugins: ['react-native-reanimated/plugin'],
->   };
-> };
-> ```
-> Puis redémarrez Metro : `bunx expo start --clear`.
-
-### 2. Le flou ne s'affiche pas sur Android
-> Android ne disposant pas de support matériel temps réel identique à iOS, Rashwright UI applique automatiquement un repli visuel semi-transparent adaptatif (`backgroundFallback`) avec bordure lumineuse pour garantir une lisibilité optimale sans baisse de performance.
-
 ---
 
 ## 🏗 Architecture & Monorepo
@@ -316,11 +271,12 @@ La matrice complète est disponible dans `registry/versions/expo-{54,55,56,57,58
 ```text
 Dépôt GitHub rashwright-ui             npm registry (public)
            │                                  │
-           ├── packages/cli/       ──────▶   @rashwright/cli@0.2.0
-           │    └── commande: rs-ui              (point d'entrée unique pour les développeurs)
+           ├── packages/cli/       ──────▶   @rashwright/cli@0.3.0
+           │    └── commandes: rs-ui / rs-ui-reset
            │
-           └── packages/ui-mobile/ ──────▶   @rashwright/ui-mobile@0.2.0
+           └── packages/ui-mobile/ ──────▶   @rashwright/ui-mobile@0.3.0
                 ├── components/ui/              (61 composants sources)
+                ├── skills/                     (61 skills + modules core)
                 ├── registry/                   (métadonnées & matrices SDK 54 à 59)
                 ├── liquid/ primitives          (moteur Liquid Glass)
                 └── lib/upload/                 (moteur d'upload inliné)

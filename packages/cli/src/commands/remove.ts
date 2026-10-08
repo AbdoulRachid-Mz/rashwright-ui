@@ -9,6 +9,7 @@ import { loadAllComponentEntries } from "../core/dependency-resolver.js";
 import { REGISTRY_ROOT } from "../core/paths.js";
 import { generateUiIndex } from "../core/starter-generator.js";
 import { resolveRegistry } from "../core/remote-registry.js";
+import { removeComponentSkill } from "../core/skills-manager.js";
 
 export function removeCommand(): Command {
   const cmd = new Command("remove");
@@ -69,6 +70,7 @@ export function removeCommand(): Command {
           unlinkSync(compPath);
           console.log(chalk.dim(`  ✔ Fichier supprimé: ${compPath}`));
         }
+        removeComponentSkill(name, cwd, options.dryRun);
         const updated = markComponentRemoved(config, name);
         const targetDir = join(cwd, config.componentsPath);
         generateUiIndex(targetDir, Object.keys(updated.components), options.dryRun);

@@ -205,15 +205,71 @@ La commande unique `bun run quality` orchestre la chaîne complète :
 
 ---
 
-## 8. RISQUES RÉSIDUELS & PRÉPARATION DE LA PHASE 7
-
+## 8. RISQUES RÉSIDUELS & PRÉPARATION DE LA PUBLICATION
 - **Ordre de publication npm** :
-  1. Publier en premier `@rashwright/ui-mobile@0.2.0`.
+  1. Publier en premier `@rashwright/ui-mobile@0.3.0`.
   2. Patienter 2 à 5 minutes pour la propagation CDN de npm et unpkg.
-  3. Publier `@rashwright/cli@0.2.0`.
+  3. Publier `@rashwright/cli@0.3.0`.
 - **Validation post-publication** :
-  Tester `npx @rashwright/cli@0.2.0 init` dans un projet temporaire pour valider le téléchargement distant via CDN.
+  Tester `npx @rashwright/cli@0.3.0 init` dans un projet temporaire pour valider le téléchargement distant via CDN et la présence des skills.
 
 ---
 
-**Le projet Rashwright UI Mobile est stabilisé, validé et prêt pour la publication npm v0.2.0.**
+## 9. RAPPORT TECHNIQUE DE LA VERSION v0.3.0
+
+**Date** : 2026-10-08  
+**Version** : `@rashwright/ui-mobile@0.3.0` & `@rashwright/cli@0.3.0`  
+**Statut** : ✅ **100% Validé — 71 Tests Vitest (13 fichiers) — Quality Gate exit 0**
+
+### 9.1 Synthèse des Réalisations v0.3.0
+
+1. **Système de Skills IA Complet pour Agents de Code** :
+   - Création de **61 fichiers `SKILL.md`** synchronisés pour l'intégralité des 61 composants du catalogue (`packages/ui-mobile/skills/<component>/SKILL.md`).
+   - Format standardisé avec frontmatter YAML (`name`, `description`, `version: 0.3.0`, `componentVersion: 0.3.0`, `category`, `dependencies`, `supportsGlass`) et documentation Markdown (Purpose, Installation, Usage, Props API, Pièges fréquents).
+   - Création du **Skill Global Rashwright UI** dans `skills/rs-ui/SKILL.md` (architecture, tokens, primitives Liquid Glass, règles de code ownership).
+   - Création des **4 Skills modules core** : `liquid`, `upload`, `theme`, `cli`.
+   - Intégration CLI dans `rs-ui init` : copie automatique de `skills/rs-ui/SKILL.md` et des starters.
+   - Intégration CLI dans `rs-ui add <component>` : copie automatique de `skills/rs-ui/<component>/SKILL.md` avec support des flags `--skills` (activé par défaut) et `--no-skills`.
+   - Intégration CLI dans `rs-ui remove` : nettoyage propre du Skill associé (`removeComponentSkill`).
+   - Diagnostic dans `rs-ui doctor` : détection du skill global, décompte et synchronisation des versions des skills installés.
+
+2. **Moteur de Thèmes Élargi & Custom Theme Engine** :
+   - 3 nouveaux presets ajoutés :
+     - `green` : Forest Green (`#16A34A` / `#22C55E`)
+     - `red` : Crimson Red (`#DC2626` / `#EF4444`)
+     - `cyan` : Cyber Cyan (`#0891B2` / `#00D9FF`)
+   - Moteur de thème personnalisé dynamique dans `rs-ui init` :
+     - Flags CLI : `--primary`, `--dark-primary`, `--secondary`, `--dark-secondary`, `--accent`, `--dark-accent`.
+     - Assistant interactif à 2 étapes dans Inquirer : 4 couleurs obligatoires (light/dark pour primary et secondary), puis couleurs facultatives avec valeurs par défaut harmonisées.
+     - Générateur dynamique `generateCustomTheme` créant `theme/themes/custom.ts`.
+     - Enregistrement propre dans `rashwright-ui.json` (`themePreset: "custom"`, `customColors: { ... }`).
+
+3. **Fonctionnalité `rs-ui reset` & alias `rs-ui-reset`** :
+   - Commande dédiée `packages/cli/src/commands/reset.ts` avec options `--delete`, `--hard`, `--yes`, `--dry-run`.
+   - Détection intelligente des artefacts de démo (`showcase-screen.tsx`, `rashwright-logo.tsx`, assets PNG/SVG, écrans d'entrée `app/index.tsx` ou `App.tsx`).
+   - Mode sûr par défaut : archivage réversible dans `rs-ui-example/` préservant l'arborescence relative.
+   - Suppression définitive explicite avec confirmation.
+   - Génération automatique d'un écran d'accueil épuré exploitant `useTheme()`.
+   - Mise à jour cohérente du lockfile `rashwright-ui.json` (`starter.reset = true`, `starter.archived = boolean`) sans perte d'historique.
+   - Enregistrement du script npm `"reset-project": "rs-ui reset"` dans le `package.json` du projet.
+
+4. **Correctifs & Résolution TypeScript TS5101** :
+   - Correction de l'option `ignoreDeprecations: "5.0"` supportée par TypeScript 5.x (supprime l'avertissement de validation du compilateur).
+   - Remplacement de `SafeAreaView` déprécié par `react-native-safe-area-context`.
+   - Correction du chemin de chargement du logo vers `@/assets/primary.png`.
+
+### 9.2 Métriques du Quality Gate v0.3.0
+
+- **Tests Vitest** : 71 tests exécutés et réussis sur 13 fichiers de test (100% pass).
+- **Validation Registre** : 61 composants vérifiés, 61 sources conformes, 0 erreur.
+- **Vérification TypeScript** : 0 erreur sur `@rashwright/cli` et `@rashwright/ui-mobile`.
+- **Bundle CLI** : 198.0 KB généré en 64ms (format ESM strict).
+- **Vérifications fumée** : 4/4 réussies (`smoke:version`, `lint:require`, `lint:shebang`, `smoke:dep-ui`).
+- **Dry-run npm** :
+  - `@rashwright/ui-mobile@0.3.0` : 249 fichiers empaquetés (taille compressée : 821.6 kB).
+  - `@rashwright/cli@0.3.0` : 3 fichiers empaquetés (taille compressée : 48.7 kB).
+
+---
+
+**Le projet Rashwright UI Mobile v0.3.0 est entièrement développé, testé et prêt pour publication.**
+

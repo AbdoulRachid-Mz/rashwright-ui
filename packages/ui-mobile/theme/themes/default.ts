@@ -4,11 +4,24 @@ import { violetLight, violetDark } from "./violet";
 import { amberLight, amberDark } from "./amber";
 import { roseLight, roseDark } from "./rose";
 import { slateLight, slateDark } from "./slate";
+import { greenLight, greenDark } from "./green";
+import { redLight, redDark } from "./red";
+import { cyanLight, cyanDark } from "./cyan";
 
 export { lightTheme, darkTheme };
 export type { Theme, ThemeMode };
 
-export type ThemePresetName = "default" | "emerald" | "violet" | "amber" | "rose" | "slate";
+export type ThemePresetName =
+  | "default"
+  | "emerald"
+  | "violet"
+  | "amber"
+  | "rose"
+  | "slate"
+  | "green"
+  | "red"
+  | "cyan"
+  | "custom";
 
 export interface ThemePreset {
   name: ThemePresetName;
@@ -53,6 +66,30 @@ export const THEME_PRESETS: Record<ThemePresetName, ThemePreset> = {
     label: "Slate Monochrome",
     light: slateLight,
     dark: slateDark,
+  },
+  green: {
+    name: "green",
+    label: "Forest Green",
+    light: greenLight,
+    dark: greenDark,
+  },
+  red: {
+    name: "red",
+    label: "Crimson Red",
+    light: redLight,
+    dark: redDark,
+  },
+  cyan: {
+    name: "cyan",
+    label: "Cyber Cyan",
+    light: cyanLight,
+    dark: cyanDark,
+  },
+  custom: {
+    name: "custom",
+    label: "Custom Theme",
+    light: lightTheme,
+    dark: darkTheme,
   },
 };
 

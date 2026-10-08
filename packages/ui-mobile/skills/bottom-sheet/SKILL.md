@@ -1,6 +1,17 @@
 ---
 name: rs-ui/bottom-sheet
-description: Bottom sheet draggable avec snap points et backdrop configurable
+description: Feuille de fond animée avec gestes drag-to-dismiss. Nécessite react-native-reanimated et react-native-gesture-handler.
+version: 0.3.0
+componentVersion: 0.3.0
+category: Overlay
+dependencies:
+  - none
+expoDependencies:
+  - expo-blur
+  - react-native-reanimated
+requiresComponents:
+  - none
+supportsGlass: false
 ---
 
 # BottomSheet — Rashwright UI Mobile

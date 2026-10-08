@@ -39,7 +39,7 @@ describe("starter-generator", () => {
     expect(existsSync(tsconfigFile)).toBe(true);
     const cfg = JSON.parse(readFileSync(tsconfigFile, "utf-8"));
     expect(cfg.compilerOptions.baseUrl).toBe(".");
-    expect(cfg.compilerOptions.ignoreDeprecations).toBe("6.0");
+    expect(cfg.compilerOptions.ignoreDeprecations).toBe("5.0");
     expect(cfg.compilerOptions.paths["@/*"]).toEqual(["./src/*", "./*"]);
   });
 

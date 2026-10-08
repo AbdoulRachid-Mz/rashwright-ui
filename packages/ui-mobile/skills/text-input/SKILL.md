@@ -1,6 +1,16 @@
 ---
 name: rs-ui/text-input
-description: Champ de saisie thémé avec label flottant, validation et icônes
+description: Champ de saisie texte avec label, erreur, icônes et support Glass.
+version: 0.3.0
+componentVersion: 0.3.0
+category: Forms
+dependencies:
+  - none
+expoDependencies:
+  - none
+requiresComponents:
+  - none
+supportsGlass: false
 ---
 
 # TextInput — Rashwright UI Mobile

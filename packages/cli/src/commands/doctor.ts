@@ -9,6 +9,7 @@ import { existsSync as fsExists, readFileSync } from "node:fs";
 import { REGISTRY_ROOT } from "../core/paths.js";
 import { loadComponentEntry } from "../core/dependency-resolver.js";
 import { resolveRegistry, ensureCompatibilityMatrixDownloaded } from "../core/remote-registry.js";
+import { diagnoseSkills } from "../core/skills-manager.js";
 
 interface CheckResult {
   label: string;
@@ -101,6 +102,36 @@ export function doctorCommand(): Command {
             status: "warn",
             detail: `${outdated.join(", ")} — exécutez: rs-ui update`,
           });
+        }
+
+        // ── Skills IA checks ─────────────────────────────────────────────
+        const skillsDiag = diagnoseSkills(cwd, config.components);
+        checks.push({
+          label: "Skill IA Global (skills/rs-ui/SKILL.md)",
+          status: skillsDiag.globalSkillInstalled ? "ok" : "warn",
+          detail: skillsDiag.globalSkillInstalled ? undefined : "Non installé — exécutez: rs-ui init",
+        });
+
+        if (compCount > 0) {
+          if (skillsDiag.missingSkills.length === 0 && skillsDiag.outdatedSkills.length === 0) {
+            checks.push({
+              label: `Skills IA Composants: ${skillsDiag.componentSkillsCount}/${compCount} synchronisés`,
+              status: "ok",
+            });
+          } else {
+            const issues: string[] = [];
+            if (skillsDiag.missingSkills.length > 0) {
+              issues.push(`Manquants: ${skillsDiag.missingSkills.join(", ")}`);
+            }
+            if (skillsDiag.outdatedSkills.length > 0) {
+              issues.push(`Obsolètes: ${skillsDiag.outdatedSkills.map((o) => o.component).join(", ")}`);
+            }
+            checks.push({
+              label: `Skills IA Composants: ${skillsDiag.componentSkillsCount}/${compCount}`,
+              status: "warn",
+              detail: issues.join(" | "),
+            });
+          }
         }
 
         // ── Key native deps ──────────────────────────────────────────────

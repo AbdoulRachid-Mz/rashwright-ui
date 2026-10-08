@@ -1,6 +1,17 @@
 ---
 name: rs-ui/drawer
-description: Drawer de navigation latéral ou bas avec gesture swipe et react-native-reanimated
+description: Tiroir latéral animé avec gestes. Nécessite react-native-reanimated et react-native-gesture-handler.
+version: 0.3.0
+componentVersion: 0.3.0
+category: Overlay
+dependencies:
+  - none
+expoDependencies:
+  - expo-blur
+  - react-native-reanimated
+requiresComponents:
+  - none
+supportsGlass: false
 ---
 
 # Drawer — Rashwright UI Mobile

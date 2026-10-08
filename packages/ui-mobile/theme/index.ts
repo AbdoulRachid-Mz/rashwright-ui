@@ -10,3 +10,6 @@ export * from "./themes/violet";
 export * from "./themes/amber";
 export * from "./themes/rose";
 export * from "./themes/slate";
+export * from "./themes/green";
+export * from "./themes/red";
+export * from "./themes/cyan";

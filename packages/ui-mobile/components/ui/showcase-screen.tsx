@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, ScrollView, SafeAreaView, StatusBar, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, ScrollView, StatusBar, TouchableOpacity } from "react-native";
 import { RashwrightLogo } from "./rashwright-logo";
 import { useTheme } from "@/contexts/theme-context";
 import Button from "./button";
@@ -7,7 +7,7 @@ import Card from "./card";
 import GlassCard from "./glass-card";
 import Badge from "./badge";
 import TextInput from "./text-input";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 /**
  * Rashwright UI Mobile — Starter Showcase Screen
  * Écran d"accueil interactif démontrant le fonctionnement du système UI.
@@ -24,7 +24,7 @@ export function RashwrightShowcaseScreen() {
         
         {/* Header Hero */}
         <View style={styles.heroSection}>
-          <RashwrightLogo size={90} showText={true} />
+          <RashwrightLogo size={90} showText={true} isDark={isDark} primaryColor={theme.colors.primary} />
           
           <View style={styles.badgeRow}>
             <Badge variant="outline">React Native</Badge>
@@ -87,7 +87,7 @@ export function RashwrightShowcaseScreen() {
             ))}
           </View>
 
-          <View style={{ marginTop: 12 }}>
+          {/* <View style={{ marginTop: 12 }}>
             <Button
               size="sm"
               variant={liquidGlassEnabled ? "glass" : "secondary"}
@@ -95,7 +95,7 @@ export function RashwrightShowcaseScreen() {
             >
               {liquidGlassEnabled ? "✨ Glass UI activé" : "Activer Glass UI"}
             </Button>
-          </View>
+          </View> */}
         </Card>
 
         {/* Glass Card Preview */}
@@ -125,13 +125,13 @@ export function RashwrightShowcaseScreen() {
             placeholder="Ex: Rechercher ou saisir du texte..."
             value={inputText}
             onChangeText={setInputText}
-            style={{ marginBottom: 12 }}
+            containerStyle={{ marginBottom: 12 }}
           />
 
           <View style={styles.buttonStack}>
-            <Button variant="default">Bouton Primaire</Button>
-            <Button variant="secondary">Bouton Secondaire</Button>
-            <Button variant="destructive">Action Destructive</Button>
+            <Button variant="default" isFullWidth>Bouton Primaire</Button>
+            <Button variant="secondary" isFullWidth>Bouton Secondaire</Button>
+            <Button variant="destructive" isFullWidth>Action Destructive</Button>
           </View>
         </Card>
 

@@ -17,7 +17,10 @@ import {
   generateShowcaseScreen,
   writeBabelConfig,
   updateTsconfig,
+  generateCustomTheme,
+  type CustomThemeColors,
 } from "../core/starter-generator.js";
+import { copyGlobalSkill, copyComponentSkill } from "../core/skills-manager.js";
 import { SOURCE_ROOT } from "../core/paths.js";
 
 const CORE_EXPO_DEPS = [
@@ -73,10 +76,18 @@ export function initCommand(): Command {
     .description("Initialiser Rashwright UI Mobile (configure un projet existant ou en crée un nouveau)")
     .argument("[project-name]", "Nom du projet Expo à créer (si aucun projet React Native existant)")
     .option("--sdk <version>", "Version Expo SDK pour un nouveau projet (ex: 57, 58 ou 'latest')", "latest")
-    .option("--theme <preset>", "Choisir parmi les 6 thèmes : default, emerald, violet, amber, rose, slate", "default")
+    .option("--theme <preset>", "Choisir parmi les thèmes : default, emerald, violet, amber, rose, slate, green, red, cyan, custom", "default")
+    .option("--primary <color>", "Couleur primaire personnalisée en hexadécimal (ex: #2563EB)")
+    .option("--dark-primary <color>", "Couleur primaire sombre personnalisée (ex: #3B82F6)")
+    .option("--secondary <color>", "Couleur secondaire personnalisée (ex: #F1F5F9)")
+    .option("--dark-secondary <color>", "Couleur secondaire sombre personnalisée (ex: #1E293B)")
+    .option("--accent <color>", "Couleur d'accent personnalisée (ex: #F59E0B)")
+    .option("--dark-accent <color>", "Couleur d'accent sombre personnalisée (ex: #FBBF24)")
     .option("--glass", "Activer le thème Glass UI (expo-blur, expo-linear-gradient)")
     .option("--pm <manager>", "Gestionnaire de paquets à utiliser : npm, bun, pnpm, yarn (défaut : npm)")
     .option("--all", "Installer tous les composants après initialisation")
+    .option("--skills", "Installer automatiquement les Skills IA pour les agents et le skill global", true)
+    .option("--no-skills", "Désactiver l'installation des Skills IA")
     .option("--showcase", "Générer un écran d'accueil avec Rashwright UI & logo RS")
     .option("--no-showcase", "Ne pas générer l'écran de démo")
     .option("--yes", "Répondre Oui à toutes les questions (mode non-interactif)")
@@ -284,6 +295,25 @@ export function initCommand(): Command {
       let defaultComponentsPath = hasSrc ? "src/components/ui" : (project.componentsPath || "components/ui");
       let componentsPath = defaultComponentsPath;
 
+      function isValidHex(color: string): boolean {
+        return /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(color.trim());
+      }
+
+      let customColors: CustomThemeColors | null = null;
+      if (options.primary) {
+        themePreset = "custom";
+        customColors = {
+          primaryLight: options.primary,
+          primaryDark: options.darkPrimary || options.primary,
+          secondaryLight: options.secondary || "#F1F5F9",
+          secondaryDark: options.darkSecondary || "#1E293B",
+          accentLight: options.accent,
+          accentDark: options.darkAccent,
+        };
+      } else if (options.theme && options.theme !== "default") {
+        themePreset = options.theme;
+      }
+
       if (!options.yes) {
         if (!options.glass) {
           const style = await select({
@@ -296,7 +326,7 @@ export function initCommand(): Command {
           glassEnabled = style === "glass";
         }
 
-        if (options.theme === "default") {
+        if (options.theme === "default" && !options.primary) {
           themePreset = await select({
             message: "Choisir le thème de base :",
             choices: [
@@ -306,8 +336,84 @@ export function initCommand(): Command {
               { name: "Amber Luxury (Chaud & Gold)", value: "amber" },
               { name: "Rose Vibrant (Énergique & Pink)", value: "rose" },
               { name: "Slate Monochrome (Minimaliste & Épuré)", value: "slate" },
+              { name: "Forest Green (Vert Naturel)", value: "green" },
+              { name: "Crimson Red (Rouge Énergique)", value: "red" },
+              { name: "Cyber Cyan (Tech Signature)", value: "cyan" },
+              { name: "🎨 Custom (Personnalisé — définir vos propres couleurs)", value: "custom" },
             ],
           });
+        }
+
+        if (themePreset === "custom" && !customColors) {
+          console.log();
+          console.log(chalk.bold.magenta("  🎨 Assistant Thème Personnalisé"));
+          console.log(chalk.dim("  Étape 1 : Couleurs obligatoires (format hexadécimal, ex: #2563EB)"));
+
+          const primaryLight = await input({
+            message: "Primary Color [Light mode] :",
+            validate: (val) => (isValidHex(val) ? true : "Veuillez entrer un code hexadécimal valide (ex: #2563EB)"),
+          });
+
+          const primaryDark = await input({
+            message: "Primary Color [Dark mode] :",
+            validate: (val) => (isValidHex(val) ? true : "Veuillez entrer un code hexadécimal valide (ex: #3B82F6)"),
+          });
+
+          const secondaryLight = await input({
+            message: "Secondary Color [Light mode] :",
+            validate: (val) => (isValidHex(val) ? true : "Veuillez entrer un code hexadécimal valide (ex: #F1F5F9)"),
+          });
+
+          const secondaryDark = await input({
+            message: "Secondary Color [Dark mode] :",
+            validate: (val) => (isValidHex(val) ? true : "Veuillez entrer un code hexadécimal valide (ex: #1E293B)"),
+          });
+
+          console.log();
+          console.log(chalk.dim("  Étape 2 : Couleurs facultatives (Appuyez sur Entrée pour la valeur par défaut)"));
+
+          const accentLight = await input({
+            message: `Accent Color [Light mode] (défaut: ${primaryLight}) :`,
+            default: primaryLight,
+          });
+
+          const accentDark = await input({
+            message: `Accent Color [Dark mode] (défaut: ${primaryDark}) :`,
+            default: primaryDark,
+          });
+
+          const backgroundLight = await input({
+            message: "Background Color [Light mode] (défaut: #F8FAFC) :",
+            default: "#F8FAFC",
+          });
+
+          const backgroundDark = await input({
+            message: "Background Color [Dark mode] (défaut: #0F172A) :",
+            default: "#0F172A",
+          });
+
+          const cardLight = await input({
+            message: "Card / Surface [Light mode] (défaut: #FFFFFF) :",
+            default: "#FFFFFF",
+          });
+
+          const cardDark = await input({
+            message: "Card / Surface [Dark mode] (défaut: #1E293B) :",
+            default: "#1E293B",
+          });
+
+          customColors = {
+            primaryLight,
+            primaryDark,
+            secondaryLight,
+            secondaryDark,
+            accentLight: isValidHex(accentLight) ? accentLight : primaryLight,
+            accentDark: isValidHex(accentDark) ? accentDark : primaryDark,
+            backgroundLight: isValidHex(backgroundLight) ? backgroundLight : "#F8FAFC",
+            backgroundDark: isValidHex(backgroundDark) ? backgroundDark : "#0F172A",
+            cardLight: isValidHex(cardLight) ? cardLight : "#FFFFFF",
+            cardDark: isValidHex(cardDark) ? cardDark : "#1E293B",
+          };
         }
 
         componentsPath = await input({
@@ -316,6 +422,16 @@ export function initCommand(): Command {
         });
       } else {
         glassEnabled = options.glass !== undefined ? options.glass : true;
+        if (themePreset === "custom" && !customColors) {
+          customColors = {
+            primaryLight: options.primary || "#2563EB",
+            primaryDark: options.darkPrimary || "#3B82F6",
+            secondaryLight: options.secondary || "#F1F5F9",
+            secondaryDark: options.darkSecondary || "#1E293B",
+            accentLight: options.accent,
+            accentDark: options.darkAccent,
+          };
+        }
       }
 
       // ── 4. Plan des dépendances ──────────────────────────────────────────
@@ -366,6 +482,12 @@ export function initCommand(): Command {
       setupFoundations(SOURCE_ROOT, cwd, componentsPath, options.dryRun);
       foundationSpinner.succeed("Fondations du thème, store & primitives UI installées");
 
+      if (themePreset === "custom" && customColors) {
+        const customThemeSpinner = ora("Génération du thème personnalisé (theme/themes/custom.ts)...").start();
+        generateCustomTheme(cwd, componentsPath, customColors, options.dryRun);
+        customThemeSpinner.succeed("Thème personnalisé généré dans theme/themes/custom.ts");
+      }
+
       // ── 7. Copier les assets (SVG RS + PNG) ──────────────────────────────
       const assetsSpinner = ora("Copie des assets Rashwright (Logo RS SVG + PNG)...").start();
       copyRashwrightAssets(SOURCE_ROOT, cwd, options.dryRun);
@@ -378,12 +500,22 @@ export function initCommand(): Command {
       const installedStarterComps = setupStarterComponents(SOURCE_ROOT, targetComponentsDir, options.dryRun);
       compSpinner.succeed(`${installedStarterComps.length} composants starters configurés`);
 
+      // ── 8b. Mettre en place les Skills IA (Global + Starters) ────────────
+      if (options.skills !== false) {
+        const skillsSpinner = ora("Installation des Skills IA (skills/rs-ui/)...").start();
+        copyGlobalSkill(SOURCE_ROOT, cwd, options.dryRun);
+        for (const comp of installedStarterComps) {
+          copyComponentSkill(comp, SOURCE_ROOT, cwd, options.dryRun);
+        }
+        skillsSpinner.succeed("Skills IA installés dans skills/rs-ui/ (Skill Global & starters)");
+      }
+
       // ── 9. Générer l'écran de démo Rashwright UI Showcase ────────────────
       const shouldGenerateShowcase = options.showcase !== false;
       let showcaseFile: string | null = null;
       if (shouldGenerateShowcase) {
         const showcaseSpinner = ora("Génération de l'écran démo Rashwright UI Showcase...").start();
-        showcaseFile = generateShowcaseScreen(cwd, componentsPath, options.dryRun);
+        showcaseFile = generateShowcaseScreen(cwd, componentsPath, themePreset, options.dryRun);
         showcaseSpinner.succeed(`Écran de démo configuré (${showcaseFile ? showcaseFile.replace(cwd, "") : "App"})`);
       }
 
@@ -398,9 +530,11 @@ export function initCommand(): Command {
         componentsPath,
         theme: (glassEnabled ? "glass" : "default") as "glass" | "default",
         themePreset,
+        ...(customColors ? { customColors: customColors as unknown as Record<string, string> } : {}),
         glass: glassEnabled,
         typescript: project.hasTypeScript,
         packageManager: selectedPm,
+        starter: { installed: true, reset: false },
         components: componentsRecord,
       });
       writeConfig(join(cwd, "rashwright-ui.json"), config);
@@ -416,6 +550,9 @@ export function initCommand(): Command {
       console.log(chalk.dim(`    ✔ theme/ (Tokens, presets Light/Dark/Glass)`));
       console.log(chalk.dim(`    ✔ contexts/theme-context.tsx & stores/theme-store.ts`));
       console.log(chalk.dim(`    ✔ assets/svg/primary.svg & assets/primary.png`));
+      if (options.skills !== false) {
+        console.log(chalk.dim(`    ✔ skills/rs-ui/ (Skill IA Global & documentation composants)`));
+      }
       if (showcaseFile) {
         console.log(chalk.dim(`    ✔ Écran de démo actif avec logo RS et contrôles interactifs`));
       }

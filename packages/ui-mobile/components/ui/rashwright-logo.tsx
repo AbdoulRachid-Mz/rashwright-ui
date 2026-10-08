@@ -6,6 +6,8 @@ export interface RashwrightLogoProps {
   showText?: boolean;
   style?: ViewStyle;
   imageStyle?: ImageStyle;
+  isDark?: boolean;
+  primaryColor?: string;
 }
 
 /**
@@ -17,12 +19,14 @@ export function RashwrightLogo({
   showText = true,
   style,
   imageStyle,
+  isDark,
+  primaryColor,
 }: RashwrightLogoProps) {
   // Try resolving primary.png from project assets
   let imageSource;
   try {
     // When imported in projects with assets folder
-    imageSource = require("../../assets/primary.png");
+    imageSource = require("@/assets/primary.png");
   } catch {
     try {
       imageSource = require("../../../assets/primary.png");
@@ -56,8 +60,8 @@ export function RashwrightLogo({
 
       {showText && (
         <View style={styles.textContainer}>
-          <Text style={styles.brandTitle}>Rashwright</Text>
-          <Text style={styles.brandSubtitle}>UI MOBILE</Text>
+          <Text style={[styles.brandTitle, { color: isDark ? "#ffffff" : primaryColor || "#00d9ff" }]}>Rashwright</Text>
+          <Text style={[styles.brandSubtitle, { color: isDark ? "#ffffff" : primaryColor || "#00d9ff" }]}>UI MOBILE</Text>
         </View>
       )}
     </View>

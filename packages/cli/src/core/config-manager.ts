@@ -8,14 +8,23 @@ export interface ComponentLockInfo {
 
 export type InstalledComponentsMap = Record<string, string | ComponentLockInfo>;
 
+export interface StarterConfig {
+  installed: boolean;
+  reset?: boolean;
+  archived?: boolean;
+  resetAt?: string;
+}
+
 export interface RashwrightConfig {
   version: number;
   componentsPath: string;
   theme: "default" | "glass";
   themePreset?: string;
+  customColors?: Record<string, string>;
   glass: boolean;
   typescript: boolean;
   packageManager?: "bun" | "pnpm" | "yarn" | "npm";
+  starter?: StarterConfig;
   aliases: {
     components: string;
     lib: string;

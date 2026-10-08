@@ -1,6 +1,16 @@
 ---
 name: rs-ui/card
-description: Carte de contenu thémée avec shadow, border-radius et support Glass
+description: Conteneur de carte générique avec support Glass, ombres et coins arrondis.
+version: 0.3.0
+componentVersion: 0.3.0
+category: Layout
+dependencies:
+  - none
+expoDependencies:
+  - react-native-reanimated
+requiresComponents:
+  - none
+supportsGlass: false
 ---
 
 # Card — Rashwright UI Mobile

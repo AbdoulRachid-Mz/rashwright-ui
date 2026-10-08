@@ -1,6 +1,16 @@
 ---
 name: rs-ui/button
-description: Bouton interactif universel React Native avec variants, tailles et retour haptique
+description: Bouton interactif universel pour React Native avec variants, tailles, états et support Glass.
+version: 0.3.0
+componentVersion: 0.3.0
+category: Basic
+dependencies:
+  - none
+expoDependencies:
+  - none
+requiresComponents:
+  - none
+supportsGlass: true
 ---
 
 # Button — Rashwright UI Mobile

@@ -1,5 +1,5 @@
 {
-  "version": "0.2.0",
+  "version": "0.3.0",
   "components": [
     "accordion",
     "actions-grid",
@@ -75,7 +75,7 @@
     "Glass": ["glass-card", "particles"],
     "Starter": ["button", "showcase-screen"]
   },
-  "themes": ["default", "emerald", "violet", "amber", "rose", "slate", "glass"],
+  "themes": ["default", "emerald", "violet", "amber", "rose", "slate", "green", "red", "cyan", "glass"],
   "totalComponents": 61,
   "sdkVersions": [54, 55, 56, 57, 58, 59]
 }

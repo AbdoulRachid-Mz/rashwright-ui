@@ -348,8 +348,8 @@ export function updateTsconfig(
   cfg.compilerOptions.jsx = "react-native";
   cfg.compilerOptions.baseUrl = ".";
 
-  // Silencer le warning TS5101 pour TypeScript 6.0/7.0 (baseUrl deprecated)
-  cfg.compilerOptions.ignoreDeprecations = "6.0";
+  // Silencer le warning TS5101 pour TypeScript (baseUrl sans paths ou transition TS)
+  cfg.compilerOptions.ignoreDeprecations = "5.0";
 
   if (!cfg.compilerOptions.paths || typeof cfg.compilerOptions.paths !== "object") {
     cfg.compilerOptions.paths = {};
@@ -497,9 +497,104 @@ export function generateUiIndex(
  *   - _layout.tsx: <ThemeProvider><Slot /></ThemeProvider>
  *   - index.tsx : <RashwrightShowcaseScreen />
  */
+export interface CustomThemeColors {
+  primaryLight: string;
+  primaryDark: string;
+  secondaryLight: string;
+  secondaryDark: string;
+  accentLight?: string;
+  accentDark?: string;
+  backgroundLight?: string;
+  backgroundDark?: string;
+  cardLight?: string;
+  cardDark?: string;
+}
+
+/**
+ * ⚡ Génération dynamique d'un thème personnalisé theme/themes/custom.ts
+ */
+export function generateCustomTheme(
+  targetProjectRoot: string,
+  componentsPath: string = "src/components/ui",
+  colors: CustomThemeColors,
+  dryRun = false,
+): void {
+  if (dryRun) return;
+
+  const useSrc = componentsPath.startsWith("src/") || existsSync(join(targetProjectRoot, "src"));
+  const themeDir = join(targetProjectRoot, useSrc ? "src/theme/themes" : "theme/themes");
+  if (!existsSync(themeDir)) mkdirSync(themeDir, { recursive: true });
+
+  const customThemeContent = `import { lightTheme as baseLight, darkTheme as baseDark, Theme } from "../../constants/theme";
+
+export const customLight: Theme = {
+  ...baseLight,
+  colors: {
+    ...baseLight.colors,
+    primary: "${colors.primaryLight}",
+    primaryForeground: "#FFFFFF",
+    secondary: "${colors.secondaryLight}",
+    secondaryForeground: "${colors.primaryLight}",
+    accent: "${colors.accentLight || colors.primaryLight}",
+    accentForeground: "#FFFFFF",
+    ring: "${colors.primaryLight}",
+    background: "${colors.backgroundLight || "#F8FAFC"}",
+    card: "${colors.cardLight || "#FFFFFF"}",
+  },
+};
+
+export const customDark: Theme = {
+  ...baseDark,
+  colors: {
+    ...baseDark.colors,
+    primary: "${colors.primaryDark}",
+    primaryForeground: "#FFFFFF",
+    secondary: "${colors.secondaryDark}",
+    secondaryForeground: "${colors.primaryDark}",
+    accent: "${colors.accentDark || colors.primaryDark}",
+    accentForeground: "#FFFFFF",
+    ring: "${colors.primaryDark}",
+    background: "${colors.backgroundDark || "#0F172A"}",
+    card: "${colors.cardDark || "#1E293B"}",
+  },
+};
+`;
+
+  writeFileSync(join(themeDir, "custom.ts"), customThemeContent, "utf-8");
+
+  // Inscription dans default.ts du projet cible si présent
+  const defaultTsPath = join(themeDir, "default.ts");
+  if (existsSync(defaultTsPath)) {
+    let defaultContent = readFileSync(defaultTsPath, "utf-8");
+    if (!defaultContent.includes('import { customLight, customDark } from "./custom";')) {
+      defaultContent = `import { customLight, customDark } from "./custom";\n` + defaultContent;
+      const presetInsert = `  custom: {\n    name: "custom",\n    label: "Custom Theme",\n    light: customLight,\n    dark: customDark,\n  },\n`;
+      defaultContent = defaultContent.replace(/export const THEME_PRESETS[^{]*{/, (match) => match + "\n" + presetInsert);
+      writeFileSync(defaultTsPath, defaultContent, "utf-8");
+    }
+  }
+
+  // Export dans theme/index.ts si présent
+  const themeIndexDir = join(targetProjectRoot, useSrc ? "src/theme" : "theme");
+  const themeIndexPath = join(themeIndexDir, "index.ts");
+  if (existsSync(themeIndexPath)) {
+    const themeIndexContent = readFileSync(themeIndexPath, "utf-8");
+    if (!themeIndexContent.includes('"./themes/custom"')) {
+      writeFileSync(themeIndexPath, themeIndexContent + `export * from "./themes/custom";\n`, "utf-8");
+    }
+  }
+}
+
+/**
+ * ⚡ Objectif A.5 + A.3 — writeExpoRouterLayout + génération app/ index
+ * Pour le template Expo Router (app/ ou src/app/):
+ *   - _layout.tsx: <ThemeProvider initialPreset={preset}><Slot /></ThemeProvider>
+ *   - index.tsx : <RashwrightShowcaseScreen />
+ */
 export function writeExpoRouterLayout(
   targetProjectRoot: string,
   componentsPath: string = "src/components/ui",
+  themePreset: string = "default",
   dryRun = false,
 ): void {
   if (dryRun) return;
@@ -517,7 +612,7 @@ import { ThemeProvider } from "@/contexts/theme-context";
 
 export default function RootLayout() {
   return (
-    <ThemeProvider initialMode="system" initialPreset="default">
+    <ThemeProvider initialMode="system" initialPreset="${themePreset as any}">
       <Slot />
     </ThemeProvider>
   );
@@ -573,6 +668,9 @@ export function setupFoundations(
     { src: "theme/themes/amber.ts", dest: join(basePrefix, "theme/themes/amber.ts").replace(/\\/g, "/") },
     { src: "theme/themes/rose.ts", dest: join(basePrefix, "theme/themes/rose.ts").replace(/\\/g, "/") },
     { src: "theme/themes/slate.ts", dest: join(basePrefix, "theme/themes/slate.ts").replace(/\\/g, "/") },
+    { src: "theme/themes/green.ts", dest: join(basePrefix, "theme/themes/green.ts").replace(/\\/g, "/") },
+    { src: "theme/themes/red.ts", dest: join(basePrefix, "theme/themes/red.ts").replace(/\\/g, "/") },
+    { src: "theme/themes/cyan.ts", dest: join(basePrefix, "theme/themes/cyan.ts").replace(/\\/g, "/") },
   ];
 
   // Copier lib/upload dans le dossier cible
@@ -693,6 +791,7 @@ export function setupStarterComponents(
 export function generateShowcaseScreen(
   targetProjectRoot: string,
   componentsPath: string,
+  themePreset: string = "default",
   dryRun = false,
 ): string | null {
   if (dryRun) return null;
@@ -702,7 +801,7 @@ export function generateShowcaseScreen(
     existsSync(join(targetProjectRoot, "app"));
 
   if (hasExpoRouter) {
-    writeExpoRouterLayout(targetProjectRoot, componentsPath, dryRun);
+    writeExpoRouterLayout(targetProjectRoot, componentsPath, themePreset, dryRun);
     const useSrc = componentsPath.startsWith("src/") || existsSync(join(targetProjectRoot, "src"));
     return join(targetProjectRoot, useSrc ? "src/app" : "app", "index.tsx");
   }
@@ -717,7 +816,7 @@ import { RashwrightShowcaseScreen } from "${showcaseRel}";
 
 export default function App() {
   return (
-    <ThemeProvider initialMode="system" initialPreset="default">
+    <ThemeProvider initialMode="system" initialPreset="${themePreset as any}">
       <RashwrightShowcaseScreen />
     </ThemeProvider>
   );
