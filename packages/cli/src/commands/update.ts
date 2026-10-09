@@ -13,6 +13,7 @@ import { checkComponentIntegrity, recordLockedComponent } from "../core/lock-man
 import { createBackup } from "../core/backup-manager.js";
 import { computeLineDiff, formatDiffOutput } from "../core/diff.js";
 import { copyComponentSkill } from "../core/skills-manager.js";
+import { executeHook } from "../core/hooks-manager.js";
 
 interface ComponentUpdateStatus {
   name: string;
@@ -306,6 +307,7 @@ export function updateCommand(): Command {
 
       if (!options.dryRun) {
         writeConfig(project.rashwrightConfigPath, updatedConfig);
+        executeHook("post-update", updatedConfig.hooks, cwd, { dryRun: options.dryRun });
       }
 
       console.log();

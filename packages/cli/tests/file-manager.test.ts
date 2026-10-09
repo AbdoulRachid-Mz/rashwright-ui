@@ -107,4 +107,17 @@ describe("file-manager", () => {
     expect(isFileModified(testFile, "abc")).toBe(false);
     expect(isFileModified(testFile, "xyz")).toBe(true);
   });
+
+  it("copyComponentFiles handles Windows backslashes and src/components/ui prefix robustly", () => {
+    // Test with Windows-style backslashes
+    const results = copyComponentFiles(
+      ["components\\ui\\test-btn.tsx"],
+      sourceDir,
+      targetDir,
+      { overwrite: true, dryRun: false }
+    );
+    expect(results.length).toBe(1);
+    expect(results[0].status).toBe("copied");
+    expect(existsSync(join(targetDir, "test-btn.tsx"))).toBe(true);
+  });
 });

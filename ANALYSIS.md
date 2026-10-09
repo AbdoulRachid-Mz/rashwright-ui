@@ -1,8 +1,8 @@
-# RAPPORT D'ANALYSE — Rashwright UI Mobile v0.2.0 (POST-ROADMAP v0.2.0)
+# RAPPORT D'ANALYSE — Rashwright UI Mobile v0.6.0
 
-**Date** : 2026-10-07  
-**Version préparée** : `@rashwright/ui-mobile@0.2.0` + `@rashwright/cli@0.2.0`  
-**Statut** : ROADMAP v0.2.0 COMPLÈTE — MONOREPO STABLE · **Zéro `any` · 61 Composants · 55 Tests Vitest (100%) · Quality gate 100% exit 0**
+**Date** : 2026-10-09  
+**Version préparée** : `@rashwright/ui-mobile@0.6.0` + `@rashwright/cli@0.6.0`  
+**Statut** : STABLE · **Zéro `any` · 61 Composants · 133 Tests Vitest (100%) · 28 Test Suites · Quality gate 100% exit 0**
 
 ---
 

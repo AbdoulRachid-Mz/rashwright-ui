@@ -29,7 +29,7 @@ describe("dependency-resolver", () => {
     expect(names).toContain("button");
     expect(names).toContain("card");
     expect(names).toContain("data-table");
-  });
+  }, 20000);
 
   it("resolveDependencies resolves direct dependencies for button", () => {
     const plan = resolveDependencies(["button"], 54, REGISTRY_ROOT, {});

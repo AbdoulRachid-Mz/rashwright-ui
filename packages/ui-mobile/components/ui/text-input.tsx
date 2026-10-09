@@ -84,6 +84,7 @@ const TextInput = forwardRef<React.ElementRef<typeof RNTextInput>, TextInputProp
           gap: theme.spacing.sm,
           position: "relative",
           overflow: "hidden",
+          marginVertical: theme.spacing.sm,
         },
         input: {
           flex: 1,

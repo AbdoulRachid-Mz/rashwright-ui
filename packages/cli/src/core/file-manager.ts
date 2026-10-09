@@ -28,7 +28,11 @@ export function copyComponentFiles(
   const results: FileCopyResult[] = [];
 
   for (const file of files) {
-    const relativeComponentsPath = file.replace(/^components\/ui\//, "");
+    const normalizedFile = file.replace(/\\/g, "/");
+    const relativeComponentsPath = normalizedFile.replace(
+      /^(?:components\/ui|src\/components\/ui)\//,
+      "",
+    );
     const source = resolveSourcePath(file, registrySourceRoot);
     const destination = join(targetComponentsRoot, relativeComponentsPath);
 

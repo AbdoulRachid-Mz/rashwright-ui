@@ -13,6 +13,7 @@ export interface StarterConfig {
   reset?: boolean;
   archived?: boolean;
   resetAt?: string;
+  template?: string;
 }
 
 export interface RashwrightConfig {
@@ -43,6 +44,7 @@ export interface RashwrightConfig {
     enabled: boolean;
     directory?: string;
   };
+  hooks?: Record<string, string>;
 }
 
 const DEFAULT_CONFIG: RashwrightConfig = {

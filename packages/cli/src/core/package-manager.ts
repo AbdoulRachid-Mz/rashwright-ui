@@ -4,6 +4,39 @@ import { join } from "node:path";
 
 export type PackageManager = "bun" | "pnpm" | "yarn" | "npm";
 
+// ─── Expo SDK ─────────────────────────────────────────────────────────────────
+
+/**
+ * Versions Expo SDK réellement supportées par Rashwright UI.
+ * Mettre à jour cette liste lorsqu'un nouveau SDK est validé.
+ */
+export const SUPPORTED_SDK_VERSIONS = [54, 55, 56, 57] as const;
+
+export type SupportedSdkVersion = (typeof SUPPORTED_SDK_VERSIONS)[number];
+
+export const MINIMUM_SDK_VERSION: SupportedSdkVersion = 54;
+
+export const LATEST_SUPPORTED_SDK: SupportedSdkVersion = 57;
+
+/**
+ * Résoudre "latest" ou un nombre vers une version SDK numérique valide.
+ * Retourne `LATEST_SUPPORTED_SDK` si la valeur est "latest" ou invalide.
+ */
+export function resolveSdkVersion(raw: string | number | undefined): SupportedSdkVersion {
+  if (raw === "latest" || raw === undefined || raw === "") {
+    return LATEST_SUPPORTED_SDK;
+  }
+  const num = Number(raw);
+  if (
+    Number.isInteger(num) &&
+    (SUPPORTED_SDK_VERSIONS as readonly number[]).includes(num)
+  ) {
+    return num as SupportedSdkVersion;
+  }
+  // Valeur fournie mais non reconnue → fallback latest
+  return LATEST_SUPPORTED_SDK;
+}
+
 /**
  * Detect package manager from lockfiles present in the project root.
  */
@@ -56,6 +89,34 @@ export function buildExpoInstallCommand(
     case "npm":
     default:
       return `npx expo install ${pkgList}`;
+  }
+}
+
+/**
+ * Build the `create-expo-app` bootstrap command for the given package manager and SDK version.
+ *
+ * - Always uses `--no-install` to avoid a first dependency installation before Rashwright takes over.
+ * - Always uses `--no-agents-md` to skip the Expo agents MD prompt.
+ * - Template is `blank-typescript@<sdkVersion>` (never "default" or "latest").
+ */
+export function buildCreateExpoAppCommand(
+  pm: PackageManager,
+  projectName: string,
+  sdkVersion: number,
+): string {
+  const template = `blank-typescript@${sdkVersion}`;
+  const flags = `--template ${template} --no-install --no-agents-md`;
+
+  switch (pm) {
+    case "bun":
+      return `bunx create-expo-app@latest ${projectName} ${flags}`;
+    case "pnpm":
+      return `pnpm dlx create-expo-app@latest ${projectName} ${flags}`;
+    case "yarn":
+      return `yarn dlx create-expo-app@latest ${projectName} ${flags}`;
+    case "npm":
+    default:
+      return `npx create-expo-app@latest ${projectName} ${flags}`;
   }
 }
 

@@ -6,12 +6,12 @@
 
 > Système moderne de composants **distribuables** pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie *shadcn/ui* : **vous copiez les composants dans votre codebase, vous en êtes propriétaire**.
 
-**Statut v0.5.0** : ✅ Version v0.5.0 — `@rashwright/cli@0.5.0` · `@rashwright/ui-mobile@0.5.0`  
-**Composants** : 61 composants UI + 8 primitives Liquid Glass + Support Composants Projet · **Skills IA** : 61 skills composants + 4 modules + 1 global · **Fiabilité** : Moteur de Migrations (`rs-ui migrate`), Lockfile SHA-256 (`rashwright-ui.lock`), Backup/Restore, Smart Update, Inspecteur 360°, Multi-Version (`@<version>`) et Gestion des Skills (`rs-ui skill`) · **SDK Expo** : SDK 54 à 59 · **Tests** : 107 tests unitaires Vitest · **Typing strict** : Zéro `any`.
+**Statut v0.6.0** : ✅ Version v0.6.0 — `@rashwright/cli@0.6.0` · `@rashwright/ui-mobile@0.6.0`  
+**Composants** : 61 composants UI + 8 primitives Liquid Glass + 7 Templates Starters · **Skills IA** : 61 skills composants + 4 modules + 1 global · **Fiabilité** : CLI Hooks, Multi-Registres privés/scoped (`rs-ui registry`), Moteur de Templates Starters (`--template minimal/auth/dashboard/commerce/settings`), Moteur de Migrations (`rs-ui migrate`), Lockfile SHA-256, Backup/Restore, Smart Update, Inspecteur 360° · **SDK Expo** : SDK 54 à 59 · **Tests** : 122 tests unitaires Vitest · **Typing strict** : Zéro `any`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v0.5.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
-  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v0.5.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v0.6.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v0.6.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
   <a href="https://github.com/AbdoulRachid-Mz/rashwright-ui"><img src="https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github" alt="GitHub" /></a>
   <img src="https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2059-000000.svg?logo=expo" alt="Expo SDK" />
   <img src="https://img.shields.io/badge/Bun-1.4%2B-fbf0df.svg?logo=bun" alt="Bun" />
@@ -45,7 +45,7 @@ rs-ui reset
 ## 📑 Sommaire — Guide utilisateur
 
 1. [Pourquoi Rashwright ?](#-pourquoi-rashwright-)
-2. [Nouveautés de la version v0.3.0](#-nouveautés-de-la-version-v030)
+2. [Nouveautés de la version v0.6.0](#-nouveautés-de-la-version-v060)
 3. [Système de Skills IA](#-système-de-skills-ia)
 4. [Prérequis](#-prérequis)
 5. [Installation du CLI `rs-ui`](#-installation-du-cli-rs-ui)
@@ -68,7 +68,7 @@ Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`
 
 - ✅ **Propriété totale du code** : Chaque composant installé via `rs-ui add` est **copié** dans ton projet (`components/ui/`). Tu peux l'éditer, l'adapter, le personnaliser sans contrainte.
 - ✅ **Support IA natif** : Chaque composant s'accompagne de son `SKILL.md` (`skills/rs-ui/<component>/`) pour donner le contexte parfait à Antigravity, Cursor, Gemini CLI, Claude Code et Copilot.
-- ✅ **Résolution automatique Expo SDK** : Le CLI détecte ta version d'Expo (**SDK 54 à 59**) et installe les versions natives **testées** pour `react-native-reanimated`, `expo-blur`, `expo-linear-gradient`, etc.
+- ✅ **Résolution automatique Expo SDK** : Le CLI gère explicitement votre version d'Expo (**SDK 54 à 57**) et installe les versions natives **testées** pour `react-native-reanimated`, `expo-blur`, `expo-linear-gradient`, etc.
 - ✅ **Moteur Liquid Glass intégré** : Effets de flou dynamique, reflets physiques, bordures translucides, rebonds tactiles haptiques — activable via `--glass` dans `rs-ui init`.
 - ✅ **9 thèmes + Custom Engine** : `default`, `emerald`, `violet`, `amber`, `rose`, `slate`, `green`, `red`, `cyan`, et création de thème custom.
 - ✅ **Commande `rs-ui reset`** : Archivage ou suppression en une commande des fichiers de démonstration du starter.
@@ -76,7 +76,24 @@ Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`
 
 ---
 
-## 🆕 Nouveautés de la version v0.3.0
+## 🆕 Nouveautés de la version v0.6.0
+
+- 🎯 **Starter Templates Engine (`--template`)** :
+  - **7 Starters complets** : `showcase` (complet), `minimal` (épuré), `auth` (connexion/inscription/OTP), `onboarding` (carrousel/slides), `dashboard` (statistiques/métriques), `commerce` (boutique/avis), `settings` (préférences/thème).
+  - Chaque starter utilise exclusivement des composants Rashwright importés depuis `@/components/ui/` et l'architecture standardisée `/src`.
+- ⚡ **Flow `rs-ui init` réorchestré & Installation unique** :
+  - `rs-ui` orchestre le bootstrap Expo avec le template minimal `blank-typescript@<SDK>` et les drapeaux `--no-install` et `--no-agents-md`.
+  - Élimination totale de la double installation : les composants, la configuration, le babel et tsconfig sont générés en amont, suivis d'une seule phase d'installation des dépendances.
+  - Résolution explicite du SDK Expo (54, 55, 56, 57 ou `latest` résolu en SDK 57).
+  - Banner ASCII unifié `printBanner`.
+- 🪝 **CLI Hooks Subsystem** :
+  - Exécution de commandes personnalisées sur les événements (`post-add`, `post-update`).
+- 🌐 **Multi-Registres Scoped** :
+  - Commande `rs-ui registry` (`add`, `list`, `remove`) et support de composants préfixés `@scope/component`.
+- 🛡️ **Normalisation des chemins & Modernisation TypeScript** :
+  - Chemins multiplateformes robustes sous Windows, Linux et macOS.
+  - Suppression de `baseUrl` et `ignoreDeprecations` obsolètes.
+  - **133 tests Vitest automatisés (100% passants)**.
 
 - 🤖 **Système de Skills IA pour agents de code** :
   - **Skill Global** (`skills/rs-ui/SKILL.md`) installé automatiquement par `rs-ui init`.

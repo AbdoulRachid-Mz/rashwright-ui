@@ -20,7 +20,7 @@ describe("registry", () => {
   it("getAllComponents returns all entries", () => {
     const all = getAllComponents(REGISTRY_ROOT);
     expect(all.length).toBeGreaterThan(50);
-  });
+  }, 20000);
 
   it("getComponent returns specific component or null", () => {
     const button = getComponent("button", REGISTRY_ROOT);

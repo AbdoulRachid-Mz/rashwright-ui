@@ -2,10 +2,10 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile" width="180" />
 </p>
 
-# @rashwright/ui-mobile — v0.5.0
+# @rashwright/ui-mobile — v0.6.0
 
-[![npm version](https://img.shields.io/badge/npm-%400.5.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
-[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2059-000000?logo=expo)](#)
+[![npm version](https://img.shields.io/badge/npm-%400.6.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2057-000000?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6?logo=typescript)](#)
 
 > **⚠️ Pour les développeurs UTILISATEURS de Rashwright UI : vous n'avez JAMAIS besoin d'installer ce package directement.**

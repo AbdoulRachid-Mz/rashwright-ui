@@ -155,6 +155,7 @@ export function resetExpoProject(
   //    Ces fichiers importent Colors/Spacing/Fonts/ThemeColor depuis @/constants/theme
   //    qui n'existent PAS dans Rashwright → erreurs TS après init si non supprimés
   safeRm("src/components/Collapsible.tsx");
+  safeRm("src/components/collapsible.tsx");
   safeRm("src/components/ExternalLink.tsx");
   safeRm("src/components/HelloWave.tsx");
   safeRm("src/components/ParallaxScrollView.tsx");
@@ -301,14 +302,19 @@ export function writeBabelConfig(
 }
 
 /**
- * ⚡ Objectif A.4 — updateTsconfig
- * Lit/met à jour tsconfig.json pour ajouter:
- *   - compilerOptions.jsx = "react-native" (si absent)
- *   - compilerOptions.paths."@/*" = ["./src/*", "./*"] pour résoudre les imports @/...
- *   - compilerOptions.ignoreDeprecations = "6.0" pour supprimer le warning baseUrl TS7
+ * Met à jour tsconfig.json pour le projet consommateur Rashwright UI.
  *
- * NOTE: baseUrl est déprécié en TypeScript 7+. On utilise paths seuls avec rootDirs
- * pour la résolution d'alias, sans baseUrl.
+ * Configuration générée :
+ * - compilerOptions.jsx = "react-native"
+ * - compilerOptions.paths["@/*"] = ["./src/*", "./*"]
+ *
+ * IMPORTANT :
+ * - Ne plus générer `baseUrl`.
+ * - `baseUrl` est déprécié depuis TypeScript 6.x et sera supprimé de
+ *   TypeScript 7.
+ * - Ne pas utiliser `ignoreDeprecations` pour masquer cette dépréciation.
+ *
+ * L'alias `@/*` reste la convention Rashwright.
  */
 export function updateTsconfig(
   targetProjectRoot: string,
@@ -320,48 +326,112 @@ export function updateTsconfig(
 
   type TsConfig = {
     extends?: string;
+
     compilerOptions?: {
       strict?: boolean;
       jsx?: string;
       paths?: Record<string, string[]>;
       baseUrl?: string;
       ignoreDeprecations?: string;
-      [k: string]: unknown;
+      [key: string]: unknown;
     };
+
     include?: string[];
     exclude?: string[];
-    [k: string]: unknown;
+
+    [key: string]: unknown;
   };
 
-  let cfg: TsConfig = {};
+  let cfg: TsConfig;
+
   if (existsSync(path)) {
     try {
       cfg = JSON.parse(readFileSync(path, "utf-8")) as TsConfig;
     } catch {
-      cfg = { extends: "expo/tsconfig.base", compilerOptions: { strict: true } };
+      cfg = {
+        extends: "expo/tsconfig.base",
+        compilerOptions: {
+          strict: true,
+        },
+      };
     }
   } else {
-    cfg = { extends: "expo/tsconfig.base", compilerOptions: { strict: true } };
+    cfg = {
+      extends: "expo/tsconfig.base",
+      compilerOptions: {
+        strict: true,
+      },
+    };
   }
 
-  if (!cfg.compilerOptions) cfg.compilerOptions = {};
+  if (!cfg.compilerOptions) {
+    cfg.compilerOptions = {};
+  }
+
+  // ---------------------------------------------------------------------------
+  // JSX
+  // ---------------------------------------------------------------------------
+
   cfg.compilerOptions.jsx = "react-native";
-  cfg.compilerOptions.baseUrl = ".";
 
-  // Silencer le warning TS5101 pour TypeScript (baseUrl sans paths ou transition TS)
-  cfg.compilerOptions.ignoreDeprecations = "5.0";
-
-  if (!cfg.compilerOptions.paths || typeof cfg.compilerOptions.paths !== "object") {
+  // ---------------------------------------------------------------------------
+  // Alias Rashwright
+  // ---------------------------------------------------------------------------
+  //
+  // Ne plus utiliser baseUrl.
+  //
+  // TypeScript moderne accepte la résolution de paths sans avoir besoin
+  // de générer explicitement `baseUrl`.
+  //
+  // Priorité :
+  //   @/xxx -> src/xxx
+  //   @/xxx -> xxx
+  //
+  if (
+    !cfg.compilerOptions.paths ||
+    typeof cfg.compilerOptions.paths !== "object"
+  ) {
     cfg.compilerOptions.paths = {};
   }
-  // Alias robuste : résout @/... vers src/ en priorité, puis racine
+
   cfg.compilerOptions.paths["@/*"] = ["./src/*", "./*"];
 
-  if (!cfg.include || !Array.isArray(cfg.include) || cfg.include.length === 0) {
-    cfg.include = ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"];
+  // ---------------------------------------------------------------------------
+  // Migration depuis les anciennes versions de Rashwright
+  // ---------------------------------------------------------------------------
+  //
+  // Les anciennes versions généraient :
+  //
+  //   "baseUrl": "."
+  //   "ignoreDeprecations": "5.0"
+  //
+  // Cette configuration est désormais incorrecte avec TypeScript 6.x.
+  //
+  delete cfg.compilerOptions.baseUrl;
+  delete cfg.compilerOptions.ignoreDeprecations;
+
+  // ---------------------------------------------------------------------------
+  // Include
+  // ---------------------------------------------------------------------------
+
+  if (
+    !cfg.include ||
+    !Array.isArray(cfg.include) ||
+    cfg.include.length === 0
+  ) {
+    cfg.include = [
+      "**/*.ts",
+      "**/*.tsx",
+      ".expo/types/**/*.ts",
+      "expo-env.d.ts",
+    ];
   }
 
-  writeFileSync(path, JSON.stringify(cfg, null, 2) + "\n", "utf-8");
+  writeFileSync(
+    path,
+    JSON.stringify(cfg, null, 2) + "\n",
+    "utf-8",
+  );
 }
 
 
@@ -432,6 +502,13 @@ export const COMPONENT_EXPORTS_MAP: Record<string, string> = {
   form: 'export { Form, FormField, FormLabel, FormMessage, FormDescription, useFormField } from "./form";',
   "otp-input": 'export { OtpInput } from "./otp-input";',
   rating: 'export { Rating } from "./rating";',
+  // ── Starters & Templates Screens v0.6.0 ──────────────────────────────────
+  "minimal-screen": 'export { RashwrightMinimalScreen } from "./minimal-screen";',
+  "auth-screen": 'export { RashwrightAuthScreen } from "./auth-screen";',
+  "onboarding-screen": 'export { RashwrightOnboardingScreen } from "./onboarding-screen";',
+  "dashboard-screen": 'export { RashwrightDashboardScreen } from "./dashboard-screen";',
+  "commerce-screen": 'export { RashwrightCommerceScreen } from "./commerce-screen";',
+  "settings-screen": 'export { RashwrightSettingsScreen } from "./settings-screen";',
 };
 
 /**
@@ -585,17 +662,26 @@ export const customDark: Theme = {
   }
 }
 
+export interface ScreenComponentSpec {
+  importFile: string;
+  componentName: string;
+}
+
 /**
  * ⚡ Objectif A.5 + A.3 — writeExpoRouterLayout + génération app/ index
  * Pour le template Expo Router (app/ ou src/app/):
  *   - _layout.tsx: <ThemeProvider initialPreset={preset}><Slot /></ThemeProvider>
- *   - index.tsx : <RashwrightShowcaseScreen />
+ *   - index.tsx : <ScreenComponent />
  */
 export function writeExpoRouterLayout(
   targetProjectRoot: string,
   componentsPath: string = "src/components/ui",
   themePreset: string = "default",
   dryRun = false,
+  screenComponent: ScreenComponentSpec = {
+    importFile: "showcase-screen",
+    componentName: "RashwrightShowcaseScreen",
+  },
 ): void {
   if (dryRun) return;
 
@@ -604,7 +690,7 @@ export function writeExpoRouterLayout(
   if (!existsSync(appDir)) mkdirSync(appDir, { recursive: true });
 
   const cleanComponentsPath = componentsPath.replace(/^src\//, "");
-  const showcaseCompImportPath = `@/${cleanComponentsPath}/showcase-screen`;
+  const showcaseCompImportPath = `@/${cleanComponentsPath}/${screenComponent.importFile}`;
 
   const layoutContent = `import { Slot } from "expo-router";
 import React from "react";
@@ -621,10 +707,10 @@ export default function RootLayout() {
   writeFileSync(join(appDir, "_layout.tsx"), layoutContent, "utf-8");
 
   const indexContent = `import React from "react";
-import { RashwrightShowcaseScreen } from "${showcaseCompImportPath}";
+import { ${screenComponent.componentName} } from "${showcaseCompImportPath}";
 
 export default function Index() {
-  return <RashwrightShowcaseScreen />;
+  return <${screenComponent.componentName} />;
 }
 `;
   writeFileSync(join(appDir, "index.tsx"), indexContent, "utf-8");
@@ -793,6 +879,10 @@ export function generateShowcaseScreen(
   componentsPath: string,
   themePreset: string = "default",
   dryRun = false,
+  screenComponent: ScreenComponentSpec = {
+    importFile: "showcase-screen",
+    componentName: "RashwrightShowcaseScreen",
+  },
 ): string | null {
   if (dryRun) return null;
 
@@ -801,7 +891,7 @@ export function generateShowcaseScreen(
     existsSync(join(targetProjectRoot, "app"));
 
   if (hasExpoRouter) {
-    writeExpoRouterLayout(targetProjectRoot, componentsPath, themePreset, dryRun);
+    writeExpoRouterLayout(targetProjectRoot, componentsPath, themePreset, dryRun, screenComponent);
     const useSrc = componentsPath.startsWith("src/") || existsSync(join(targetProjectRoot, "src"));
     return join(targetProjectRoot, useSrc ? "src/app" : "app", "index.tsx");
   }
@@ -809,15 +899,15 @@ export function generateShowcaseScreen(
   // Mode classique : App.tsx (sans expo-router)
   const classicApp = join(targetProjectRoot, "App.tsx");
   const cleanComponentsPath = componentsPath.replace(/^src\//, "");
-  const showcaseRel = `@/${cleanComponentsPath}/showcase-screen`;
+  const showcaseRel = `@/${cleanComponentsPath}/${screenComponent.importFile}`;
   const content = `import React from "react";
 import { ThemeProvider } from "@/contexts/theme-context";
-import { RashwrightShowcaseScreen } from "${showcaseRel}";
+import { ${screenComponent.componentName} } from "${showcaseRel}";
 
 export default function App() {
   return (
     <ThemeProvider initialMode="system" initialPreset="${themePreset as any}">
-      <RashwrightShowcaseScreen />
+      <${screenComponent.componentName} />
     </ThemeProvider>
   );
 }
@@ -827,5 +917,7 @@ export default function App() {
   writeFileSync(classicApp, content, "utf-8");
   return classicApp;
 }
+
+export const generateStarterScreen = generateShowcaseScreen;
 
 

@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v0.5.0 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v0.6.0 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -10,9 +10,9 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-0.5.0-blue)](#)
+[![version](https://img.shields.io/badge/version-0.6.0-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
-[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2059-000020?logo=expo)](#)
+[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2057-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
 
 ---
@@ -178,6 +178,21 @@ Le fichier de configuration trace l'état complet du starter, des thèmes et des
 ```
 
 ---
+
+## 🆕 Nouveautés v0.6.0
+ 
+- **Starter Templates Engine (`--template`)** : Choix parmi 7 templates starters complets (`showcase`, `minimal`, `auth`, `onboarding`, `dashboard`, `commerce`, `settings`) utilisant exclusivement les composants Rashwright UI Mobile et l'architecture standardisée.
+- **Single Installation Flow & Clean SDK Resolution** :
+  - `rs-ui` prend le contrôle complet du bootstrap : sélection explicite du SDK Expo (54, 55, 56, 57).
+  - Utilisation du squelette minimal `blank-typescript@<SDK>` avec `--no-install` et `--no-agents-md`.
+  - Élimination totale de la double installation : une seule phase d'installation finale pour toutes les dépendances Expo et NPM.
+  - Normalisation multiplateforme robuste des chemins sous Windows/macOS/Linux.
+- **CLI Hooks Subsystem** : Exécution de hooks shell personnalisés (`post-add`, `post-update`, etc.) configurables dans `rashwright-ui.json` (`hooks`).
+- **Multi-Registres Scoped** : Commande `rs-ui registry` (`add`, `list`, `remove`) et support des composants sous scope (ex: `@equipe/badge`).
+- **TypeScript 5.x/6.x Modernisation** : Suppression définitive de `baseUrl` et `ignoreDeprecations` obsolètes.
+- **Branding CLI unifié** : Banner ASCII art Rashwright (`printBanner`) partagé et testé.
+ 
+ ---
 
 ## 🆕 Nouveautés v0.3.0
 

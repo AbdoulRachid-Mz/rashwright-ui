@@ -33,13 +33,14 @@ describe("starter-generator", () => {
     expect(content).toContain("react-native-reanimated/plugin");
   });
 
-  it("updateTsconfig updates paths alias and silences TS5101", () => {
+  it("updateTsconfig updates paths alias and removes deprecated baseUrl and ignoreDeprecations", () => {
     updateTsconfig(tempDir);
     const tsconfigFile = join(tempDir, "tsconfig.json");
     expect(existsSync(tsconfigFile)).toBe(true);
     const cfg = JSON.parse(readFileSync(tsconfigFile, "utf-8"));
-    expect(cfg.compilerOptions.baseUrl).toBe(".");
-    expect(cfg.compilerOptions.ignoreDeprecations).toBe("5.0");
+    expect(cfg.compilerOptions.baseUrl).toBeUndefined();
+    expect(cfg.compilerOptions.ignoreDeprecations).toBeUndefined();
+    expect(cfg.compilerOptions.jsx).toBe("react-native");
     expect(cfg.compilerOptions.paths["@/*"]).toEqual(["./src/*", "./*"]);
   });
 
@@ -57,15 +58,17 @@ describe("starter-generator", () => {
     expect(content).not.toContain('export { default as Switch } from "./switch";');
   });
 
-  it("COMPONENT_EXPORTS_MAP includes all 61 components", () => {
+  it("COMPONENT_EXPORTS_MAP includes all 61 components and 6 template screens", () => {
     const keys = Object.keys(COMPONENT_EXPORTS_MAP);
-    expect(keys.length).toBe(61);
+    expect(keys.length).toBe(67);
     expect(keys).toContain("accordion");
     expect(keys).toContain("collapsible");
     expect(keys).toContain("data-table");
     expect(keys).toContain("form");
     expect(keys).toContain("otp-input");
     expect(keys).toContain("rating");
+    expect(keys).toContain("auth-screen");
+    expect(keys).toContain("dashboard-screen");
   });
 
   it("generateShowcaseScreen writes screen in src/app for router projects", () => {

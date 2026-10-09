@@ -17,6 +17,8 @@ import { resolveRegistry, ensureComponentDownloaded } from "../core/remote-regis
 import { computeLineDiff, formatDiffOutput } from "../core/diff.js";
 import { copyComponentSkill } from "../core/skills-manager.js";
 import { recordLockedComponent } from "../core/lock-manager.js";
+import { executeHook } from "../core/hooks-manager.js";
+import { parseScopedComponentName, getScopedRegistries } from "../core/scoped-registry.js";
 
 export function addCommand(): Command {
   const cmd = new Command("add");
@@ -67,17 +69,22 @@ export function addCommand(): Command {
         console.log(chalk.dim(`  ℹ Source registre : ${resolved.registryUrl}`));
       }
 
-      // ── 2. Resolve component list & version tags (ex: button@0.3.0) ───
+      // ── 2. Resolve component list & version tags (ex: button@0.3.0, @scope/button) ───
       const requestedVersions = new Map<string, string>();
+      const scopedRegistries = getScopedRegistries(cwd);
       let componentNames: string[] = componentArgs.map((arg) => {
-        if (arg.includes("@")) {
-          const [name, ver] = arg.split("@");
-          if (name && ver) {
-            requestedVersions.set(name, ver);
-            return name;
+        const parsed = parseScopedComponentName(arg);
+        if (parsed.version) {
+          requestedVersions.set(parsed.name, parsed.version);
+        }
+        if (parsed.scope) {
+          const regKey = parsed.scope.startsWith("@") ? parsed.scope.slice(1) : parsed.scope;
+          const regEntry = scopedRegistries[regKey] || scopedRegistries[`@${regKey}`];
+          if (regEntry) {
+            console.log(chalk.dim(`  ℹ Composant scoped @${regKey} dirigé vers : ${regEntry.url}`));
           }
         }
-        return arg;
+        return parsed.name;
       });
 
       const interactive = Boolean(options.interactive) && !options.yes && !options.dryRun && !options.nonInteractive;
@@ -414,6 +421,9 @@ export function addCommand(): Command {
         generateUiIndex(targetDir, Object.keys(updatedConfig.components), options.dryRun);
         updateTsconfig(cwd, options.dryRun);
         writeConfig(project.rashwrightConfigPath, updatedConfig);
+
+        // ── Exécution du hook post-add si configuré
+        executeHook("post-add", updatedConfig.hooks, cwd, { dryRun: options.dryRun });
       }
 
       // ── 9. Summary ─────────────────────────────────────────────────────

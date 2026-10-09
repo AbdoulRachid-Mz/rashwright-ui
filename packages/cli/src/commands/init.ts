@@ -8,7 +8,8 @@ import { execSync } from "node:child_process";
 import { detectProject, isDefaultExpoTemplate } from "../core/project-detector.js";
 import { detectExpo } from "../core/expo-detector.js";
 import { readConfig, writeConfig, mergeRashwrightConfigs } from "../core/config-manager.js";
-import { detectPackageManager, installExpoPackages, installNpmPackages, type PackageManager } from "../core/package-manager.js";
+import { printBanner } from "../core/banner.js";
+import { detectPackageManager, installExpoPackages, installNpmPackages, buildCreateExpoAppCommand, resolveSdkVersion, SUPPORTED_SDK_VERSIONS, LATEST_SUPPORTED_SDK, type PackageManager } from "../core/package-manager.js";
 import {
   copyRashwrightAssets,
   resetExpoProject,
@@ -23,6 +24,12 @@ import {
 import { copyGlobalSkill, copyComponentSkill } from "../core/skills-manager.js";
 import { recordLockedComponent } from "../core/lock-manager.js";
 import { SOURCE_ROOT } from "../core/paths.js";
+import {
+  AVAILABLE_TEMPLATES,
+  getTemplate,
+  setupStarterTemplate,
+  type TemplateType,
+} from "../core/templates-manager.js";
 
 const CORE_EXPO_DEPS = [
   "react-native-reanimated",
@@ -30,6 +37,7 @@ const CORE_EXPO_DEPS = [
   "react-native-safe-area-context",
   "@expo/vector-icons",
   "expo-haptics",
+  "expo-image",
   "@react-native-async-storage/async-storage",
   "expo-image-picker",
   "expo-image-manipulator",
@@ -76,11 +84,12 @@ export function initCommand(): Command {
   cmd
     .description("Initialiser Rashwright UI Mobile (configure un projet existant ou en crée un nouveau)")
     .argument("[project-name]", "Nom du projet Expo à créer (si aucun projet React Native existant)")
-    .option("--sdk <version>", "Version Expo SDK pour un nouveau projet (ex: 57, 58 ou 'latest')", "latest")
+    .option("--sdk <version>", "Version Expo SDK pour un nouveau projet (57, 56, 55, 54 ou 'latest')")
     .option("--theme <preset>", "Choisir parmi les thèmes : default, emerald, violet, amber, rose, slate, green, red, cyan, custom", "default")
+    .option("--template <type>", "Choisir le Starter Template : minimal, showcase, auth, onboarding, dashboard, commerce, settings", "showcase")
     .option("--primary <color>", "Couleur primaire personnalisée en hexadécimal (ex: #2563EB)")
     .option("--dark-primary <color>", "Couleur primaire sombre personnalisée (ex: #3B82F6)")
-    .option("--secondary <color>", "Couleur secondaire personnalisée (ex: #F1F5F9)")
+    .option("--secondary <color>", "Couleur secondaire personnalisée en hexadécimal (ex: #F1F5F9)")
     .option("--dark-secondary <color>", "Couleur secondaire sombre personnalisée (ex: #1E293B)")
     .option("--accent <color>", "Couleur d'accent personnalisée (ex: #F59E0B)")
     .option("--dark-accent <color>", "Couleur d'accent sombre personnalisée (ex: #FBBF24)")
@@ -97,9 +106,7 @@ export function initCommand(): Command {
     .action(async (projectNameArg: string | undefined, options) => {
       let cwd = process.cwd();
 
-      console.log();
-      console.log(chalk.bold.cyan("  Rashwright UI Mobile") + chalk.dim(" — rs-ui init"));
-      console.log();
+      printBanner("rs-ui init");
 
       // ── 0. Sélection du gestionnaire de paquets (Point 3) ────────────────
       let selectedPm: PackageManager = "npm";
@@ -192,9 +199,25 @@ export function initCommand(): Command {
           console.log();
           console.log(chalk.yellow(`  ⚠  Installation dans le répertoire courant : ${chalk.bold(targetDir)}`));
         } else {
-          const sdkFlag = options.sdk === "latest" ? "latest" : options.sdk;
+          let resolvedSdk: number;
+          if (options.sdk !== undefined) {
+            resolvedSdk = resolveSdkVersion(options.sdk);
+          } else if (options.yes) {
+            resolvedSdk = LATEST_SUPPORTED_SDK;
+          } else {
+            resolvedSdk = await select<number>({
+              message: "Choisir la version Expo SDK :",
+              choices: [
+                { name: `Latest (SDK ${LATEST_SUPPORTED_SDK}) - Recommandé`, value: LATEST_SUPPORTED_SDK },
+                { name: "SDK 56", value: 56 },
+                { name: "SDK 55", value: 55 },
+                { name: "SDK 54", value: 54 },
+              ],
+              default: LATEST_SUPPORTED_SDK,
+            });
+          }
+
           targetDir = join(cwd, projectName!);
-          const runner = selectedPm === "bun" ? "bunx" : "npx";
 
           if (existsSync(targetDir) && !isDirectoryEmpty(targetDir)) {
             if (!options.yes) {
@@ -214,9 +237,9 @@ export function initCommand(): Command {
           }
 
           console.log();
-          console.log(chalk.bold(`  Création du projet Expo dans le dossier (${chalk.cyan(projectName!)}) SDK ${chalk.green(sdkFlag)} via ${chalk.magenta(selectedPm)}...`));
+          console.log(chalk.bold(`  Création du projet Expo dans le dossier (${chalk.cyan(projectName!)}) SDK ${chalk.green(resolvedSdk)} via ${chalk.magenta(selectedPm)}...`));
 
-          const createCmd = `${runner} create-expo-app@${sdkFlag} ${projectName!} --template default`;
+          const createCmd = buildCreateExpoAppCommand(selectedPm, projectName!, resolvedSdk);
 
           if (options.dryRun) {
             console.log(chalk.yellow(`  [dry-run] ${createCmd}`));
@@ -315,7 +338,34 @@ export function initCommand(): Command {
         themePreset = options.theme;
       }
 
+      let selectedTemplate: TemplateType = "showcase";
+      if (options.template) {
+        const found = getTemplate(options.template);
+        if (found) {
+          selectedTemplate = found.id;
+        } else {
+          console.log(chalk.yellow(`  ⚠ Template "${options.template}" non reconnu. Utilisation de "showcase".`));
+          selectedTemplate = "showcase";
+        }
+      }
+
       if (!options.yes) {
+        if (!options.template || options.template === "showcase") {
+          selectedTemplate = await select<TemplateType>({
+            message: "Choisir le Starter Template à initialiser :",
+            choices: [
+              { name: "Showcase (Complet — Thèmes, Glass UI, upload media & démo)", value: "showcase" },
+              { name: "Minimal Starter (Épuré — Logo, card, badges & boutons)", value: "minimal" },
+              { name: "Authentication Suite (Écrans Connexion, Inscription, OTP & formulaires)", value: "auth" },
+              { name: "Onboarding Flow (Slides animés, Carrousel & Call to Actions)", value: "onboarding" },
+              { name: "Dashboard & Analytics (StatCards, métriques, tableau & profil)", value: "dashboard" },
+              { name: "E-Commerce & Store (Boutique, recherche, filtres catégories, avis & panier)", value: "commerce" },
+              { name: "Settings & Preferences (Profil, switchers dark/notif & sécurité)", value: "settings" },
+            ],
+            default: "showcase",
+          });
+        }
+
         if (!options.glass) {
           const style = await select({
             message: "Choisir le style UI :",
@@ -452,33 +502,7 @@ export function initCommand(): Command {
       console.log(chalk.dim(`  • Dépendances NPM  : ${npmDepsToInstall.join(", ")}`));
       console.log();
 
-      if (options.dryRun) {
-        console.log(chalk.yellow("  [dry-run] Aucune modification effectuée."));
-        return;
-      }
-
-      // ── 5. Installer les dépendances Expo (1/2) + npm (2/2) ────────────────
-      const installSpinner = ora(`Installation des dépendances Expo compatibles via ${selectedPm}...`).start();
-      try {
-        installExpoPackages(expoDepsToInstall, selectedPm, cwd, options.dryRun);
-        installSpinner.succeed("Dépendances Expo installées");
-      } catch (err) {
-        installSpinner.fail("Échec de l'installation des dépendances Expo");
-        console.error(err);
-      }
-
-      if (npmDepsToInstall.length > 0) {
-        const npmInstallSpinner = ora(`Installation des dépendances NPM (zustand, ...) via ${selectedPm}...`).start();
-        try {
-          installNpmPackages(npmDepsToInstall, selectedPm, cwd, options.dryRun);
-          npmInstallSpinner.succeed(`Dépendances NPM installées (${npmDepsToInstall.join(", ")})`);
-        } catch (err) {
-          npmInstallSpinner.fail("Échec installation dépendances NPM");
-          console.error(err);
-        }
-      }
-
-      // ── 6. Copier les fondations (Theme, Store, Context + Core UI text, view, liquid/*) ──────
+      // ── 5. Copier les fondations (Theme, Store, Context + Core UI text, view, liquid/*) ──────
       const foundationSpinner = ora("Mise en place des fondations Rashwright (tokens, thème, store, contexte + primitives UI)...").start();
       setupFoundations(SOURCE_ROOT, cwd, componentsPath, options.dryRun);
       foundationSpinner.succeed("Fondations du thème, store & primitives UI installées");
@@ -489,19 +513,29 @@ export function initCommand(): Command {
         customThemeSpinner.succeed("Thème personnalisé généré dans theme/themes/custom.ts");
       }
 
-      // ── 7. Copier les assets (SVG RS + PNG) ──────────────────────────────
+      // ── 6. Copier les assets (SVG RS + PNG) ──────────────────────────────
       const assetsSpinner = ora("Copie des assets Rashwright (Logo RS SVG + PNG)...").start();
       copyRashwrightAssets(SOURCE_ROOT, cwd, options.dryRun);
       assetsSpinner.succeed("Assets Rashwright installés dans assets/");
 
-      // ── 8. Mettre en place les composants UI de base ────────────────────
-      const compSpinner = ora("Installation des composants starters (Button, Card, GlassCard, Logo, etc.)...").start();
+      // ── 7. Mettre en place les composants UI du Starter Template ────────────
+      const templateMeta = AVAILABLE_TEMPLATES[selectedTemplate];
+      const compSpinner = ora(`Installation des composants du template (${templateMeta.name})...`).start();
       const targetComponentsDir = join(cwd, componentsPath);
       if (!existsSync(targetComponentsDir)) mkdirSync(targetComponentsDir, { recursive: true });
-      const installedStarterComps = setupStarterComponents(SOURCE_ROOT, targetComponentsDir, options.dryRun);
-      compSpinner.succeed(`${installedStarterComps.length} composants starters configurés`);
+      const { installedComponents: installedStarterComps } = setupStarterTemplate(
+        SOURCE_ROOT,
+        cwd,
+        selectedTemplate,
+        {
+          componentsPath,
+          themePreset,
+          dryRun: options.dryRun,
+        }
+      );
+      compSpinner.succeed(`${installedStarterComps.length} composants configurés (${templateMeta.name})`);
 
-      // ── 8b. Mettre en place les Skills IA (Global + Starters) ────────────
+      // ── 7b. Mettre en place les Skills IA (Global + Starters) ────────────
       if (options.skills !== false) {
         const skillsSpinner = ora("Installation des Skills IA (skills/rs-ui/)...").start();
         copyGlobalSkill(SOURCE_ROOT, cwd, options.dryRun);
@@ -511,16 +545,20 @@ export function initCommand(): Command {
         skillsSpinner.succeed("Skills IA installés dans skills/rs-ui/ (Skill Global & starters)");
       }
 
-      // ── 9. Générer l'écran de démo Rashwright UI Showcase ────────────────
+      // ── 8. Générer l'écran de démo / starter ──────────────────────────────
       const shouldGenerateShowcase = options.showcase !== false;
       let showcaseFile: string | null = null;
       if (shouldGenerateShowcase) {
-        const showcaseSpinner = ora("Génération de l'écran démo Rashwright UI Showcase...").start();
-        showcaseFile = generateShowcaseScreen(cwd, componentsPath, themePreset, options.dryRun);
-        showcaseSpinner.succeed(`Écran de démo configuré (${showcaseFile ? showcaseFile.replace(cwd, "") : "App"})`);
+        const screenSpec = {
+          importFile: selectedTemplate === "showcase" ? "showcase-screen" : `${selectedTemplate}-screen`,
+          componentName: templateMeta.screenComponentName,
+        };
+        const showcaseSpinner = ora(`Génération de l'écran starter (${templateMeta.name})...`).start();
+        showcaseFile = generateShowcaseScreen(cwd, componentsPath, themePreset, options.dryRun, screenSpec);
+        showcaseSpinner.succeed(`Écran starter configuré (${showcaseFile ? showcaseFile.replace(cwd, "") : "App"})`);
       }
 
-      // ── 10. Enregistrer la configuration rashwright-ui.json ──────────────
+      // ── 9. Enregistrer la configuration rashwright-ui.json ──────────────
       const componentsRecord: Record<string, string> = {};
       for (const comp of installedStarterComps) {
         componentsRecord[comp] = "1.0.0";
@@ -535,12 +573,12 @@ export function initCommand(): Command {
         glass: glassEnabled,
         typescript: project.hasTypeScript,
         packageManager: selectedPm,
-        starter: { installed: true, reset: false },
+        starter: { installed: true, reset: false, template: selectedTemplate },
         components: componentsRecord,
       });
       writeConfig(join(cwd, "rashwright-ui.json"), config);
 
-      // ── 10b. Enregistrer l'état initial dans rashwright-ui.lock ───────────
+      // ── 9b. Enregistrer l'état initial dans rashwright-ui.lock ───────────
       for (const comp of installedStarterComps) {
         recordLockedComponent(
           cwd,
@@ -551,6 +589,35 @@ export function initCommand(): Command {
           [],
           options.dryRun
         );
+      }
+
+      // ── 10. Phase d'installation unique (Expo + NPM) ─────────────────────
+      if (options.dryRun) {
+        console.log(chalk.yellow("  [dry-run] Commandes d'installation prévues :"));
+        installExpoPackages(expoDepsToInstall, selectedPm, cwd, true);
+        if (npmDepsToInstall.length > 0) {
+          installNpmPackages(npmDepsToInstall, selectedPm, cwd, true);
+        }
+      } else {
+        const installSpinner = ora(`Installation des dépendances Expo compatibles via ${selectedPm}...`).start();
+        try {
+          installExpoPackages(expoDepsToInstall, selectedPm, cwd, options.dryRun);
+          installSpinner.succeed("Dépendances Expo installées");
+        } catch (err) {
+          installSpinner.fail("Échec de l'installation des dépendances Expo");
+          console.error(err);
+        }
+
+        if (npmDepsToInstall.length > 0) {
+          const npmInstallSpinner = ora(`Installation des dépendances NPM (zustand, ...) via ${selectedPm}...`).start();
+          try {
+            installNpmPackages(npmDepsToInstall, selectedPm, cwd, options.dryRun);
+            npmInstallSpinner.succeed(`Dépendances NPM installées (${npmDepsToInstall.join(", ")})`);
+          } catch (err) {
+            npmInstallSpinner.fail("Échec installation dépendances NPM");
+            console.error(err);
+          }
+        }
       }
 
       // ── 11. Résumé & instructions ────────────────────────────────────────

@@ -17,6 +17,7 @@ import { whyCommand } from "./commands/why.js";
 import { migrateCommand } from "./commands/migrate.js";
 import { createCommand } from "./commands/create.js";
 import { skillCommand } from "./commands/skill.js";
+import { registryCommand } from "./commands/registry.js";
 
 const require = createRequire(import.meta.url);
 const { version: CLI_VERSION } = require("../package.json") as {
@@ -45,6 +46,7 @@ program.addCommand(whyCommand());
 program.addCommand(migrateCommand());
 program.addCommand(createCommand());
 program.addCommand(skillCommand());
+program.addCommand(registryCommand());
 
 // Support de l'alias direct binaire `rs-ui-reset`
 const invokedBin = basename(process.argv[1] || "");
