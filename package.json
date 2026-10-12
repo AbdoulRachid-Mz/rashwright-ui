@@ -46,5 +46,8 @@
     "inquirer": "^12.5.0",
     "ora": "^8.1.1",
     "typescript": "^5.5.0"
+  },
+  "dependencies": {
+    "zustand": "^5.0.15"
   }
 }
