@@ -1,75 +1,84 @@
-# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI (v0.6.0)
+# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI (v0.7.0)
 
 > **Fichier de suivi dynamique (`TASK.md`)**
 >
-> Dernière mise à jour : 2026-10-08  
-> Statut général : **v0.5.0 Validée & Prête pour Release — Préparation Roadmap v0.6.0 (CLI Hooks, Multi-Registry & Templates Engine)**
+> Dernière mise à jour : 2026-10-09  
+> Statut général : **v0.7.0 Validée & Prête pour Release (143 tests Vitest réussis, 31 suites, Quality Gate 100% vert)**
 
 ---
 
-## 📊 Tableau de bord d'avancement (Roadmap v0.6.0)
+## 📊 Tableau de bord d'avancement (Roadmap v0.7.0)
 
 | Phase | Intitulé | Statut | Progression |
 |---|---|---|:---:|
-| **v0.5.0** | Migrations, Composants Custom, Multi-Version & Monorepo | ✅ Validé (107 tests) | 20 / 20 tâches |
-| **Phase 1 (v0.6.0)** | Système de Hooks CLI (`hooks-manager.ts` & config `hooks`) | ✅ Terminé | 4 / 4 tâches |
-| **Phase 2 (v0.6.0)** | Multi-Registres & Registres d'Organisation (`rs-ui registry`) | ✅ Terminé | 4 / 4 tâches |
-| **Phase 3 (v0.6.0)** | Moteur de Templates Init (`--template minimal/auth/dashboard...`) | ✅ Terminé | 4 / 4 tâches |
-| **Phase 4 (v0.6.0)** | Validation, Quality Gate & Release v0.6.0 | ✅ Terminé | 4 / 4 tâches |
+| **v0.6.0** | Hooks CLI, Multi-Registres Scoped & Pipeline Init Unique | ✅ Validé (133 tests) | 16 / 16 tâches |
+| **Phase 1 (v0.7.0)** | Création des Modules de Templates Autonomes (`templates/`) | ✅ Validé | 4 / 4 tâches |
+| **Phase 2 (v0.7.0)** | Registry des Templates & Découverte (`rs-ui list --templates`) | ✅ Validé | 4 / 4 tâches |
+| **Phase 3 (v0.7.0)** | Installation des Templates via `rs-ui add --template` (`-t`) | ✅ Validé | 4 / 4 tâches |
+| **Phase 4 (v0.7.0)** | Intégration `rs-ui init`, Lockfile & Nettoyage Code Mort | ✅ Validé | 4 / 4 tâches |
+| **Phase 5 (v0.7.0)** | Tests Vitest, Documentation, Quality Gate & Release v0.7.0 | ✅ Validé (143 tests) | 4 / 4 tâches |
 
 ---
 
-## 📝 Détail des tâches par Phase (v0.6.0)
+## 📝 Détail des tâches par Phase (v0.7.0)
 
-### Phase 1 : Système de Hooks CLI (`hooks-manager.ts`)
+### Phase 1 : Création des Modules de Templates Autonomes (`packages/ui-mobile/templates/`)
 
-* [x] **TASK-6.1.1** : Créer le module core `packages/cli/src/core/hooks-manager.ts` pour parser et déclencher les hooks configurés (`pre-add`, `post-add`, `pre-update`, `post-update`).
-* [x] **TASK-6.1.2** : Intégrer les triggers de hooks dans les flux `addCommand` et `updateCommand`.
-* [x] **TASK-6.1.3** : Mettre à jour `RashwrightConfig` pour supporter le champ optionnel `hooks: Record<string, string>`.
-* [x] **TASK-6.1.4** : Écrire les tests unitaires Vitest dans `packages/cli/tests/hooks-manager.test.ts`.
-
----
-
-### Phase 2 : Multi-Registres & Registres d'Organisation (`rs-ui registry`)
-
-* [x] **TASK-6.2.1** : Créer le module core `packages/cli/src/core/scoped-registry.ts` pour gérer le stockage des registres tiers dans `rashwright-ui.json` ou la config globale utilisateur.
-* [x] **TASK-6.2.2** : Implémenter la commande `packages/cli/src/commands/registry.ts` (`rs-ui registry add <alias> <url>`, `list`, `remove`).
-* [x] **TASK-6.2.3** : Permettre l'installation préfixée par scope : `rs-ui add @scope/composant`.
-* [x] **TASK-6.2.4** : Écrire les tests unitaires Vitest dans `packages/cli/tests/scoped-registry.test.ts`.
+* [x] **TASK-7.1.1** : Créer l'arborescence des templates dans `packages/ui-mobile/templates/` (`minimal`, `auth`, `onboarding`, `dashboard`, `commerce`, `settings`, `showcase`).
+* [x] **TASK-7.1.2** : Écrire le composant autonome principal `.tsx`, les types `.ts`, et les sous-composants (`components/`) pour chacun des 7 templates sans aucune chaîne de template multiline.
+* [x] **TASK-7.1.3** : Définir le fichier de manifeste `template.json` standardisé pour chaque template (`id`, `name`, `description`, `version`, `entrypoint`, `files`, `requiredComponents`, `dependencies`, `expoDependencies`, `supportsGlass`).
+* [x] **TASK-7.1.4** : Configurer `files: ["templates/**"]` dans `packages/ui-mobile/package.json`.
 
 ---
 
-### Phase 3 : Moteur de Templates Starters Élargi (`--template`)
+### Phase 2 : Registry des Templates & Découverte (`rs-ui list --templates`)
 
-* [x] **TASK-6.3.1** : Créer le module `packages/cli/src/core/templates-manager.ts` avec le catalogue des templates basés exclusivement sur les composants `rs-ui` : `minimal`, `showcase`, `auth` (login/signup), `onboarding` (carrousel & étapes), `dashboard` (stats/tables), `commerce` (cards/filtres) et `settings` (profil/toggles).
-* [x] **TASK-6.3.2** : Connecter le flag `--template <type>` dans `packages/cli/src/commands/init.ts` et dans l'assistant interactif Inquirer (avec descriptions claires de chaque starter).
-* [x] **TASK-6.3.3** : Adapter le générateur de starter (`setupStarterTemplate` / `generateShowcaseScreen`) pour copier automatiquement les composants `rs-ui` requis par le template sélectionné et générer l'écran correspondant.
-* [x] **TASK-6.3.4** : Écrire les tests unitaires Vitest dans `packages/cli/tests/starter-generator.test.ts` et `templates-manager.test.ts`.
+* [x] **TASK-7.2.1** : Créer le module core `packages/cli/src/core/templates-registry.ts` pour charger, inspecter et valider les `template.json`.
+* [x] **TASK-7.2.2** : Définir les types stricts TypeScript (`TemplateDefinition`, `getTemplateDefinition`, `loadTemplatesRegistry`, `listTemplateIds`).
+* [x] **TASK-7.2.3** : Étendre la commande `packages/cli/src/commands/list.ts` avec l'option `-t, --templates` (ou `rs-ui list --templates`) pour afficher le catalogue détaillé des templates installables.
+* [x] **TASK-7.2.4** : Écrire les tests unitaires Vitest pour `templates-registry.ts` dans `packages/cli/tests/templates-registry.test.ts`.
 
 ---
 
-### Phase 4 : Validation, Documentation & Release v0.6.0
+### Phase 3 : Installation des Templates via `rs-ui add --template` (`-t`)
 
-* [x] **TASK-6.4.1** : Exécuter la suite complète Vitest et valider le Quality Gate `bun run quality` (100% vert, 0 erreur, 133 tests).
-* [x] **TASK-6.4.2** : Mettre à jour les documentations utilisateur (`README.md`, `packages/cli/README.md`, `packages/ui-mobile/README.md`).
-* [x] **TASK-6.4.3** : Documenter les résultats techniques dans `ANALYSIS.md`.
-* [x] **TASK-6.4.4** : Validation des corrections `errors-to-fixe.md` (aucun double install, `--no-install`, banner, normalisation cross-OS, tsconfig moderne sans `baseUrl`).
+* [x] **TASK-7.3.1** : Étendre `packages/cli/src/commands/add.ts` pour supporter le flag `-t, --template <name>` en conservant le support des composants unitaires `rs-ui add <name...>`.
+* [x] **TASK-7.3.2** : Connecter le résolveur de dépendances existant (`resolveDependencies()`) pour installer automatiquement tous les composants `rs-ui` requis par le template dans `src/components/ui/`.
+* [x] **TASK-7.3.3** : Implémenter la copie de l'arborescence complète du template dans `src/components/templates/<nom>/`.
+* [x] **TASK-7.3.4** : Écrire les tests unitaires pour l'installation de templates et lockfile dans `packages/cli/tests/add-template.test.ts`.
+
+---
+
+### Phase 4 : Intégration `rs-ui init`, Lockfile & Nettoyage Code Mort
+
+* [x] **TASK-7.4.1** : Adapter `rs-ui init --template` pour installer le template sélectionné depuis les sources de `templates/` au lieu de générer des chaînes de code TSX.
+* [x] **TASK-7.4.2** : Étendre `lock-manager.ts` (`rashwright-ui.lock`) avec `templates: Record<string, LockedTemplate>` et vérification d'intégrité SHA-256 (`checkTemplateIntegrity`).
+* [x] **TASK-7.4.3** : Remplacer l'ancienne fonction monolithique `generateTemplateScreenCode()` (640 lignes de TSX en dur éliminées) par un wrapper proxy léger et modulaire.
+* [x] **TASK-7.4.4** : Valider les tests d'intégration dans `packages/cli/tests/templates-manager.test.ts`.
+
+---
+
+### Phase 5 : Tests Vitest, Documentation, Quality Gate & Release v0.7.0
+
+* [x] **TASK-7.5.1** : Bump des versions vers `0.7.0` dans `packages/cli/package.json`, `packages/ui-mobile/package.json` et `packages/ui-mobile/registry/index.json`.
+* [x] **TASK-7.5.2** : Valider le Quality Gate `bun run quality` (validate-registry + check-types + tests Vitest + build:cli + smoke:all) : 100% vert, exit code 0.
+* [x] **TASK-7.5.3** : Mettre à jour les documentations (`README.md`, `packages/cli/README.md`, `packages/ui-mobile/README.md`, `PLAN.md`).
+* [x] **TASK-7.5.4** : Préparer la validation finale et la livraison pour l'utilisateur.
 
 ---
 
 ## 📌 Journal des actions effectuées
 
 ### 2026-10-09
-* Implémentation des corrections issues de `errors-to-fixe.md` :
-  - **Banner unifié** : `packages/cli/src/core/banner.ts` (`printBanner`) partagé.
-  - **Gestion SDK Expo & Bootstrap Expo** : `buildCreateExpoAppCommand()` centralisé dans `package-manager.ts` avec `--no-install`, `--no-agents-md` et `blank-typescript@<SDK>`. Résolution stricte de `latest` vers SDK 57 (`LATEST_SUPPORTED_SDK`).
-  - **Élimination de la double installation** : `init.ts` réorganisé pour générer les fichiers en amont et exécuter une seule phase d'installation finale.
-  - **Chemins Windows & cross-plateforme** : normalisation regex robuste dans `file-manager.ts` et `lock-manager.ts`.
-  - **TypeScript moderne** : suppression confirmée de `baseUrl` et `ignoreDeprecations` dans `starter-generator.ts`.
-  - **Tests et Quality Gate** : 133 tests Vitest passants (28 test suites, 100% exit 0), typechecks strict CLI + UI-mobile passants, validate-registry 61 composants sans erreur.
-* Clôture de la version **v0.6.0** prête pour publication et tag GitHub.
-
-### 2026-10-08
-* Réalisation et validation de la **v0.5.0** (107 tests Vitest réussis, 23 suites de test).
-* Nettoyage et synthèse de `errors.md` : alignement des fonctionnalités implémentées (Update intelligent, Lockfile, Backup/Restore, Migrations, Custom components, Multi-version, Skills décorrélés, Monorepo).
-* Structuration de la roadmap **v0.6.0** (Hooks CLI, Multi-Registres privés, Templates d'initialisation).
+* **Clôture de la v0.6.0** :
+  - Pipeline d'initialisation unique, résolution Expo SDK 54-57, banner, normalisation chemins.
+  - 133 tests Vitest passés.
+* **Réalisation intégrale de la v0.7.0** :
+  - Création des 7 templates modulaires autonomes dans `packages/ui-mobile/templates/` (`minimal`, `auth`, `onboarding`, `dashboard`, `commerce`, `settings`, `showcase`).
+  - Chaque template contient : `template.json`, composant principal `.tsx`, `types.ts`, `components/` dédiés et `index.ts`.
+  - Création du module CLI `packages/cli/src/core/templates-registry.ts`.
+  - Implémentation de `rs-ui list --templates` (ou `-t`).
+  - Implémentation de `rs-ui add --template <nom>` (ou `-t <nom>`).
+  - Extension du lockfile `rashwright-ui.lock` avec la section `templates:` et calcul SHA-256.
+  - Élimination de plus de 640 lignes de chaînes TSX en dur dans `templates-manager.ts`.
+  - 143 tests Vitest passés (31 suites de tests), Quality Gate 100% exit 0.

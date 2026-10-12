@@ -1,0 +1,26 @@
+{
+  "id": "onboarding",
+  "name": "Onboarding Flow",
+  "description": "Flux d'onboarding immersif avec étapes illustrées, badges de fonctionnalité et navigation pas à pas.",
+  "version": "1.0.0",
+  "componentName": "OnboardingTemplate",
+  "entrypoint": "onboarding-template.tsx",
+  "files": [
+    "onboarding-template.tsx",
+    "types.ts",
+    "components/onboarding-slide.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": [
+    "card",
+    "button",
+    "stat-card",
+    "badge",
+    "rashwright-logo"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-haptics"
+  ],
+  "supportsGlass": true
+}

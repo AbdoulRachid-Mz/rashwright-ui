@@ -1,0 +1,31 @@
+{
+  "id": "auth",
+  "name": "Authentication Suite",
+  "description": "Suite complète d'authentification : formulaires de connexion, inscription et validation OTP sécurisée.",
+  "version": "1.0.0",
+  "componentName": "AuthTemplate",
+  "entrypoint": "auth-template.tsx",
+  "files": [
+    "auth-template.tsx",
+    "types.ts",
+    "components/login-form.tsx",
+    "components/register-form.tsx",
+    "components/otp-step.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": [
+    "card",
+    "button",
+    "text-input",
+    "checkbox",
+    "otp-input",
+    "divider",
+    "badge",
+    "rashwright-logo"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-haptics"
+  ],
+  "supportsGlass": true
+}

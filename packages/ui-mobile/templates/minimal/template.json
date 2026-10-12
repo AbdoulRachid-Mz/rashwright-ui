@@ -1,0 +1,21 @@
+{
+  "id": "minimal",
+  "name": "Minimal Starter",
+  "description": "Structure d'accueil épurée avec Logo Rashwright, Card, Badges et boutons d'action.",
+  "version": "1.0.0",
+  "componentName": "MinimalTemplate",
+  "entrypoint": "minimal-template.tsx",
+  "files": [
+    "minimal-template.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": [
+    "card",
+    "button",
+    "badge",
+    "rashwright-logo"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "supportsGlass": false
+}

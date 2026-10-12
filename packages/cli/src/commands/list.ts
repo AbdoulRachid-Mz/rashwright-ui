@@ -5,22 +5,26 @@ import { detectProject } from "../core/project-detector.js";
 import { readConfig, isComponentInstalled, getInstalledVersion } from "../core/config-manager.js";
 import { loadRegistryIndex, getAllComponents } from "../core/registry.js";
 import type { ComponentRegistryEntry } from "../core/dependency-resolver.js";
-import { REGISTRY_ROOT } from "../core/paths.js";
+import { REGISTRY_ROOT, SOURCE_ROOT } from "../core/paths.js";
 import { resolveRegistry } from "../core/remote-registry.js";
+import { loadTemplatesRegistry } from "../core/templates-registry.js";
+import { readLockfile } from "../core/lock-manager.js";
 
 export function listCommand(): Command {
   const cmd = new Command("list");
   cmd
-    .description("Afficher les composants Rashwright UI disponibles")
+    .description("Afficher les composants ou templates Rashwright UI disponibles")
     .option("--registry <url>", "URL du registre distant (ex: https://unpkg.com/@rashwright/ui-mobile@latest)")
     .option("--fresh", "Forcer le rafraîchissement du registre distant sans utiliser le cache")
+    .option("-t, --templates", "Lister les templates complets disponibles au lieu des composants")
     .option("-i, --interactive", "Mode interactif : parcourir et inspecter un composant")
     .option("--versions <component>", "Afficher les versions disponibles d'un composant")
     .option("--json", "Sortie JSON")
-    .action(async (options: { registry?: string; fresh?: boolean; interactive?: boolean; versions?: string; json?: boolean }) => {
+    .action(async (options: { registry?: string; fresh?: boolean; templates?: boolean; interactive?: boolean; versions?: string; json?: boolean }) => {
       const cwd = process.cwd();
       const project = detectProject(cwd);
       const config = project.hasRashwrightConfig ? readConfig(project.rashwrightConfigPath) : { components: {}, componentsPath: "", version: 1, theme: "default" as const, glass: false, typescript: true, aliases: { components: "@/components", lib: "@/lib", theme: "@/theme" } };
+      const lockfile = readLockfile(cwd);
 
       const resolved = await resolveRegistry({
         registryUrl: options.registry,
@@ -44,6 +48,52 @@ export function listCommand(): Command {
             console.log(`  ${chalk.dim("•")} v${installedVer} [installé localement]`);
           }
         }
+        console.log();
+        return;
+      }
+
+      // ── Option --templates (-t) ────────────────────────────────────────
+      if (options.templates) {
+        const templates = loadTemplatesRegistry();
+
+        if (options.json) {
+          const data = templates.map((t) => ({
+            id: t.id,
+            name: t.name,
+            version: t.version,
+            description: t.description,
+            componentName: t.componentName,
+            entrypoint: t.entrypoint,
+            requiredComponents: t.requiredComponents,
+            installed: Boolean(lockfile?.templates?.[t.id]),
+            installedVersion: lockfile?.templates?.[t.id]?.version,
+          }));
+          console.log(JSON.stringify(data, null, 2));
+          return;
+        }
+
+        console.log();
+        console.log(chalk.bold.cyan("  Rashwright UI Mobile") + chalk.dim(" — Templates disponibles"));
+        console.log(chalk.dim("  Templates autonomes prêts à l'emploi (rs-ui add --template <nom>) :"));
+        console.log();
+
+        for (const t of templates) {
+          const installed = Boolean(lockfile?.templates?.[t.id]);
+          const installedVer = lockfile?.templates?.[t.id]?.version;
+          const icon = installed ? chalk.green("✔") : chalk.dim("○");
+          const nameStr = installed ? chalk.white(t.id.padEnd(16)) : chalk.dim(t.id.padEnd(16));
+          const statusStr = installed
+            ? chalk.green(`v${installedVer || t.version}`.padEnd(8)) + chalk.dim("── installed")
+            : chalk.dim(`v${t.version}`.padEnd(8) + "── available");
+          const glassStr = t.supportsGlass ? chalk.cyan(" [🥽 glass]") : "";
+          console.log(`    ${icon} ${nameStr} ${statusStr}${glassStr}`);
+          console.log(`       ${chalk.dim(t.description)}`);
+          console.log(`       ${chalk.dim("Composants requis:")} ${chalk.cyan(t.requiredComponents.join(", ") || "aucun")}`);
+          console.log();
+        }
+
+        const installedCount = templates.filter((t) => Boolean(lockfile?.templates?.[t.id])).length;
+        console.log(chalk.dim(`  ${installedCount}/${templates.length} templates installés`));
         console.log();
         return;
       }

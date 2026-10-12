@@ -2,7 +2,7 @@ import { Command } from "commander";
 import chalk from "chalk";
 import ora from "ora";
 import { confirm, checkbox, Separator } from "@inquirer/prompts";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { existsSync, readFileSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
 import { detectProject } from "../core/project-detector.js";
 import { detectExpo } from "../core/expo-detector.js";
@@ -11,20 +11,22 @@ import { detectPackageManager, installExpoPackages, installNpmPackages, type Pac
 import { resolveDependencies } from "../core/dependency-resolver.js";
 import { copyComponentFiles } from "../core/file-manager.js";
 import { loadRegistryIndex, getAllComponents, type RegistryEntry, type ResolvedComponent } from "../core/registry.js";
-import { REGISTRY_ROOT, SOURCE_ROOT } from "../core/paths.js";
+import { REGISTRY_ROOT, SOURCE_ROOT, TEMPLATES_ROOT } from "../core/paths.js";
 import { generateUiIndex, updateTsconfig } from "../core/starter-generator.js";
 import { resolveRegistry, ensureComponentDownloaded } from "../core/remote-registry.js";
 import { computeLineDiff, formatDiffOutput } from "../core/diff.js";
 import { copyComponentSkill } from "../core/skills-manager.js";
-import { recordLockedComponent } from "../core/lock-manager.js";
+import { recordLockedComponent, recordLockedTemplate } from "../core/lock-manager.js";
 import { executeHook } from "../core/hooks-manager.js";
 import { parseScopedComponentName, getScopedRegistries } from "../core/scoped-registry.js";
+import { getTemplateDefinition, listTemplateIds, type TemplateDefinition } from "../core/templates-registry.js";
 
 export function addCommand(): Command {
   const cmd = new Command("add");
   cmd
     .description("Ajouter un ou plusieurs composants Rashwright UI au projet")
     .argument("[components...]", "Noms des composants à ajouter")
+    .option("-t, --template <name>", "Ajouter un template autonome complet (ex: auth, dashboard, commerce...)")
     .option("--registry <url>", "URL du registre distant (ex: https://unpkg.com/@rashwright/ui-mobile@latest)")
     .option("--fresh", "Forcer le rafraîchissement du registre distant sans utiliser le cache")
     .option("--diff", "Afficher les différences (diff) avant d'écraser un composant déjà existant")
@@ -37,7 +39,19 @@ export function addCommand(): Command {
     .option("--interactive", "Forcer le mode interactif même si des arguments sont passés", true)
     .option("--no-interactive", "Désactiver le prompt interactif (mode CI/script)")
     .option("--non-interactive", "Alias de --no-interactive")
-    .action(async (componentArgs: string[], options) => {
+    .action(async (componentArgs: string[], options: {
+      template?: string;
+      registry?: string;
+      fresh?: boolean;
+      diff?: boolean;
+      all?: boolean;
+      skills?: boolean;
+      force?: boolean;
+      yes?: boolean;
+      dryRun?: boolean;
+      interactive?: boolean;
+      nonInteractive?: boolean;
+    }) => {
       const cwd = process.cwd();
 
       console.log();
@@ -87,7 +101,27 @@ export function addCommand(): Command {
         return parsed.name;
       });
 
-      const interactive = Boolean(options.interactive) && !options.yes && !options.dryRun && !options.nonInteractive;
+      // ── 2a. Résolution de l'option --template ──────────────────────────
+      let templateDef: TemplateDefinition | null = null;
+      if (options.template) {
+        templateDef = getTemplateDefinition(options.template, TEMPLATES_ROOT);
+        if (!templateDef) {
+          const avail = listTemplateIds(TEMPLATES_ROOT);
+          console.log(chalk.red(`  ✖ Template "${options.template}" introuvable.`));
+          console.log(chalk.dim(`    Templates disponibles : ${avail.join(", ")}`));
+          process.exit(1);
+        }
+        console.log(chalk.bold.magenta(`  📦 Template sélectionné : ${templateDef.name} (${templateDef.id})`));
+        console.log(chalk.dim(`     ${templateDef.description}`));
+        // Fusionner les composants requis du template
+        for (const req of templateDef.requiredComponents) {
+          if (!componentNames.includes(req)) {
+            componentNames.push(req);
+          }
+        }
+      }
+
+      const interactive = Boolean(options.interactive) && !options.yes && !options.dryRun && !options.nonInteractive && !options.template;
 
       if (options.all) {
         const index = loadRegistryIndex(resolved.registryRoot);
@@ -98,7 +132,7 @@ export function addCommand(): Command {
       // ── 2b. Prompt interactif checkbox si 0 args + mode interactif ──────
       if (componentNames.length === 0) {
         if (!interactive) {
-          console.log(chalk.red("  ✖ Aucun composant spécifié."));
+          console.log(chalk.red("  ✖ Aucun composant ou template spécifié."));
           console.log(chalk.dim("    Usage: rs-ui add button card drawer"));
           console.log(chalk.dim("           rs-ui add  (sans argument, mode interactif)"));
           console.log(chalk.dim("           rs-ui add --all"));
@@ -416,6 +450,48 @@ export function addCommand(): Command {
         }
       }
 
+      // ── 7b. Copie des fichiers du template autonome si spécifié ─────────
+      let templateTargetRel = "";
+      if (templateDef) {
+        const tplSpinner = ora(`Installation des fichiers du template ${templateDef.id}...`).start();
+        const baseNorm = config.componentsPath.replace(/\\/g, "/");
+        const templatesBaseRel = baseNorm.endsWith("/ui")
+          ? baseNorm.slice(0, -3) + "/templates"
+          : baseNorm + "/templates";
+        templateTargetRel = `${templatesBaseRel}/${templateDef.id}`;
+        const templateTargetDir = join(cwd, templateTargetRel);
+        const templateSourceDir = join(TEMPLATES_ROOT, templateDef.id);
+
+        const copiedTemplateFiles: string[] = [];
+
+        for (const relFile of templateDef.files) {
+          const srcFile = join(templateSourceDir, relFile);
+          const dstFile = join(templateTargetDir, relFile);
+          if (!options.dryRun && existsSync(srcFile)) {
+            const parentDir = dirname(dstFile);
+            if (!existsSync(parentDir)) {
+              mkdirSync(parentDir, { recursive: true });
+            }
+            copyFileSync(srcFile, dstFile);
+          }
+          copiedTemplateFiles.push(`${templateTargetRel}/${relFile}`);
+        }
+
+        recordLockedTemplate(
+          cwd,
+          templateDef.id,
+          templateDef.version,
+          templateTargetRel,
+          templateDef.requiredComponents,
+          copiedTemplateFiles,
+          templateDef.dependencies,
+          templateDef.expoDependencies,
+          options.dryRun,
+        );
+
+        tplSpinner.succeed(`Template ${templateDef.id} installé dans ${templateTargetRel}`);
+      }
+
       // ── 8. Régénérer index.ts du dossier UI & synchroniser la config ────
       if (!options.dryRun) {
         generateUiIndex(targetDir, Object.keys(updatedConfig.components), options.dryRun);
@@ -431,6 +507,16 @@ export function addCommand(): Command {
       console.log(chalk.bold.green("  ✔ Installation terminée"));
       console.log(chalk.dim(`    ✔ index.ts synchronisé avec ${Object.keys(updatedConfig.components).length} composants`));
       console.log();
+
+      if (templateDef) {
+        console.log(chalk.bold.magenta(`  📦 Template "${templateDef.id}" prêt à l'emploi :`));
+        console.log(chalk.dim(`     Emplacement : ${templateTargetRel}`));
+        const importAlias = templateTargetRel.startsWith("src/")
+          ? `@/${templateTargetRel.slice(4)}`
+          : `@/${templateTargetRel}`;
+        console.log(chalk.cyan(`     import { ${templateDef.componentName} } from "${importAlias}";`));
+        console.log();
+      }
 
       if (plan.requiresRebuild) {
         console.log(chalk.yellow("  ⚠  Native rebuild requis:"));

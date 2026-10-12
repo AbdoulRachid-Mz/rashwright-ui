@@ -1,0 +1,26 @@
+{
+  "id": "dashboard",
+  "name": "Dashboard & Analytics",
+  "description": "Tableau de bord complet avec StatCards, feed d'activités, filtres de métriques et vue profil.",
+  "version": "1.0.0",
+  "componentName": "DashboardTemplate",
+  "entrypoint": "dashboard-template.tsx",
+  "files": [
+    "dashboard-template.tsx",
+    "types.ts",
+    "components/stats-overview.tsx",
+    "components/activity-feed.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": [
+    "card",
+    "stat-card",
+    "avatar",
+    "badge",
+    "button",
+    "rashwright-logo"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "supportsGlass": true
+}

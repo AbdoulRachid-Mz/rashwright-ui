@@ -1,1736 +1,516 @@
-# 🚀 RASHWRIGHT UI MOBILE — PROMPT MAÎTRE D’AUDIT ET DE CORRECTION
+# RASHWRIGHT UI MOBILE v0.7.0 — CATALOGUE INITIAL DE TEMPLATES PROFESSIONNELS
 
-Tu travailles sur le projet **Rashwright UI Mobile**, un système de distribution de composants React Native / Expo inspiré de la philosophie shadcn/ui.
+## 1. Contexte et continuité du travail
 
-Le projet contient notamment :
+Nous préparons la version `0.7.0` de `@rashwright/ui-mobile`, avec un moteur de templates modulaire.
 
-* `@rashwright/ui-mobile`
-* `@rashwright/cli`
-* commande CLI `rs-ui`
-* registry de composants
-* installation de composants dans les projets consommateurs
-* thèmes
-* Liquid Glass
-* Skills IA
-* starter project
-* lockfile
-* doctor
-* reset
-* tests Vitest
-* support Expo SDK multiples
-* support npm / pnpm / yarn / Bun
-
-## ⚠️ RÈGLE PRINCIPALE
-
-Ne fais **pas** une simple modification locale pour faire disparaître les erreurs.
-
-Tu dois faire un **audit cohérent de l'architecture**, corriger les causes racines et vérifier que les corrections n'introduisent pas de régression.
-
-Le code doit rester :
-
-* TypeScript strict
-* sans `any`
-* compatible Windows
-* compatible macOS/Linux
-* idempotent
-* testable
-* maintenable
-* cohérent avec l'architecture existante
-* compatible avec la philosophie shadcn : le code des composants est copié dans le projet utilisateur
-* compatible avec Expo
-* compatible avec npm / pnpm / yarn / Bun
-
-**Ne réécris pas inutilement l'architecture existante.**
-Réutilise les fonctions/modules déjà présents lorsqu'ils sont corrects.
-
----
-
-# 1. OBJECTIF GLOBAL DE CETTE CORRECTION
-
-Le comportement actuel de :
+Ce travail complète directement la tâche précédente portant sur la refonte du générateur de templates, le registre des templates, leur distribution en fichiers indépendants et la commande :
 
 ```bash
-rs-ui init
+rs-ui add --template <nom>
 ```
-
-doit être profondément amélioré.
-
-Actuellement, le processus peut :
-
-1. lancer `create-expo-app`
-2. laisser Expo afficher son propre prompt SDK
-3. installer une première fois des dépendances
-4. faire ensuite un reset/nettoyage
-5. installer à nouveau les dépendances Rashwright
-6. générer le projet final
-
-Ce comportement doit disparaître.
-
-## Nouveau principe
-
-`rs-ui` doit être **le seul orchestrateur interactif**.
-
-Le processus attendu est :
-
-```text
-rs-ui init
-        ↓
-Banner Rashwright
-        ↓
-Toutes les questions rs-ui
-        ↓
-Résumé de configuration
-        ↓
-Confirmation
-        ↓
-Création minimale du squelette Expo
-        ↓
-AUCUNE installation pendant le bootstrap
-        ↓
-Génération complète Rashwright
-        ↓
-Configuration
-        ↓
-Composants
-        ↓
-Themes
-        ↓
-Skills
-        ↓
-Showcase
-        ↓
-Config
-        ↓
-Lockfile
-        ↓
-UNE SEULE phase d'installation
-        ↓
-Vérification finale
-```
-
-Il ne doit plus y avoir de double installation.
-
----
-
-# 2. COMMENCER PAR UN AUDIT DU REPOSITORY
-
-Avant de modifier le code :
-
-1. inspecte toute l'architecture du CLI
-2. identifie les fichiers concernés par `init`
-3. inspecte :
-
-   * `init.ts`
-   * `package-manager.ts`
-   * `expo-detector.ts`
-   * `project-detector.ts`
-   * `starter-generator.ts`
-   * `config-manager.ts`
-   * `lock-manager.ts`
-   * `file-manager.ts`
-   * `skills-manager.ts`
-   * `templates-manager.ts`
-   * composants Rating
-   * Skills Rating
-   * tests
-4. recherche globalement :
-
-   * `baseUrl`
-   * `ignoreDeprecations`
-   * `"5.0"`
-   * `"6.0"`
-   * `create-expo-app`
-   * `--template`
-   * `npx`
-   * `bunx`
-   * `pnpm dlx`
-   * `yarn dlx`
-   * `resetExpoProject`
-   * `SUPPORTED_SDK_VERSIONS`
-   * `rating`
-5. comprends les relations entre les modules avant de modifier.
-
-Ne crée pas de doublons fonctionnels.
-
----
-
-# 3. NOUVEAU FLOW `rs-ui init`
-
-## 3.1 Banner
-
-Au lancement de :
+ou 
 
 ```bash
-rs-ui init
+rs-ui add --t <nom>
 ```
 
-afficher un banner Rashwright.
 
-Créer si nécessaire un module commun :
+Avant de coder, analyse le projet existant, les composants disponibles, les conventions de code, le système de thème, le gestionnaire de dépendances, le moteur de copie des fichiers et les templates déjà présents.
+
+Ne remplace pas aveuglément l'architecture existante. Réutilise ce qui fonctionne et propose les changements nécessaires en préservant la compatibilité avec les fonctionnalités existantes.
+
+## 2. Objectif général
+
+Construire un catalogue initial de templates mobiles professionnels, élégants, fluides et suffisamment génériques pour être utilisés dans différents projets React Native et Expo.
+
+Les templates doivent être de véritables composants réutilisables, et non des maquettes statiques ou de grands blocs de code générés dans un seul fichier.
+
+Chaque template doit :
+
+* être installé individuellement via le CLI ;
+* être copié dans `src/components/templates/<nom>/` ;
+* être avoir un skill associé comme avec les composants;
+* être importable directement dans le projet utilisateur ;
+* utiliser les composants UI Rashwright disponibles ;
+* embarquer ses propres sous-composants, hooks, types et ressources nécessaires ;
+* déclarer explicitement ses dépendances ;
+* être personnalisable sans modifier le moteur CLI ;
+* fonctionner sans backend imposé ;
+* présenter des états réalistes de chargement, d'erreur, de données vides et de succès lorsque cela s'applique ;
+* respecter le système de thème du projet et rester compatible avec les principes d'accessibilité.
+
+Les templates doivent être des bases d'interface prêtes à adapter, et non des applications complètes prétendant gérer automatiquement l'authentification, les paiements ou la synchronisation des données.
+
+## 3. Catalogue initial à implémenter
+
+Implémente en priorité les huit templates suivants. Les deux extensions suivantes peuvent être réalisées dans la même version si le moteur et les tests sont suffisamment stables.
+
+### P0 — Templates fondamentaux
+
+#### A. `auth`
+
+Identifiant : `auth`
+
+Nom affiché : `Authentication`
+
+Prévoir des composants et variantes adaptés aux écrans suivants :
+
+* connexion ;
+* inscription ;
+* récupération du mot de passe ;
+* vérification par code OTP ;
+* réinitialisation du mot de passe.
+
+Exigences :
+
+* champs de formulaire accessibles et correctement typés ;
+* validation des champs et affichage des erreurs ;
+* affichage/masquage du mot de passe ;
+* indicateur de soumission ;
+* callbacks configurables pour les actions ;
+* prise en charge facultative d'un logo, d'un nom d'application et de fournisseurs OAuth visuels ;
+* séparation claire entre interface et logique métier.
+
+Ne simule pas une authentification réussie et ne déclare pas de fournisseur externe obligatoire.
+
+#### B. `onboarding`
+
+Identifiant : `onboarding`
+
+Nom affiché : `Onboarding`
+
+Prévoir :
+
+* plusieurs étapes configurables ;
+* titres, descriptions et illustrations facultatives ;
+* indicateur de progression ;
+* actions précédent, suivant, ignorer et terminer ;
+* callbacks pour la navigation ;
+* prise en charge d'une étape finale personnalisée.
+
+Le composant doit s'adapter au nombre d'étapes et ne pas imposer un parcours fixe de trois écrans.
+
+#### C. `dashboard`
+
+Identifiant : `dashboard`
+
+Nom affiché : `Dashboard`
+
+Prévoir :
+
+* en-tête personnalisable ;
+* message de bienvenue ;
+* cartes de statistiques ;
+* raccourcis d'actions ;
+* sections de contenu ;
+* activité récente ;
+* sections facultatives configurables.
+
+Les données doivent provenir de props ou de sources fournies par l'application. Ne pas créer de dépendance à une API, à un système analytique ou à une base de données particulière.
+
+Le template doit être assez générique pour des applications de gestion, de finance, de commerce, de services ou de productivité.
+
+#### D. `profile`
+
+Identifiant : `profile`
+
+Nom affiché : `User Profile`
+
+Prévoir :
+
+* avatar et informations principales ;
+* informations personnelles ;
+* sections personnalisables ;
+* actions du compte ;
+* mode consultation ;
+* mode édition facultatif ;
+* gestion visuelle d'un avatar absent ;
+* callbacks pour l'édition, l'enregistrement et les actions.
+
+Ne pas imposer de fournisseur d'upload ou de stockage d'images.
+
+#### E. `settings`
+
+Identifiant : `settings`
+
+Nom affiché : `Settings`
+
+Prévoir des sections configurables :
+
+* compte ;
+* apparence ;
+* préférences ;
+* langue ;
+* notifications ;
+* confidentialité ;
+* assistance ;
+* informations sur l'application ;
+* déconnexion.
+
+Utiliser les mécanismes de thème déjà présents dans Rashwright lorsque cela est possible.
+
+Les options doivent être configurables par props ou callbacks. Une option de réglage ne doit pas prétendre modifier une préférence système si aucune logique correspondante n'est fournie.
+
+#### F. `list-detail`
+
+Identifiant : `list-detail`
+
+Nom affiché : `List & Detail`
+
+Ce template doit être particulièrement soigné, car il pourra servir dans de nombreux projets.
+
+Prévoir :
+
+* une liste d'éléments typés ;
+* une recherche configurable ;
+* des filtres facultatifs ;
+* des éléments personnalisables ;
+* un écran ou panneau de détail ;
+* des actions créer, modifier et supprimer, si activées ;
+* pagination ou chargement progressif configurable ;
+* états de chargement, erreur, liste vide et résultats absents ;
+* callbacks pour les opérations métier.
+
+Ne pas imposer de modèle de données universel. Définir une API de composants typée qui reste flexible.
+
+#### G. `commerce`
+
+Identifiant : `commerce`
+
+Nom affiché : `Commerce`
+
+Prévoir une base de commerce réutilisable :
+
+* catalogue de produits ;
+* recherche et catégories ;
+* cartes de produits ;
+* détail d'un produit ;
+* sélection de variantes si nécessaire ;
+* panier ;
+* récapitulatif de commande ;
+* états vide et chargement ;
+* callbacks pour les actions commerciales.
+
+Les données et opérations doivent rester contrôlées par l'application.
+
+Ne pas intégrer un véritable système de paiement dans cette version. Prévoir un point d'intégration clair pour une future connexion à un fournisseur de paiement.
+
+Ne pas imposer de backend ni de gestionnaire d'état global si le projet n'en possède pas.
+
+#### H. `chat`
+
+Identifiant : `chat`
+
+Nom affiché : `Messaging`
+
+Prévoir :
+
+* liste des conversations ;
+* avatar, aperçu du dernier message et horodatage ;
+* vue d'une conversation ;
+* bulles de messages ;
+* zone de saisie ;
+* indicateurs visuels facultatifs ;
+* état vide ;
+* callbacks d'envoi et d'interaction ;
+* gestion visuelle des pièces jointes lorsque cette option est activée.
+
+Ne pas imposer de WebSocket, de service de messagerie ou de backend. Les messages et leur envoi doivent être contrôlés par l'application hôte.
+
+### P1 — Extensions du catalogue
+
+#### I. `notifications`
+
+Prévoir :
+
+* liste de notifications ;
+* regroupement par date ou catégorie ;
+* indicateurs lu/non lu ;
+* actions de marquage comme lu ;
+* état vide ;
+* callbacks pour les interactions.
+
+Le template ne doit pas installer automatiquement une infrastructure de notifications push.
+
+#### J. `booking`
+
+Prévoir :
+
+* sélection d'une date ;
+* choix de créneaux ;
+* résumé d'une réservation ;
+* formulaire complémentaire facultatif ;
+* état de confirmation ;
+* callbacks de validation et de navigation.
+
+Ne pas prétendre vérifier les disponibilités réelles sans source de données fournie par l'application.
+
+## 4. Exigences de design communes
+
+Tous les templates doivent partager une qualité visuelle cohérente, sans avoir exactement la même apparence.
+
+### Direction artistique
+
+Adopter une esthétique mobile moderne, professionnelle et sobre :
+
+* hiérarchie visuelle évidente ;
+* typographie lisible ;
+* espaces réguliers ;
+* alignements précis ;
+* rayons et bordures cohérents ;
+* contrastes accessibles ;
+* interactions discrètes et fluides ;
+* icônes cohérentes ;
+* composants correctement dimensionnés ;
+* utilisation raisonnée des ombres et des couleurs.
+
+Éviter les interfaces surchargées, les gradients décoratifs systématiques, les cartes inutiles, les animations excessives et les effets visuels qui ralentissent l'interface.
+
+Ne pas produire des templates qui ressemblent tous à une succession de cartes identiques. Choisir une composition adaptée au rôle de chaque écran.
+
+### Système de thème
+
+Respecter le système de thème Rashwright existant.
+
+Prévoir au minimum :
+
+* thème clair ;
+* thème sombre ;
+* couleurs sémantiques ;
+* états de succès, avertissement et erreur ;
+* couleurs de texte et de surface ;
+* bordures et séparateurs cohérents.
+
+Ne pas créer un second système de thème concurrent. Ne pas coder en dur les couleurs principales dans chaque composant lorsque des tokens de thème sont disponibles.
+
+### Fluidité et adaptation
+
+Les templates doivent :
+
+* fonctionner sur différentes tailles d'écran ;
+* gérer correctement les zones de sécurité ;
+* éviter les débordements horizontaux ;
+* respecter le clavier sur les formulaires ;
+* permettre le défilement lorsque nécessaire ;
+* éviter les changements de disposition brusques ;
+* limiter les rendus inutiles ;
+* utiliser les primitives de liste appropriées pour les collections longues ;
+* respecter les préférences d'accessibilité disponibles.
+
+N'ajoute pas d'animations complexes par défaut. Si une animation nécessite une dépendance native, celle-ci doit être déclarée dans les métadonnées et installée via le moteur de dépendances existant.
+
+## 5. Architecture modulaire
+
+Respecter l'architecture établie dans la tâche précédente.
+
+Dans le package Rashwright, chaque template doit posséder un dossier indépendant comprenant ses métadonnées, son point d'entrée, ses composants et les ressources dont il a besoin.
+
+Exemple indicatif :
 
 ```text
-src/cli/banner.ts
+packages/ui-mobile/templates/
+├── registry.ts
+├── types.ts
+├── auth/
+│   ├── template.json
+│   ├── index.ts
+│   ├── auth-template.tsx
+│   ├── components/
+│   ├── hooks/
+│   └── types.ts
+├── dashboard/
+├── onboarding/
+├── profile/
+├── settings/
+├── list-detail/
+├── commerce/
+├── chat/
+├── notifications/
+└── booking/
 ```
 
-ou emplacement équivalent cohérent avec l'architecture existante.
-
-Exemple :
-
-```ts
-import chalk from "chalk";
-
-const LOGO = `
-██████╗ ███████╗
-██╔══██╗██╔════╝
-██████╔╝███████╗
-██╔══██╗╚════██║
-██║  ██║███████║
-╚═╝  ╚═╝╚══════╝
-`;
-
-export function printBanner(command?: string): void {
-  console.log();
-  console.log(chalk.bold.cyan(LOGO));
-  console.log(
-    chalk.bold("  Rashwright UI Mobile") +
-      chalk.dim(command ? ` — ${command}` : ""),
-  );
-  console.log(
-    chalk.dim(
-      "  Component distribution system for React Native / Expo",
-    ),
-  );
-  console.log();
-}
-```
-
-Utiliser :
-
-```ts
-printBanner("rs-ui init");
-```
-
-Le banner doit pouvoir être réutilisé par :
-
-```bash
-rs-ui init
-rs-ui add
-rs-ui create
-rs-ui doctor
-rs-ui reset
-```
-
-Ne duplique pas le banner dans chaque commande.
-
----
-
-# 4. LE CLI DOIT GÉRER LUI-MÊME LE CHOIX DU SDK
-
-Expo ne doit plus afficher son propre menu interactif pendant `rs-ui init`.
-
-Le CLI doit demander explicitement :
+Dans le projet utilisateur, les templates doivent être installés séparément :
 
 ```text
-Choisir la version Expo SDK :
-
-> Latest (SDK 57) - Recommandé
-  SDK 56
-  SDK 55
-  SDK 54
+src/components/templates/
+├── auth/
+├── dashboard/
+├── onboarding/
+├── profile/
+├── settings/
+├── list-detail/
+├── commerce/
+├── chat/
+├── notifications/
+└── booking/
 ```
 
-Adapte la liste aux versions réellement supportées par le repository.
+Cette structure est indicative : adapte les chemins à l'organisation réelle du dépôt, sans créer une seconde architecture redondante.
 
-Ne prétends pas supporter un SDK simplement parce qu'une version apparaît dans un ancien tableau.
+Chaque template doit exposer une API publique claire à partir de son `index.ts`.
 
-Les versions doivent être centralisées.
-
-Exemple :
-
-```ts
-export const SUPPORTED_SDK_VERSIONS = [54, 55, 56, 57] as const;
-
-export const MINIMUM_SDK_VERSION = 54;
-
-export const LATEST_SUPPORTED_SDK = 57;
-```
-
-Si le repository démontre réellement que d'autres SDK sont supportés et testés, conserve-les.
-
----
-
-# 5. `--sdk`
-
-Le CLI doit accepter :
-
-```bash
-rs-ui init --sdk 57
-```
-
-Dans ce cas :
-
-* ne pas afficher le prompt SDK
-* utiliser directement SDK 57
-
-Et :
-
-```bash
-rs-ui init --sdk latest
-```
-
-doit être résolu par le CLI vers :
-
-```text
-LATEST_SUPPORTED_SDK
-```
-
-Ne transmet jamais `"latest"` directement comme version du template.
-
-Le template doit recevoir une version explicite :
-
-```text
-blank-typescript@57
-```
-
----
-
-# 6. NE PLUS UTILISER LE DEFAULT TEMPLATE EXPO
-
-Le bootstrap actuel utilise quelque chose de proche de :
-
-```bash
-create-expo-app ... --template default
-```
-
-Cela doit être supprimé du flow `rs-ui init`.
-
-Utiliser le squelette Expo minimal TypeScript :
-
-```text
-blank-typescript@<SDK>
-```
-
-avec :
-
-```bash
---no-install
-```
-
-et :
-
-```bash
---no-agents-md
-```
-
-Exemple :
-
-```bash
-bunx create-expo-app@latest my-app \
-  --template blank-typescript@57 \
-  --no-install \
-  --no-agents-md
-```
-
-Pour npm :
-
-```bash
-npx create-expo-app@latest my-app \
-  --template blank-typescript@57 \
-  --no-install \
-  --no-agents-md
-```
-
-Pour pnpm :
-
-```bash
-pnpm dlx create-expo-app@latest my-app \
-  --template blank-typescript@57 \
-  --no-install \
-  --no-agents-md
-```
-
-Pour yarn :
-
-```bash
-yarn dlx create-expo-app@latest my-app \
-  --template blank-typescript@57 \
-  --no-install \
-  --no-agents-md
-```
-
-### Important
-
-Le but n'est pas de conserver le contenu du template Expo.
-
-Le template sert uniquement de **bootstrap officiel minimal**.
-
-Rashwright doit ensuite prendre entièrement le contrôle du projet.
-
----
-
-# 7. AUCUNE INSTALLATION PENDANT LE BOOTSTRAP
-
-Le premier appel à `create-expo-app` doit obligatoirement utiliser :
-
-```bash
---no-install
-```
-
-Cela signifie :
-
-```text
-create-expo-app
-      ↓
-création fichiers
-      ↓
-pas de node_modules
-      ↓
-pas de première installation
-```
-
-Ensuite Rashwright génère :
-
-* package.json final
-* configuration Expo
-* Babel
-* tsconfig
-* composants
-* thèmes
-* skills
-* assets
-* showcase
-* config
-* lockfile
-
-Puis seulement à la fin :
-
-```text
-INSTALLATION
-```
-
----
-
-# 8. CENTRALISER LA CONSTRUCTION DES COMMANDES
-
-Dans `package-manager.ts`, ajouter une fonction dédiée :
-
-```ts
-export function buildCreateExpoAppCommand(
-  pm: PackageManager,
-  projectName: string,
-  sdkVersion: number,
-): string {
-  const template = `blank-typescript@${sdkVersion}`;
-
-  switch (pm) {
-    case "bun":
-      return `bunx create-expo-app@latest ${projectName} --template ${template} --no-install --no-agents-md`;
-
-    case "pnpm":
-      return `pnpm dlx create-expo-app@latest ${projectName} --template ${template} --no-install --no-agents-md`;
-
-    case "yarn":
-      return `yarn dlx create-expo-app@latest ${projectName} --template ${template} --no-install --no-agents-md`;
-
-    case "npm":
-    default:
-      return `npx create-expo-app@latest ${projectName} --template ${template} --no-install --no-agents-md`;
-  }
-}
-```
-
-Ne garde pas cette logique directement dans `init.ts`.
-
----
-
-# 9. NE PLUS UTILISER CETTE LOGIQUE
-
-Supprimer le pattern :
-
-```ts
-const runner = selectedPm === "bun" ? "bunx" : "npx";
-```
-
-Il est incorrect car il ignore :
-
-* pnpm
-* yarn
-
-La construction des commandes doit être centralisée dans `package-manager.ts`.
-
----
-
-# 10. ORDRE EXACT DU NOUVEAU `init`
-
-Le flow doit ressembler à :
-
-```text
-rs-ui init
-
-↓ Banner
-
-↓ Detect current project
-
-↓ Package manager
-
-↓ New project / existing project
-
-↓ Project name/path
-
-↓ Expo SDK
-
-↓ Starter template Rashwright
-
-↓ Default / Glass
-
-↓ Theme
-
-↓ Custom theme si nécessaire
-
-↓ Components path
-
-↓ Skills
-
-↓ Showcase
-
-↓ autres options nécessaires
-
-↓ Résumé complet
-
-↓ Confirmation
-
-===========================
-BOOTSTRAP
-===========================
-
-create-expo-app
---template blank-typescript@SDK
---no-install
---no-agents-md
-
-===========================
-RASHWRIGHT GENERATION
-===========================
-
-reset/preparation
-babel
-tsconfig
-foundations
-assets
-starter components
-theme
-skills
-showcase
-config
-lockfile
-
-===========================
-INSTALLATION
-===========================
-
-Expo dependencies
-Generic dependencies
-
-===========================
-VERIFICATION
-===========================
-
-doctor/checks
-TypeScript
-configuration
-```
-
----
-
-# 11. `resetExpoProject`
-
-Le système actuel semble utiliser `resetExpoProject()` pour nettoyer le template Expo.
-
-Avec le nouveau flow, ce comportement doit être réévalué.
-
-Puisque nous utilisons déjà :
-
-```text
-blank-typescript
-+
---no-install
-```
-
-il ne faut plus faire :
-
-```text
-create default Expo project
-→ installer
-→ reset
-→ reconstruire
-```
-
-Le nouveau comportement doit plutôt être :
-
-```text
-minimal Expo scaffold
-→ prepare for Rashwright
-```
-
-Si `resetExpoProject()` est encore nécessaire pour les projets existants ou certaines situations, conserve-le uniquement là où il est réellement nécessaire.
-
-Ne supprime pas aveuglément la fonction.
-
-Rends son comportement idempotent.
-
----
-
-# 12. INSTALLATION FINALE UNIQUE
-
-Toutes les dépendances doivent être collectées avant l'installation.
-
-Séparer :
-
-### Expo dependencies
-
-```ts
-const CORE_EXPO_DEPS = [
-  "react-native-reanimated",
-  "react-native-gesture-handler",
-  "react-native-safe-area-context",
-  "@expo/vector-icons",
-  "expo-haptics",
-  "expo-image",
-  "@react-native-async-storage/async-storage",
-  "expo-image-picker",
-  "expo-image-manipulator",
-  "expo-application",
-  "expo-blur",
-  "expo-linear-gradient",
-];
-```
-
-### Generic dependencies
-
-```ts
-const CORE_NPM_DEPS = [
-  "zustand",
-];
-```
-
-Utiliser :
-
-```text
-expo install
-```
-
-pour les dépendances Expo/React Native compatibles avec le SDK.
-
-Utiliser le package manager choisi pour les packages génériques.
-
----
-
-# 13. `--yes`
-
-Vérifier que :
-
-```bash
-rs-ui init --yes
-```
-
-est réellement non interactif.
-
-Il doit utiliser des valeurs par défaut cohérentes pour :
-
-* package manager
-* SDK
-* starter
-* thème
-* components path
-* skills
-* showcase
-* glass
-* etc.
-
-Aucune question Inquirer ne doit apparaître avec `--yes`.
-
----
-
-# 14. `--dry-run`
-
-Vérifier que :
-
-```bash
-rs-ui init --dry-run
-```
-
-ne crée rien et n'installe rien.
-
-Mais il doit afficher le plan réel :
-
-```text
-[DRY RUN]
-
-Package manager: bun
-Expo SDK: 57
-Template: blank-typescript
-Theme: cyan
-Glass: false
-Skills: true
-Showcase: true
-
-Bootstrap:
-bunx create-expo-app@latest ...
-
-Installation:
-bunx expo install ...
-bun add ...
-```
-
-Le dry-run doit refléter le nouveau pipeline.
-
----
-
-# 15. CORRECTION `tsconfig.json`
-
-Le générateur actuel ajoute :
-
-```json
-"baseUrl": ".",
-"ignoreDeprecations": "5.0"
-```
-
-Cela provoque actuellement une erreur avec TypeScript moderne.
-
-Ne génère plus ces propriétés.
-
-La fonction `updateTsconfig()` doit :
-
-```ts
-cfg.compilerOptions.jsx = "react-native";
-```
-
-puis garantir :
-
-```json
-"paths": {
-  "@/*": [
-    "./src/*",
-    "./*"
-  ]
-}
-```
-
-et supprimer les anciennes propriétés :
-
-```ts
-delete cfg.compilerOptions.baseUrl;
-delete cfg.compilerOptions.ignoreDeprecations;
-```
-
-La fonction doit donc être migratrice :
-
-```text
-ancien tsconfig
-    ↓
-suppression baseUrl
-suppression ignoreDeprecations
-    ↓
-nouveau tsconfig propre
-```
-
-Conserver les autres options utilisateur.
-
-Ne pas écraser arbitrairement les configurations existantes.
-
----
-
-# 16. TSConfig attendu
-
-Un projet généré devrait pouvoir avoir quelque chose comme :
-
-```json
-{
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "strict": true,
-    "jsx": "react-native",
-    "paths": {
-      "@/*": [
-        "./src/*",
-        "./*"
-      ],
-      "@/assets/*": [
-        "./assets/*"
-      ]
-    }
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-  ]
-}
-```
-
-Ne rajoute pas :
-
-```json
-"baseUrl": "."
-```
-
-ni :
-
-```json
-"ignoreDeprecations": "5.0"
-```
-
----
-
-# 17. AUDIT GLOBAL DES ANCIENNES OPTIONS TS
-
-Faire une recherche globale dans le repository :
-
-```text
-baseUrl
-ignoreDeprecations
-"5.0"
-"6.0"
-```
-
-Vérifier :
-
-* source CLI
-* starter generator
-* templates
-* fixtures
-* tests
-* snapshots
-* generated examples
-* documentation si nécessaire
-
-Aucune génération de projet ne doit continuer à introduire l'ancienne configuration.
-
----
-
-# 18. CORRECTION DU COMPOSANT `Rating`
-
-Le composant Rating doit évoluer sans casser l'API existante.
-
-Ajouter :
-
-```ts
-step?: number;
-```
-
-Comportement :
-
-```text
-step non fourni + allowHalf=true
-→ step = 0.5
-
-step non fourni + allowHalf=false
-→ step = 1
-
-step={0.25}
-→ quart d'étoile
-
-step={0.1}
-→ dixième d'étoile
-
-step={0.01}
-→ centième
-```
-
-Le système doit supporter des fractions arbitraires raisonnables.
-
----
-
-# 19. ALGORITHME DE RATING
-
-Ne plus hardcoder :
-
-```text
-50%
-```
-
-pour les valeurs partielles.
-
-Pour chaque étoile :
-
-```text
-fillPercentage =
-  clamp(value - starIndex, 0, 1) * 100
-```
-
-Exemples :
-
-```text
-rating = 0
-→ 0%
-
-rating = 0.25
-→ 25%
-
-rating = 0.5
-→ 50%
-
-rating = 0.75
-→ 75%
-
-rating = 1
-→ 100%
-```
-
-Pour :
-
-```text
-rating = 2.25
-```
-
-on doit avoir :
-
-```text
-★ ★ 25% ☆ ☆ ☆
-```
-
-selon `max`.
-
----
-
-# 20. INTERACTION DU RATING
-
-Le clic/tap doit calculer la position réelle dans l'étoile.
-
-Conceptuellement :
-
-```ts
-const ratio = locationX / starWidth;
-const rawValue = starIndex + ratio;
-```
-
-Puis :
-
-```ts
-const steppedValue =
-  Math.round(rawValue / step) * step;
-```
-
-Puis :
-
-```ts
-const value = clamp(
-  steppedValue,
-  0,
-  max,
-);
-```
-
-Tenir compte de :
-
-* `allowHalf`
-* `step`
-* `max`
-* largeur réelle
-* RTL si le composant le supporte
-* accessibilité
-
----
-
-# 21. COMPATIBILITÉ `allowHalf`
-
-L'ancienne API :
+Exemple d'utilisation attendue :
 
 ```tsx
-<Rating allowHalf />
+import { AuthTemplate } from "@/components/templates/auth";
+
+<AuthTemplate
+  onSubmit={handleLogin}
+  onForgotPassword={handleForgotPassword}
+/>;
 ```
 
-doit continuer à fonctionner.
+L'exemple illustre l'API recherchée. Les noms définitifs doivent correspondre aux exports réellement implémentés.
 
-Donc :
+Un template doit pouvoir être importé sans importer automatiquement tous les autres templates.
 
-```ts
-const effectiveStep =
-  step ??
-  (allowHalf ? 0.5 : 1);
-```
+## 6. Intégration au moteur CLI
 
-Si `step` est fourni explicitement :
+Les templates doivent être enregistrés dans le registre central du moteur.
 
-```tsx
-<Rating
-  allowHalf
-  step={0.25}
-/>
-```
-
-alors :
-
-```text
-step = 0.25
-```
-
-doit avoir priorité.
-
----
-
-# 22. VALIDATION DU `step`
-
-Le composant doit gérer proprement les valeurs invalides :
-
-```text
-step <= 0
-NaN
-Infinity
-```
-
-Ne jamais provoquer :
-
-* division par zéro
-* boucle infinie
-* valeur `NaN`
-* rendu cassé
-
-Choisir une stratégie cohérente :
-
-* fallback
-* warning en développement
-* ou erreur contrôlée
-
-selon les conventions du projet.
-
----
-
-# 23. PRECISION NUMERIQUE
-
-Éviter les artefacts du genre :
-
-```text
-0.30000000000000004
-```
-
-Normaliser les valeurs après calcul.
-
-Créer éventuellement une petite fonction interne :
-
-```ts
-roundToStepPrecision(...)
-```
-
-ou utiliser une stratégie équivalente.
-
-Ne pas ajouter une dépendance juste pour cela.
-
----
-
-# 24. `variant` DU RATING
-
-Inspecter le composant actuel.
-
-Si :
-
-```ts
-variant
-```
-
-est déclaré mais jamais utilisé, corriger.
-
-Ne documente pas une fonctionnalité qui n'existe pas.
-
-Le Skill actuel indique :
-
-```yaml
-supportsGlass: false
-```
-
-mais mentionne une variante Glass.
-
-Ces informations sont incohérentes.
-
-Il faut soit :
-
-1. implémenter réellement `variant="glass"`
-
-ou
-
-2. supprimer la mention Glass du Skill.
-
-Ne jamais documenter une fonctionnalité inexistante.
-
----
-
-# 25. SKILL DU RATING
-
-Mettre à jour le Skill pour documenter :
-
-```yaml
-name: rs-ui/rating
-description: Notation par étoiles interactive avec valeurs fractionnaires configurables.
-version: 0.3.0
-componentVersion: 0.3.0
-category: Forms
-dependencies:
-  - none
-expoDependencies:
-  - expo-haptics
-requiresComponents:
-  - none
-supportsGlass: false
-```
-
-Puis documenter précisément :
-
-* `value`
-* `defaultValue`
-* `max`
-* `step`
-* `allowHalf`
-* `onChange`
-* `disabled`
-* `size`
-* `variant` uniquement si réellement supporté
-* accessibilité
-* comportement interactif
-
-Ajouter des exemples :
-
-```tsx
-<Rating value={3} />
-```
-
-```tsx
-<Rating value={3.5} allowHalf />
-```
-
-```tsx
-<Rating value={3.25} step={0.25} />
-```
-
-```tsx
-<Rating value={4.75} step={0.25} />
-```
-
-Expliquer :
-
-```text
-allowHalf
-```
-
-reste une API de compatibilité historique.
-
----
-
-# 26. TESTS DU RATING
-
-Ajouter/mettre à jour les tests.
-
-Minimum :
-
-```text
-0
-0.25
-0.5
-0.75
-1
-2.25
-3.5
-4.75
-max
-```
-
-Tester :
-
-```text
-step=1
-step=0.5
-step=0.25
-step=0.1
-```
-
-Tester aussi :
-
-```text
-step invalide
-value < 0
-value > max
-```
-
-Tester la génération du pourcentage de remplissage.
-
-Tester la compatibilité :
-
-```tsx
-allowHalf
-```
-
-sans `step`.
-
----
-
-# 27. CORRECTION `file-manager.ts`
-
-Le code actuel contient une expression de normalisation de chemin suspecte :
-
-```ts
-file.replace(/^components**\\/**ui**\\/**/, "")
-```
-
-Ne conserve pas cette regex.
-
-Utiliser une normalisation robuste :
-
-```ts
-const normalizedFile = file.replace(/\\/g, "/");
-
-const relativeComponentsPath = normalizedFile.replace(
-  /^(?:components\/ui|src\/components\/ui)\//,
-  "",
-);
-```
-
-Adapter au format réel du registry.
-
-Objectif :
-
-```text
-Windows path
-→ /
-→ chemin relatif stable
-```
-
----
-
-# 28. CORRECTION `lock-manager.ts`
-
-Inspecter les normalisations de chemins.
-
-Toute normalisation doit utiliser :
-
-```ts
-rel.replace(/\\/g, "/")
-```
-
-afin d'obtenir des chemins indépendants de l'OS.
-
-Le lockfile doit produire le même résultat sur :
-
-* Windows
-* Linux
-* macOS
-
----
-
-# 29. LOCKFILE
-
-Vérifier que :
-
-```text
-rashwright-ui.lock
-```
-
-reste cohérent après :
+La commande attendue est :
 
 ```bash
-rs-ui init
-rs-ui add
-rs-ui create component
-rs-ui reset
+rs-ui add --template auth
+rs-ui add --template dashboard
+rs-ui add --template commerce
 ```
 
-Les chemins doivent être normalisés.
+Le moteur doit :
 
-Les hashes doivent être reproductibles.
+1. valider le nom du template ;
+2. afficher des informations utiles avant l'installation ;
+3. résoudre les composants Rashwright requis ;
+4. résoudre les dépendances npm et Expo nécessaires ;
+5. vérifier la compatibilité avec le projet ;
+6. copier les fichiers du template ;
+7. appliquer les modifications de configuration nécessaires ;
+8. mettre à jour le registre local ou le lockfile selon l'architecture existante ;
+9. afficher les prochaines étapes d'utilisation.
 
-Ne pas introduire de chemins absolus.
+L'installation d'un template ne doit pas remplacer silencieusement l'écran principal de l'application.
 
----
+Le comportement de `rs-ui init`, la génération des projets et l'ajout individuel de composants doivent rester compatibles avec le fonctionnement défini précédemment.
 
-# 30. CONFIGURATION `rashwright-ui.json`
+Si un composant requis est déjà installé, le moteur doit le détecter et éviter les doublons.
 
-Vérifier que le nouveau flow génère une configuration cohérente avec :
+Si une dépendance existe déjà, vérifier sa compatibilité avant de proposer une modification.
 
-* SDK
-* package manager
-* theme
-* glass
-* components path
-* skills
-* starter
-* components installés
+Les conflits de fichiers doivent être détectés et traités explicitement. Aucun fichier utilisateur ne doit être écrasé silencieusement.
 
-Le nouveau flow ne doit pas produire une configuration représentant un ancien template Expo alors que Rashwright a remplacé le projet.
+## 7. Dépendances et autonomie
 
----
+Chaque template doit déclarer ses dépendances et ses composants requis.
 
-# 31. IDÉE IMPORTANTE : SÉPARER LES RESPONSABILITÉS
+Privilégier les composants Rashwright et les bibliothèques déjà utilisées par le projet.
 
-Si nécessaire, créer :
+Ne pas installer une nouvelle bibliothèque simplement pour un détail visuel qui peut être réalisé proprement avec les primitives existantes.
 
-```text
-core/
-├── expo-scaffolder.ts
-├── package-manager.ts
-├── starter-generator.ts
-├── project-detector.ts
-└── ...
-```
+Inversement, ne réimplémente pas une fonctionnalité complexe lorsqu'une bibliothèque mature et compatible existe déjà dans l'écosystème Rashwright.
 
-`expo-scaffolder.ts` doit uniquement être responsable de :
+Le moteur doit distinguer clairement :
 
-```text
-Créer le squelette Expo minimal
-```
+* les dépendances obligatoires ;
+* les dépendances facultatives ;
+* les composants Rashwright requis ;
+* les ressources nécessaires ;
+* les éventuelles contraintes de version Expo ;
+* les étapes de reconstruction native, lorsqu'elles sont réellement nécessaires.
 
-`starter-generator.ts` doit être responsable de :
+Ne pas déclarer une compatibilité SDK sans vérification.
 
-```text
-Transformer le squelette en projet Rashwright
-```
+## 8. Personnalisation et extensibilité
 
-`package-manager.ts` :
+Concevoir les API des templates pour qu'un développeur puisse personnaliser :
 
-```text
-Commandes d'installation/bootstrap
-```
+* les données ;
+* les libellés ;
+* les couleurs sémantiques via le thème ;
+* les actions ;
+* les sections visibles ;
+* les états ;
+* les variantes utiles ;
+* les éléments optionnels.
 
-`init.ts` :
+Éviter de créer une API excessivement complexe. Les props doivent être typées, documentées et cohérentes.
 
-```text
-Orchestration + interaction utilisateur
-```
+Lorsqu'une personnalisation importante est nécessaire, préférer la composition de sous-composants plutôt que l'accumulation de dizaines de props booléennes.
 
-Évite un `init.ts` qui contient toute la logique métier.
+Les fichiers copiés doivent rester modifiables par le développeur. Rashwright ne doit pas imposer un runtime propriétaire pour afficher les templates.
 
----
+## 9. Tests obligatoires
 
-# 32. IDEMPOTENCE
+Ajouter des tests couvrant, selon l'infrastructure existante :
 
-Tester plusieurs fois :
+* l'enregistrement de tous les templates ;
+* la validation des métadonnées ;
+* les exports publics ;
+* les fichiers requis ;
+* les dépendances déclarées ;
+* l'installation individuelle ;
+* la détection des composants déjà présents ;
+* les conflits de fichiers ;
+* la compatibilité des chemins Windows et Unix ;
+* les états essentiels des composants ;
+* le typage des props ;
+* la compatibilité avec les tests et le typecheck du package.
 
-```bash
-rs-ui init
-```
+Vérifier également que l'installation d'un template ne copie pas les fichiers des autres templates.
 
-sur un projet existant.
+Ne pas déclarer les tests réussis sans les avoir exécutés.
 
-Le CLI doit détecter correctement :
+## 10. Documentation
 
-```text
-projet Expo existant
-projet Rashwright existant
-projet non compatible
-```
+Mettre à jour la documentation du CLI et du package avec :
 
-Il ne doit pas détruire arbitrairement le travail utilisateur.
+* la liste des templates disponibles ;
+* leur objectif ;
+* leur commande d'installation ;
+* leurs dépendances ;
+* leur API publique ;
+* un exemple d'utilisation ;
+* les possibilités de personnalisation ;
+* les limites fonctionnelles ;
+* les instructions de reconstruction native si nécessaire.
 
----
+Ajouter une commande de découverte des templates si elle s'intègre proprement au CLI existant. Ne pas introduire une commande concurrente inutile.
 
-# 33. PROTECTION DU PROJET UTILISATEUR
+## 11. Organisation du travail
 
-Avant une opération destructive :
-
-```text
-reset
-overwrite
-delete
-```
-
-conserver les protections existantes.
-
-Ne pas introduire de suppression silencieuse.
-
-Le nouveau bootstrap d'un projet neuf peut être automatisé.
-
-Un projet existant doit rester protégé.
-
----
-
-# 34. TESTS `INIT`
-
-Ajouter/mettre à jour les tests pour vérifier au minimum :
-
-### New project
-
-```text
-rs-ui init
-```
-
-### SDK
-
-```text
---sdk 57
-```
-
-### Latest
-
-```text
---sdk latest
-```
-
-### Package managers
-
-```text
-npm
-pnpm
-yarn
-bun
-```
-
-### Dry run
-
-```text
---dry-run
-```
-
-### Yes
-
-```text
---yes
-```
-
-### Theme
-
-```text
---theme cyan
-```
-
-### Custom theme
-
-```text
---theme custom
-```
-
-### Glass
-
-```text
---glass
-```
-
-### Skills
-
-```text
---skills
---no-skills
-```
-
-### Showcase
-
-```text
---showcase
---no-showcase
-```
-
----
-
-# 35. TEST CRITIQUE : AUCUNE DOUBLE INSTALLATION
-
-Ajouter une vérification qui garantit que le nouveau flow ne fait pas :
-
-```text
-create-expo-app
-→ install
-```
-
-avant :
-
-```text
-final installation
-```
-
-Le bootstrap doit impérativement contenir :
-
-```text
---no-install
-```
-
-et l'installation doit apparaître uniquement dans la phase finale.
-
----
-
-# 36. TEST GÉNÉRÉ RÉEL
-
-Créer au moins un test d'intégration/fixture qui :
-
-1. crée un projet temporaire
-2. lance le bootstrap
-3. vérifie `package.json`
-4. vérifie `tsconfig.json`
-5. vérifie `rashwright-ui.json`
-6. vérifie les composants
-7. vérifie les Skills
-8. vérifie le lockfile
-9. vérifie qu'aucun ancien `baseUrl` n'est généré
-10. vérifie que `ignoreDeprecations` n'est pas généré.
-
-Si possible, exécuter ensuite :
-
-```bash
-bun x tsc --noEmit
-```
-
-ou l'équivalent avec le package manager sélectionné.
-
----
-
-# 37. COMPATIBILITÉ WINDOWS
-
-Le projet doit fonctionner correctement dans PowerShell.
-
-Vérifier particulièrement :
-
-```text
-paths
-shell commands
-quotes
-backslashes
-directories
-npm/bun/pnpm/yarn commands
-```
-
-Ne pas construire de chemins avec `\` manuellement.
-
-Utiliser :
-
-```ts
-join(...)
-```
-
-pour les chemins filesystem.
-
-Utiliser :
-
-```ts
-/ 
-```
-
-uniquement pour les chemins logiques/lockfiles.
-
----
-
-# 38. SÉCURITÉ DES COMMANDES
-
-Inspecter les commandes shell construites à partir de :
-
-```text
-projectName
-directory
-package names
-```
-
-Si possible, préférer :
-
-```ts
-execFileSync
-```
-
-avec arguments séparés plutôt qu'une longue chaîne shell.
-
-Si l'architecture actuelle utilise des chaînes, au minimum :
-
-* valider les noms de projet
-* éviter l'injection shell
-* gérer les espaces dans les chemins
-* gérer Windows correctement.
-
-Ne fais pas une refonte inutile si cela casse l'architecture existante, mais corrige les risques réels.
-
----
-
-# 39. DOCUMENTATION
-
-Mettre à jour les docs concernant :
-
-```bash
-rs-ui init
-```
-
-pour refléter :
-
-* sélection SDK par Rashwright
-* bootstrap sans installation
-* template minimal
-* installation finale unique
-* themes
-* custom theme
-* skills
-* showcase
-* package managers
-
-Ne pas documenter l'ancien comportement.
-
----
-
-# 40. QUALITY GATE FINAL
-
-À la fin, exécuter les vérifications disponibles dans le repository :
-
-```bash
-bun test
-```
-
-ou la commande équivalente.
-
-Puis :
-
-```bash
-tsc --noEmit
-```
-
-ou le typecheck officiel.
-
-Puis :
-
-```bash
-bun run build
-```
-
-si disponible.
-
-Puis les tests spécifiques CLI.
-
-Puis les tests générés.
-
----
-
-# 41. RÈGLE ANTI-RÉGRESSION
-
-Avant de terminer, vérifier que ces commandes continuent à fonctionner :
-
-```bash
-rs-ui init
-rs-ui init --sdk 57
-rs-ui init --theme cyan
-rs-ui init --theme custom
-rs-ui init --glass
-rs-ui init --all
-rs-ui add button
-rs-ui add drawer
-rs-ui add drawer --no-skills
-rs-ui doctor
-rs-ui reset
-rs-ui reset --delete
-rs-ui create component MyComponent
-```
-
-Ne modifie pas une fonctionnalité existante simplement pour simplifier le code si cela casse sa compatibilité.
-
----
-
-# 42. LIVRABLE FINAL
-
-À la fin de ton travail, donne-moi un rapport structuré :
-
-## A. Corrections effectuées
-
-Liste exacte des fichiers modifiés.
-
-## B. Architecture
-
-Explique brièvement les responsabilités après correction.
-
-## C. `rs-ui init`
-
-Décris le nouveau flow.
-
-## D. Installation
-
-Confirme explicitement :
-
-```text
-Bootstrap Expo : --no-install
-Installation finale : une seule fois
-```
-
-## E. Expo SDK
-
-Indique les SDK réellement supportés.
-
-## F. TypeScript
-
-Confirme que :
-
-```text
-baseUrl
-ignoreDeprecations
-```
-
-ne sont plus générés.
-
-## G. Rating
-
-Décris le support :
-
-```text
-1
-0.5
-0.25
-fractions arbitraires
-```
-
-## H. Tests
-
-Donne les commandes exécutées et leurs résultats.
-
-## I. Points restant éventuellement à traiter
-
-Ne cache aucune limitation.
-
----
-
-# 43. IMPORTANT — NE PAS FAIRE
-
-Ne fais pas :
-
-* une réécriture complète du CLI
-* une migration inutile de package manager
-* une suppression arbitraire de fonctionnalités
-* une nouvelle abstraction sans nécessité
-* une dépendance npm uniquement pour résoudre un petit calcul
-* un changement massif de structure sans raison
-* un downgrade de TypeScript
-* un retour à `baseUrl`
-* `ignoreDeprecations: "5.0"`
-* deux installations Expo
-* un `create-expo-app` interactif imbriqué
-* le template Expo `default`
-* une documentation qui prétend supporter une fonctionnalité inexistante
-
----
-
-# 44. ORDRE D'EXÉCUTION DU TRAVAIL
-
-Travaille dans cet ordre :
-
-```text
-1. Audit repository
-2. Comprendre init actuel
-3. Corriger package-manager
-4. Ajouter expo-scaffolder si nécessaire
-5. Corriger SDK handling
-6. Corriger init flow
-7. Supprimer double installation
-8. Corriger tsconfig
-9. Corriger file paths Windows
-10. Corriger lock paths
-11. Corriger Rating
-12. Corriger Rating Skill
-13. Ajouter/mettre à jour tests
-14. Mettre à jour documentation
-15. Typecheck
-16. Tests
-17. Build
-18. Tests d'intégration
-19. Rapport final
-```
-
----
-
-# 45. PHILOSOPHIE DU PROJET
-
-Garde constamment cette règle en tête :
-
-> **Le métier appartient au projet. La technologie répétitive et générique appartient à Rashwright.**
-
-Et pour Rashwright UI Mobile :
-
-> **Rashwright ne doit pas simplement fournir des composants. Il doit fournir une expérience fiable d'installation, de configuration, de dépendances, de compatibilité et de personnalisation.**
-
-Le résultat final doit donner l'impression d'un outil mature et cohérent, pas d'un ensemble de scripts assemblés.
-
-Commence maintenant par l'audit du repository, puis implémente les corrections de manière progressive et vérifiable.
+Procède dans cet ordre :
+
+1. Auditer le moteur existant et les composants disponibles.
+2. Identifier les templates existants pouvant être réutilisés.
+3. Finaliser le registre et le contrat de métadonnées.
+4. Implémenter les templates fondamentaux en respectant le système de design.
+5. Ajouter les extensions si le socle est stable.
+6. Intégrer chaque template à `rs-ui add --template`.
+7. Tester l'installation dans un véritable projet Expo de test.
+8. Vérifier les dépendances, les thèmes, les exports et les chemins.
+9. Mettre à jour la documentation.
+10. Exécuter les vérifications disponibles et corriger les régressions.
+
+Si le périmètre est trop important pour être livré proprement en une seule passe, termine d'abord les huit templates P0 et le moteur qui les distribue. Ne livre pas dix templates incomplets simplement pour respecter le nombre prévu.
+
+## 12. Critères d'acceptation
+
+La tâche est considérée comme terminée lorsque :
+
+* les templates sont des modules indépendants ;
+* chaque template peut être ajouté individuellement ;
+* les imports fonctionnent dans un projet Expo réel ;
+* les composants requis sont installés ou détectés correctement ;
+* les thèmes clair et sombre fonctionnent avec l'architecture existante ;
+* les interfaces sont professionnelles, fluides et adaptées aux écrans mobiles ;
+* les principaux états d'interface sont pris en charge ;
+* aucune intégration métier fictive n'est présentée comme fonctionnelle ;
+* aucun fichier utilisateur n'est écrasé silencieusement ;
+* les fonctionnalités existantes du CLI restent opérationnelles ;
+* les tests et le typecheck sont exécutés et leurs résultats rapportés.
+
+À la fin, fournis un rapport indiquant les fichiers modifiés, les templates réellement terminés, les dépendances ajoutées, les tests exécutés, les problèmes connus et les éventuelles étapes restantes.
+
+Ne modifie pas la version publiée ni ne déclenche de publication npm avant validation explicite du travail.
+
+Le résultat attendu est un catalogue Rashwright cohérent, extensible et réellement utile, capable de fournir des interfaces de qualité professionnelle tout en laissant au développeur le contrôle total du code généré.

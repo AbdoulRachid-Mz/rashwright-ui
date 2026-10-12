@@ -17,10 +17,21 @@ export interface LockedComponent {
   installedAt?: string;
 }
 
+export interface LockedTemplate {
+  version: string;
+  installPath: string;
+  requiredComponents: string[];
+  files: LockedFile[];
+  dependencies: string[];
+  expoDependencies: string[];
+  installedAt?: string;
+}
+
 export interface RashwrightLockfile {
   lockfileVersion: number;
   generatedAt: string;
   components: Record<string, LockedComponent>;
+  templates: Record<string, LockedTemplate>;
 }
 
 export const LOCKFILE_NAME = "rashwright-ui.lock";
@@ -48,6 +59,9 @@ export function readLockfile(projectRoot: string): RashwrightLockfile | null {
   try {
     const raw = JSON.parse(readFileSync(filePath, "utf-8"));
     if (typeof raw === "object" && raw !== null && raw.components) {
+      if (!raw.templates || typeof raw.templates !== "object") {
+        raw.templates = {};
+      }
       return raw as RashwrightLockfile;
     }
     return null;
@@ -85,6 +99,7 @@ export function recordLockedComponent(
     lockfileVersion: 1,
     generatedAt: new Date().toISOString(),
     components: {},
+    templates: {},
   };
 
   const files: LockedFile[] = [];
@@ -132,6 +147,73 @@ export function removeLockedComponent(
   return lock;
 }
 
+/**
+ * Enregistre ou met à jour un template dans le lockfile avec le hash de ses fichiers.
+ */
+export function recordLockedTemplate(
+  projectRoot: string,
+  templateId: string,
+  version: string,
+  installPath: string,
+  requiredComponents: string[] = [],
+  relativeFiles: string[] = [],
+  dependencies: string[] = [],
+  expoDependencies: string[] = [],
+  dryRun = false,
+): RashwrightLockfile {
+  const lock = readLockfile(projectRoot) || {
+    lockfileVersion: 1,
+    generatedAt: new Date().toISOString(),
+    components: {},
+    templates: {},
+  };
+
+  const files: LockedFile[] = [];
+  for (const rel of relativeFiles) {
+    const normalizedRel = rel.replace(/\\/g, "/");
+    const abs = join(projectRoot, normalizedRel);
+    if (existsSync(abs)) {
+      const content = readFileSync(abs, "utf-8");
+      files.push({
+        path: normalizedRel,
+        hash: computeFileHash(content),
+        installedAt: new Date().toISOString(),
+      });
+    }
+  }
+
+  lock.templates[templateId] = {
+    version,
+    installPath: installPath.replace(/\\/g, "/"),
+    requiredComponents,
+    files,
+    dependencies,
+    expoDependencies,
+    installedAt: new Date().toISOString(),
+  };
+
+  lock.generatedAt = new Date().toISOString();
+  writeLockfile(projectRoot, lock, dryRun);
+  return lock;
+}
+
+/**
+ * Retire un template du lockfile.
+ */
+export function removeLockedTemplate(
+  projectRoot: string,
+  templateId: string,
+  dryRun = false,
+): RashwrightLockfile | null {
+  const lock = readLockfile(projectRoot);
+  if (!lock) return null;
+
+  delete lock.templates[templateId];
+  lock.generatedAt = new Date().toISOString();
+  writeLockfile(projectRoot, lock, dryRun);
+  return lock;
+}
+
 export type FileIntegrityStatus = "clean" | "modified" | "missing" | "untracked";
 
 /**
@@ -156,6 +238,49 @@ export function checkComponentIntegrity(
   const missingFiles: string[] = [];
 
   for (const f of lockedComp.files) {
+    const abs = join(projectRoot, f.path);
+    if (!existsSync(abs)) {
+      missingFiles.push(f.path);
+    } else {
+      const content = readFileSync(abs, "utf-8");
+      const currentHash = computeFileHash(content);
+      if (currentHash !== f.hash) {
+        modifiedFiles.push(f.path);
+      }
+    }
+  }
+
+  if (missingFiles.length > 0) {
+    return { status: "missing", modifiedFiles, missingFiles };
+  }
+  if (modifiedFiles.length > 0) {
+    return { status: "modified", modifiedFiles, missingFiles };
+  }
+  return { status: "clean", modifiedFiles, missingFiles };
+}
+
+/**
+ * Analyse l'intégrité d'un template installé en comparant le hash de ses fichiers au lockfile.
+ */
+export function checkTemplateIntegrity(
+  projectRoot: string,
+  templateId: string,
+): {
+  status: FileIntegrityStatus;
+  modifiedFiles: string[];
+  missingFiles: string[];
+} {
+  const lock = readLockfile(projectRoot);
+  const lockedTpl = lock?.templates?.[templateId];
+
+  if (!lockedTpl) {
+    return { status: "untracked", modifiedFiles: [], missingFiles: [] };
+  }
+
+  const modifiedFiles: string[] = [];
+  const missingFiles: string[] = [];
+
+  for (const f of lockedTpl.files) {
     const abs = join(projectRoot, f.path);
     if (!existsSync(abs)) {
       missingFiles.push(f.path);

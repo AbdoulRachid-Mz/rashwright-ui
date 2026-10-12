@@ -147,6 +147,9 @@ export function resetExpoProject(
   safeRm("src/App.tsx");
   safeRm("src/App.js");
   safeRm("src/App.jsx");
+  // Fichiers d'entrée racine obsolètes (ex: template Expo sans Expo Router avec index.ts important ./App)
+  safeRm("index.ts");
+  safeRm("index.js");
 
   // 4. Composants template Expo à la racine components/
   safeRm("components", true);
@@ -892,6 +895,30 @@ export function generateShowcaseScreen(
 
   if (hasExpoRouter) {
     writeExpoRouterLayout(targetProjectRoot, componentsPath, themePreset, dryRun, screenComponent);
+    // Supprimer l'ancien index.ts / index.js racine du template Expo qui importait ./App
+    for (const staleFile of ["index.ts", "index.js"]) {
+      const absStale = join(targetProjectRoot, staleFile);
+      if (existsSync(absStale)) {
+        try {
+          rmSync(absStale, { force: true });
+        } catch {
+          /* ignore */
+        }
+      }
+    }
+    // Mettre à jour package.json "main" vers "expo-router/entry" si présent
+    const pkgPath = join(targetProjectRoot, "package.json");
+    if (existsSync(pkgPath)) {
+      try {
+        const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+        if (pkg.main === "index.ts" || pkg.main === "./index.ts") {
+          pkg.main = "expo-router/entry";
+          writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n", "utf-8");
+        }
+      } catch {
+        /* ignore */
+      }
+    }
     const useSrc = componentsPath.startsWith("src/") || existsSync(join(targetProjectRoot, "src"));
     return join(targetProjectRoot, useSrc ? "src/app" : "app", "index.tsx");
   }
