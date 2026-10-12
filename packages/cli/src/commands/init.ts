@@ -143,6 +143,10 @@ export function initCommand(): Command {
       const hasReactNativeProject =
         project.hasPackageJson && (project.isExpo || !!project.reactNativeVersion);
 
+      // isFreshProject = true  → nouveau projet créé par create-expo-app → bun install obligatoire
+      // isFreshProject = false → projet existant avec node_modules déjà là → on saute l'étape A
+      let isFreshProject = false;
+
       // ── 2. Si aucun projet React Native n'est en place : le créer ────────
       if (!hasReactNativeProject) {
         console.log(chalk.yellow("  ℹ Aucun projet React Native / Expo détecté dans le répertoire courant."));
@@ -166,10 +170,7 @@ export function initCommand(): Command {
             return;
           }
 
-          // "." → utilise le répertoire courant directement sans redemander
-          if (projectNameArg === "." || projectNameArg === "") {
-            useCurrentDirectory = true;
-          } else if (!currentDirIsEmpty) {
+          if (!currentDirIsEmpty) {
             console.log();
             console.log(chalk.yellow("  ⚠  Le répertoire courant contient déjà des fichiers."));
             console.log(chalk.dim(`     (${basename(cwd)}/ n'est pas vide)`));
@@ -192,13 +193,10 @@ export function initCommand(): Command {
             });
           }
         } else {
-          // --yes mode : si le chemin fourni est "." ou le répertoire courant, on y installe directement
-          if (projectNameArg === "." || projectNameArg === "") {
-            useCurrentDirectory = true;
-          } else {
-            projectName = projectNameArg || defaultProjectName;
-            useCurrentDirectory = false;
-          }
+          // --yes mode : "." → projectName reste "." et useCurrentDirectory=false
+          // targetDir = join(cwd, ".") = cwd → create-expo-app . crée le package.json dans le dossier courant
+          projectName = projectNameArg || defaultProjectName;
+          useCurrentDirectory = false;
         }
 
         let targetDir: string;
@@ -266,7 +264,8 @@ export function initCommand(): Command {
           }
         }
 
-        const isFreshProject = !useCurrentDirectory ? true : false;
+        // isFreshProject = true car on vient de créer le projet avec create-expo-app ou on installe dans un répertoire vide
+        isFreshProject = !useCurrentDirectory ? true : false;
 
         cwd = targetDir;
         project = detectProject(cwd);
@@ -634,24 +633,30 @@ export function initCommand(): Command {
 
       if (options.dryRun) {
         console.log(chalk.yellow("  [dry-run] Commandes d'installation prévues :"));
-        installProjectDependencies(selectedPm, cwd, true);
+        if (isFreshProject) {
+          installProjectDependencies(selectedPm, cwd, true);
+        }
         installExpoPackages(expoDepsToInstall, selectedPm, cwd, true);
         if (npmDepsToInstall.length > 0) {
           installNpmPackages(npmDepsToInstall, selectedPm, cwd, true);
         }
       } else {
         // ── Étape A : Installation des dépendances de base (expo, react-native…)
-        const baseInstallSpinner = ora(`Installation des dépendances de base via ${selectedPm} (expo, react-native…)…`).start();
-        try {
-          installProjectDependencies(selectedPm, cwd);
-          baseInstallSpinner.succeed("Dépendances de base installées (expo disponible)");
-        } catch (err) {
-          installFailed = true;
-          installFailedSteps.push(`${selectedPm === "bun" ? "bun install" : selectedPm === "pnpm" ? "pnpm install" : selectedPm === "yarn" ? "yarn install" : "npm install"}`);
-          baseInstallSpinner.fail("Échec de l'installation des dépendances de base");
-          console.error(err);
-          // Sans expo dans node_modules, expo install ne peut pas fonctionner → on saute les étapes B et C
-          console.log(chalk.yellow("  ⚠  L'installation de base a échoué. Les dépendances Expo et NPM sont ignorées."));
+        //    Seulement pour un NOUVEAU projet (create-expo-app --no-install → pas de node_modules)
+        //    Projet existant : node_modules déjà présents → on saute cette étape
+        if (isFreshProject) {
+          const baseInstallSpinner = ora(`Installation des dépendances de base via ${selectedPm} (expo, react-native…)…`).start();
+          try {
+            installProjectDependencies(selectedPm, cwd);
+            baseInstallSpinner.succeed("Dépendances de base installées (expo disponible)");
+          } catch (err) {
+            installFailed = true;
+            installFailedSteps.push(`${selectedPm === "bun" ? "bun install" : selectedPm === "pnpm" ? "pnpm install" : selectedPm === "yarn" ? "yarn install" : "npm install"}`);
+            baseInstallSpinner.fail("Échec de l'installation des dépendances de base");
+            console.error(err);
+            // Sans expo dans node_modules, expo install ne peut pas fonctionner → on saute les étapes B et C
+            console.log(chalk.yellow("  ⚠  L'installation de base a échoué. Les dépendances Expo et NPM sont ignorées."));
+          }
         }
 
         // ── Étape B : expo install (dépendances natives compatibles SDK) ─────

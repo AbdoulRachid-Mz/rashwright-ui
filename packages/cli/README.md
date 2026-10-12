@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v0.7.1 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v0.7.2 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -10,7 +10,7 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-0.7.1-blue)](#)
+[![version](https://img.shields.io/badge/version-0.7.2-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2057-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
@@ -180,6 +180,16 @@ Le fichier de configuration trace l'état complet du starter, des thèmes et des
 ```
 
 ---
+
+## 🆕 Nouveautés v0.7.2 — Correctif `rs-ui init .` (régression 0.7.1)
+
+- **🐛 Fix : `bun install` échoue avec `rs-ui init .`** :
+  La v0.7.1 forçait incorrectement `useCurrentDirectory = true` pour l'argument `"."`, ce qui sautait l'étape `create-expo-app .` et laissait le projet sans `package.json`. La commande `bun install` échouait alors avec *"Bun could not find a package.json file to install from"*.
+  **Correction** : `projectName = "."` + `useCurrentDirectory = false` → `targetDir = join(cwd, ".") = cwd` → `create-expo-app .` crée bien le `package.json` dans le répertoire courant avant `bun install`.
+- **🐛 Fix : `installProjectDependencies` appelé sur un projet existant** :
+  L'étape A (`bun install`) est désormais conditionnée à `isFreshProject` : elle est sautée si un projet Expo existe déjà (qui a déjà ses `node_modules`).
+- **🐛 Fix : `isFreshProject` hissé dans le scope externe** :
+  La variable est maintenant accessible en Phase 10 (installation), quelle que soit la branche de création choisie.
 
 ## 🆕 Nouveautés v0.7.1 — Correctifs critiques `rs-ui init`
 
