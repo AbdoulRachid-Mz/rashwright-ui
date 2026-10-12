@@ -33,9 +33,20 @@ import {
 } from "../core/templates-manager.js";
 
 const CORE_EXPO_DEPS = [
+  // Navigation (OBLIGATOIRE — "main": "expo-router/entry" est écrit dans package.json)
+  "expo-router",
+  // Peer deps obligatoires d'expo-router (présents dans default@SDK mais PAS dans blank-typescript)
+  "react-native-screens",    // navigation stacks
+  "expo-constants",          // peer dep expo-router
+  "expo-linking",            // deep linking
+  // Web (app.json contient "web" → react-dom + react-native-web requis)
+  "react-dom",
+  "react-native-web",
+  // Primitives React Native animées & gestes
   "react-native-reanimated",
   "react-native-gesture-handler",
   "react-native-safe-area-context",
+  // Icônes & medias
   "@expo/vector-icons",
   "expo-haptics",
   "expo-image",
@@ -43,6 +54,7 @@ const CORE_EXPO_DEPS = [
   "expo-image-picker",
   "expo-image-manipulator",
   "expo-application",
+  // UI natif (Glass UI)
   "expo-blur",
   "expo-linear-gradient",
 ];

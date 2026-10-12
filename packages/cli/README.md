@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v0.7.2 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v0.7.3 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -10,7 +10,7 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-0.7.2-blue)](#)
+[![version](https://img.shields.io/badge/version-0.7.3-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2057-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
@@ -180,6 +180,18 @@ Le fichier de configuration trace l'état complet du starter, des thèmes et des
 ```
 
 ---
+
+## 🆕 Nouveautés v0.7.3 — Correctif dépendances manquantes (`expo-router`, `react-dom`, `react-native-web`)
+
+- **🐛 Fix : `ConfigError: Cannot resolve entry file` au démarrage** :
+  `"main": "expo-router/entry"` était écrit dans `package.json` mais `expo-router` n'était jamais installé (absent de `CORE_EXPO_DEPS`). Metro ne pouvait pas résoudre le point d'entrée et refusait de démarrer. `expo-router` est désormais la première entrée de `CORE_EXPO_DEPS`.
+- **🐛 Fix : `react-dom` et `react-native-web` manquants pour le web** :
+  Le `app.json` généré par Expo inclut `"web"` dans sa configuration, ce qui active le mode web. Sans `react-dom` et `react-native-web`, Expo affichait *"It looks like you're trying to use web support but don't have the required dependencies installed"*. Ces deux packages sont désormais dans `CORE_EXPO_DEPS` et installés via `expo install` pour garantir des versions compatibles SDK.
+
+Pour réparer un projet existant généré par une version antérieure :
+```bash
+bunx expo install expo-router react-dom react-native-web
+```
 
 ## 🆕 Nouveautés v0.7.2 — Correctif `rs-ui init .` (régression 0.7.1)
 
