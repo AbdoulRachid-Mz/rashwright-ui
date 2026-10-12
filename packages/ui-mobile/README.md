@@ -2,9 +2,9 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile" width="180" />
 </p>
 
-# @rashwright/ui-mobile — v0.6.0
+# @rashwright/ui-mobile — v0.7.1
 
-[![npm version](https://img.shields.io/badge/npm-%400.6.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+[![npm version](https://img.shields.io/badge/npm-%400.7.1-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2057-000000?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6?logo=typescript)](#)
 
@@ -22,6 +22,7 @@ Ce package `@rashwright/ui-mobile` est le **fournisseur de code source** et de *
 - le **registry JSON central** (61 composants, matrices Expo SDK 54 à 59)
 - le **code source TypeScript** de chaque composant (copié directement par le CLI dans votre projet)
 - le **catalogue exhaustif de Skills IA** (61 skills composants, 4 modules core, 1 skill global dans `skills/`)
+- les **7 Templates Autonomes Complets** distribuables sous `templates/<id>/` (`auth`, `commerce`, `dashboard`, `minimal`, `onboarding`, `settings`, `showcase`)
 - le **moteur Liquid Glass** (8 primitives sous `components/ui/liquid/`)
 - le **moteur d'upload** Rashwright (`lib/upload/`) avec 5 providers inlinés
 - les **tokens de thème** et les **9 presets** (`default`, `emerald`, `violet`, `amber`, `rose`, `slate`, `green`, `red`, `cyan`) + moteur custom
@@ -88,7 +89,23 @@ rs-ui add button
 
 ---
 
-## 🆕 Nouveautés de la version v0.3.0
+## 🆕 Nouveautés v0.7.1
+
+- **🐛 Fix CLI `rs-ui init` — ordre d'installation** :
+  Le CLI installe maintenant `expo` (via `bun install`) **avant** de lancer `expo install` pour les modules natifs. Élimine le `ConfigError: Cannot determine the project's Expo SDK version`.
+- **🐛 Fix `TS2307: Cannot find module './App'`** :
+  L'`index.ts` résiduel du template Expo est supprimé en mode Expo Router ; `package.json` passe à `"main": "expo-router/entry"`.
+- **🐛 Fix fausse réussite du CLI** :
+  En cas d'échec d'installation, le CLI affiche une initialisation partielle avec commandes de réparation manuelles au lieu du faux message de succès.
+- **🐛 Fix `rs-ui init .`** : L'argument `"."` est correctement interprété comme « répertoire courant ».
+
+## 🆕 Nouveautés v0.7.0
+
+- **7 Templates Autonomes Complets** : `auth`, `commerce`, `dashboard`, `minimal`, `onboarding`, `settings`, `showcase` — chacun sous `templates/<id>/` avec `template.json`, `types.ts`, composants internes et `index.ts`.
+- **6 nouveaux composants** : `accordion`, `collapsible`, `otp-input`, `rating`, `data-table`, `form`.
+- **Architecture /src standardisée** : Reset automatique du template Expo, génération Expo Router (`src/app/_layout.tsx` + `src/app/index.tsx`).
+
+## 🆕 Nouveautés v0.3.0
 
 - 🤖 **Système de Skills IA pour composants & modules** :
   - 61 fichiers `SKILL.md` dédiés pour chaque composant du catalogue.

@@ -1,6 +1,6 @@
 {
   "name": "@rashwright/ui-mobile",
-  "version": "0.6.0",
+  "version": "0.7.1",
   "description": "Rashwright UI Mobile — Composants React Native / Expo distribuables",
   "license": "MIT",
   "author": "Rashwright office",
@@ -22,6 +22,7 @@
     "assets/**",
     "registry/**",
     "skills/**",
+    "templates/**",
     "lib/**",
     "index.ts",
     "README.md"

@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v0.6.0 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v0.7.1 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -10,7 +10,7 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-0.6.0-blue)](#)
+[![version](https://img.shields.io/badge/version-0.7.1-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2057-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
@@ -92,9 +92,9 @@ rs-ui --help
 | Commande | Description |
 |---|---|
 | `rs-ui init [name]` | Configure Rashwright dans un projet existant ou initialise un nouveau projet Expo avec skill IA global. |
-| `rs-ui add [components...]` | Ajoute un ou plusieurs composants avec leurs dépendances natives et Skills IA associés (`--skills`). |
+| `rs-ui add [components...]` | Ajoute un ou plusieurs composants ou templates autonomes (`-t, --template`) avec leurs dépendances natives et Skills IA associés (`--skills`). |
 | `rs-ui reset` / `rs-ui-reset` | Nettoie les fichiers de démo et showcase du starter (archivage dans `rs-ui-example/` ou suppression `--delete`). |
-| `rs-ui list` | Liste les 61 composants du catalogue avec statut d'installation. Supporte `-i` / `--interactive`. |
+| `rs-ui list` | Liste les composants disponibles ou les templates autonomes (`-t, --templates`) avec statut d'installation. |
 | `rs-ui info <component>` | Affiche la fiche technique détaillée d'un composant (versions, dépendances, plateformes, etc.). |
 | `rs-ui doctor` | Évalue l'environnement (SDK, dépendances, types) et diagnostique la présence et validité des Skills IA. |
 | `rs-ui remove <component>` | Supprime un composant, retire son Skill IA associé et vérifie les dépendances. |
@@ -105,6 +105,7 @@ rs-ui --help
 ## 🔧 Options détaillées
 
 ### Options pour `rs-ui init`
+- `--template <id>` : Sélectionne un template starter initial (`minimal`, `auth`, `onboarding`, `dashboard`, `commerce`, `settings`, `showcase`).
 - `--theme <preset>` : Preset de couleurs (`default`, `emerald`, `violet`, `amber`, `rose`, `slate`, `green`, `red`, `cyan`, `custom`).
 - `--primary <hex>` / `--dark-primary <hex>` : Couleur primaire light / dark personnalisée.
 - `--secondary <hex>` / `--dark-secondary <hex>` : Couleur secondaire light / dark personnalisée.
@@ -112,9 +113,10 @@ rs-ui --help
 - `--skills` : Installe le Skill IA Global et les starters (`skills/rs-ui/`) (activé par défaut).
 - `--no-skills` : Désactive l'installation des Skills IA.
 - `--glass` : Active le moteur Liquid Glass (`expo-blur` et `expo-linear-gradient`).
-- `--sdk <version>` : Version cible du SDK Expo (`54` à `59`).
+- `--sdk <version>` : Version cible du SDK Expo (`54` à `57` ou `latest`).
 
 ### Options pour `rs-ui add`
+- `-t, --template <name>` : Installe un template autonome complet (`auth`, `dashboard`, `commerce`, `settings`, etc.) dans `src/components/templates/<name>/`.
 - `--skills` : Installe automatiquement `skills/rs-ui/<component>/SKILL.md` (activé par défaut).
 - `--no-skills` : Ignore la copie des Skills IA.
 - `--diff` : Affiche un diff textuel (LCS) avant d'écraser un composant existant.
@@ -179,7 +181,20 @@ Le fichier de configuration trace l'état complet du starter, des thèmes et des
 
 ---
 
-## 🆕 Nouveautés v0.6.0
+## 🆕 Nouveautés v0.7.1 — Correctifs critiques `rs-ui init`
+
+- **🐛 Fix ordre d'installation (`ConfigError: expo is not installed`)** :
+  L'ordre des phases d'installation est désormais garanti : `bun install` (Étape A) installe `expo` dans `node_modules` **avant** que `bunx expo install` (Étape B) ne soit appelé. Cela élimine le `ConfigError: Cannot determine the project's Expo SDK version because the module expo is not installed`.
+- **🐛 Fix `TS2307: Cannot find module './App'`** :
+  Le fichier `index.ts` résiduel du template Expo `blank-typescript` (qui importait `./App`) est maintenant supprimé lors de la génération en mode Expo Router. Le `package.json` est mis à jour vers `"main": "expo-router/entry"`.
+- **🐛 Fix fausse réussite** :
+  Le CLI distingue désormais une initialisation **complète** d'une initialisation **partielle**. Si une étape d'installation échoue, le résumé affiche `⚠ Initialisation partielle` avec les commandes exactes pour réparer manuellement — plus de faux `✔ Rashwright UI Mobile est opérationnel !`.
+- **🐛 Fix `rs-ui init .`** :
+  L'argument `"."` est correctement reconnu comme « installer dans le répertoire courant » en mode interactif et `--yes`, sans créer de sous-dossier `"."` ni redemander inutilement.
+- **🧪 Tests de non-régression** :
+  4 nouveaux tests CRITICAL/REGRESSION dans `package-manager.test.ts` et `init.test.ts` verrouillent ces comportements.
+
+## 🆕 Nouveautés v0.7.0 — Templates Engine & Architecture /src
  
 - **Starter Templates Engine (`--template`)** : Choix parmi 7 templates starters complets (`showcase`, `minimal`, `auth`, `onboarding`, `dashboard`, `commerce`, `settings`) utilisant exclusivement les composants Rashwright UI Mobile et l'architecture standardisée.
 - **Single Installation Flow & Clean SDK Resolution** :

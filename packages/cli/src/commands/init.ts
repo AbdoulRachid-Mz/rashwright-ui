@@ -9,7 +9,7 @@ import { detectProject, isDefaultExpoTemplate } from "../core/project-detector.j
 import { detectExpo } from "../core/expo-detector.js";
 import { readConfig, writeConfig, mergeRashwrightConfigs } from "../core/config-manager.js";
 import { printBanner } from "../core/banner.js";
-import { detectPackageManager, installExpoPackages, installNpmPackages, buildCreateExpoAppCommand, resolveSdkVersion, SUPPORTED_SDK_VERSIONS, LATEST_SUPPORTED_SDK, type PackageManager } from "../core/package-manager.js";
+import { detectPackageManager, installExpoPackages, installNpmPackages, installProjectDependencies, buildCreateExpoAppCommand, resolveSdkVersion, SUPPORTED_SDK_VERSIONS, LATEST_SUPPORTED_SDK, type PackageManager } from "../core/package-manager.js";
 import {
   copyRashwrightAssets,
   resetExpoProject,
@@ -22,8 +22,9 @@ import {
   type CustomThemeColors,
 } from "../core/starter-generator.js";
 import { copyGlobalSkill, copyComponentSkill } from "../core/skills-manager.js";
-import { recordLockedComponent } from "../core/lock-manager.js";
-import { SOURCE_ROOT } from "../core/paths.js";
+import { recordLockedComponent, recordLockedTemplate } from "../core/lock-manager.js";
+import { SOURCE_ROOT, TEMPLATES_ROOT } from "../core/paths.js";
+import { getTemplateDefinition } from "../core/templates-registry.js";
 import {
   AVAILABLE_TEMPLATES,
   getTemplate,
@@ -165,7 +166,10 @@ export function initCommand(): Command {
             return;
           }
 
-          if (!currentDirIsEmpty) {
+          // "." → utilise le répertoire courant directement sans redemander
+          if (projectNameArg === "." || projectNameArg === "") {
+            useCurrentDirectory = true;
+          } else if (!currentDirIsEmpty) {
             console.log();
             console.log(chalk.yellow("  ⚠  Le répertoire courant contient déjà des fichiers."));
             console.log(chalk.dim(`     (${basename(cwd)}/ n'est pas vide)`));
@@ -188,8 +192,13 @@ export function initCommand(): Command {
             });
           }
         } else {
-          projectName = projectNameArg || defaultProjectName;
-          useCurrentDirectory = false;
+          // --yes mode : si le chemin fourni est "." ou le répertoire courant, on y installe directement
+          if (projectNameArg === "." || projectNameArg === "") {
+            useCurrentDirectory = true;
+          } else {
+            projectName = projectNameArg || defaultProjectName;
+            useCurrentDirectory = false;
+          }
         }
 
         let targetDir: string;
@@ -523,7 +532,7 @@ export function initCommand(): Command {
       const compSpinner = ora(`Installation des composants du template (${templateMeta.name})...`).start();
       const targetComponentsDir = join(cwd, componentsPath);
       if (!existsSync(targetComponentsDir)) mkdirSync(targetComponentsDir, { recursive: true });
-      const { installedComponents: installedStarterComps } = setupStarterTemplate(
+      const { installedComponents: installedStarterComps, templateTargetRel } = setupStarterTemplate(
         SOURCE_ROOT,
         cwd,
         selectedTemplate,
@@ -591,30 +600,84 @@ export function initCommand(): Command {
         );
       }
 
-      // ── 10. Phase d'installation unique (Expo + NPM) ─────────────────────
+      if (templateTargetRel) {
+        const tplDef = getTemplateDefinition(selectedTemplate, TEMPLATES_ROOT);
+        if (tplDef) {
+          const tplFiles = tplDef.files.map((f) => `${templateTargetRel}/${f}`);
+          recordLockedTemplate(
+            cwd,
+            selectedTemplate,
+            tplDef.version,
+            templateTargetRel,
+            tplDef.requiredComponents,
+            tplFiles,
+            tplDef.dependencies,
+            tplDef.expoDependencies,
+            options.dryRun
+          );
+        }
+      }
+
+
+      // ── 10. Phase d'installation unique (base → Expo → NPM) ─────────────
+      //
+      //  Ordre impératif :
+      //    A) installProjectDependencies  → installe expo + react-native depuis package.json
+      //                                     (node_modules/expo doit exister AVANT expo install)
+      //    B) installExpoPackages         → expo install, résout les versions compatibles SDK
+      //    C) installNpmPackages          → bun/npm add zustand et al.
+      //
+      //  IMPORTANT : ne jamais lancer expo install avant que `expo` soit dans node_modules.
+
+      let installFailed = false;
+      const installFailedSteps: string[] = [];
+
       if (options.dryRun) {
         console.log(chalk.yellow("  [dry-run] Commandes d'installation prévues :"));
+        installProjectDependencies(selectedPm, cwd, true);
         installExpoPackages(expoDepsToInstall, selectedPm, cwd, true);
         if (npmDepsToInstall.length > 0) {
           installNpmPackages(npmDepsToInstall, selectedPm, cwd, true);
         }
       } else {
-        const installSpinner = ora(`Installation des dépendances Expo compatibles via ${selectedPm}...`).start();
+        // ── Étape A : Installation des dépendances de base (expo, react-native…)
+        const baseInstallSpinner = ora(`Installation des dépendances de base via ${selectedPm} (expo, react-native…)…`).start();
         try {
-          installExpoPackages(expoDepsToInstall, selectedPm, cwd, options.dryRun);
-          installSpinner.succeed("Dépendances Expo installées");
+          installProjectDependencies(selectedPm, cwd);
+          baseInstallSpinner.succeed("Dépendances de base installées (expo disponible)");
         } catch (err) {
-          installSpinner.fail("Échec de l'installation des dépendances Expo");
+          installFailed = true;
+          installFailedSteps.push(`${selectedPm === "bun" ? "bun install" : selectedPm === "pnpm" ? "pnpm install" : selectedPm === "yarn" ? "yarn install" : "npm install"}`);
+          baseInstallSpinner.fail("Échec de l'installation des dépendances de base");
           console.error(err);
+          // Sans expo dans node_modules, expo install ne peut pas fonctionner → on saute les étapes B et C
+          console.log(chalk.yellow("  ⚠  L'installation de base a échoué. Les dépendances Expo et NPM sont ignorées."));
         }
 
-        if (npmDepsToInstall.length > 0) {
-          const npmInstallSpinner = ora(`Installation des dépendances NPM (zustand, ...) via ${selectedPm}...`).start();
+        // ── Étape B : expo install (dépendances natives compatibles SDK) ─────
+        if (!installFailed && expoDepsToInstall.length > 0) {
+          const expoInstallSpinner = ora(`Installation des dépendances Expo natives via ${selectedPm} expo install…`).start();
           try {
-            installNpmPackages(npmDepsToInstall, selectedPm, cwd, options.dryRun);
+            installExpoPackages(expoDepsToInstall, selectedPm, cwd);
+            expoInstallSpinner.succeed(`Dépendances Expo installées (${expoDepsToInstall.length} paquets)`);
+          } catch (err) {
+            installFailed = true;
+            installFailedSteps.push(`${selectedPm === "bun" ? "bunx" : selectedPm === "pnpm" ? "pnpm dlx" : selectedPm === "yarn" ? "yarn" : "npx"} expo install ${expoDepsToInstall.join(" ")}`);
+            expoInstallSpinner.fail("Échec de l'installation des dépendances Expo natives");
+            console.error(err);
+          }
+        }
+
+        // ── Étape C : Dépendances NPM pures (zustand…) ──────────────────────
+        if (npmDepsToInstall.length > 0) {
+          const npmInstallSpinner = ora(`Installation des dépendances NPM (${npmDepsToInstall.join(", ")})…`).start();
+          try {
+            installNpmPackages(npmDepsToInstall, selectedPm, cwd);
             npmInstallSpinner.succeed(`Dépendances NPM installées (${npmDepsToInstall.join(", ")})`);
           } catch (err) {
-            npmInstallSpinner.fail("Échec installation dépendances NPM");
+            installFailed = true;
+            installFailedSteps.push(`${selectedPm === "bun" ? "bun add" : selectedPm === "pnpm" ? "pnpm add" : selectedPm === "yarn" ? "yarn add" : "npm install"} ${npmDepsToInstall.join(" ")}`);
+            npmInstallSpinner.fail("Échec de l'installation des dépendances NPM");
             console.error(err);
           }
         }
@@ -622,36 +685,55 @@ export function initCommand(): Command {
 
       // ── 11. Résumé & instructions ────────────────────────────────────────
       console.log();
-      console.log(chalk.bold.green("  ✔ Rashwright UI Mobile est opérationnel !"));
-      console.log();
-      console.log(chalk.dim("  Éléments prêts :"));
-      console.log(chalk.dim(`    ✔ ${componentsPath}/ (Bouton, Card, GlassCard, Badge, Input, Logo RS)`));
-      console.log(chalk.dim(`    ✔ index.ts exportant les composants configurés`));
-      console.log(chalk.dim(`    ✔ rashwright-ui.lock (Signatures SHA-256 et état réel)`));
-      console.log(chalk.dim(`    ✔ Gest. de paquets : ${selectedPm}`));
-      console.log(chalk.dim(`    ✔ theme/ (Tokens, presets Light/Dark/Glass)`));
-      console.log(chalk.dim(`    ✔ contexts/theme-context.tsx & stores/theme-store.ts`));
-      console.log(chalk.dim(`    ✔ assets/svg/primary.svg & assets/primary.png`));
-      if (options.skills !== false) {
-        console.log(chalk.dim(`    ✔ skills/rs-ui/ (Skill IA Global & documentation composants)`));
-      }
-      if (showcaseFile) {
-        console.log(chalk.dim(`    ✔ Écran de démo actif avec logo RS et contrôles interactifs`));
-      }
-      console.log();
-      console.log(chalk.bold("  Commandes utiles :"));
-      console.log(chalk.cyan("    rs-ui add drawer"));
-      console.log(chalk.cyan("    rs-ui add tabs modal"));
-      console.log(chalk.cyan("    rs-ui list"));
-      console.log(chalk.cyan("    rs-ui doctor"));
-      console.log();
 
-      if (glassEnabled) {
-        console.log(chalk.yellow("  ⚠  Note Native :"));
-        console.log(chalk.dim("     Le mode Glass utilise expo-blur et des animations natives."));
-        console.log(chalk.dim("     Pour un rendu optimal, lancez un development build :"));
-        console.log(chalk.dim("     npx expo run:ios  ou  npx expo run:android"));
+      if (installFailed) {
+        // ── Initialisation partielle : ne pas crier victoire
+        console.log(chalk.bold.yellow("  ⚠  Initialisation partielle — certaines dépendances n'ont pas pu être installées."));
         console.log();
+        console.log(chalk.dim("  Fichiers Rashwright copiés avec succès :"));
+        console.log(chalk.dim(`    ✔ ${componentsPath}/ (composants UI)`));
+        console.log(chalk.dim(`    ✔ theme/, contexts/, stores/, assets/`));
+        console.log(chalk.dim(`    ✔ rashwright-ui.json + rashwright-ui.lock`));
+        console.log();
+        console.log(chalk.bold.red("  ✖  Étapes d'installation échouées — réparez manuellement :"));
+        for (const step of installFailedSteps) {
+          console.log(chalk.red(`    $ ${step}`));
+        }
+        console.log();
+        console.log(chalk.dim("  Une fois les dépendances installées :"));
+        console.log(chalk.cyan("    rs-ui doctor"));
+      } else {
+        console.log(chalk.bold.green("  ✔ Rashwright UI Mobile est opérationnel !"));
+        console.log();
+        console.log(chalk.dim("  Éléments prêts :"));
+        console.log(chalk.dim(`    ✔ ${componentsPath}/ (Bouton, Card, GlassCard, Badge, Input, Logo RS)`));
+        console.log(chalk.dim(`    ✔ index.ts exportant les composants configurés`));
+        console.log(chalk.dim(`    ✔ rashwright-ui.lock (Signatures SHA-256 et état réel)`));
+        console.log(chalk.dim(`    ✔ Gest. de paquets : ${selectedPm}`));
+        console.log(chalk.dim(`    ✔ theme/ (Tokens, presets Light/Dark/Glass)`));
+        console.log(chalk.dim(`    ✔ contexts/theme-context.tsx & stores/theme-store.ts`));
+        console.log(chalk.dim(`    ✔ assets/svg/primary.svg & assets/primary.png`));
+        if (options.skills !== false) {
+          console.log(chalk.dim(`    ✔ skills/rs-ui/ (Skill IA Global & documentation composants)`));
+        }
+        if (showcaseFile) {
+          console.log(chalk.dim(`    ✔ Écran de démo actif avec logo RS et contrôles interactifs`));
+        }
+        console.log();
+        console.log(chalk.bold("  Commandes utiles :"));
+        console.log(chalk.cyan("    rs-ui add drawer"));
+        console.log(chalk.cyan("    rs-ui add tabs modal"));
+        console.log(chalk.cyan("    rs-ui list"));
+        console.log(chalk.cyan("    rs-ui doctor"));
+        console.log();
+
+        if (glassEnabled) {
+          console.log(chalk.yellow("  ⚠  Note Native :"));
+          console.log(chalk.dim("     Le mode Glass utilise expo-blur et des animations natives."));
+          console.log(chalk.dim("     Pour un rendu optimal, lancez un development build :"));
+          console.log(chalk.dim("     npx expo run:ios  ou  npx expo run:android"));
+          console.log();
+        }
       }
     });
 

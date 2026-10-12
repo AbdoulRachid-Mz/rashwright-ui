@@ -48,6 +48,23 @@ export function detectPackageManager(cwd: string = process.cwd()): PackageManage
 }
 
 /**
+ * Build the base install command to install all existing dependencies in package.json.
+ */
+export function buildProjectInstallCommand(pm: PackageManager): string {
+  switch (pm) {
+    case "bun":
+      return "bun install";
+    case "pnpm":
+      return "pnpm install";
+    case "yarn":
+      return "yarn install";
+    case "npm":
+    default:
+      return "npm install";
+  }
+}
+
+/**
  * Build the install command string for regular npm packages.
  */
 export function buildInstallCommand(
@@ -130,6 +147,18 @@ export function runCommand(command: string, cwd: string, dryRun = false): void {
     return;
   }
   execSync(command, { cwd, stdio: "inherit" });
+}
+
+/**
+ * Install regular project dependencies already declared in package.json.
+ */
+export function installProjectDependencies(
+  pm: PackageManager,
+  cwd: string,
+  dryRun = false
+): void {
+  const command = buildProjectInstallCommand(pm);
+  runCommand(command, cwd, dryRun);
 }
 
 /**
