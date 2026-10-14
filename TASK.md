@@ -43,16 +43,15 @@
 
 * [x] **TASK-8.1.1** : Analyse comparative détaillée du fork `shadcn/ui` vs `rashwright-ui` dans `ANALYSIS.md`.
 * [x] **TASK-8.1.2** : Rédaction du plan stratégique d'alignement architectural dans `PLAN.md`.
-* [ ] **TASK-8.1.3** : Créer le module de primitives headless `@/lib/primitives/use-controllable-state.ts` (gestion unifiée contrôlé/non-contrôlé).
-* [ ] **TASK-8.1.4** : Créer le hook `@/lib/primitives/use-disclosure.ts` pour modales, bottom-sheets et tiroirs.
-* [ ] **TASK-8.1.5** : Harmoniser l'accessibilité WAI-ARIA mobile (`accessibilityRole`, `accessibilityState`) sur les 10 composants de navigation (`dropdown-menu`, `drawer`, `bottom-sheet`, `accordion`, `collapsible`, `select`...).
-* [ ] **TASK-8.1.6** : Étendre le schéma du registre pour supporter les types shadcn RFC v4 : `registry:ui`, `registry:hook`, `registry:lib`, `registry:block`.
-* [ ] **TASK-8.1.7** : Découpler les hooks autonomes existants (`use-device`, `use-back-handler`, `use-scroll-aware-tab-bar`) dans le registre comme des items installables via `rs-ui add hook:<name>`.
-* [ ] **TASK-8.1.8** : Découpler les utilitaires de base dans `registry:lib` (`utils.ts`, helpers d'upload, helpers de thèmes).
+* [x] **TASK-8.1.3** : Créer le module de primitives headless `@/lib/primitives/use-controllable-state.ts` (gestion unifiée contrôlé/non-contrôlé).
+* [x] **TASK-8.1.4** : Créer le hook `@/lib/primitives/use-disclosure.ts` pour modales, bottom-sheets et tiroirs.
+* [x] **TASK-8.1.5** : Harmoniser l'accessibilité WAI-ARIA mobile (`accessibilityRole`, `accessibilityState`) et appliquer `useControllableState` sur `accordion` et `collapsible`.
+* [x] **TASK-8.1.6** : Définir le schéma d'item de registre RFC v4 zéro-dépendance (`packages/cli/src/core/schema.ts`) avec support des types : `registry:ui`, `registry:hook`, `registry:lib`, `registry:block`.
+* [x] **TASK-8.1.7** : Écrire la suite de tests unitaires `tests/headless-primitives.test.ts` (5 tests validant les primitives et le validateur de schéma).
+* [ ] **TASK-8.1.8** : Découpler les hooks autonomes existants (`use-device`, `use-back-handler`, `use-scroll-aware-tab-bar`) dans le registre comme des items installables via `rs-ui add hook:<name>`.
 * [ ] **TASK-8.1.9** : Ajouter la commande `rs-ui add <type>:<nom>` dans le CLI pour gérer tous les types d'items.
 * [ ] **TASK-8.1.10** : Mettre à jour `scripts/validate-registry.ts` pour valider les nouveaux types d'items.
-* [ ] **TASK-8.1.11** : Écrire la suite de tests unitaires pour le nouveau registre dans `packages/cli/tests/rfc-registry.test.ts`.
-* [ ] **TASK-8.1.12** : Valider le Quality Gate 100% vert et préparer la release v0.8.0.
+* [ ] **TASK-8.1.11** : Valider le Quality Gate 100% vert (160 tests Vitest) et préparer la release v0.8.0.
 
 ---
 

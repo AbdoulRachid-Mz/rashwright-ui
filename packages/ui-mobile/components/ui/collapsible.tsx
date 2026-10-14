@@ -23,6 +23,9 @@ import LiquidPressable from "./liquid/liquid-pressable";
 export interface CollapsibleProps {
   title: string;
   children: React.ReactNode;
+  /** État ouvert en mode contrôlé */
+  open?: boolean;
+  /** État initial pour le mode non contrôlé */
   defaultOpen?: boolean;
   icon?: React.ReactNode;
   variant?: "default" | "bordered" | "glass";
@@ -35,6 +38,7 @@ export interface CollapsibleProps {
 export const Collapsible: React.FC<CollapsibleProps> = ({
   title,
   children,
+  open: openProp,
   defaultOpen = false,
   icon,
   variant = "default",
@@ -43,7 +47,10 @@ export const Collapsible: React.FC<CollapsibleProps> = ({
 }) => {
   const { theme, isDark, liquidGlassEnabled } = useTheme();
 
-  const [isOpen, setIsOpen] = useState<boolean>(defaultOpen);
+  const isControlled = openProp !== undefined;
+  const [internalOpen, setInternalOpen] = useState<boolean>(defaultOpen);
+  const isOpen = isControlled ? openProp : internalOpen;
+
   const contentHeight = useRef<number>(0);
   const animatedHeight = useSharedValue(defaultOpen ? -1 : 0);
   const chevronRotation = useSharedValue(defaultOpen ? 1 : 0);
@@ -61,13 +68,9 @@ export const Collapsible: React.FC<CollapsibleProps> = ({
     [isOpen, animatedHeight],
   );
 
-  const handlePress = useCallback(() => {
-    const next = !isOpen;
-    setIsOpen(next);
-    onToggle?.(next);
-
-    if (next) {
-      animatedHeight.value = withTiming(contentHeight.current, {
+  React.useEffect(() => {
+    if (isOpen) {
+      animatedHeight.value = withTiming(contentHeight.current || -1, {
         duration: 250,
       });
       chevronRotation.value = withTiming(1, { duration: 250 });
@@ -75,7 +78,15 @@ export const Collapsible: React.FC<CollapsibleProps> = ({
       animatedHeight.value = withTiming(0, { duration: 250 });
       chevronRotation.value = withTiming(0, { duration: 250 });
     }
-  }, [isOpen, animatedHeight, chevronRotation, onToggle]);
+  }, [isOpen, animatedHeight, chevronRotation]);
+
+  const handlePress = useCallback(() => {
+    const next = !isOpen;
+    if (!isControlled) {
+      setInternalOpen(next);
+    }
+    onToggle?.(next);
+  }, [isControlled, isOpen, onToggle]);
 
   const animatedContentStyle = useAnimatedStyle(() => ({
     height: animatedHeight.value < 0 ? undefined : animatedHeight.value,

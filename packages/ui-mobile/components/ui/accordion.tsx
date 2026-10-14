@@ -32,7 +32,14 @@ export interface AccordionItem {
 export interface AccordionProps {
   items: AccordionItem[];
   multiple?: boolean;
+  /** Identifiants des sections ouvertes (mode contrôlé) */
+  value?: string[];
+  /** Valeur par défaut pour le mode non contrôlé */
+  defaultValue?: string[];
+  /** Alias rétrocompatible pour defaultValue */
   defaultOpen?: string[];
+  /** Callback déclenché lors du changement d'onglets ouverts */
+  onValueChange?: (value: string[]) => void;
   variant?: "default" | "bordered" | "glass";
   style?: StyleProp<ViewStyle>;
 }
@@ -192,28 +199,35 @@ const AccordionItemView: React.FC<AccordionItemViewProps> = ({
 export const Accordion: React.FC<AccordionProps> = ({
   items,
   multiple = false,
-  defaultOpen = [],
+  value: valueProp,
+  defaultValue,
+  defaultOpen,
+  onValueChange,
   variant = "default",
   style,
 }) => {
-  const [openIds, setOpenIds] = useState<Set<string>>(new Set(defaultOpen));
+  const isControlled = valueProp !== undefined;
+  const initialOpen = valueProp ?? defaultValue ?? defaultOpen ?? [];
+  const [internalOpen, setInternalOpen] = useState<string[]>(initialOpen);
+
+  const activeIds = isControlled ? (valueProp ?? []) : internalOpen;
+  const openSet = new Set(activeIds);
 
   const handleToggle = useCallback(
     (id: string) => {
-      setOpenIds((prev) => {
-        const next = new Set(prev);
-        if (next.has(id)) {
-          next.delete(id);
-        } else {
-          if (!multiple) {
-            next.clear();
-          }
-          next.add(id);
-        }
-        return next;
-      });
+      let next: string[];
+      if (openSet.has(id)) {
+        next = activeIds.filter((item) => item !== id);
+      } else {
+        next = multiple ? [...activeIds, id] : [id];
+      }
+
+      if (!isControlled) {
+        setInternalOpen(next);
+      }
+      onValueChange?.(next);
     },
-    [multiple],
+    [activeIds, isControlled, multiple, onValueChange, openSet],
   );
 
   return (
@@ -222,7 +236,7 @@ export const Accordion: React.FC<AccordionProps> = ({
         <AccordionItemView
           key={item.id}
           item={item}
-          isOpen={openIds.has(item.id)}
+          isOpen={openSet.has(item.id)}
           onToggle={handleToggle}
           variant={variant}
         />

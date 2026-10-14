@@ -3,8 +3,15 @@ import { join } from "node:path";
 import type { SupportedSdk } from "./expo-detector.js";
 import { readCompatibilityMatrix } from "./expo-detector.js";
 
+export type RegistryItemType =
+  | "registry:ui"
+  | "registry:hook"
+  | "registry:lib"
+  | "registry:block";
+
 export interface ComponentRegistryEntry {
   name: string;
+  type?: RegistryItemType;
   version: string;
   description: string;
   category: string;
