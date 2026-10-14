@@ -1,44 +1,63 @@
-Analyse et corrige le CLI Expo/RN du dépôt `AbdoulRachid-Mz/rashwright-ui`, sans réécrire l’architecture inutilement.
+# PROMPT TYPE — DÉVELOPPEMENT & MAINTENANCE RASHWRIGHT UI MOBILE
 
-Objectif principal : corriger `init` et `create` afin qu’ils détectent correctement :
-1. un nouveau projet Expo vide ou inexistant ;
-2. un projet Expo déjà existant ;
-3. un projet React Native/Expo partiellement configuré ;
-4. un projet non compatible ou invalide.
+Ce document définit les directives, contraintes et conventions à respecter pour toute intervention sur le dépôt `AbdoulRachid-Mz/rashwright-ui`.
 
-Contraintes :
-- Respecter les SDK Expo supportés 54, 55, 56, 57 et 58.
-- Utiliser la structure et les conventions recommandées par Expo pour chaque SDK.
-- Ne jamais écraser les fichiers utilisateur sans confirmation explicite.
-- Ne jamais lancer une initialisation Expo dans un projet déjà valide.
-- Ajouter uniquement les fichiers manquants et leurs dépendances associées.
-- Préserver les configurations existantes compatibles.
-- Gérer correctement `package.json`, `app.json`/`app.config.*`, `tsconfig`, Babel, Metro, entrypoints et dossiers source.
-- Garantir que l’ordre des opérations est sûr : détection, sauvegarde éventuelle, génération/ajout, installation des dépendances, validation finale.
-- Corriger le problème actuel rencontré avec `rs-ui` lors de l’initialisation d’un nouveau projet.
-- Éviter les faux positifs dans la détection d’un projet Expo.
-- Rendre les opérations idempotentes : relancer la commande ne doit pas dupliquer ou casser les fichiers.
+---
 
-Inspecte d’abord les fichiers concernés dans `packages/cli/src`, notamment :
-- `commands/init.ts`
-- `commands/create.ts`
-- `commands/reset.ts`
-- `commands/deps.ts`
-- `core/project-detector.ts`
-- `core/expo-detector.ts`
-- `core/starter-generator.ts`
-- `core/package-manager.ts`
-- `core/paths.ts`
+## 1. Objectifs Généraux
+1. Maintenir et faire évoluer le système de distribution de composants React Native / Expo inspiré de la philosophie **shadcn/ui**.
+2. Garantir une expérience d'initialisation (`rs-ui init`) et d'ajout (`rs-ui add`) fluide, idempotente et sans friction sur tout environnement Expo SDK (SDK 54 à 59).
+3. Préserver la séparation claire entre primitives core réutilisables, composants atomiques, templates modulaires et configuration du projet utilisateur.
+4. Tolérance zéro pour le type `any` : TypeScript strict sur 100% du monorepo.
+5. Ne jamais déclarer un correctif réussi sans avoir exécuté les tests de non-régression et le Quality Gate (`bun run quality`).
 
-Ajoute ou mets à jour les tests Vitest couvrant :
-- nouveau projet Expo ;
-- projet Expo existant ;
-- projet partiellement configuré ;
-- projet invalide ;
-- SDK Expo 54 à 58 ;
-- fichiers déjà présents ;
-- dépendances manquantes ;
-- relance idempotente de `init` ;
-- échec et restauration après erreur.
+---
 
-Après les corrections, exécute les tests CLI, le typecheck et le build. Signale clairement les tests échoués qui sont préexistants et ne les masque pas. Ne modifie que les fichiers nécessaires et fournis un résumé des changements ainsi que des validations effectuées.
+## 2. Contraintes Techniques Essentielles
+
+### A. Initialisation & Dépendances
+- Respecter l'ordre impératif d'installation en 3 étapes :
+  1. `installProjectDependencies` : installe les paquets de base (`expo`, `react-native`, etc.) pour créer `node_modules/expo`.
+  2. `installExpoPackages` : installe les dépendances natives compatibles via `expo install` (`expo-router`, `react-native-screens`, `expo-constants`, `expo-linking`, `react-native-reanimated`, etc.).
+  3. `installNpmPackages` : installe les bibliothèques pures JavaScript (`zustand`, etc.).
+- Pour `rs-ui init .` : `useCurrentDirectory = false` doit être conservé afin que `create-expo-app .` s'exécute bien dans le dossier courant et génère le `package.json`.
+- Gérer systématiquement les dépendances web Expo (`react-dom`, `react-native-web`) lorsque `app.json` supporte la plateforme web.
+
+### B. Primitives & Composants UI
+- Ne jamais imposer de `flex: 1` sur la racine d'un composant de layout sans justification stricte (privilégier `width: "100%"` ou `alignSelf: "stretch"`).
+- Ne jamais utiliser de `zIndex` négatif (`zIndex: -1`) pour les capsules ou arrière-plans animés : cela casse le contexte d'empilement sur Android et sous `LiquidSurface`.
+- Supporter systématiquement les deux modes React pour les composants à état :
+  - **Mode non contrôlé** : avec `defaultValue` et state interne.
+  - **Mode contrôlé** : avec `value` et `onValueChange`.
+- Exposer obligatoirement les attributs d'accessibilité vocale WAI-ARIA mobile :
+  - `accessibilityRole` (`tab`, `button`, `switch`, `dialog`, etc.).
+  - `accessibilityState` (`selected`, `disabled`, `expanded`, etc.).
+
+### C. Registry & Documentation IA
+- Tout nouveau composant ou modification majeure doit synchroniser :
+  1. Le fichier source TSX dans `packages/ui-mobile/components/ui/`.
+  2. La fiche JSON dans `packages/ui-mobile/registry/components/<name>.json` (avec `supportsGlass`, `requiresComponents`, `expoDependencies`).
+  3. Le guide IA dans `packages/ui-mobile/skills/<name>/SKILL.md` avec un exemple complet et fonctionnel.
+  4. L'export dans `packages/ui-mobile/components/ui/index.ts` et `starter-generator.ts`.
+
+---
+
+## 3. Workflow de Validation Obligatoire
+
+Avant de soumettre tout changement :
+```bash
+# 1. Validation de l'intégrité du registre
+bun run validate-registry
+
+# 2. Vérification TypeScript strict
+bun run check-types
+
+# 3. Exécution de la suite Vitest (32 suites, 155+ tests)
+bun run test
+
+# 4. Compilation du CLI
+bun run build:cli
+
+# 5. Quality Gate complet
+bun run quality
+```

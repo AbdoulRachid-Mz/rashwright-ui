@@ -1,7 +1,7 @@
 {
   "name": "tabs",
   "version": "1.0.0",
-  "description": "Composant d'onglets animé. Nécessite react-native-reanimated.",
+  "description": "Navigation par onglets animée avec indicateur capsule Glass et support Reanimated.",
   "category": "Navigation",
   "files": [
     "components/ui/tabs.tsx"
@@ -15,7 +15,7 @@
   "providers": [
     "ThemeProvider"
   ],
-  "supportsGlass": false,
+  "supportsGlass": true,
   "platforms": [
     "ios",
     "android"

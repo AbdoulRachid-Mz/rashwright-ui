@@ -5,31 +5,33 @@ import React, {
   useContext,
   useEffect,
   useState,
-  useMemo,
+  useCallback,
 } from "react";
-import { StyleSheet, View, ViewStyle, StyleProp } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ViewStyle,
+  StyleProp,
+  ScrollView,
+} from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-  interpolateColor,
 } from "react-native-reanimated";
 import { useTheme } from "@/contexts/theme-context";
 import ThemedText from "./text";
 import LiquidPressable from "./liquid/liquid-pressable";
 import LiquidSurface from "./liquid/liquid-surface";
-import LiquidHighlight from "./liquid/liquid-highlight";
 
 interface TabsContextType {
   activeTab: string;
   setActiveTab: (value: string) => void;
-  tabs: string[];
-  registerTab: (value: string) => void;
 }
 
 const TabsContext = createContext<TabsContextType | undefined>(undefined);
 
-const useTabs = () => {
+export const useTabs = () => {
   const context = useContext(TabsContext);
   if (context === undefined) {
     throw new Error("Tabs components must be used within a Tabs provider");
@@ -37,84 +39,103 @@ const useTabs = () => {
   return context;
 };
 
-// Tabs Root Component
+// ── Tabs Root Component ──────────────────────────────────────────────────────
 export interface TabsProps {
-  defaultValue: string;
+  /** Valeur par défaut pour le mode non contrôlé */
+  defaultValue?: string;
+  /** Valeur active pour le mode contrôlé */
   value?: string;
+  /** Callback appelé au changement d'onglet */
   onValueChange?: (value: string) => void;
   children: ReactNode;
-  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
 export const Tabs = ({
-  defaultValue,
+  defaultValue = "",
   value,
   onValueChange,
   children,
-  className,
   style,
 }: TabsProps) => {
   const [internalTab, setInternalTab] = useState(defaultValue);
-  const [tabs, setTabs] = useState<string[]>([]);
+  const isControlled = value !== undefined;
+  const activeTab = isControlled ? value : internalTab;
 
-  const activeTab = value !== undefined ? value : internalTab;
-
-  const setActiveTab = (newValue: string) => {
-    if (onValueChange) {
-      onValueChange(newValue);
-    } else {
-      setInternalTab(newValue);
-    }
-  };
-
-  const registerTab = (tabValue: string) => {
-    setTabs((prev) => {
-      if (prev.indexOf(tabValue) === -1) {
-        return [...prev, tabValue];
+  const setActiveTab = useCallback(
+    (newValue: string) => {
+      if (!isControlled) {
+        setInternalTab(newValue);
       }
-      return prev;
-    });
-  };
+      onValueChange?.(newValue);
+    },
+    [isControlled, onValueChange]
+  );
 
   return (
-    <TabsContext.Provider
-      value={{ activeTab, setActiveTab, tabs, registerTab }}
-    >
-      <View style={[{ flex: 1 }, style]}>
-        {children}
-      </View>
+    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+      <View style={[styles.tabsRoot, style]}>{children}</View>
     </TabsContext.Provider>
   );
 };
 
-// TabsList Component
+// ── TabsList Component ───────────────────────────────────────────────────────
 export interface TabsListProps {
   children: ReactNode;
-  className?: string;
+  /** Si true, permet le défilement horizontal lorsque les onglets dépassent */
+  scrollable?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
-export const TabsList = ({ children, style }: TabsListProps) => {
-  const { theme } = useTheme();
+export const TabsList = ({
+  children,
+  scrollable = false,
+  style,
+}: TabsListProps) => {
+  const { theme, isDark } = useTheme();
+
+  const content = (
+    <View style={[styles.tabsListInner, scrollable && styles.tabsListInnerScrollable]}>
+      {children}
+    </View>
+  );
 
   return (
     <LiquidSurface
       material="soft"
       borderRadius={theme.borderRadius.full}
-      style={[styles.tabsList, style]}
+      style={[
+        styles.tabsListSurface,
+        {
+          backgroundColor: isDark
+            ? "rgba(255, 255, 255, 0.06)"
+            : "rgba(0, 0, 0, 0.04)",
+        },
+        style,
+      ]}
     >
-      <View style={styles.tabsListInner}>{children}</View>
+      {scrollable ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {content}
+        </ScrollView>
+      ) : (
+        content
+      )}
     </LiquidSurface>
   );
 };
 
-// TabsTrigger Component
+// ── TabsTrigger Component ────────────────────────────────────────────────────
 export interface TabsTriggerProps {
   value: string;
   children: ReactNode;
   disabled?: boolean;
-  className?: string;
+  /** Label accessible vocal (recommandé si l'enfant est une icône) */
+  accessibilityLabel?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -122,134 +143,167 @@ export const TabsTrigger = ({
   value,
   children,
   disabled = false,
+  accessibilityLabel,
   style,
 }: TabsTriggerProps) => {
-  const { activeTab, setActiveTab, registerTab } = useTabs();
+  const { activeTab, setActiveTab } = useTabs();
   const { theme, isDark } = useTheme();
   const isActive = activeTab === value;
 
   const progress = useSharedValue(isActive ? 1 : 0);
 
   useEffect(() => {
-    registerTab(value);
-  }, [value]);
-
-  useEffect(() => {
     progress.value = withSpring(isActive ? 1 : 0, {
-      damping: 18,
-      stiffness: 240,
+      damping: 20,
+      stiffness: 280,
     });
   }, [isActive]);
 
-  const handlePress = () => {
+  const handlePress = useCallback(() => {
     if (!disabled) {
       setActiveTab(value);
     }
-  };
+  }, [disabled, setActiveTab, value]);
 
   const indicatorAnimatedStyle = useAnimatedStyle(() => ({
     opacity: progress.value,
-    transform: [{ scale: 0.95 + progress.value * 0.05 }],
+    transform: [{ scale: 0.96 + progress.value * 0.04 }],
   }));
+
+  const label =
+    accessibilityLabel ||
+    (typeof children === "string" || typeof children === "number"
+      ? String(children)
+      : undefined);
 
   return (
     <LiquidPressable
       onPress={handlePress}
       disabled={disabled}
       viscosity="soft"
-      style={[styles.tabTrigger, disabled && { opacity: 0.4 }, style]}
+      accessibilityRole="tab"
+      accessibilityState={{ selected: isActive, disabled }}
+      accessibilityLabel={label}
+      style={[
+        styles.tabTrigger,
+        disabled && styles.tabTriggerDisabled,
+        style,
+      ]}
     >
-      {/* Active Glass Capsule Indicator */}
+      {/* Capsule d'arrière-plan animé sans zIndex négatif (évite clipping Android/iOS) */}
       <Animated.View
         pointerEvents="none"
         style={[
+          StyleSheet.absoluteFillObject,
           styles.activeCapsule,
           {
             backgroundColor: isDark
-              ? "rgba(255, 255, 255, 0.15)"
+              ? "rgba(255, 255, 255, 0.16)"
               : "rgba(255, 255, 255, 0.95)",
             borderRadius: theme.borderRadius.full,
-            shadowColor: isDark ? "#000" : "rgba(15, 23, 42, 0.08)",
-            shadowOffset: { width: 0, height: 2 },
+            shadowColor: isDark ? "#000" : "rgba(15, 23, 42, 0.1)",
+            shadowOffset: { width: 0, height: 1.5 },
             shadowOpacity: 1,
-            shadowRadius: 6,
-            elevation: 3,
+            shadowRadius: 4,
+            elevation: 2,
           },
           indicatorAnimatedStyle,
         ]}
-      >
-        <LiquidHighlight type="top" borderRadius={theme.borderRadius.full} opacity={0.5} />
-      </Animated.View>
+      />
 
-      {typeof children === "string" || typeof children === "number" ? (
-        <ThemedText
-          variant="sm"
-          weight={isActive ? "semibold" : "medium"}
-          color={isActive ? "foreground" : "mutedForeground"}
-          style={styles.triggerText}
-        >
-          {children}
-        </ThemedText>
-      ) : (
-        children
-      )}
+      <View style={styles.triggerContent}>
+        {typeof children === "string" || typeof children === "number" ? (
+          <ThemedText
+            variant="sm"
+            weight={isActive ? "semibold" : "medium"}
+            color={isActive ? "foreground" : "mutedForeground"}
+            style={styles.triggerText}
+            numberOfLines={1}
+          >
+            {children}
+          </ThemedText>
+        ) : (
+          children
+        )}
+      </View>
     </LiquidPressable>
   );
 };
 
-// TabsContent Component
+// ── TabsContent Component ────────────────────────────────────────────────────
 export interface TabsContentProps {
   value: string;
   children: ReactNode;
-  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
-export const TabsContent = ({
-  value,
-  children,
-  style,
-}: TabsContentProps) => {
+export const TabsContent = ({ value, children, style }: TabsContentProps) => {
   const { activeTab } = useTabs();
   const isActive = activeTab === value;
 
   if (!isActive) return null;
 
-  return <View style={[styles.tabsContent, style]}>{children}</View>;
+  return (
+    <View
+      accessibilityRole="summary"
+      style={[styles.tabsContent, style]}
+    >
+      {children}
+    </View>
+  );
 };
 
+export default Tabs;
+
 const styles = StyleSheet.create({
-  tabsList: {
+  tabsRoot: {
+    width: "100%",
+  },
+  tabsListSurface: {
     alignSelf: "stretch",
-    padding: 4,
+    padding: 3,
+    overflow: "hidden",
   },
   tabsListInner: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    width: "100%",
+  },
+  tabsListInnerScrollable: {
+    width: "auto",
+  },
+  scrollContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 2,
   },
   tabTrigger: {
     flex: 1,
+    minWidth: 0,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 8,
+    paddingVertical: 7,
     paddingHorizontal: 12,
     position: "relative",
-    zIndex: 1,
+    overflow: "hidden",
+  },
+  tabTriggerDisabled: {
+    opacity: 0.45,
   },
   activeCapsule: {
-    position: "absolute",
-    top: 0,
-    left: 2,
-    right: 2,
-    bottom: 0,
-    zIndex: -1,
+    margin: 1,
+  },
+  triggerContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 2,
   },
   triggerText: {
     textAlign: "center",
   },
   tabsContent: {
-    flex: 1,
+    width: "100%",
     paddingTop: 12,
   },
 });

@@ -1,84 +1,96 @@
-# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI (v0.7.0)
+# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI MOBILE (v0.8.0 → v1.0.0)
 
-> **Fichier de suivi dynamique (`TASK.md`)**
->
-> Dernière mise à jour : 2026-10-09  
-> Statut général : **v0.7.0 Validée & Prête pour Release (143 tests Vitest réussis, 31 suites, Quality Gate 100% vert)**
+> **Fichier de suivi dynamique (`TASK.md`)**  
+> Dernière mise à jour : 2026-10-14  
+> Statut général : **v0.7.3 Validée (155 tests Vitest réussis, 32 suites de tests, Quality Gate 100% vert, 0 erreur TypeScript strict)**
 
 ---
 
-## 📊 Tableau de bord d'avancement (Roadmap v0.7.0)
+## 📊 Tableau de bord d'avancement des versions
 
-| Phase | Intitulé | Statut | Progression |
+| Version | Intitulé / Objectif | Statut | Progression |
 |---|---|---|:---:|
-| **v0.6.0** | Hooks CLI, Multi-Registres Scoped & Pipeline Init Unique | ✅ Validé (133 tests) | 16 / 16 tâches |
-| **Phase 1 (v0.7.0)** | Création des Modules de Templates Autonomes (`templates/`) | ✅ Validé | 4 / 4 tâches |
-| **Phase 2 (v0.7.0)** | Registry des Templates & Découverte (`rs-ui list --templates`) | ✅ Validé | 4 / 4 tâches |
-| **Phase 3 (v0.7.0)** | Installation des Templates via `rs-ui add --template` (`-t`) | ✅ Validé | 4 / 4 tâches |
-| **Phase 4 (v0.7.0)** | Intégration `rs-ui init`, Lockfile & Nettoyage Code Mort | ✅ Validé | 4 / 4 tâches |
-| **Phase 5 (v0.7.0)** | Tests Vitest, Documentation, Quality Gate & Release v0.7.0 | ✅ Validé (143 tests) | 4 / 4 tâches |
+| **v0.7.0** | Templates Modulaires Autonomes & Découverte CLI | ✅ Validé | 20 / 20 tâches |
+| **v0.7.1** | Correctif Ordre d'Installation Expo (`ConfigError`) | ✅ Validé | 4 / 4 tâches |
+| **v0.7.2** | Correctif `rs-ui init .` (Scope & Création Expo) | ✅ Validé | 3 / 3 tâches |
+| **v0.7.3** | Correctif Dépendances Obligatoires (`expo-router`, Web) | ✅ Validé | 3 / 3 tâches |
+| **Patch Tabs** | Audit & Refonte Complète du composant Tabs (Accessibilité, Layout) | ✅ Validé | 6 / 6 tâches |
+| **v0.8.0** | Primitives Headless Mobiles & Registre RFC v4 | 🔄 En cours | 2 / 12 tâches |
+| **v0.9.0** | AST Transformers & Dual Styling Engine (NativeWind v4) | ⏳ Planifié | 0 / 10 tâches |
+| **v1.0.0** | Release Majeure : MCP Server IA & Standardisation Finale | ⏳ Planifié | 0 / 8 tâches |
 
 ---
 
-## 📝 Détail des tâches par Phase (v0.7.0)
+## 📝 Détail des tâches par Phase
 
-### Phase 1 : Création des Modules de Templates Autonomes (`packages/ui-mobile/templates/`)
+### Phase 1 : Correctifs Critiques v0.7.1 à v0.7.3 & Patch Tabs (✅ ACHEVÉ)
 
-* [x] **TASK-7.1.1** : Créer l'arborescence des templates dans `packages/ui-mobile/templates/` (`minimal`, `auth`, `onboarding`, `dashboard`, `commerce`, `settings`, `showcase`).
-* [x] **TASK-7.1.2** : Écrire le composant autonome principal `.tsx`, les types `.ts`, et les sous-composants (`components/`) pour chacun des 7 templates sans aucune chaîne de template multiline.
-* [x] **TASK-7.1.3** : Définir le fichier de manifeste `template.json` standardisé pour chaque template (`id`, `name`, `description`, `version`, `entrypoint`, `files`, `requiredComponents`, `dependencies`, `expoDependencies`, `supportsGlass`).
-* [x] **TASK-7.1.4** : Configurer `files: ["templates/**"]` dans `packages/ui-mobile/package.json`.
-
----
-
-### Phase 2 : Registry des Templates & Découverte (`rs-ui list --templates`)
-
-* [x] **TASK-7.2.1** : Créer le module core `packages/cli/src/core/templates-registry.ts` pour charger, inspecter et valider les `template.json`.
-* [x] **TASK-7.2.2** : Définir les types stricts TypeScript (`TemplateDefinition`, `getTemplateDefinition`, `loadTemplatesRegistry`, `listTemplateIds`).
-* [x] **TASK-7.2.3** : Étendre la commande `packages/cli/src/commands/list.ts` avec l'option `-t, --templates` (ou `rs-ui list --templates`) pour afficher le catalogue détaillé des templates installables.
-* [x] **TASK-7.2.4** : Écrire les tests unitaires Vitest pour `templates-registry.ts` dans `packages/cli/tests/templates-registry.test.ts`.
+* [x] **TASK-7.3.1** : Résoudre l'ordre d'installation des dépendances dans `init.ts` (Étape A: `bun install`, Étape B: `expo install`, Étape C: `bun add`).
+* [x] **TASK-7.3.2** : Corriger le comportement de l'argument `.` dans `rs-ui init .` pour ne pas sauter `create-expo-app` et hisser `isFreshProject` au scope externe.
+* [x] **TASK-7.3.3** : Ajouter dans `CORE_EXPO_DEPS` : `expo-router`, `react-native-screens`, `expo-constants`, `expo-linking`, ainsi que `react-dom` et `react-native-web`.
+* [x] **TASK-7.3.4** : Auditer et refondre le composant `Tabs` :
+  - Suppression de `zIndex: -1` sur `activeCapsule`.
+  - Suppression de `flex: 1` sur la racine au profit de `width: "100%"`.
+  - Implémentation du mode contrôlé/non-contrôlé canonique (`isControlled`).
+  - Ajout de la prop `scrollable` sur `TabsList`.
+  - Ajout des attributs d'accessibilité `accessibilityRole="tab"` et `accessibilityState`.
+* [x] **TASK-7.3.5** : Écrire la suite de tests de non-régression `tests/tabs-component.test.ts` (6 tests).
+* [x] **TASK-7.3.6** : Mettre à jour `skills/tabs/SKILL.md` et `registry/components/tabs.json` (`supportsGlass: true`).
 
 ---
 
-### Phase 3 : Installation des Templates via `rs-ui add --template` (`-t`)
+### Phase 2 : Primitives Headless Mobiles & Registre Universel RFC v4 (v0.8.0)
 
-* [x] **TASK-7.3.1** : Étendre `packages/cli/src/commands/add.ts` pour supporter le flag `-t, --template <name>` en conservant le support des composants unitaires `rs-ui add <name...>`.
-* [x] **TASK-7.3.2** : Connecter le résolveur de dépendances existant (`resolveDependencies()`) pour installer automatiquement tous les composants `rs-ui` requis par le template dans `src/components/ui/`.
-* [x] **TASK-7.3.3** : Implémenter la copie de l'arborescence complète du template dans `src/components/templates/<nom>/`.
-* [x] **TASK-7.3.4** : Écrire les tests unitaires pour l'installation de templates et lockfile dans `packages/cli/tests/add-template.test.ts`.
+* [x] **TASK-8.1.1** : Analyse comparative détaillée du fork `shadcn/ui` vs `rashwright-ui` dans `ANALYSIS.md`.
+* [x] **TASK-8.1.2** : Rédaction du plan stratégique d'alignement architectural dans `PLAN.md`.
+* [ ] **TASK-8.1.3** : Créer le module de primitives headless `@/lib/primitives/use-controllable-state.ts` (gestion unifiée contrôlé/non-contrôlé).
+* [ ] **TASK-8.1.4** : Créer le hook `@/lib/primitives/use-disclosure.ts` pour modales, bottom-sheets et tiroirs.
+* [ ] **TASK-8.1.5** : Harmoniser l'accessibilité WAI-ARIA mobile (`accessibilityRole`, `accessibilityState`) sur les 10 composants de navigation (`dropdown-menu`, `drawer`, `bottom-sheet`, `accordion`, `collapsible`, `select`...).
+* [ ] **TASK-8.1.6** : Étendre le schéma du registre pour supporter les types shadcn RFC v4 : `registry:ui`, `registry:hook`, `registry:lib`, `registry:block`.
+* [ ] **TASK-8.1.7** : Découpler les hooks autonomes existants (`use-device`, `use-back-handler`, `use-scroll-aware-tab-bar`) dans le registre comme des items installables via `rs-ui add hook:<name>`.
+* [ ] **TASK-8.1.8** : Découpler les utilitaires de base dans `registry:lib` (`utils.ts`, helpers d'upload, helpers de thèmes).
+* [ ] **TASK-8.1.9** : Ajouter la commande `rs-ui add <type>:<nom>` dans le CLI pour gérer tous les types d'items.
+* [ ] **TASK-8.1.10** : Mettre à jour `scripts/validate-registry.ts` pour valider les nouveaux types d'items.
+* [ ] **TASK-8.1.11** : Écrire la suite de tests unitaires pour le nouveau registre dans `packages/cli/tests/rfc-registry.test.ts`.
+* [ ] **TASK-8.1.12** : Valider le Quality Gate 100% vert et préparer la release v0.8.0.
 
 ---
 
-### Phase 4 : Intégration `rs-ui init`, Lockfile & Nettoyage Code Mort
+### Phase 3 : AST Transformers & Dual Styling Engine (v0.9.0)
 
-* [x] **TASK-7.4.1** : Adapter `rs-ui init --template` pour installer le template sélectionné depuis les sources de `templates/` au lieu de générer des chaînes de code TSX.
-* [x] **TASK-7.4.2** : Étendre `lock-manager.ts` (`rashwright-ui.lock`) avec `templates: Record<string, LockedTemplate>` et vérification d'intégrité SHA-256 (`checkTemplateIntegrity`).
-* [x] **TASK-7.4.3** : Remplacer l'ancienne fonction monolithique `generateTemplateScreenCode()` (640 lignes de TSX en dur éliminées) par un wrapper proxy léger et modulaire.
-* [x] **TASK-7.4.4** : Valider les tests d'intégration dans `packages/cli/tests/templates-manager.test.ts`.
+* [ ] **TASK-9.1.1** : Créer le moteur de transformation AST `packages/cli/src/core/transformers/transform-imports.ts` pour réécrire dynamiquement les alias d'imports selon le `tsconfig.json` local.
+* [ ] **TASK-9.1.2** : Définir la configuration `styleEngine` dans `rashwright-ui.json` (`"stylesheet"` | `"nativewind"`).
+* [ ] **TASK-9.1.3** : Implémenter l'utilitaire `cn` (`clsx` + `tailwind-merge`) dans `packages/ui-mobile/lib/utils.ts`.
+* [ ] **TASK-9.1.4** : Créer les variantes NativeWind v4 pour les composants basiques (`button`, `card`, `badge`, `text-input`).
+* [ ] **TASK-9.1.5** : Ajouter le support de `cva` (class-variance-authority) pour les variantes de composants mobiles.
+* [ ] **TASK-9.1.6** : Adapter `rs-ui init` avec prompt de choix du moteur de style (StyleSheet pur vs NativeWind Tailwind).
+* [ ] **TASK-9.1.7** : Écrire les tests unitaires des Transformers AST dans `packages/cli/tests/transformers.test.ts`.
+* [ ] **TASK-9.1.8** : Valider la compatibilité avec Expo SDK 54 à 59 en mode NativeWind.
+* [ ] **TASK-9.1.9** : Documenter le guide de migration StyleSheet → NativeWind.
+* [ ] **TASK-9.1.10** : Release v0.9.0.
 
 ---
 
-### Phase 5 : Tests Vitest, Documentation, Quality Gate & Release v0.7.0
+### Phase 4 : Release Majeure v1.0.0 & Serveur MCP IA
 
-* [x] **TASK-7.5.1** : Bump des versions vers `0.7.0` dans `packages/cli/package.json`, `packages/ui-mobile/package.json` et `packages/ui-mobile/registry/index.json`.
-* [x] **TASK-7.5.2** : Valider le Quality Gate `bun run quality` (validate-registry + check-types + tests Vitest + build:cli + smoke:all) : 100% vert, exit code 0.
-* [x] **TASK-7.5.3** : Mettre à jour les documentations (`README.md`, `packages/cli/README.md`, `packages/ui-mobile/README.md`, `PLAN.md`).
-* [x] **TASK-7.5.4** : Préparer la validation finale et la livraison pour l'utilisateur.
+* [ ] **TASK-10.1.1** : Développer le serveur Model Context Protocol (MCP) `packages/cli/src/mcp/` pour permettre aux assistants IA d'inspecter le registre en temps réel.
+* [ ] **TASK-10.1.2** : Ajouter la commande `rs-ui mcp` pour enregistrer automatiquement le serveur MCP dans les configurations Cursor / VS Code / Claude Desktop.
+* [ ] **TASK-10.1.3** : Implémenter la recherche floue `rs-ui search <query>` dans le terminal.
+* [ ] **TASK-10.1.4** : Enrichir `rs-ui diff` avec affichage couleur side-by-side et patch interactif.
+* [ ] **TASK-10.1.5** : Finaliser le catalogue complet des 61 composants en double mode (StyleSheet / NativeWind).
+* [ ] **TASK-10.1.6** : Refonte du site de documentation et showcase interactif Expo Snack / Web.
+* [ ] **TASK-10.1.7** : Audit de sécurité, de performance et validation finale de l'idempotence.
+* [ ] **TASK-10.1.8** : Release officielle **v1.0.0**.
 
 ---
 
 ## 📌 Journal des actions effectuées
 
-### 2026-10-09
-* **Clôture de la v0.6.0** :
-  - Pipeline d'initialisation unique, résolution Expo SDK 54-57, banner, normalisation chemins.
-  - 133 tests Vitest passés.
-* **Réalisation intégrale de la v0.7.0** :
-  - Création des 7 templates modulaires autonomes dans `packages/ui-mobile/templates/` (`minimal`, `auth`, `onboarding`, `dashboard`, `commerce`, `settings`, `showcase`).
-  - Chaque template contient : `template.json`, composant principal `.tsx`, `types.ts`, `components/` dédiés et `index.ts`.
-  - Création du module CLI `packages/cli/src/core/templates-registry.ts`.
-  - Implémentation de `rs-ui list --templates` (ou `-t`).
-  - Implémentation de `rs-ui add --template <nom>` (ou `-t <nom>`).
-  - Extension du lockfile `rashwright-ui.lock` avec la section `templates:` et calcul SHA-256.
-  - Élimination de plus de 640 lignes de chaînes TSX en dur dans `templates-manager.ts`.
-  - 143 tests Vitest passés (31 suites de tests), Quality Gate 100% exit 0.
+### 2026-10-14
+- Audit et refonte complète du composant `Tabs` (`packages/ui-mobile/components/ui/tabs.tsx`) : suppression de `zIndex: -1`, `width: 100%`, support contrôlé/non-contrôlé, `scrollable`, accessibilité ARIA.
+- Mise à jour de `packages/ui-mobile/skills/tabs/SKILL.md` et `packages/ui-mobile/registry/components/tabs.json` (`supportsGlass: true`).
+- Création du test unitaire `packages/cli/tests/tabs-component.test.ts` (6 tests).
+- Exécution de la suite Vitest : **155 tests passés (32 suites)**, typecheck strict 100% vert.
+- Rédaction du rapport de correction dans `errors.md`.
+- Analyse comparative détaillée du fork `chadcn-ui-fork` dans `ANALYSIS.md`.
+- Élaboration du plan stratégique inspiré de shadcn dans `PLAN.md`.
