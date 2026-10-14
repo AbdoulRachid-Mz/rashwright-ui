@@ -4,6 +4,8 @@ import { BackHandler, Alert, Platform, ToastAndroid } from "react-native";
 import { useRouter } from "expo-router";
 
 interface UseBackHandlerOptions {
+  /** Nom de l'application affiché dans la confirmation */
+  appName?: string;
   /** Mode de sortie : 'alert' (boîte de dialogue de confirmation) ou 'toast' (double appui avec toast) */
   mode?: "alert" | "toast" | "both";
   /** Si true, actif uniquement si le routeur ne peut pas revenir en arrière */
@@ -14,7 +16,7 @@ interface UseBackHandlerOptions {
  * Hook pour gérer le retour en arrière Android et demander confirmation avant de quitter.
  */
 export function useBackHandler(options: UseBackHandlerOptions = {}) {
-  const { mode = "alert", onlyAtRoot = false } = options;
+  const { appName = "l'application", mode = "alert", onlyAtRoot = false } = options;
   const router = useRouter();
   const lastBackPressTime = useRef<number>(0);
 
@@ -33,7 +35,7 @@ export function useBackHandler(options: UseBackHandlerOptions = {}) {
       if (mode === "alert") {
         Alert.alert(
           "Quitter l'application",
-          "Voulez-vous vraiment quitter Immo360 ?",
+          `Voulez-vous vraiment quitter ${appName} ?`,
           [
             { text: "Annuler", style: "cancel" },
             {

@@ -1,0 +1,21 @@
+{
+  "name": "use-disclosure",
+  "type": "registry:hook",
+  "version": "1.0.0",
+  "description": "Primitive headless pour piloter l'ouverture, fermeture et basculement des modales, tiroirs et menus.",
+  "category": "Hooks",
+  "files": [
+    "lib/primitives/use-disclosure.ts"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

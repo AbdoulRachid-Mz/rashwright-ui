@@ -1,0 +1,21 @@
+{
+  "name": "use-controllable-state",
+  "type": "registry:hook",
+  "version": "1.0.0",
+  "description": "Primitive headless gérant de façon unifiée et sans dépendance externe l'état contrôlé vs non contrôlé.",
+  "category": "Hooks",
+  "files": [
+    "lib/primitives/use-controllable-state.ts"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

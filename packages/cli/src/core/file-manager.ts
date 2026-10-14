@@ -29,12 +29,21 @@ export function copyComponentFiles(
 
   for (const file of files) {
     const normalizedFile = file.replace(/\\/g, "/");
-    const relativeComponentsPath = normalizedFile.replace(
-      /^(?:components\/ui|src\/components\/ui)\//,
-      "",
-    );
     const source = resolveSourcePath(file, registrySourceRoot);
-    const destination = join(targetComponentsRoot, relativeComponentsPath);
+    let destination: string;
+
+    if (normalizedFile.startsWith("hooks/") || normalizedFile.startsWith("lib/")) {
+      const normalizedTarget = targetComponentsRoot.replace(/\\/g, "/");
+      const hasSrc = normalizedTarget.includes("/src/") || normalizedTarget.endsWith("/src") || normalizedTarget.startsWith("src/");
+      const projectRoot = targetComponentsRoot.replace(/[/\\](?:src[/\\])?components[/\\]ui[/\\]?.*$/, "");
+      destination = join(projectRoot, hasSrc ? "src" : "", normalizedFile);
+    } else {
+      const relativeComponentsPath = normalizedFile.replace(
+        /^(?:components\/ui|src\/components\/ui)\//,
+        "",
+      );
+      destination = join(targetComponentsRoot, relativeComponentsPath);
+    }
 
     if (!existsSync(source)) {
       results.push({ source, destination, status: "failed" });

@@ -1,0 +1,31 @@
+{
+  "name": "upload",
+  "type": "registry:lib",
+  "version": "1.0.0",
+  "description": "Moteur d'upload modulaire et inliné supportant 5 providers (Cloudinary, Firebase, Vercel Blob, Local, Mock).",
+  "category": "Lib",
+  "files": [
+    "lib/upload/index.ts",
+    "lib/upload/types.ts",
+    "lib/upload/errors.ts",
+    "lib/upload/upload-manager.ts",
+    "lib/upload/providers/cloudinary-provider.ts",
+    "lib/upload/providers/firebase-provider.ts",
+    "lib/upload/providers/vercel-blob-provider.ts",
+    "lib/upload/providers/local-provider.ts",
+    "lib/upload/providers/mock-provider.ts"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-image-manipulator"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

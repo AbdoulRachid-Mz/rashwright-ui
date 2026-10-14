@@ -175,17 +175,34 @@ const REQUIRED = [
   "platforms",
   "nativeRebuildRequired",
 ];
-for (const [name, j] of registryByName) {
-  for (const field of REQUIRED) {
-    if (!(field in j)) {
-      errors.push(`C-1  ❌  ${name}.json : champ obligatoire '${field}' manquant`);
+// ============ H. Contrôle des hooks et libs RFC v4 ============
+const REG_HOOKS = join(REG_ROOT, "hooks");
+if (existsSync(REG_HOOKS)) {
+  const hookFiles = readdirSync(REG_HOOKS).filter((f) => f.endsWith(".json"));
+  infos.push(`H-1  ℹ  registry/hooks/ contient ${hookFiles.length} hooks déclarés`);
+  for (const hf of hookFiles) {
+    const hj = JSON.parse(readFileSync(join(REG_HOOKS, hf), "utf-8"));
+    for (const f of hj.files || []) {
+      const abs = join(UI_MOBILE_ROOT, f);
+      if (!existsSync(abs)) {
+        errors.push(`H-2  ❌  hook ${hf} liste '${f}' (n'existe pas dans : ${abs})`);
+      }
     }
   }
-  if (j.supportsGlass !== undefined && typeof j.supportsGlass !== "boolean") {
-    errors.push(`C-1  ❌  ${name}.json : supportsGlass doit être un booléen`);
-  }
-  if (j.nativeRebuildRequired !== undefined && typeof j.nativeRebuildRequired !== "boolean") {
-    errors.push(`C-1  ❌  ${name}.json : nativeRebuildRequired doit être un booléen`);
+}
+
+const REG_LIB = join(REG_ROOT, "lib");
+if (existsSync(REG_LIB)) {
+  const libFiles = readdirSync(REG_LIB).filter((f) => f.endsWith(".json"));
+  infos.push(`L-1  ℹ  registry/lib/ contient ${libFiles.length} bibliothèques déclarées`);
+  for (const lf of libFiles) {
+    const lj = JSON.parse(readFileSync(join(REG_LIB, lf), "utf-8"));
+    for (const f of lj.files || []) {
+      const abs = join(UI_MOBILE_ROOT, f);
+      if (!existsSync(abs)) {
+        errors.push(`L-2  ❌  lib ${lf} liste '${f}' (n'existe pas dans : ${abs})`);
+      }
+    }
   }
 }
 

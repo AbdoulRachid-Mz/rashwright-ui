@@ -1,0 +1,24 @@
+{
+  "name": "primitives",
+  "type": "registry:lib",
+  "version": "1.0.0",
+  "description": "Primitives headless zéro-dépendance pour React Native (useControllableState, useDisclosure, WAI-ARIA helpers).",
+  "category": "Lib",
+  "files": [
+    "lib/primitives/index.ts",
+    "lib/primitives/use-controllable-state.ts",
+    "lib/primitives/use-disclosure.ts",
+    "lib/primitives/accessibility.ts"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

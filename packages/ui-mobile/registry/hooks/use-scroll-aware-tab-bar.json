@@ -1,0 +1,25 @@
+{
+  "name": "use-scroll-aware-tab-bar",
+  "type": "registry:hook",
+  "version": "1.0.0",
+  "description": "Hook pour animer et masquer la barre d'onglets lors du défilement d'une liste.",
+  "category": "Hooks",
+  "files": [
+    "hooks/useScrollAwareTabBar.ts"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "TabBarProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

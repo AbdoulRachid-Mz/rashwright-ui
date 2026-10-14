@@ -149,13 +149,40 @@ export function loadComponentEntry(
   name: string,
   registryRoot: string
 ): ComponentRegistryEntry | null {
-  const path = join(registryRoot, "components", `${name}.json`);
-  if (!existsSync(path)) return null;
-  try {
-    return JSON.parse(readFileSync(path, "utf-8")) as ComponentRegistryEntry;
-  } catch {
-    return null;
+  let cleanName = name;
+  let targetFolder: "components" | "hooks" | "lib" | null = null;
+
+  if (name.startsWith("hook:")) {
+    cleanName = name.slice(5);
+    targetFolder = "hooks";
+  } else if (name.startsWith("lib:")) {
+    cleanName = name.slice(4);
+    targetFolder = "lib";
+  } else if (name.startsWith("ui:") || name.startsWith("component:")) {
+    cleanName = name.replace(/^(ui|component):/, "");
+    targetFolder = "components";
   }
+
+  const candidateFolders = targetFolder
+    ? [targetFolder]
+    : (["components", "hooks", "lib"] as const);
+
+  for (const folder of candidateFolders) {
+    const path = join(registryRoot, folder, `${cleanName}.json`);
+    if (existsSync(path)) {
+      try {
+        const parsed = JSON.parse(readFileSync(path, "utf-8")) as ComponentRegistryEntry;
+        if (!parsed.type) {
+          parsed.type = folder === "hooks" ? "registry:hook" : folder === "lib" ? "registry:lib" : "registry:ui";
+        }
+        return parsed;
+      } catch {
+        // Continue to next candidate
+      }
+    }
+  }
+
+  return null;
 }
 
 export function loadAllComponentEntries(registryRoot: string): ComponentRegistryEntry[] {

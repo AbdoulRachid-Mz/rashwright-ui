@@ -1,0 +1,24 @@
+{
+  "name": "use-device",
+  "type": "registry:hook",
+  "version": "1.0.0",
+  "description": "Hook pour inspecter les métadonnées et identifiants matériels du terminal (OS, marque, modèle).",
+  "category": "Hooks",
+  "files": [
+    "hooks/use-device.ts"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-device",
+    "expo-application"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}
