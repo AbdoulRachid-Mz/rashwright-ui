@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v0.7.3 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v0.9.0 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -10,10 +10,11 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-0.7.3-blue)](#)
+[![version](https://img.shields.io/badge/version-0.9.0-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
-[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2057-000020?logo=expo)](#)
+[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2059-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
+[![NativeWind](https://img.shields.io/badge/NativeWind-v4%20%7C%20v5%20optional-06b6d4?logo=tailwindcss)](#)
 
 ---
 
@@ -215,6 +216,21 @@ bunx expo install expo-router react-dom react-native-web
   L'argument `"."` est correctement reconnu comme « installer dans le répertoire courant » en mode interactif et `--yes`, sans créer de sous-dossier `"."` ni redemander inutilement.
 - **🧪 Tests de non-régression** :
   4 nouveaux tests CRITICAL/REGRESSION dans `package-manager.test.ts` et `init.test.ts` verrouillent ces comportements.
+
+## 🆕 Nouveautés v0.9.0 — Intégration NativeWind & Indépendance Native
+
+- **Support NativeWind v4 & v5 dans `rs-ui init`** :
+  - Prompt interactif `confirm` (activé par défaut) pour configurer NativeWind lors de l'init.
+  - Choix explicite de version : **v4 Stable** (Tailwind v3.4, `tailwind.config.js`) ou **v5 Next-Gen** (Tailwind v4 CSS-first, sans config JS).
+  - Flags CLI : `--nativewind [v4|v5]` pour activer, `--no-nativewind` pour désactiver.
+  - Génération automatique : `global.css`, `tailwind.config.js` (v4), `metro.config.js`, `babel.config.js`, `nativewind-env.d.ts`.
+  - Persistance dans `rashwright-ui.json` : `nativewind.enabled`, `nativewind.version`, `nativewind.css`.
+- **Indépendance native absolue** : Tous les 61 composants restent 100% fonctionnels sans NativeWind (`StyleSheet.create` + `useTheme()` par défaut). NativeWind est toujours opt-in.
+- **Primitives Headless Mobiles** (v0.8.0 inclus) : `useControllableState`, `useDisclosure`, `buildAccessibilityProps` — zéro dépendance externe.
+- **Registre RFC v4** : Hooks (`use-device`, `use-back-handler`, etc.) et libs (`primitives`, `upload`) installables via `rs-ui add`.
+- **Quality Gate** : 35 suites de tests, **171 tests Vitest**, 0 erreur TypeScript strict.
+
+---
 
 ## 🆕 Nouveautés v0.7.0 — Templates Engine & Architecture /src
  

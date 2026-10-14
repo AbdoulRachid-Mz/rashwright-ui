@@ -2,11 +2,12 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile" width="180" />
 </p>
 
-# @rashwright/ui-mobile — v0.7.1
+# @rashwright/ui-mobile — v0.9.0
 
-[![npm version](https://img.shields.io/badge/npm-%400.7.1-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
-[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2057-000000?logo=expo)](#)
+[![npm version](https://img.shields.io/badge/npm-%400.9.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2059-000000?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6?logo=typescript)](#)
+[![NativeWind](https://img.shields.io/badge/NativeWind-v4%20%7C%20v5-06b6d4?logo=tailwindcss)](#)
 
 > **⚠️ Pour les développeurs UTILISATEURS de Rashwright UI : vous n'avez JAMAIS besoin d'installer ce package directement.**
 >
@@ -86,6 +87,17 @@ rs-ui add button
 ├── lib/upload/                  → Moteur d'upload inliné avec 5 providers
 └── assets/                      → primary.png · svg/primary.svg
 ```
+
+---
+
+## 🆕 Nouveautés v0.9.0
+
+- **NativeWind opt-in dans `rs-ui init`** : Choix de NativeWind v4 (Tailwind v3.4 classique, `tailwind.config.js`) ou v5 (Tailwind v4 CSS-first) directement pendant l'initialisation — activé par défaut, désactivable via `--no-nativewind`.
+- **Primitives Headless zéro-dépendance** : `useControllableState`, `useDisclosure`, `buildAccessibilityProps` — appliquées sur `accordion` et `collapsible`.
+- **Registre RFC v4 complet** : 5 hooks + 2 libs installables via `rs-ui add hook:<name>` / `rs-ui add lib:<name>`.
+- **Indépendance native garantie** : 61 composants 100% fonctionnels sans NativeWind (`StyleSheet.create` + `useTheme()`).
+- **Schéma RFC v4 pur TypeScript** (`packages/cli/src/core/schema.ts`) — validation sans Zod.
+- **Tests** : 35 suites, **171 tests Vitest**, zéro `any`, 0 erreur TypeScript strict.
 
 ---
 

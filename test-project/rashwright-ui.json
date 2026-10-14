@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "componentsPath": "src/components/ui",
+  "theme": "glass",
+  "glass": true,
+  "typescript": true,
+  "packageManager": "bun",
+  "aliases": {
+    "components": "@/components",
+    "lib": "@/lib",
+    "theme": "@/theme"
+  },
+  "components": {
+    "button": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-12T18:10:10.090Z"
+    },
+    "card": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-12T18:10:10.081Z"
+    },
+    "badge": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-12T18:10:10.107Z"
+    },
+    "rating": "1.0.0",
+    "search-input": "1.0.0",
+    "rashwright-logo": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-12T18:10:10.116Z"
+    },
+    "commerce-screen": "1.0.0",
+    "stat-card": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-12T18:10:10.100Z"
+    },
+    "avatar": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-12T18:03:20.530Z"
+    },
+    "divider": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-12T18:03:20.545Z"
+    }
+  },
+  "themePreset": "red",
+  "starter": {
+    "installed": true,
+    "reset": false,
+    "template": "commerce"
+  }
+}
