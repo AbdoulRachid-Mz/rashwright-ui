@@ -24,6 +24,8 @@ describe("initCommand and bootstrap pipeline", () => {
     expect(optionNames).toContain("--no-skills");
     expect(optionNames).toContain("--showcase");
     expect(optionNames).toContain("--no-showcase");
+    expect(optionNames).toContain("--nativewind");
+    expect(optionNames).toContain("--no-nativewind");
     expect(optionNames).toContain("--yes");
     expect(optionNames).toContain("--no-reset");
     expect(optionNames).toContain("--dry-run");

@@ -44,6 +44,11 @@ export interface RashwrightConfig {
     enabled: boolean;
     directory?: string;
   };
+  nativewind?: {
+    enabled: boolean;
+    version: "v4" | "v5";
+    css?: string;
+  };
   hooks?: Record<string, string>;
 }
 

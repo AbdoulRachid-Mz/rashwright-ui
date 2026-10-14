@@ -15,8 +15,8 @@
 | **v0.7.2** | Correctif `rs-ui init .` (Scope & Création Expo) | ✅ Validé | 3 / 3 tâches |
 | **v0.7.3** | Correctif Dépendances Obligatoires (`expo-router`, Web) | ✅ Validé | 3 / 3 tâches |
 | **Patch Tabs** | Audit & Refonte Complète du composant Tabs (Accessibilité, Layout) | ✅ Validé | 6 / 6 tâches |
-| **v0.8.0** | Primitives Headless Mobiles & Registre RFC v4 | 🔄 En cours | 2 / 12 tâches |
-| **v0.9.0** | AST Transformers & Dual Styling Engine (NativeWind v4) | ⏳ Planifié | 0 / 10 tâches |
+| **v0.8.0** | Primitives Headless Mobiles & Registre RFC v4 | ✅ Validé | 11 / 11 tâches |
+| **v0.9.0** | Intégration NativeWind (v4 & v5) & Indépendance Native | 🔄 En cours | 4 / 10 tâches |
 | **v1.0.0** | Release Majeure : MCP Server IA & Standardisation Finale | ⏳ Planifié | 0 / 8 tâches |
 
 ---
@@ -39,7 +39,7 @@
 
 ---
 
-### Phase 2 : Primitives Headless Mobiles & Registre Universel RFC v4 (v0.8.0)
+### Phase 2 : Primitives Headless Mobiles & Registre Universel RFC v4 (v0.8.0 ✅ ACHEVÉ)
 
 * [x] **TASK-8.1.1** : Analyse comparative détaillée du fork `shadcn/ui` vs `rashwright-ui` dans `ANALYSIS.md`.
 * [x] **TASK-8.1.2** : Rédaction du plan stratégique d'alignement architectural dans `PLAN.md`.
@@ -48,24 +48,24 @@
 * [x] **TASK-8.1.5** : Harmoniser l'accessibilité WAI-ARIA mobile (`accessibilityRole`, `accessibilityState`) et appliquer `useControllableState` sur `accordion` et `collapsible`.
 * [x] **TASK-8.1.6** : Définir le schéma d'item de registre RFC v4 zéro-dépendance (`packages/cli/src/core/schema.ts`) avec support des types : `registry:ui`, `registry:hook`, `registry:lib`, `registry:block`.
 * [x] **TASK-8.1.7** : Écrire la suite de tests unitaires `tests/headless-primitives.test.ts` (5 tests validant les primitives et le validateur de schéma).
-* [ ] **TASK-8.1.8** : Découpler les hooks autonomes existants (`use-device`, `use-back-handler`, `use-scroll-aware-tab-bar`) dans le registre comme des items installables via `rs-ui add hook:<name>`.
-* [ ] **TASK-8.1.9** : Ajouter la commande `rs-ui add <type>:<nom>` dans le CLI pour gérer tous les types d'items.
-* [ ] **TASK-8.1.10** : Mettre à jour `scripts/validate-registry.ts` pour valider les nouveaux types d'items.
-* [ ] **TASK-8.1.11** : Valider le Quality Gate 100% vert (160 tests Vitest) et préparer la release v0.8.0.
+* [x] **TASK-8.1.8** : Découpler les hooks autonomes existants (`use-device`, `use-back-handler`, `use-scroll-aware-tab-bar`, `use-controllable-state`, `use-disclosure`) et les libs (`upload`, `primitives`) dans `packages/ui-mobile/registry/hooks/*.json` et `registry/lib/*.json`.
+* [x] **TASK-8.1.9** : Résolution universelle des destinations de fichiers (`hooks/` → `src/hooks/`, `lib/` → `src/lib/`, `components/ui/` → `src/components/ui/`) avec support multi-types dans le CLI.
+* [x] **TASK-8.1.10** : Mettre à jour `scripts/validate-registry.ts` pour valider hooks, libs et composants sans régression.
+* [x] **TASK-8.1.11** : Valider le Quality Gate 100% vert (tests d'installation RFC v4 dans `rfc-registry-install.test.ts`).
 
 ---
 
-### Phase 3 : AST Transformers & Dual Styling Engine (v0.9.0)
+### Phase 3 : Intégration NativeWind (v4 & v5) & Indépendance Native (v0.9.0 🔄 EN COURS)
 
-* [ ] **TASK-9.1.1** : Créer le moteur de transformation AST `packages/cli/src/core/transformers/transform-imports.ts` pour réécrire dynamiquement les alias d'imports selon le `tsconfig.json` local.
-* [ ] **TASK-9.1.2** : Définir la configuration `styleEngine` dans `rashwright-ui.json` (`"stylesheet"` | `"nativewind"`).
-* [ ] **TASK-9.1.3** : Implémenter l'utilitaire `cn` (`clsx` + `tailwind-merge`) dans `packages/ui-mobile/lib/utils.ts`.
-* [ ] **TASK-9.1.4** : Créer les variantes NativeWind v4 pour les composants basiques (`button`, `card`, `badge`, `text-input`).
-* [ ] **TASK-9.1.5** : Ajouter le support de `cva` (class-variance-authority) pour les variantes de composants mobiles.
-* [ ] **TASK-9.1.6** : Adapter `rs-ui init` avec prompt de choix du moteur de style (StyleSheet pur vs NativeWind Tailwind).
-* [ ] **TASK-9.1.7** : Écrire les tests unitaires des Transformers AST dans `packages/cli/tests/transformers.test.ts`.
+* [x] **TASK-9.1.1** : Créer le gestionnaire NativeWind `packages/cli/src/core/nativewind-manager.ts` supportant NativeWind v4 (Tailwind v3.4 classique) et v5 (Tailwind v4 CSS-first sans tailwind.config.js).
+* [x] **TASK-9.1.2** : Définir la configuration `nativewind: { enabled, version, css }` dans `RashwrightConfig` (`packages/cli/src/core/config-manager.ts`).
+* [x] **TASK-9.1.3** : Intégrer l'option interactive dans `rs-ui init` (prompt avec `confirm` activé par défaut, choix explicite de version v4/v5, flags `--nativewind [version]` et `--no-nativewind`).
+* [x] **TASK-9.1.4** : Écrire la suite de tests unitaires `packages/cli/tests/nativewind-manager.test.ts` (6 tests) et tester la détection d'options dans `tests/init.test.ts`.
+* [ ] **TASK-9.1.5** : Implémenter l'utilitaire `cn` (`clsx` + `tailwind-merge`) dans `packages/ui-mobile/lib/utils.ts` activé optionnellement.
+* [ ] **TASK-9.1.6** : Créer le moteur de transformation AST `packages/cli/src/core/transformers/transform-imports.ts` pour réécrire dynamiquement les alias d'imports selon le `tsconfig.json` local.
+* [ ] **TASK-9.1.7** : Garantir l'indépendance native absolue : tous les composants du registre restent 100% opérationnels sans NativeWind via `StyleSheet.create` et `useTheme()`.
 * [ ] **TASK-9.1.8** : Valider la compatibilité avec Expo SDK 54 à 59 en mode NativeWind.
-* [ ] **TASK-9.1.9** : Documenter le guide de migration StyleSheet → NativeWind.
+* [ ] **TASK-9.1.9** : Documenter le guide de configuration et d'usage NativeWind v4 / v5.
 * [ ] **TASK-9.1.10** : Release v0.9.0.
 
 ---

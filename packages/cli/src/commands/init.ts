@@ -31,6 +31,7 @@ import {
   setupStarterTemplate,
   type TemplateType,
 } from "../core/templates-manager.js";
+import { setupNativeWind, type NativeWindVersion } from "../core/nativewind-manager.js";
 
 const CORE_EXPO_DEPS = [
   // Navigation (OBLIGATOIRE — "main": "expo-router/entry" est écrit dans package.json)
@@ -113,6 +114,8 @@ export function initCommand(): Command {
     .option("--no-skills", "Désactiver l'installation des Skills IA")
     .option("--showcase", "Générer un écran d'accueil avec Rashwright UI & logo RS")
     .option("--no-showcase", "Ne pas générer l'écran de démo")
+    .option("--nativewind [version]", "Configurer NativeWind (Tailwind CSS) pour ce projet : v4 ou v5")
+    .option("--no-nativewind", "Ne pas installer ni configurer NativeWind")
     .option("--yes", "Répondre Oui à toutes les questions (mode non-interactif)")
     .option("--no-reset", "Ne pas écraser le template Expo (pour projets existants intégrés)")
     .option("--dry-run", "Afficher les actions sans les exécuter")
@@ -333,6 +336,8 @@ export function initCommand(): Command {
       // ── 3. Options interactives (Thème, Glass, dossier composants) ──────
       let glassEnabled = options.glass ?? false;
       let themePreset = options.theme || "default";
+      let nativeWindEnabled = false;
+      let nativeWindVersion: NativeWindVersion = "v4";
 
       // Si le projet a un dossier src/ (ou vient d'être réinitialisé), default: src/components/ui
       const hasSrc = existsSync(join(cwd, "src"));
@@ -491,8 +496,31 @@ export function initCommand(): Command {
           message: "Chemin d'installation des composants UI :",
           default: defaultComponentsPath,
         });
+
+        // ── 3b. Option NativeWind (Tailwind CSS) ──────────────────────────
+        if (options.nativewind !== false) {
+          nativeWindEnabled = await confirm({
+            message: "Configurer NativeWind (Tailwind CSS) pour ce projet ?",
+            default: true,
+          });
+
+          if (nativeWindEnabled) {
+            nativeWindVersion = await select<NativeWindVersion>({
+              message: "Choisir la version de NativeWind :",
+              choices: [
+                { name: "v4 (Recommandé / Stable — Tailwind v3.4, configuration JS classique)", value: "v4" },
+                { name: "v5 (Next-Gen — Tailwind v4 CSS-first, sans tailwind.config.js)", value: "v5" },
+              ],
+              default: "v4",
+            });
+          }
+        }
       } else {
         glassEnabled = options.glass !== undefined ? options.glass : true;
+        if (options.nativewind !== undefined && options.nativewind !== false) {
+          nativeWindEnabled = true;
+          nativeWindVersion = options.nativewind === "v5" ? "v5" : "v4";
+        }
         if (themePreset === "custom" && !customColors) {
           customColors = {
             primaryLight: options.primary || "#2563EB",
@@ -510,7 +538,14 @@ export function initCommand(): Command {
         ...CORE_EXPO_DEPS,
         ...(glassEnabled ? GLASS_EXTRA_DEPS : []),
       ];
-      const npmDepsToInstall = [...CORE_NPM_DEPS];
+      const npmDepsToInstall = [
+        ...CORE_NPM_DEPS,
+        ...(nativeWindEnabled
+          ? nativeWindVersion === "v5"
+            ? ["nativewind@^5.0.0-preview", "tailwindcss@^4.0.0"]
+            : ["nativewind@^4.0.1", "tailwindcss@^3.4.0"]
+          : []),
+      ];
 
       console.log();
       console.log(chalk.bold("  Configuration appliquée :"));
@@ -518,6 +553,7 @@ export function initCommand(): Command {
       console.log(chalk.dim(`  • Dossier composants : ${componentsPath}`));
       console.log(chalk.dim(`  • Thème           : ${themePreset}`));
       console.log(chalk.dim(`  • Style           : ${glassEnabled ? "Liquid Glass" : "Default"}`));
+      console.log(chalk.dim(`  • NativeWind      : ${nativeWindEnabled ? `Activé (${nativeWindVersion})` : "Désactivé (100% natif)"}`));
       console.log(chalk.dim(`  • Dépendances Expo : ${expoDepsToInstall.join(", ")}`));
       console.log(chalk.dim(`  • Dépendances NPM  : ${npmDepsToInstall.join(", ")}`));
       console.log();
@@ -526,6 +562,12 @@ export function initCommand(): Command {
       const foundationSpinner = ora("Mise en place des fondations Rashwright (tokens, thème, store, contexte + primitives UI)...").start();
       setupFoundations(SOURCE_ROOT, cwd, componentsPath, options.dryRun);
       foundationSpinner.succeed("Fondations du thème, store & primitives UI installées");
+
+      if (nativeWindEnabled) {
+        const nwSpinner = ora(`Configuration de NativeWind ${nativeWindVersion} (Tailwind CSS)...`).start();
+        setupNativeWind(cwd, nativeWindVersion, selectedPm, { dryRun: options.dryRun, useSrc: hasSrc });
+        nwSpinner.succeed(`NativeWind ${nativeWindVersion} configuré (global.css, tailwind.config, metro & types)`);
+      }
 
       if (themePreset === "custom" && customColors) {
         const customThemeSpinner = ora("Génération du thème personnalisé (theme/themes/custom.ts)...").start();
@@ -595,6 +637,15 @@ export function initCommand(): Command {
         packageManager: selectedPm,
         starter: { installed: true, reset: false, template: selectedTemplate },
         components: componentsRecord,
+        ...(nativeWindEnabled
+          ? {
+              nativewind: {
+                enabled: true,
+                version: nativeWindVersion,
+                css: hasSrc ? "src/global.css" : "global.css",
+              },
+            }
+          : {}),
       });
       writeConfig(join(cwd, "rashwright-ui.json"), config);
 
