@@ -19,11 +19,12 @@ import {
   StyleSheet,
   LayoutChangeEvent,
   DimensionValue,
+  ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import Animated from "react-native-reanimated";
 import { useTheme } from "@/contexts/theme-context";
 import { useResponsive, type ResponsiveValue } from "@/hooks/use-responsive";
-import Carousel from "./carousel";
 import ThemedText from "./text";
 
 export interface CarouselSlot<T = unknown> {
@@ -357,19 +358,15 @@ const ThemedView = forwardRef<RNView, ThemedViewProps>(
                     {slot.title}
                   </ThemedText>
                 )}
-                <Carousel
+                <InlineGridCarousel
                   data={slot.data}
                   renderItem={slot.renderItem}
                   itemsPerView={slot.itemsPerView}
                   itemWidth={slot.itemWidth}
                   spacing={slot.spacing ?? 12}
-                  autoPlay={slot.autoPlay}
-                  autoPlayInterval={slot.autoPlayInterval}
                   showIndicators={slot.showIndicators}
-                  showArrows={slot.showArrows}
-                  loop={slot.loop}
                   onItemPress={slot.onItemPress}
-                  containerStyle={slot.style as ViewStyle}
+                  style={slot.style}
                 />
               </RNView>
             );
@@ -398,6 +395,98 @@ ThemedView.displayName = "View";
 
 export default ThemedView;
 
+// ── Inline Grid Carousel Subcomponent ───────────────────────────────────────
+
+interface InlineGridCarouselProps<T> {
+  data: T[];
+  renderItem: (item: T, index: number) => React.ReactNode;
+  itemsPerView?: ResponsiveValue<number>;
+  itemWidth?: number;
+  spacing?: number;
+  showIndicators?: boolean;
+  onItemPress?: (item: T, index: number) => void;
+  style?: StyleProp<ViewStyle>;
+}
+
+function InlineGridCarousel<T>({
+  data,
+  renderItem,
+  itemsPerView = 1,
+  itemWidth,
+  spacing = 12,
+  showIndicators = true,
+  onItemPress,
+  style,
+}: InlineGridCarouselProps<T>) {
+  const { theme } = useTheme();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [containerW, setContainerW] = useState(0);
+  const { resolve } = useResponsive();
+  const resolvedPerView = resolve(itemsPerView, 1);
+
+  const calculatedW = useMemo(() => {
+    if (itemWidth) return itemWidth;
+    if (containerW > 0 && resolvedPerView > 0) {
+      const totalSpacing = (resolvedPerView - 1) * spacing;
+      return Math.max(80, Math.floor((containerW - totalSpacing) / resolvedPerView));
+    }
+    return 280;
+  }, [itemWidth, containerW, resolvedPerView, spacing]);
+
+  return (
+    <RNView
+      style={[styles.carouselInner, style]}
+      onLayout={(e) => setContainerW(e.nativeEvent.layout.width)}
+    >
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ gap: spacing, paddingHorizontal: 4 }}
+        onScroll={(e) => {
+          const offsetX = e.nativeEvent.contentOffset.x;
+          const newIdx = Math.round(offsetX / (calculatedW + spacing));
+          if (newIdx !== activeIndex && newIdx >= 0 && newIdx < data.length) {
+            setActiveIndex(newIdx);
+          }
+        }}
+        scrollEventThrottle={16}
+      >
+        {data.map((item, idx) => (
+          <TouchableOpacity
+            key={idx}
+            activeOpacity={onItemPress ? 0.75 : 1}
+            onPress={() => onItemPress?.(item, idx)}
+            disabled={!onItemPress}
+            style={{ width: calculatedW }}
+          >
+            {renderItem(item, idx)}
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+      {showIndicators && data.length > 1 && (
+        <RNView style={styles.indicatorRow}>
+          {data.map((_, idx) => (
+            <RNView
+              key={idx}
+              style={[
+                styles.dot,
+                {
+                  backgroundColor:
+                    idx === activeIndex
+                      ? theme.colors.primary
+                      : theme.colors.mutedForeground,
+                  opacity: idx === activeIndex ? 1 : 0.35,
+                  width: idx === activeIndex ? 18 : 6,
+                },
+              ]}
+            />
+          ))}
+        </RNView>
+      )}
+    </RNView>
+  );
+}
+
 const styles = StyleSheet.create({
   gridContainer: {
     flexDirection: "row",
@@ -415,5 +504,19 @@ const styles = StyleSheet.create({
   carouselTitle: {
     marginBottom: 8,
     paddingHorizontal: 4,
+  },
+  carouselInner: {
+    width: "100%",
+  },
+  indicatorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    marginTop: 8,
+  },
+  dot: {
+    height: 6,
+    borderRadius: 3,
   },
 });

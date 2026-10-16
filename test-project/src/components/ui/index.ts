@@ -25,13 +25,12 @@ export { createGlassTheme } from "@/constants/glass-theme";
 // ---------------------------------------------------------------------------
 // 3. Composants Installés
 // ---------------------------------------------------------------------------
-export { default as Avatar } from "./avatar";
 export { default as Badge } from "./badge";
 export { default as Button } from "./button";
 export { default as Card } from "./card";
-export { RashwrightCommerceScreen } from "./commerce-screen";
-export { default as Divider } from "./divider";
+export { default as GlassCard } from "./glass-card";
 export { RashwrightLogo } from "./rashwright-logo";
-export { Rating } from "./rating";
-export { default as SearchInput } from "./search-input";
-export { default as StatCard } from "./stat-card";
+export { RashwrightShowcaseScreen } from "./showcase-screen";
+export { default as TextInput } from "./text-input";
+export { UploadImage } from "./upload-image";
+export { UploadVideo } from "./upload-video";

@@ -1,0 +1,20 @@
+{
+  "name": "swipeable-row",
+  "version": "1.0.0",
+  "description": "Ligne glissable avec actions gauche/droite (swipe to action), basé sur PanResponder natif sans dépendances externes.",
+  "category": "Navigation",
+  "files": ["components/ui/swipeable-row.tsx"],
+  "dependencies": [],
+  "expoDependencies": ["expo-haptics"],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": ["ThemeProvider"],
+  "supportsGlass": false,
+  "platforms": ["ios", "android"],
+  "nativeRebuildRequired": false,
+  "props": {
+    "leftActions": "SwipeAction[]",
+    "rightActions": "SwipeAction[]",
+    "enabled": "boolean"
+  }
+}

@@ -56,15 +56,15 @@ describe("package-manager", () => {
 
   describe("Expo SDK constants and resolution", () => {
     it("exports supported SDK versions correctly", () => {
-      expect(SUPPORTED_SDK_VERSIONS).toEqual([54, 55, 56, 57]);
+      expect(SUPPORTED_SDK_VERSIONS).toEqual([54, 55, 56, 57, 58]);
       expect(MINIMUM_SDK_VERSION).toBe(54);
-      expect(LATEST_SUPPORTED_SDK).toBe(57);
+      expect(LATEST_SUPPORTED_SDK).toBe(58);
     });
 
-    it("resolves latest to LATEST_SUPPORTED_SDK (57)", () => {
-      expect(resolveSdkVersion("latest")).toBe(57);
-      expect(resolveSdkVersion(undefined)).toBe(57);
-      expect(resolveSdkVersion("")).toBe(57);
+    it("resolves latest to LATEST_SUPPORTED_SDK (58)", () => {
+      expect(resolveSdkVersion("latest")).toBe(58);
+      expect(resolveSdkVersion(undefined)).toBe(58);
+      expect(resolveSdkVersion("")).toBe(58);
     });
 
     it("resolves supported SDK numbers correctly", () => {
@@ -72,12 +72,14 @@ describe("package-manager", () => {
       expect(resolveSdkVersion("55")).toBe(55);
       expect(resolveSdkVersion("56")).toBe(56);
       expect(resolveSdkVersion("57")).toBe(57);
+      expect(resolveSdkVersion("58")).toBe(58);
+      expect(resolveSdkVersion(58)).toBe(58);
       expect(resolveSdkVersion(56)).toBe(56);
     });
 
     it("fallbacks unknown or invalid SDKs to latest", () => {
-      expect(resolveSdkVersion("99")).toBe(57);
-      expect(resolveSdkVersion("invalid")).toBe(57);
+      expect(resolveSdkVersion("99")).toBe(58);
+      expect(resolveSdkVersion("invalid")).toBe(58);
     });
   });
 

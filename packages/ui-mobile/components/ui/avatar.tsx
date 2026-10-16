@@ -8,6 +8,7 @@ import LiquidBorder from "./liquid/liquid-border";
 
 export interface AvatarProps {
   uri?: string | null;
+  source?: { uri?: string } | number | null;
   name?: string;
   size?: number | "xs" | "sm" | "md" | "lg" | "xl";
   verified?: boolean;
@@ -52,6 +53,7 @@ function getInitials(name: string): string {
 
 export const Avatar: React.FC<AvatarProps> = ({
   uri,
+  source,
   name = "Utilisateur",
   size = "md",
   verified = false,
@@ -66,6 +68,14 @@ export const Avatar: React.FC<AvatarProps> = ({
   const badgeSize = Math.max(14, Math.floor(pixelSize * 0.28));
   const badgeOffset = Math.max(-2, Math.floor(pixelSize * 0.02));
 
+  const imageSource = uri
+    ? { uri }
+    : typeof source === "object" && source !== null && source.uri
+    ? { uri: source.uri }
+    : typeof source === "number"
+    ? source
+    : null;
+
   return (
     <View
       className={className}
@@ -75,9 +85,9 @@ export const Avatar: React.FC<AvatarProps> = ({
         style,
       ]}
     >
-      {uri ? (
+      {imageSource ? (
         <Image
-          source={{ uri }}
+          source={imageSource}
           style={[styles.image, { borderRadius: pixelSize / 2 }]}
           contentFit="cover"
           transition={200}

@@ -6,6 +6,7 @@ import {
   getTemplateDefinition,
   type TemplateDefinition,
 } from "../core/templates-registry.js";
+import { addCommand } from "./add.js";
 
 /**
  * Affiche la liste complète des templates disponibles dans le registre.
@@ -159,6 +160,21 @@ export function templateCommand(): Command {
     .description("Afficher les informations détaillées d'un template")
     .action((name: string) => {
       displayTemplateInfo(name);
+    });
+
+  cmd
+    .command("add <name>")
+    .description("Installer un template complet avec ses composants et dépendances")
+    .option("--force", "Forcer la réinstallation (écraser les fichiers existants)")
+    .option("--yes", "Répondre Oui à toutes les questions")
+    .option("--dry-run", "Afficher les actions sans les exécuter")
+    .action(async (name: string, opts: { force?: boolean; yes?: boolean; dryRun?: boolean }) => {
+      const add = addCommand();
+      const args = ["node", "rs-ui", "-t", name];
+      if (opts.force) args.push("--force");
+      if (opts.yes) args.push("--yes");
+      if (opts.dryRun) args.push("--dry-run");
+      await add.parseAsync(args);
     });
 
   return cmd;

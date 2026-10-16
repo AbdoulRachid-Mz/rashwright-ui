@@ -1,8 +1,8 @@
 {
   "id": "dashboard",
   "name": "Dashboard & Analytics",
-  "description": "Tableau de bord complet avec StatCards, feed d'activités, filtres de métriques et vue profil.",
-  "version": "1.0.0",
+  "description": "Tableau de bord complet avec StatCards interactives, feed d'activités, filtres temporels et actions rapides.",
+  "version": "1.0.1",
   "componentName": "DashboardTemplate",
   "entrypoint": "dashboard-template.tsx",
   "files": [

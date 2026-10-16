@@ -62,6 +62,7 @@ const CORE_EXPO_DEPS = [
   "expo-image-picker",
   "expo-image-manipulator",
   "expo-application",
+  "expo-device",
   // UI natif (Glass UI)
   "expo-blur",
   "expo-linear-gradient",
@@ -105,7 +106,7 @@ export function initCommand(): Command {
   cmd
     .description("Initialiser Rashwright UI Mobile (configure un projet existant ou en crée un nouveau)")
     .argument("[project-name]", "Nom du projet Expo à créer (si aucun projet React Native existant)")
-    .option("--sdk <version>", "Version Expo SDK pour un nouveau projet (57, 56, 55, 54 ou 'latest')")
+    .option("--sdk <version>", "Version Expo SDK pour un nouveau projet (58, 57, 56, 55, 54 ou 'latest')")
     .option("--theme <preset>", "Choisir parmi les thèmes : default, emerald, violet, amber, rose, slate, green, red, cyan, custom", "default")
     .option("--theme-mode <mode>", "Mode d'apparence initial : system, light, dark (défaut : system)")
     .option("--template <type>", "Choisir le Starter Template : minimal, showcase, auth, onboarding, dashboard, commerce, settings", "showcase")
@@ -239,6 +240,7 @@ export function initCommand(): Command {
               message: "Choisir la version Expo SDK :",
               choices: [
                 { name: `Latest (SDK ${LATEST_SUPPORTED_SDK}) - Recommandé`, value: LATEST_SUPPORTED_SDK },
+                { name: "SDK 57", value: 57 },
                 { name: "SDK 56", value: 56 },
                 { name: "SDK 55", value: 55 },
                 { name: "SDK 54", value: 54 },

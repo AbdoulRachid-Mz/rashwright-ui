@@ -1,5 +1,7 @@
 // @/components/templates/settings/types.ts
 
+export type ThemeModeOption = 'system' | 'light' | 'dark';
+
 export interface UserProfile {
   name: string;
   email: string;
@@ -10,7 +12,7 @@ export interface UserProfile {
 export interface SettingsSection {
   id: string;
   title: string;
-  icon: string;       // emoji or text icon
+  icon: string;
   description?: string;
   onPress?: () => void;
 }
@@ -18,10 +20,12 @@ export interface SettingsSection {
 export interface SettingsTemplateProps {
   profile?: UserProfile;
   sections?: SettingsSection[];
-  isDarkMode?: boolean;
+  themeMode?: ThemeModeOption;
   notificationsEnabled?: boolean;
-  onToggleDarkMode?: (value: boolean) => void;
+  liquidGlassEnabled?: boolean;
+  onThemeModeChange?: (mode: ThemeModeOption) => void;
   onToggleNotifications?: (value: boolean) => void;
+  onToggleLiquidGlass?: (value: boolean) => void;
   onEditProfile?: () => void;
   onLogout?: () => void;
 }

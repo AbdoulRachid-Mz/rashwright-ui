@@ -2,7 +2,7 @@
   "id": "showcase",
   "name": "Showcase",
   "description": "Vitrine de tous les composants Rashwright UI avec onglets overview, composants et glass.",
-  "version": "0.7.0",
+  "version": "1.0.1",
   "componentName": "ShowcaseTemplate",
   "entrypoint": "showcase-template.tsx",
   "files": [

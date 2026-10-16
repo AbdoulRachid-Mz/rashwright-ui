@@ -1,12 +1,13 @@
 {
   "id": "onboarding",
   "name": "Onboarding Flow",
-  "description": "Flux d'onboarding immersif avec étapes illustrées, badges de fonctionnalité et navigation pas à pas.",
-  "version": "1.0.0",
+  "description": "Flux d'onboarding immersif avec étapes illustrées, badges de fonctionnalité, pagination fluide et redirection vers HomeScreen d'accueil.",
+  "version": "1.0.1",
   "componentName": "OnboardingTemplate",
   "entrypoint": "onboarding-template.tsx",
   "files": [
     "onboarding-template.tsx",
+    "onboarding-home-screen.tsx",
     "types.ts",
     "components/onboarding-slide.tsx",
     "index.ts"

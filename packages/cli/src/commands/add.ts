@@ -20,6 +20,11 @@ import { recordLockedComponent, recordLockedTemplate } from "../core/lock-manage
 import { executeHook } from "../core/hooks-manager.js";
 import { parseScopedComponentName, getScopedRegistries } from "../core/scoped-registry.js";
 import { getTemplateDefinition, listTemplateIds, type TemplateDefinition } from "../core/templates-registry.js";
+import {
+  detectMissingComponentRequirements,
+  detectMissingTemplateRequirements,
+  copyMissingInternalFiles,
+} from "../core/component-detector.js";
 
 export function addCommand(): Command {
   const cmd = new Command("add");
@@ -281,14 +286,38 @@ export function addCommand(): Command {
         );
       }
 
+      // ── 3c. Détection exhaustive de toutes les dépendances via ComponentDetector (shadcn/ui model) ───
+      const compNamesToInspect = newComponents.map((c) => c.name);
+      const componentRequirements = templateDef
+        ? detectMissingTemplateRequirements(templateDef.id, cwd, {
+            registryRoot: resolved.registryRoot,
+            sourceRoot: resolved.sourceRoot,
+            templatesRoot: TEMPLATES_ROOT,
+          })
+        : detectMissingComponentRequirements(compNamesToInspect, cwd, {
+            registryRoot: resolved.registryRoot,
+            sourceRoot: resolved.sourceRoot,
+          });
+
       const expoKeys = Object.keys(plan.allExpoDeps);
       const newExpoDeps = expoKeys.filter((d) => !(d in installedPkgs));
+      for (const d of componentRequirements.missingExpoDeps) {
+        if (!newExpoDeps.includes(d) && !(d in installedPkgs)) {
+          newExpoDeps.push(d);
+        }
+      }
+
+      for (const d of componentRequirements.missingNpmDeps) {
+        if (!plan.allNpmDeps.includes(d) && !(d in installedPkgs)) {
+          plan.allNpmDeps.push(d);
+        }
+      }
 
       if (newExpoDeps.length > 0) {
         console.log();
         console.log(chalk.dim("  Dépendances Expo (expo install):"));
         newExpoDeps.forEach((d) =>
-          console.log(chalk.dim(`    + ${d}@${plan.allExpoDeps[d]}`))
+          console.log(chalk.dim(`    + ${d}${plan.allExpoDeps[d] ? `@${plan.allExpoDeps[d]}` : ""}`))
         );
       }
 
@@ -298,6 +327,14 @@ export function addCommand(): Command {
         plan.allNpmDeps.forEach((d) => console.log(chalk.dim(`    + ${d}`)));
       }
 
+      if (componentRequirements.missingInternalFiles.length > 0) {
+        console.log();
+        console.log(chalk.dim("  Logiques fonctionnelles & utilitaires (shadcn/ui auto-import) :"));
+        componentRequirements.missingInternalFiles.forEach((f) =>
+          console.log(chalk.cyan(`    + ${f.destinationRelative}`))
+        );
+      }
+
       if (plan.requiresRebuild) {
         console.log();
         console.log(chalk.yellow("  ⚠  Certains composants nécessitent un development build."));
@@ -305,7 +342,12 @@ export function addCommand(): Command {
 
       console.log();
 
-      if (newComponents.length === 0 && newExpoDeps.length === 0 && plan.allNpmDeps.length === 0) {
+      if (
+        newComponents.length === 0 &&
+        newExpoDeps.length === 0 &&
+        plan.allNpmDeps.length === 0 &&
+        componentRequirements.missingInternalFiles.length === 0
+      ) {
         console.log(chalk.green("  ✔ Tous les composants sélectionnés sont déjà installés."));
         console.log(chalk.dim("     → Utilisez `rs-ui add --force <noms>` pour les réinstaller/écraser."));
         return;
@@ -346,34 +388,14 @@ export function addCommand(): Command {
         }
       }
 
-      // ── 6b. Point 5 : Assurer les fichiers de logique et utilitaires requis (ex: lib/upload)
-      const needsUploadLib = newComponents.some((c) =>
-        c.name === "upload-image" || c.name === "upload-video" || (c.entry.files || []).some((f) => f.includes("upload"))
-      );
-      if (needsUploadLib && !options.dryRun) {
-        const useSrc = config.componentsPath.startsWith("src/") || existsSync(join(cwd, "src"));
-        const uploadTargetDir = join(cwd, useSrc ? "src/lib/upload" : "lib/upload");
-        if (!existsSync(uploadTargetDir)) {
-          const uploadSpinner = ora("Copie des utilitaires d'upload (lib/upload)...").start();
-          const uploadSourceDir = join(resolved.sourceRoot, "lib", "upload");
-          if (existsSync(uploadSourceDir)) {
-            const copyDirRecursive = (src: string, dest: string) => {
-              if (!existsSync(dest)) mkdirSync(dest, { recursive: true });
-              const entries = readdirSync(src, { withFileTypes: true });
-              for (const entry of entries) {
-                const s = join(src, entry.name);
-                const d = join(dest, entry.name);
-                if (entry.isDirectory()) {
-                  copyDirRecursive(s, d);
-                } else if (entry.isFile()) {
-                  copyFileSync(s, d);
-                }
-              }
-            };
-            copyDirRecursive(uploadSourceDir, uploadTargetDir);
-            uploadSpinner.succeed("Utilitaires lib/upload installés");
-          }
-        }
+      // ── 6b. Copie des logiques & fichiers internes requis (ex: hooks, lib/responsive, lib/upload)
+      if (componentRequirements.missingInternalFiles.length > 0 && !options.dryRun) {
+        const intSpinner = ora("Copie des utilitaires et logiques fonctionnelles requises...").start();
+        copyMissingInternalFiles(componentRequirements, cwd, {
+          sourceRoot: resolved.sourceRoot,
+          dryRun: options.dryRun,
+        });
+        intSpinner.succeed(`Logiques internes installées (${componentRequirements.missingInternalFiles.length} fichier(s))`);
       }
 
       // ── 7. Copy component files ────────────────────────────────────────

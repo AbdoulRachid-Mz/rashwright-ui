@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v0.9.0 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v1.1.0 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -10,9 +10,9 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-0.9.0-blue)](#)
+[![version](https://img.shields.io/badge/version-1.1.0-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
-[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2059-000020?logo=expo)](#)
+[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
 [![NativeWind](https://img.shields.io/badge/NativeWind-v4%20%7C%20v5%20optional-06b6d4?logo=tailwindcss)](#)
 
@@ -216,6 +216,28 @@ bunx expo install expo-router react-dom react-native-web
   L'argument `"."` est correctement reconnu comme « installer dans le répertoire courant » en mode interactif et `--yes`, sans créer de sous-dossier `"."` ni redemander inutilement.
 - **🧪 Tests de non-régression** :
   4 nouveaux tests CRITICAL/REGRESSION dans `package-manager.test.ts` et `init.test.ts` verrouillent ces comportements.
+
+## 🆕 Nouveautés v1.0.1 — Templates Premium, SDK 58 Stable & Fix NativeWind
+
+- **💎 Templates Autonomes Enrichis** :
+  - `auth` : Écrans dédiés séparés `sign-in.tsx` et `sign-up.tsx` + nouveau composant `GoogleAuthButton` vectoriel haptique Glass.
+  - `commerce` : Catalogue complet `products-screen.tsx` (recherche, filtres, compteur) et écran détail produit `product-detail-screen.tsx` (`productId`) avec sélection de variantes, notation et bouton panier sticky.
+  - `onboarding` : Redirection automatique vers l'écran d'accueil `onboarding-home-screen.tsx` (`HomeScreen`).
+  - `dashboard` : Sélecteur de périodes (7j, 30j, 90j, 1 an), barre d'actions rapides et métriques interactives.
+  - `settings` : Sélecteur 3 modes d'apparence (Système, Clair, Sombre) relié à `useTheme()`, contrôle Liquid Glass & notifications.
+- **🚀 Expo SDK 58 Stable** : Prise en charge officielle de SDK 58 configuré en Recommandé par défaut dans `rs-ui init`.
+- **⚙️ Fix NativeWind Dark Mode** : Ajout automatique de `darkMode: "class"` dans `tailwind.config.js` et configuration de `"userInterfaceStyle": "automatic"` + `expo-system-ui`.
+- **🧩 Component-Detector Automatique (Modèle shadcn/ui)** :
+  - Détection récursive et installation conditionnelle des logiques internes (`hooks/use-responsive.ts`, `lib/responsive.ts`, utilitaires `lib/upload/`) et packages Expo/npm manquants (`expo-device`, `react-native-reanimated`).
+- **🧪 Quality Gate 100% Vert** : 194 tests Vitest passés sur 40 suites, 0 erreur TypeScript strict (`bunx tsc --noEmit` exit 0).
+
+## 🆕 Nouveautés v1.0.0 — Release Majeure & Serveur MCP IA
+
+- **Serveur Model Context Protocol (MCP) IA (`rs-ui mcp`)** : Serveur stdio JSON-RPC 2.0 pour assistants IA (Cursor, Claude Desktop, VS Code) avec commandes d'inspection temps réel.
+- **Moteur Responsive & Grille Multi-Colonnes** : Détecteur de breakpoints standard (`sm`, `md`, `lg`, `xl`, `2xl`) dans `lib/responsive.ts` et `useResponsive()`.
+- **Recherche Floue Haute Vitesse (`rs-ui search <query>`)** : Recherche instantanée dans le registre avec suggestions.
+- **Comparateur Visuel (`rs-ui diff [component]`)** : Diff side-by-side couleur avec le registre officiel.
+- **Dual Engine Styling** : Prise en charge native NativeWind v4/v5 et StyleSheet standardisé.
 
 ## 🆕 Nouveautés v0.9.0 — Intégration NativeWind & Indépendance Native
 

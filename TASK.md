@@ -1,8 +1,8 @@
-# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI MOBILE (v0.9.0 → v1.0.0)
+# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI MOBILE (v1.0.1 → v1.1.0)
 
 > **Fichier de suivi dynamique (`TASK.md`)**  
-> Dernière mise à jour : 2026-10-14  
-> Statut général : **v0.9.0 Publiée (171 tests Vitest réussis, 35 suites de tests, Quality Gate 100% vert, 0 erreur TypeScript strict)**
+> Dernière mise à jour : 2026-10-16  
+> Statut général : **v1.1.0 Validée & Prête (65 composants, 194 tests Vitest réussis, 40 suites de tests, Quality Gate 100% vert, 0 erreur TypeScript strict)**
 
 ---
 
@@ -17,7 +17,13 @@
 | **Patch Tabs** | Audit & Refonte Complète du composant Tabs (Accessibilité, Layout) | ✅ Validé | 6 / 6 tâches |
 | **v0.8.0** | Primitives Headless Mobiles & Registre RFC v4 | ✅ Validé | 11 / 11 tâches |
 | **v0.9.0** | Intégration NativeWind (v4 & v5) & Indépendance Native | ✅ Publié | 10 / 10 tâches |
-| **v1.0.0** | Release Majeure : MCP Server IA, Grille Responsive & Standardisation Finale | ✅ Validé | 8 / 8 tâches |
+| **v1.0.0** | Release Majeure : MCP Server IA, Grille Responsive & Standardisation Finale | ✅ Publié | 8 / 8 tâches |
+| **v1.0.1** | Templates Premium (Auth 2-écrans + Google, Commerce catalogue & détail, Onboarding HomeScreen, Dashboard & Settings 3-mode), SDK 58 Stable & Fix NativeWind | ✅ Validé | 7 / 7 tâches |
+| **v1.1.0** | Nouveaux Composants Mobiles Clés (`date-picker`, `calendar`, `swipeable-row`, `segmented-control`, `tooltip`, `popover`, `shimmer`, `skeleton`) | ✅ Validé | 6 / 6 tâches |
+| **v1.2.0** | Templates Métiers Spécialisés (`chat`, `finance`, `social`) & Commandes CLI Template | 🔄 Planifié | 0 / 4 tâches |
+| **v1.3.0** | Gestion de Cycle de Vie CLI (`rs-ui upgrade`), 3-Way Merge & AST Transformers | 📅 Planifié | 0 / 3 tâches |
+| **v1.4.0** | Outils MCP IA Génératifs (`generate_screen`, `audit_accessibility`, `convert_styling`) | 📅 Planifié | 0 / 3 tâches |
+| **v1.5.0** | Showcase Interactif Storybook & Tests End-to-End Automatisés Maestro | 📅 Planifié | 0 / 2 tâches |
 
 ---
 
@@ -83,7 +89,103 @@
 
 ---
 
+### Phase 5 : Component-Detector (Modèle shadcn/ui) & Résolution des Imports (✅ ACHEVÉ)
+
+* [x] **TASK-11.1.1** : Résolution de l'erreur TS2882 (`import "../global.css"`) via déclaration ambient `declare module "*.css";` dans `generateNativeWindEnv()` et inclusion dans `tsconfig.json`.
+* [x] **TASK-11.1.2** : Résolution des erreurs TS2322 (`Card variant="glass"` et `Avatar source={...}`) dans le template `settings` avec rétro-compatibilité complète.
+* [x] **TASK-11.1.3** : Implémentation du module `ComponentDetector` (`packages/cli/src/core/component-detector.ts`) :
+  - Détection récursive de toutes les logiques internes (`hooks/use-responsive.ts`, `lib/responsive.ts`, `hooks/use-device.ts`, utilitaires `lib/upload/`, etc.).
+  - Détection de toutes les dépendances natives et packages tiers manquants (`expo-device`, `expo-image`, `react-native-reanimated`, etc.).
+  - Modèle shadcn/ui strict : installation et copie uniquement du delta manquant sur le projet cible (aucun bloat à l'init).
+* [x] **TASK-11.1.4** : Branchement de `ComponentDetector` dans les commandes `rs-ui add` et `rs-ui template add` (`packages/cli/src/commands/add.ts` et `template.ts`).
+* [x] **TASK-11.1.5** : Validation de `test-project` avec `bunx tsc --noEmit` : **0 erreur**.
+* [x] **TASK-11.1.6** : Nettoyage et synchronisation complète de la documentation (`README.md`, `TASK.md`).
+
+---
+
+### Phase 6 : Release v1.0.1 — Templates Premium, SDK 58 Stable & Fix NativeWind (✅ ACHEVÉ)
+
+* [x] **TASK-12.1.1** : Résolution de l'exception NativeWind dark mode (`errors.md`) via injection automatique de `darkMode: "class"` dans `tailwind.config.js` et configuration de `"userInterfaceStyle": "automatic"` + `expo-system-ui`.
+* [x] **TASK-12.1.2** : Prise en charge officielle d'Expo SDK 58 stable (support SDK 54 à 58, SDK 58 Recommandé par défaut dans `rs-ui init`).
+* [x] **TASK-12.1.3** : Enrichissement du Template `auth` : deux écrans séparés (`sign-in.tsx`, `sign-up.tsx`) et nouveau composant `GoogleAuthButton` avec haptique et Glass UI.
+* [x] **TASK-12.1.4** : Enrichissement du Template `commerce` : écran catalogue `products-screen.tsx` (recherche, filtres, compteur) et écran détail produit `product-detail-screen.tsx` (variantes, rating, sticky add to cart).
+* [x] **TASK-12.1.5** : Enrichissement du Template `onboarding` : écran d'arrivée `onboarding-home-screen.tsx` (`HomeScreen`) avec dashboard et actions rapides.
+* [x] **TASK-12.1.6** : Enrichissement des Templates `dashboard` (périodes temporelles, actions rapides) et `settings` (sélecteur d'apparence 3 modes Système/Clair/Sombre synchronisé avec `ThemeContext`).
+* [x] **TASK-12.1.7** : Découplage de `ThemedView` (`view.tsx`) avec son propre `InlineGridCarousel` intégré (zéro dépendance statique sur `carousel.tsx`), inclusion de `use-responsive.ts` et `lib/responsive.ts` dans les fondations, et validation Quality Gate 100% vert (194/194 tests).
+
+---
+
+### Phase 7 : Nouveaux Composants Mobiles Essentiels (v1.1.0 ✅ ACHEVÉ)
+
+* [x] **TASK-13.1.1** : Développer le composant `Calendar` (`components/ui/calendar.tsx`) avec sélection unique, multiple et plage (`range`), localisation FR et navigation mensuelle fluide.
+* [x] **TASK-13.1.2** : Développer le composant `DatePicker` (`components/ui/date-picker.tsx`) en modal bottom-sheet et inline avec intégration du thème et mode Glass.
+* [x] **TASK-13.1.3** : Développer le composant `SwipeableRow` (`components/ui/swipeable-row.tsx`) avec gestes de glissement gauche/droite, retour haptique et actions personnalisées (supprimer, archiver).
+* [x] **TASK-13.1.4** : Développer le composant `SegmentedControl` (`components/ui/segmented-control.tsx`) avec capsule fluide animée par ressort (`withSpring`) et accessibilité WAI-ARIA `tablist`.
+* [x] **TASK-13.1.5** : Développer les composants `Tooltip` et `Popover` (`components/ui/tooltip.tsx`, `components/ui/popover.tsx`) avec calcul des coordonnées d'écran (`measureInWindow`) et flip anti-débordement.
+* [x] **TASK-13.1.6** : Développer la suite `ShimmerSkeleton` (`components/ui/skeleton.tsx`, `components/ui/shimmer.tsx`, `components/ui/screen-skeleton.tsx`) avec presets `Skeleton.Card`, `Skeleton.Avatar`, `Skeleton.Text` et animation continue `LinearGradient`.
+
+---
+
+### Phase 8 : Nouveaux Templates Métiers Spécialisés (v1.2.0 📅 PLANIFIÉ)
+
+* [ ] **TASK-14.1.1** : Créer le template `chat` (`templates/chat/`) : messagerie instantanée, liste inversée, bulles Liquid Glass, barre de saisie et upload de médias.
+* [ ] **TASK-14.1.2** : Créer le template `finance` (`templates/finance/`) : portefeuille crypto/banque, solde avec toggle visibilité, historique catégorisé et raccourcis de transactions.
+* [ ] **TASK-14.1.3** : Créer le template `social` (`templates/social/`) : fil d'actualité, carrousel de stories, likes animés et espace commentaires.
+* [ ] **TASK-14.1.4** : Implémenter les commandes CLI du gestionnaire de templates : `rs-ui template list`, `rs-ui template info <id>` et `rs-ui template remove <id>`.
+
+---
+
+### Phase 9 : Gestion de Cycle de Vie & AST Transformers (v1.3.0 📅 PLANIFIÉ)
+
+* [ ] **TASK-15.1.1** : Implémenter la commande `rs-ui upgrade` / `rs-ui update` : détection des composants obsolètes via `rashwright-ui.lock`, comparaison différentielle interactive et sauvegarde automatique de secours dans `.rashwright/backups/`.
+* [ ] **TASK-15.1.2** : Intégrer un module AST Transformers (`packages/cli/src/core/transformers/`) pour réécrire chirurgicalement les alias d'imports lors de la copie si le projet cible utilise `~/` ou un chemin customisé.
+* [ ] **TASK-15.1.3** : Mettre en place un mécanisme de fusion différentielle (3-Way Merge) pour préserver les modifications personnalisées de l'utilisateur lors des mises à jour.
+
+---
+
+### Phase 10 : Intelligence Artificielle & Serveur MCP Avancé (v1.4.0 📅 PLANIFIÉ)
+
+* [ ] **TASK-16.1.1** : Développer l'outil MCP `generate_screen` permettant à l'assistant IA de composer un écran complet conforme aux tokens de thème et bonnes pratiques mobiles.
+* [ ] **TASK-16.1.2** : Développer l'outil MCP `audit_accessibility` pour analyser un fichier TSX et détecter les anomalies ARIA ou zones de frappe non conformes.
+* [ ] **TASK-16.1.3** : Développer l'outil MCP `convert_styling` pour convertir automatiquement entre `StyleSheet.create` et classes NativeWind Tailwind.
+
+---
+
+### Phase 11 : Storybook Mobile & Tests End-to-End Maestro (v1.5.0 📅 PLANIFIÉ)
+
+* [ ] **TASK-17.1.1** : Déployer un environnement interactif Storybook Mobile / Expo Web Showcase pour tester et prévisualiser tous les composants et thèmes en direct.
+* [ ] **TASK-17.1.2** : Écrire la suite de tests end-to-end automatisés Maestro simulant les gestes tactiles, la navigation et le changement de thème sur simulateurs iOS et Android.
+
+---
+
 ## 📌 Journal des actions effectuées
+
+### 2026-10-16 — Release v1.1.0 (Nouveaux Composants Mobiles Clés & Registre à 65 composants)
+- **Nouveaux composants UI autonomes** :
+  - `Calendar` (`components/ui/calendar.tsx`) : navigation mensuelle fluide, modes single/multiple/range, localisation FR native (`Intl`), variant glass.
+  - `DatePicker` (`components/ui/date-picker.tsx`) : modal bottom-sheet avec trigger personnalisé, validation par confirmation, synchronisation draft/value.
+  - `SwipeableRow` (`components/ui/swipeable-row.tsx`) : geste tactile de balayage fluide via PanResponder natif (zéro dépendance lourde), seuils de déclenchement élastiques, haptique expo-haptics.
+  - `Popover` (`components/ui/popover.tsx`) : panneau flottant contextuel ancré avec 8 placements, calcul automatique des coordonnées d'écran (`measure`), flèche indicatrice géométrique et fermeture backdrop.
+  - `SegmentedControl`, `Skeleton`, `Shimmer`, `ScreenSkeleton` consolidés et référencés.
+- **Registre étendu à 65 composants** : `registry/index.json` mis à jour, `COMPONENT_EXPORTS_MAP` synchronisé dans le CLI.
+- **Quality Gate 100% vert** : 194/194 tests Vitest réussis (40 suites), zéro erreur TypeScript strict (`tsc --noEmit`), build CLI réussi (0.34 MB), smoke tests validés.
+- **Bumps de version** : Passage officiel en **v1.1.0** sur `@rashwright/cli`, `@rashwright/ui-mobile`, registre et racine.
+
+### 2026-10-16 — Release v1.0.1 (Templates Premium & SDK 58 Stable)
+- **Templates autonomes enrichis** : Auth double écran (`sign-in.tsx`, `sign-up.tsx`) + `GoogleAuthButton`, Commerce catalogue & détail produit complet, Onboarding avec `HomeScreen` de destination, Dashboard avec sélecteur de périodes & actions rapides, Settings avec sélecteur 3 modes d'apparence.
+- **Expo SDK 58 stable** : Intégration et validation dans `package-manager.ts` et `init.ts`.
+- **Correction NativeWind v4/v5** : Ajout automatique de `darkMode: "class"` dans `tailwind.config.js` et plugin `expo-system-ui`.
+- **Composant View auto-suffisant** : Implémentation de `InlineGridCarousel` éliminant tout blocage de compilation lié à `carousel.tsx`.
+- **Fondations consolidées** : Ajout de `hooks/use-responsive.ts` et `lib/responsive.ts` dans `setupFoundations`, et `expo-device` dans `CORE_EXPO_DEPS`.
+- **Quality Gate 100% vert** : 194/194 tests Vitest réussis (40 suites), zéro erreur TypeScript strict (`tsc --noEmit`), build CLI réussi (0.34 MB), smoke tests réussis.
+- **Bumps de version** : Passage officiel en **v1.0.1** sur `@rashwright/cli`, `@rashwright/ui-mobile`, registre et racine.
+
+### 2026-10-16 — Component-Detector & Stabilisation
+- **Implémentation de `ComponentDetector`** : Détecteur intelligent de dépendances internes et externes (modèle shadcn/ui).
+- **Résolution intégrale de `errors-to-fixe.md`** : TS2882 (CSS ambient), TS2307 (`use-responsive`, `lib/responsive`, `expo-device`), TS2322 (`Card variant`, `Avatar source`).
+- **Validation `test-project`** : 0 erreur TypeScript strict (`bunx tsc --noEmit` exit 0).
+- **Quality Gate monorepo 100% vert** : 194 tests Vitest réussis (40 suites), `validate-registry` exit 0, `check-types` exit 0, smoke tests exit 0.
+- **Nettoyage documentation** : Synchronisation de `README.md` et `TASK.md`.
 
 ### 2026-10-16 — Release Majeure v1.0.0
 - **Serveur MCP IA (Model Context Protocol)** : Implémentation du serveur JSON-RPC 2.0 stdio (`packages/cli/src/mcp/`) avec outils `list_components`, `get_component`, `search_registry`, `get_theme_tokens`, `get_skill`, `list_templates`, `get_template`.

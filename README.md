@@ -6,14 +6,14 @@
 
 > Système moderne de composants **distribuables** pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie *shadcn/ui* : **vous copiez les composants dans votre codebase, vous en êtes propriétaire**.
 
-**Statut v1.0.0** : ✅ Version Majeure v1.0.0 — `@rashwright/cli@1.0.0` · `@rashwright/ui-mobile@1.0.0`  
-**Composants & Templates** : 61 composants UI + 8 primitives Liquid Glass + 7 Templates Autonomes · **Serveur MCP IA** : Compatible Cursor, Claude Desktop, VS Code (`rs-ui mcp`) · **Moteur Responsive** : Breakpoints `sm`, `md`, `lg`, `xl`, `2xl`, grille fluide et tri intégré · **NativeWind** : Support v4 & v5 avec injection automatique `global.css` · **Indépendance native** : 100% `StyleSheet.create` + `useTheme()` par défaut · **SDK Expo** : SDK 54 à 59 · **Tests** : 194 tests unitaires Vitest · **Typing strict** : Zéro `any`.
+**Statut v1.1.0** : ✅ Version v1.1.0 — `@rashwright/cli@1.1.0` · `@rashwright/ui-mobile@1.1.0`  
+**Composants & Templates** : 65 composants UI + 8 primitives Liquid Glass + 7 Templates Autonomes (Auth double écran, Commerce catalogue & détail, Onboarding HomeScreen, Dashboard & Settings 3-mode) · **Nouveaux composants** : `Calendar`, `DatePicker`, `SwipeableRow`, `Popover`, `SegmentedControl` · **Serveur MCP IA** : Compatible Cursor, Claude Desktop, VS Code (`rs-ui mcp`) · **Moteur Responsive** : Breakpoints `sm`, `md`, `lg`, `xl`, `2xl`, grille fluide et tri intégré · **NativeWind** : Support v4 (`darkMode: "class"`) & v5 avec injection automatique `global.css` · **Indépendance native** : 100% `StyleSheet.create` + `useTheme()` par défaut · **SDK Expo** : SDK 54 à 58 (SDK 58 stable Recommandé) · **Tests** : 194 tests unitaires Vitest · **Typing strict** : Zéro `any`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v1.0.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
-  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v1.0.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v1.1.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v1.1.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
   <a href="https://github.com/AbdoulRachid-Mz/rashwright-ui"><img src="https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github" alt="GitHub" /></a>
-  <img src="https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2059-000000.svg?logo=expo" alt="Expo SDK" />
+  <img src="https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000000.svg?logo=expo" alt="Expo SDK" />
   <img src="https://img.shields.io/badge/MCP%20Server-JSON--RPC%202.0-8A2BE2.svg" alt="MCP Server" />
   <img src="https://img.shields.io/badge/Tests-194%20passed-success.svg" alt="Tests" />
   <img src="https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6.svg?logo=typescript" alt="TypeScript" />
@@ -46,18 +46,20 @@ rs-ui reset
 ## 📑 Sommaire — Guide utilisateur
 
 1. [Pourquoi Rashwright ?](#-pourquoi-rashwright-)
-2. [Nouveautés de la version v0.7.0](#-nouveautés-de-la-version-v070)
-3. [Système de Skills IA](#-système-de-skills-ia)
-4. [Prérequis](#-prérequis)
-5. [Installation du CLI `rs-ui`](#-installation-du-cli-rs-ui)
-6. [Initialiser un projet (`rs-ui init`)](#-initialiser-un-projet-rs-ui-init)
-7. [Ajouter des composants & Templates (`rs-ui add / list`)](#-ajouter-des-composants-rs-ui-add--list--info)
-8. [Réinitialiser le projet starter (`rs-ui reset`)](#-réinitialiser-le-projet-starter-rs-ui-reset)
-9. [Les 9 thèmes prédéfinis & Moteur Custom](#-les-9-thèmes-prédéfinis--moteur-custom)
-10. [Composants d'upload et providers](#-composants-dupload-et-providers)
-11. [Diagnostic (`rs-ui doctor`)](#-diagnostic-rs-ui-doctor)
-12. [Matrice de compatibilité Expo SDK](#-matrice-de-compatibilité-expo-sdk)
-13. [Architecture & Dépôt `rashwright-ui`](#-architecture--dépôt-rashwright-ui)
+2. [Nouveautés Majeures de la version v1.0.0](#-nouveautés-majeures-de-la-version-v100)
+3. [Component-Detector & Modèle shadcn/ui](#-component-detector--modèle-shadcnui)
+4. [Serveur MCP IA pour IDEs & Agents](#-serveur-mcp-ia-pour-ides--agents)
+5. [Système de Skills IA](#-système-de-skills-ia)
+6. [Prérequis](#-prérequis)
+7. [Installation du CLI `rs-ui`](#-installation-du-cli-rs-ui)
+8. [Initialiser un projet (`rs-ui init`)](#-initialiser-un-projet-rs-ui-init)
+9. [Ajouter des composants & Templates (`rs-ui add / template`)](#-ajouter-des-composants-rs-ui-add--list--info)
+10. [Réinitialiser le projet starter (`rs-ui reset`)](#-réinitialiser-le-projet-starter-rs-ui-reset)
+11. [Les 9 thèmes prédéfinis & Moteur Custom](#-les-9-thèmes-prédéfinis--moteur-custom)
+12. [Composants d'upload et providers](#-composants-dupload-et-providers)
+13. [Diagnostic (`rs-ui doctor`)](#-diagnostic-rs-ui-doctor)
+14. [Matrice de compatibilité Expo SDK](#-matrice-de-compatibilité-expo-sdk)
+15. [Architecture & Dépôt `rashwright-ui`](#-architecture--dépôt-rashwright-ui)
 
 > 🛠️ **Vous voulez contribuer ?** → Consulter **[CONTRIBUTOR.md](./CONTRIBUTOR.md)** et **[Quick-Start.md](./Quick-Start.md)**.
 
@@ -69,14 +71,54 @@ Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`
 
 - ✅ **Propriété totale du code** : Chaque composant installé via `rs-ui add` est **copié** dans ton projet (`components/ui/`). Tu peux l'éditer, l'adapter, le personnaliser sans contrainte.
 - ✅ **Support IA natif** : Chaque composant s'accompagne de son `SKILL.md` (`skills/rs-ui/<component>/`) pour donner le contexte parfait à Antigravity, Cursor, Gemini CLI, Claude Code et Copilot.
-- ✅ **Templates Autonomes Complets** : Installez des flux complets (`rs-ui add --template auth/dashboard/commerce/settings...`) directement dans votre projet (`src/components/templates/<id>/`).
-- ✅ **Résolution automatique Expo SDK** : Le CLI gère explicitement votre version d'Expo (**SDK 54 à 57**) et installe les versions natives **testées** pour `react-native-reanimated`, `expo-blur`, `expo-linear-gradient`, etc.
+- ✅ **Templates Autonomes Complets** : Installez des flux complets (`rs-ui template add auth/dashboard/commerce/settings...` ou `rs-ui add -t <id>`) directement dans votre projet (`src/components/templates/<id>/`).
+- ✅ **Component-Detector (shadcn/ui style)** : Détection intelligente et conditionnelle de TOUTES les dépendances (`hooks/use-responsive`, `lib/responsive`, packages Expo/npm) — n'installe que ce qui manque !
+- ✅ **Résolution automatique Expo SDK** : Le CLI gère explicitement votre version d'Expo (**SDK 54 à 59**) et installe les versions natives **testées** pour `react-native-reanimated`, `expo-blur`, `expo-linear-gradient`, etc.
 - ✅ **Moteur Liquid Glass intégré** : Effets de flou dynamique, reflets physiques, bordures translucides, rebonds tactiles haptiques — activable via `--glass` dans `rs-ui init`.
 - ✅ **9 thèmes + Custom Engine** : `default`, `emerald`, `violet`, `amber`, `rose`, `slate`, `green`, `red`, `cyan`, et création de thème custom.
 - ✅ **Commande `rs-ui reset`** : Archivage ou suppression en une commande des fichiers de démonstration du starter.
 - ✅ **61 composants** au catalogue avec typage strict TypeScript et zéro `any`.
 
+## 🌟 Nouveautés de la Version v1.0.1
+
+- 💎 **Enrichissement Premium des Templates Autonomes (`rs-ui template add`)** :
+  - **Template `auth`** :
+    - Deux écrans autonomes dédiés : `sign-in.tsx` (connexion) et `sign-up.tsx` (création de compte).
+    - Nouveau composant `GoogleAuthButton` vectoriel officiel avec retour haptique, animations et mode Liquid Glass.
+    - Formulaires enrichis avec séparateur visuel moderne.
+  - **Template `commerce`** :
+    - Écran catalogue `products-screen.tsx` avec recherche en temps réel, filtres catégories, badges d'état et compteur de panier dynamique.
+    - Écran détail produit complet `product-detail-screen.tsx` (`productId`) avec affichage hero, sélecteur de variantes (couleurs, tailles), notation étoilée (`Rating`) et barre d'achat sticky avec sélecteur de quantité.
+  - **Template `onboarding`** :
+    - Flow d'introduction fluide avec redirection automatique vers un écran d'accueil dédié `onboarding-home-screen.tsx` (`HomeScreen`) présentant un dashboard complet et des actions rapides.
+  - **Template `dashboard`** :
+    - Sélecteur temporel interactif (7 jours, 30 jours, 3 mois, 1 an).
+    - Barre d'actions rapides (Nouveau rapport, Inviter membre, Exporter les données).
+    - Métriques interactives avec badges de tendance.
+  - **Template `settings`** :
+    - Sélecteur d'apparence à 3 modes : Système (🖥️), Clair (☀️), Sombre (🌙), synchronisé en temps réel avec le `ThemeContext`.
+    - Toggles interactifs pour les notifications push et l'effet Liquid Glass.
+
+- ⚙️ **Correction NativeWind & Dark Mode (`errors.md`)** :
+  - Ajout automatique de `darkMode: "class"` dans `tailwind.config.js` lors de l'initialisation NativeWind v4 (Tailwind v3.4).
+  - Élimination de l'exception web : `[Error: Cannot manually set color scheme, as dark mode is type 'media']`.
+  - Configuration de `"userInterfaceStyle": "automatic"` et du plugin `expo-system-ui` dans `app.json`.
+
+- 🚀 **Prise en Charge Officielle Expo SDK 58 Stable** :
+  - Support certifié pour Expo SDK 54 à 58.
+  - SDK 58 configuré comme choix Recommandé par défaut dans `rs-ui init`.
+
+- 🧱 **Composant `ThemedView` Auto-Suffisant** :
+  - Sous-composant `InlineGridCarousel` intégré directement dans `view.tsx` pour éliminer toute dépendance statique sur `carousel.tsx`.
+  - Copie automatique des modules fondamentaux `use-responsive.ts` et `lib/responsive.ts` dès `setupFoundations`.
+  - Ajout de `expo-device` dans `CORE_EXPO_DEPS`.
+
 ## 🌟 Nouveautés Majeures de la Version v1.0.0
+
+- 🧩 **Component-Detector Automatique (Modèle shadcn/ui)** :
+  - Inspection récursive du code et des registres lors de l'ajout d'un composant (`rs-ui add <name>`) ou d'un template (`rs-ui template add <id>`).
+  - Détection automatique et installation conditionnelle des logiques fonctionnelles manquantes : `hooks/use-responsive.ts`, `lib/responsive.ts`, `hooks/use-device.ts`, utilitaires `lib/upload/`, déclarations ambient CSS.
+  - Détection et ajout automatique des packages Expo/npm manquants (`expo-device`, `react-native-reanimated`, etc.) dans votre `package.json`.
 
 - 🤖 **Serveur Model Context Protocol (MCP) IA Intégré (`rs-ui mcp`)** :
   - Expose un serveur MCP standard JSON-RPC 2.0 sur `stdio` pour connecter directement vos IDEs et agents IA (**Cursor**, **Claude Desktop**, **VS Code Roo/Cline**, **Gemini Code Assist**).
@@ -97,7 +139,7 @@ Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`
 
 - 🌪️ **Double Moteur de Style (Dual Engine)** :
   - Mode A (Défaut) : `StyleSheet.create` + `useTheme()` — **Zéro dépendance tierce**.
-  - Mode B (Optionnel) : NativeWind v4 (Tailwind v3.4) & v5 (CSS-first Tailwind v4) avec injection automatique de `global.css` dans `App.tsx` ou `_layout.tsx`.
+  - Mode B (Optionnel) : NativeWind v4 (Tailwind v3.4) & v5 (CSS-first Tailwind v4) avec injection automatique de `global.css` et déclarations ambient `declare module "*.css"`.
 
 - 🧪 **Quality Gate Absolu & Zéro `any`** :
   - **194 tests unitaires Vitest automatisés (40 suites de tests)** à 100% de réussite.
@@ -213,7 +255,69 @@ npx @rashwright/cli <commande>
 Vérifier l'installation :
 ```bash
 rs-ui --version
-# Affiche 0.3.0
+# Affiche 1.0.0
+```
+
+---
+
+## 🧩 Component-Detector & Modèle shadcn/ui
+
+Contrairement aux frameworks lourds qui installent toutes les dépendances dès le bootstrap, Rashwright UI Mobile adopte une **philosophie modulaire et conditionnelle stricte (style shadcn/ui)** :
+
+1. **Aucun package inutile à l'init** : Votre projet reste ultra-léger et ne contient que les packages indispensables.
+2. **Détection récursive à l'ajout (`rs-ui add`)** : Dès que vous ajoutez un composant ou un template, le `ComponentDetector` inspecte :
+   - Les **logiques fonctionnelles internes requises** (`hooks/use-responsive.ts`, `lib/responsive.ts`, `hooks/use-device.ts`, etc.) et les copie si elles sont absentes.
+   - Les **dépendances natives Expo / npm** requises (`expo-device`, `react-native-reanimated`, etc.) et les installe automatiquement avec votre gestionnaire de paquets (`bun`, `npm`, `pnpm`, `yarn`).
+   - Les **composants dépendants** (`requiresComponents`) et résout l'arborescence complète sans doublons.
+
+---
+
+## 🤖 Serveur MCP IA (`rs-ui mcp`)
+
+Connectez directement le catalogue de composants et de templates de Rashwright UI à vos assistants de code IA préférés grâce au protocole standard **Model Context Protocol (MCP)** :
+
+```bash
+# Démarrer le serveur MCP en mode stdio (JSON-RPC 2.0)
+rs-ui mcp
+
+# Configuration automatique en 1 clic pour votre IDE
+rs-ui mcp setup cursor --write    # Pour Cursor (.cursor/mcp.json)
+rs-ui mcp setup claude            # Pour Claude Desktop (claude_desktop_config.json)
+rs-ui mcp setup vscode            # Pour VS Code / Roo Code / Cline (.vscode/mcp.json)
+```
+
+### Outils IA disponibles via MCP :
+- `list_components` : Liste les 61 composants avec catégories et support Glass
+- `get_component` : Extrait le code TSX complet, les types et les dépendances d'un composant
+- `search_registry` : Recherche floue de composants et de templates
+- `get_theme_tokens` : Fournit les tokens de design (couleurs, radius, typographie, liquid glass)
+- `get_skill` : Récupère la documentation contextuelle IA (`SKILL.md`)
+- `list_templates` : Liste les 7 templates modulaires disponibles
+
+---
+
+## 📦 Templates Autonomes (`rs-ui template`)
+
+Rashwright UI Mobile intègre un gestionnaire de templates complets prêts à l'emploi :
+
+```bash
+# Afficher l'aide sur les templates
+rs-ui template help
+
+# Lister tous les templates disponibles
+rs-ui template list
+# ou : rs-ui template ls
+
+# Inspecter les détails et fichiers d'un template
+rs-ui template info auth
+rs-ui template info settings
+
+# Installer un template complet (avec tous ses composants et dépendances manquants)
+rs-ui template add auth
+rs-ui template add commerce
+rs-ui template add settings
+# ou via la commande add classique :
+rs-ui add -t dashboard
 ```
 
 ---
@@ -221,11 +325,15 @@ rs-ui --version
 ## 🚀 Initialiser un projet (`rs-ui init`)
 
 ```bash
-# Mode interactif avec choix de thème et assistant custom
+# Mode interactif avec choix de thème, assistant custom et option NativeWind
 rs-ui init
 
 # Mode automatique complet avec thème Cyber Cyan & Liquid Glass
 rs-ui init --glass --theme cyan --sdk 58 --yes
+
+# Définir le mode de thème par défaut dès l'init
+rs-ui init --theme-mode dark
+rs-ui init --theme-mode light
 
 # Thème personnalisé en ligne de commande
 rs-ui init --theme custom --primary "#00D9FF" --secondary "#1E293B" --dark-primary "#38BDF8"
@@ -236,8 +344,9 @@ rs-ui init --theme custom --primary "#00D9FF" --secondary "#1E293B" --dark-prima
 ## 🧩 Ajouter des composants (`rs-ui add` / `list` / `info`)
 
 ```bash
-# Ajouter un composant et son skill IA
+# Ajouter un composant et ses dépendances fonctionnelles automatiques
 rs-ui add drawer
+rs-ui add flat-list   # Installe automatiquement carousel, use-responsive et lib/responsive
 
 # Ajouter sans installer le skill IA
 rs-ui add drawer --no-skills
@@ -334,16 +443,30 @@ rs-ui doctor
 ```text
 Dépôt GitHub rashwright-ui             npm registry (public)
            │                                  │
-           ├── packages/cli/       ──────▶   @rashwright/cli@0.3.0
-           │    └── commandes: rs-ui / rs-ui-reset
+           ├── packages/cli/       ──────▶   @rashwright/cli@1.1.0
+           │    └── commandes: rs-ui / rs-ui-reset / rs-ui-mcp
            │
-           └── packages/ui-mobile/ ──────▶   @rashwright/ui-mobile@0.3.0
-                ├── components/ui/              (61 composants sources)
-                ├── skills/                     (61 skills + modules core)
+           └── packages/ui-mobile/ ──────▶   @rashwright/ui-mobile@1.1.0
+                ├── components/ui/              (65 composants sources)
+                ├── templates/                  (7 templates autonomes)
+                ├── skills/                     (65 skills + modules core)
                 ├── registry/                   (métadonnées & matrices SDK 54 à 59)
                 ├── liquid/ primitives          (moteur Liquid Glass)
                 └── lib/upload/                 (moteur d'upload inliné)
 ```
+
+---
+
+## 🚀 Nouveautés v1.1.0
+
+- **5 Nouveaux Composants UI Essentiels** :
+  - `Calendar` : Calendrier mensuel interactif avec sélection unique, multiple ou plage (`range`), localisation FR native via `Intl` et variant glass.
+  - `DatePicker` : Sélecteur de date en modal bottom-sheet avec trigger personnalisable, boutons Confirmer/Annuler et synchronisation draft/value.
+  - `SwipeableRow` : Balayage tactile fluide droite/gauche basé sur `PanResponder` natif (zéro dépendance externe lourde) avec retour haptique et actions personnalisées.
+  - `Popover` : Panneau contextuel flottant avec 8 options de placement, calcul automatique des coordonnées d'écran via `measure`, flèche géométrique et fermeture backdrop.
+  - `SegmentedControl` : Capsule animée par ressort (`withSpring`) fluide avec support du thème et accessibilité WAI-ARIA `tablist`.
+- **Catalogue étendu à 65 composants** validés avec zéro erreur TypeScript strict.
+- **Quality Gate 100% vert** : 194/194 tests Vitest réussis (40 suites).
 
 Pour la documentation dédiée aux contributeurs, consulter **[CONTRIBUTOR.md](./CONTRIBUTOR.md)**.
 

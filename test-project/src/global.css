@@ -1,0 +1,4 @@
+/* global.css — NativeWind v4 (Tailwind CSS v3.4) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

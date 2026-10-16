@@ -1,0 +1,20 @@
+{
+  "name": "calendar",
+  "version": "1.0.0",
+  "description": "Calendrier mensuel avec sélection unique, multiple ou plage, localisation FR et navigation mensuelle fluide.",
+  "category": "Forms",
+  "files": ["components/ui/calendar.tsx"],
+  "dependencies": [],
+  "expoDependencies": ["expo-haptics"],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": ["ThemeProvider"],
+  "supportsGlass": true,
+  "platforms": ["ios", "android"],
+  "nativeRebuildRequired": false,
+  "props": {
+    "mode": ["single", "multiple", "range"],
+    "locale": "string",
+    "variant": ["default", "glass"]
+  }
+}

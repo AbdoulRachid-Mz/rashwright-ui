@@ -1,137 +1,176 @@
-# PLAN STRATÉGIQUE DE REFONTE — Rashwright UI Mobile (Roadmap v0.8.0 → v1.0.0)
+# PLAN STRATÉGIQUE & ROADMAP D'ÉVOLUTION — Rashwright UI Mobile (v1.1.0 → v1.5.0)
 
 > **Document de référence stratégique et technique.**  
-> Inspiré de l'analyse comparative du fork officiel **shadcn/ui** appliquée à l'écosystème React Native / Expo.
+> Dernière mise à jour : 2026-10-16  
+> Statut : **v1.1.0 Publiée & Stabilisée** — 65 composants, 7 templates autonomes, Nouveaux composants (Calendar, DatePicker, SwipeableRow, Popover, SegmentedControl), Serveur MCP IA, Moteur responsive, Dual-styling NativeWind v4/v5, SDK 58 stable, 194 tests Vitest (Quality Gate 100% vert).
 
 ---
 
-## 0. Vision & Principes Fondateurs
+## 0. Bilan de l'Écosystème & Diagnostic des Manques Actuels
 
-Rashwright UI Mobile a prouvé sa viabilité (61 composants, 7 templates autonomes, CLI robuste sous Bun/NPM/Yarn/PNPM, 155 tests Vitest).  
-L'objectif de la présente refonte est d'élever l'écosystème au niveau de maturité, d'accessibilité et de flexibilité de **shadcn/ui en Web**, tout en respectant les spécificités incontournables du mobile (Expo SDK, React Native Reanimated, Safe Area, Haptics, gestes tactiles).
+L'architecture actuelle de Rashwright UI Mobile a atteint une robustesse de niveau production :
+- Le modèle **shadcn/ui adapté à React Native / Expo** est totalement fonctionnel.
+- Le **Component-Detector** garantit qu'aucune dépendance (interne ou externe) n'est oubliée lors de l'ajout d'un composant ou template.
+- Les **7 templates autonomes** offrent une base UI haut de gamme et personnalisable.
+- Le **Serveur MCP** connecte directement les IDEs IA au registre.
 
-### Les 4 Piliers de la Refonte
+Cependant, l'analyse approfondie de l'écosystème met en lumière **5 axes majeurs où des manques subsistent** pour rivaliser avec les plus grands design systems du marché :
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
-│             RASHWRIGHT UI MOBILE (ARCHITECTURE CIBLE v1.0)             │
+│             BILAN DES BESOINS & FONCTIONNALITÉS MANQUANTES             │
 ├────────────────────────────────────────────────────────────────────────┤
-│ 1. Headless Primitives Mobile                                          │
-│    - useControllableState (état canonique contrôlé / non-contrôlé)    │
-│    - WAI-ARIA Mobile complet (accessibilityRole, accessibilityState)   │
-│    - Compound Components Pattern (Slots découplés, zéro layout forcé) │
+│ 1. Composants Mobiles Clés Inexistants                                │
+│    - DatePicker / Calendar (réservations, formulaires, planning)      │
+│    - SwipeableRow (gestes swipe to action : delete, archive, pin)     │
+│    - SegmentedControl (sélecteur d'onglets pill fluide universel)      │
+│    - Tooltip / Popover (positionnement contextuel flottant)           │
+│    - Shimmer / Skeleton automatique pour toutes les cartes et listes  │
 ├────────────────────────────────────────────────────────────────────────┤
-│ 2. Dual Styling Engine (StyleSheet Pur & NativeWind v4)               │
-│    - Mode A (Défaut) : StyleSheet.create + useTheme() (Zéro dépendance)│
-│    - Mode B (Optionnel) : NativeWind v4 + CVA + cn() (Tailwind Mobile)│
+│ 2. Templates Métiers Spécialisés Manquants                            │
+│    - Template "Chat & Messaging" (messagerie instantanée, bulles)     │
+│    - Template "Finance & Crypto" (portefeuille, graphiques, transferts)│
+│    - Template "Social & Community" (fil d'actualité, likes, stories)  │
 ├────────────────────────────────────────────────────────────────────────┤
-│ 3. Registre Universel Déclaratif (Spec RFC v4)                         │
-│    - registry:ui, registry:hook, registry:lib, registry:block         │
-│    - Téléchargement distant multi-registres décentralisé               │
+│ 3. Gestionnaire de Cycle de Vie CLI (Mise à jour & Synchronisation)    │
+│    - Commande `rs-ui upgrade` / `rs-ui update` (détection de version)  │
+│    - 3-Way Merge ou protection différentielle des personnalisations   │
+│    - Réécriture chirurgicale des alias (AST Transformers ts-morph)    │
+│    - Commandes `rs-ui template list` et `rs-ui template info <id>`    │
 ├────────────────────────────────────────────────────────────────────────┤
-│ 4. Moteur CLI Intelligent avec AST Transformers                        │
-│    - Réécriture chirurgicale des alias (@/components, @/lib, etc.)     │
-│    - Standardisation de `rashwright-ui.json` compatible components.json│
-│    - Intégration Model Context Protocol (MCP) pour assistants IA       │
+│ 4. Intelligence Artificielle & Serveur MCP Avancé                     │
+│    - Outil MCP `generate_screen` (composition d'écran assistée par IA)│
+│    - Outil MCP `audit_accessibility` (audit automatique ARIA TalkBack) │
+│    - Outil MCP `convert_styling` (conversion StyleSheet ↔ NativeWind) │
+├────────────────────────────────────────────────────────────────────────┤
+│ 5. Visualisation Interactive & Tests E2E Mobile                       │
+│    - Documentation interactive Storybook Mobile / Expo Web Showcase    │
+│    - Tests end-to-end automatisés Maestro / simulateurs               │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 1. PILIER 1 : MOTEUR DE PRIMITIVES HEADLESS MOBILES
+## 1. AXE 1 : COMPOSANTS MOBILES ESSENTIELS MANQUANTS (Roadmap v1.1.0)
 
-### Problème actuel
-Comme mis en évidence lors de l'audit du composant `Tabs`, de nombreux composants gèrent leur état interne de manière ad-hoc, avec des risques de désynchronisation entre mode contrôlé et non contrôlé, des re-renders inutiles et des lacunes d'accessibilité vocale.
+### 1.1 `Calendar` & `DatePicker` Mobiles
+- **Problème** : Aucun composant de sélection de date ou plage de dates n'existe dans le catalogue. Les formulaires de réservation (commerce, hôtel, transport, analytics) doivent recourir à des dépendances tierces non unifiées.
+- **Spécifications** :
+  - `Calendar` : Vue calendrier mensuelle fluide avec sélection de date unique ou plage (`mode="single" | "range" | "multiple"`).
+  - `DatePicker` : Modal bottom-sheet ou inline avec roue ou grille calendaire, support de la localisation (français par défaut), dates minimales/maximales, dates désactivées.
+  - Support natif du thème actif et variante Liquid Glass.
 
-### Actions & Spécifications
-1. **Création du package ou dossier core `@/lib/primitives`** :
-   - `useControllableState` : gestion unifiée pour tous les composants à état double (`Tabs`, `Accordion`, `Collapsible`, `Select`, `Dialog/Modal`, `Switch`, `Rating`).
-   - `useDisclosure` : gestion générique ouverture/fermeture pour tiroirs, modales et menus.
-   - `useFocusTrap` / `useKeyboardHandling` : gestion adaptée au clavier virtuel mobile.
-2. **Standardisation WAI-ARIA Mobile** :
-   - Tout composant interactif doit obligatoirement déclarer :
-     - `accessibilityRole` (`tab`, `button`, `switch`, `combobox`, `dialog`, etc.).
-     - `accessibilityState` (`selected`, `disabled`, `expanded`, `checked`).
-     - `accessibilityLabel` et `accessibilityHint` prévisibles.
-3. **Compound Components sans layout imposé** :
-   - Aucun composant racine ne doit imposer `flex: 1` ou une taille fixe en dur.
-   - Largeur par défaut prévisible (`width: "100%"` ou `alignSelf: "stretch"`).
+### 1.2 `SwipeableRow` (Actions Tactiles de Balayage)
+- **Problème** : Le geste de swipe latéral (glisser pour supprimer, archiver, marquer lu) est une convention incontournable du mobile iOS et Android.
+- **Spécifications** :
+  - Basé sur `react-native-gesture-handler` et `react-native-reanimated`.
+  - Props `renderLeftActions` et `renderRightActions`.
+  - Déclenchement automatique de retour haptique (`expo-haptics`) lors du dépassement du seuil de swipe.
+  - Fermeture automatique au tap extérieur ou lors du défilement de la liste parente.
 
----
+### 1.3 `SegmentedControl` Universel
+- **Problème** : Les sélecteurs à segments sont actuellement codés ad-hoc dans certains templates (Settings, Dashboard).
+- **Spécifications** :
+  - Capsule animée par ressort (`withSpring`) qui glisse derrière le segment sélectionné.
+  - Support de 2 à 5 options, avec icônes optionnelles et badges de notification.
+  - Support de l'accessibilité WAI-ARIA (`accessibilityRole="tablist"` et `tab`).
 
-## 2. PILIER 2 : REGISTRE UNIVERSEL DÉCLARATIF (SPEC RFC v4)
+### 1.4 `Tooltip` & `Popover` Contextuels
+- **Problème** : Pas de mécanisme pour afficher une infobulle d'aide ou un menu contextuel ancré à un bouton ou une icône.
+- **Spécifications** :
+  - Mesure automatique des coordonnées dans la fenêtre (`measureInWindow`).
+  - Détection automatique du débordement d'écran (flip haut/bas, gauche/droite).
+  - Fond Liquid Glass avec flèche d'ancrage.
 
-### Problème actuel
-Le registre actuel est limité aux seuls composants unitaires et templates écrans. Il manque la capacité de distribuer des hooks autonomes (`use-device`, `use-back-handler`), des bibliothèques utilitaires (`utils.ts`, `cn.ts`) ou des sections d'UI (Blocks).
-
-### Actions & Spécifications
-1. **Adoption de la typologie normalisée shadcn** :
-   - `registry:ui` : composants atomiques (Boutons, Cards, Inputs, Tabs).
-   - `registry:hook` : hooks React Native réutilisables.
-   - `registry:lib` : fonctions utilitaires et primitives de calcul.
-   - `registry:block` : templates et sections d'écrans complètes.
-2. **Schéma Zod unifié (`registry-item.json`)** :
-   - Validation stricte des dépendances npm, devDependencies, `registryDependencies` (composants requis) et fichiers sources.
-3. **Ouverture aux registres décentralisés et privés** :
-   - Support de la syntaxe `@scope/item` dans `rs-ui add` pointant vers des URL distantes configurées dans `rashwright-ui.json`.
-
----
-
-## 3. PILIER 3 : DUAL STYLING ENGINE (STYLESHEET + NATIVEWIND v4)
-
-### Problème actuel
-Certains développeurs React Native préfèrent la rapidité et la concision de Tailwind CSS via NativeWind v4, tandis que d'autres exigent une solution sans runtime de build Tailwind (StyleSheet React Native standard).
-
-### Actions & Spécifications
-1. **Conservation du mode par défaut (StyleSheet + useTheme)** :
-   - Le moteur actuel reste la référence zéro-dépendance avec tokens typés (`theme.colors`, `theme.borderRadius`, Liquid Glass).
-2. **Introduction d'une option de configuration `styleEngine`** :
-   - Dans `rashwright-ui.json` :
-     ```json
-     {
-       "styleEngine": "nativewind" | "stylesheet",
-       "tailwind": {
-         "config": "tailwind.config.js",
-         "css": "global.css"
-       }
-     }
-     ```
-3. **Création de la fonction utilitaire `cn` (`packages/ui-mobile/lib/utils.ts`)** :
-   - Combinaison `clsx` + `tailwind-merge` pour les projets configurés en NativeWind.
+### 1.5 `ShimmerSkeleton` Automatique
+- **Problème** : Les états de chargement sont souvent statiques ou nécessitent un codage manuel.
+- **Spécifications** :
+  - Balayage lumineux continu avec `LinearGradient` et `react-native-reanimated`.
+  - Presets prêts à l'emploi : `Skeleton.Card`, `Skeleton.Avatar`, `Skeleton.Text`, `Skeleton.Row`.
 
 ---
 
-## 4. PILIER 4 : AST TRANSFORMERS & RESOLUTION D'ALIAS DANS LE CLI
+## 2. AXE 2 : NOUVEAUX TEMPLATES MÉTIERS SPÉCIALISÉS (Roadmap v1.2.0)
 
-### Problème actuel
-Le CLI se contente actuellement de copier des fichiers en dur. Si l'utilisateur a configuré des alias TypeScript différents dans son `tsconfig.json` (ex: `~/components` au lieu de `@/components`), des erreurs d'import TS2307 peuvent apparaître.
+### 2.1 Template `chat` (Messagerie Instantanée)
+- **Contenu** :
+  - Écran de conversation avec liste de messages inversée (`inverted`), bulles utilisateur / interlocuteur stylées en Liquid Glass.
+  - Barre de saisie avec attachement de fichiers/photos (intégré à `lib/upload/`), bouton d'envoi et emoji picker.
+  - En-tête avec avatar, statut en ligne et actions d'appel/paramètres.
 
-### Actions & Spécifications
-1. **Module `packages/cli/src/core/transformers/`** :
-   - Utilisation d'un parseur/transformateur AST TypeScript léger.
-   - **Transform Imports** : réécriture automatique des chemins `@/components/ui/` vers l'alias réel configuré dans `tsconfig.json` ou `rashwright-ui.json`.
-   - **Transform Icons** : adaptation des imports d'icônes (`@expo/vector-icons`, Lucide Icons ou icônes custom).
-2. **Validation pré-écriture** :
-   - Empêcher l'écrasement de fichiers personnalisés sans l'accord explicite du développeur (protection par hash SHA-256 dans le lockfile).
+### 2.2 Template `finance` (Portefeuille & Banque Mobile)
+- **Contenu** :
+  - Solde global avec switch de visibilité (œil masquer/afficher).
+  - Graphique linéaire de performance interactif.
+  - Liste des transactions récentes avec catégories colorées et montants formatés.
+  - Raccourcis d'actions : Virement, Recharger, Convertir, Carte virtuelle.
 
----
-
-## 5. PILIER 5 : EXPÉRIENCE DÉVELOPPEUR & INTÉGRATION IA (MCP)
-
-1. **Commande `rs-ui diff [composant]` enrichie** :
-   - Comparaison visuelle couleur dans le terminal entre le composant local modifié et la dernière version du registre.
-2. **Recherche floue `rs-ui search <query>`** :
-   - Recherche rapide dans le catalogue par nom, mot-clé, catégorie ou cas d'usage.
-3. **Support Model Context Protocol (MCP)** :
-   - Exposer un serveur local MCP (`rs-ui mcp`) permettant aux IDEs IA (Cursor, Windsurf, Claude Code, Gemini) d'interroger directement le catalogue de composants, de lire les documentations `SKILL.md` et de générer du code parfaitement conforme aux tokens Rashwright.
+### 2.3 Template `social` (Fil d'Actualité & Communauté)
+- **Contenu** :
+  - Feed défilant avec stories en haut (cercles avec bordure dégradée).
+  - Cartes de publications avec carrousel médias, bouton de like animé, commentaires et partage.
+  - Barre d'onglets de navigation persistante avec badge de notifications.
 
 ---
 
-## 6. Calendrier des Releases Prévisionnelles
+## 3. AXE 3 : GESTION DU CYCLE DE VIE CLI & AST TRANSFORMERS (Roadmap v1.3.0)
 
-| Version | Cible principale | Date estimée |
+### 3.1 Commande `rs-ui upgrade` / `rs-ui update`
+- **Fonctionnalités** :
+  - Analyse du fichier `rashwright-ui.lock` pour comparer les versions des composants installés avec la dernière version du registre.
+  - Affichage d'un tableau synthétique des mises à jour disponibles.
+  - Mode interactif pour choisir les composants à actualiser.
+  - Intégration de la commande `rs-ui diff` avant validation pour prévisualiser les changements.
+  - Sauvegarde automatique de secours dans `.rashwright/backups/` avant toute mise à jour.
+
+### 3.2 AST Transformers (Réécriture d'Alias Intelligente)
+- **Fonctionnalités** :
+  - Si le projet cible utilise `~/components` au lieu de `@/components`, ou `src/ui/` au lieu de `src/components/ui/`, le CLI réécrit automatiquement les imports dans le code copié grâce à l'AST TypeScript.
+  - Zéro rupture d'import quel que soit le setup du projet cible.
+
+### 3.3 Commandes Template Dédiées
+- `rs-ui template list` : Liste visuelle complète des 7+ templates disponibles avec description, captures d'écran terminal et composants requis.
+- `rs-ui template help` : Guide interactif pour démarrer rapidement avec les templates.
+- `rs-ui template remove <id>` : Nettoyage propre d'un template installé sans supprimer les primitives partagées.
+
+---
+
+## 4. AXE 4 : INTELLIGENCE ARTIFICIELLE & SERVEUR MCP AVANCÉ (Roadmap v1.4.0)
+
+### 4.1 Outil MCP `generate_screen`
+- **Objectif** : Permettre à Cursor, Claude Desktop et VS Code de générer des écrans mobiles complets répondant exactement aux besoins exprimés en langage naturel.
+- **Comportement** :
+  - L'agent IA invoque `generate_screen({ prompt, templateContext, styleEngine })`.
+  - Le serveur MCP assemble les composants Rashwright appropriés, applique les tokens de thème actifs, et garantit la réactivité aux breakpoints mobiles.
+
+### 4.2 Outil MCP `audit_accessibility`
+- **Objectif** : Analyser le code source d'un écran ou composant et signaler toutes les anomalies d'accessibilité mobile (manque d'`accessibilityLabel`, contraste insuffisant, zones de frappe inférieures à 44x44 points).
+
+### 4.3 Outil MCP `convert_styling`
+- **Objectif** : Traduction automatique bidirectionnelle entre `StyleSheet.create` et classes NativeWind Tailwind.
+
+---
+
+## 5. AXE 5 : STORYBOOK MOBILE & TESTS E2E MAESTRO (Roadmap v1.5.0)
+
+### 5.1 Showcase Interactif Web / Mobile (Storybook)
+- Environnement dédié permettant de manipuler tous les composants, de tester leurs variantes (Default, Bordered, Glass), leurs états (Loading, Disabled, Error) et de prévisualiser les 9 thèmes en temps réel.
+
+### 5.2 Tests End-to-End Automatisés (Maestro)
+- Scénarios d'automatisation sur émulateurs Android et iOS :
+  - Test du flow d'authentification (connexion, Google Auth, saisie OTP).
+  - Test du catalogue commerce (recherche, filtres, ajout panier, détail produit).
+  - Test du changement de mode d'apparence (Système → Clair → Sombre) et persistance dans le store.
+
+---
+
+## 6. Calendrier des Jalons
+
+| Version | Objectifs Clés | Statut |
 |---|---|:---:|
-| **v0.7.4** | Validation en conditions réelles, stabilisation des 7 templates autonomes | Octobre 2026 |
-| **v0.8.0** | Primitives Headless Mobiles (`useControllableState`) & Schéma Registry v4 | Novembre 2026 |
-| **v0.9.0** | AST Transformers dans le CLI & support expérimental NativeWind v4 | Décembre 2026 |
-| **v1.0.0** | Release Majeure : Dual Styling Engine stable, CLI unifié, Serveur MCP IA | Janvier 2027 |
+| **v1.0.1** | SDK 58, Dark Mode NativeWind fix, Templates Premium, ThemedView autonome | ✅ **Publiée** |
+| **v1.1.0** | Nouveaux Composants Mobiles (`calendar`, `swipeable-row`, `segmented-control`, `tooltip`) | 🔄 En préparation |
+| **v1.2.0** | Nouveaux Templates Métiers (`chat`, `finance`, `social`) + Commandes template CLI | 📅 Prévue |
+| **v1.3.0** | Commande `rs-ui upgrade`, 3-Way Merge & AST Transformers pour alias | 📅 Prévue |
+| **v1.4.0** | Outils MCP IA Génératifs (`generate_screen`, `audit_accessibility`) | 📅 Prévue |
+| **v1.5.0** | Showcase interactif Storybook et tests E2E Maestro | 📅 Prévue |

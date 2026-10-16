@@ -10,13 +10,13 @@ export type PackageManager = "bun" | "pnpm" | "yarn" | "npm";
  * Versions Expo SDK réellement supportées par Rashwright UI.
  * Mettre à jour cette liste lorsqu'un nouveau SDK est validé.
  */
-export const SUPPORTED_SDK_VERSIONS = [54, 55, 56, 57] as const;
+export const SUPPORTED_SDK_VERSIONS = [54, 55, 56, 57, 58] as const;
 
 export type SupportedSdkVersion = (typeof SUPPORTED_SDK_VERSIONS)[number];
 
 export const MINIMUM_SDK_VERSION: SupportedSdkVersion = 54;
 
-export const LATEST_SUPPORTED_SDK: SupportedSdkVersion = 57;
+export const LATEST_SUPPORTED_SDK: SupportedSdkVersion = 58;
 
 /**
  * Résoudre "latest" ou un nombre vers une version SDK numérique valide.

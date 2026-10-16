@@ -1,0 +1,17 @@
+{
+  "id": "showcase",
+  "name": "Showcase",
+  "description": "Vitrine de tous les composants Rashwright UI avec onglets overview, composants et glass.",
+  "version": "0.7.0",
+  "componentName": "ShowcaseTemplate",
+  "entrypoint": "showcase-template.tsx",
+  "files": [
+    "template.json",
+    "showcase-template.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": ["card", "button", "badge", "glass-card", "text-input", "rashwright-logo", "avatar", "stat-card", "rating"],
+  "dependencies": [],
+  "expoDependencies": [],
+  "supportsGlass": true
+}

@@ -1,8 +1,8 @@
 {
   "id": "settings",
   "name": "Settings",
-  "description": "Écran paramètres avec profil utilisateur, préférences d'affichage et notifications.",
-  "version": "0.7.0",
+  "description": "Écran paramètres avec profil utilisateur, sélecteur d'apparence 3 modes (Système, Clair, Sombre) et contrôle Liquid Glass.",
+  "version": "1.0.1",
   "componentName": "SettingsTemplate",
   "entrypoint": "settings-template.tsx",
   "files": [

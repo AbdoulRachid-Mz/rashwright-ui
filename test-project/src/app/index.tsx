@@ -1,9 +1,6 @@
 import React from "react";
-import { RashwrightCommerceScreen } from "@/components/ui/commerce-screen";
-import SettingsTemplate from "@/components/templates/settings";
-import DashboardTemplate from "@/components/templates/dashboard";
-import OnboardingTemplate from "@/components/templates/onboarding";
+import { RashwrightShowcaseScreen } from "@/components/ui/showcase-screen";
 
 export default function Index() {
-  return <OnboardingTemplate />;
+  return <RashwrightShowcaseScreen />;
 }

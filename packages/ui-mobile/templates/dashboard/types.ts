@@ -8,6 +8,7 @@ export interface DashboardMetric {
     value: number;
     isPositive: boolean;
   };
+  changeLabel?: string;
 }
 
 export interface ActivityItem {
@@ -18,11 +19,16 @@ export interface ActivityItem {
   status: "success" | "warning" | "default";
 }
 
+export type DashboardPeriod = "7d" | "30d" | "90d" | "1y";
+
 export interface DashboardTemplateProps {
   userName?: string;
   userRole?: string;
   metrics?: DashboardMetric[];
   activities?: ActivityItem[];
+  selectedPeriod?: DashboardPeriod;
+  onPeriodChange?: (period: DashboardPeriod) => void;
   onRefresh?: () => void;
   onViewAllActivities?: () => void;
+  onQuickAction?: (actionId: string) => void;
 }

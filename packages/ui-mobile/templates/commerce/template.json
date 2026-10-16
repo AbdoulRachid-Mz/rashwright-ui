@@ -1,19 +1,21 @@
 {
   "id": "commerce",
-  "name": "Commerce",
-  "description": "Boutique e-commerce avec catalogue produits, filtres par catégorie et panier.",
-  "version": "0.7.0",
+  "name": "Commerce Suite",
+  "description": "Boutique e-commerce premium avec catalogue de produits, écran de détail produit complet (productId), sélection de variantes et gestion du panier.",
+  "version": "1.0.1",
   "componentName": "CommerceTemplate",
   "entrypoint": "commerce-template.tsx",
   "files": [
     "template.json",
     "types.ts",
     "commerce-template.tsx",
+    "products-screen.tsx",
+    "product-detail-screen.tsx",
     "index.ts",
     "components/product-card.tsx",
     "components/category-filter.tsx"
   ],
-  "requiredComponents": ["card", "button", "badge", "rating", "rashwright-logo"],
+  "requiredComponents": ["card", "button", "badge", "rating", "divider", "rashwright-logo"],
   "dependencies": [],
   "expoDependencies": [],
   "supportsGlass": true

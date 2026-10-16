@@ -425,9 +425,15 @@ export function updateTsconfig(
     cfg.include = [
       "**/*.ts",
       "**/*.tsx",
+      "**/*.d.ts",
       ".expo/types/**/*.ts",
       "expo-env.d.ts",
+      "nativewind-env.d.ts",
     ];
+  } else {
+    if (!cfg.include.includes("nativewind-env.d.ts")) {
+      cfg.include.push("nativewind-env.d.ts");
+    }
   }
 
   writeFileSync(
@@ -505,6 +511,11 @@ export const COMPONENT_EXPORTS_MAP: Record<string, string> = {
   form: 'export { Form, FormField, FormLabel, FormMessage, FormDescription, useFormField } from "./form";',
   "otp-input": 'export { OtpInput } from "./otp-input";',
   rating: 'export { Rating } from "./rating";',
+  // ── Phase 3 — Nouveaux composants v1.1.0 ───────────────────────────────────
+  calendar: 'export { Calendar } from "./calendar";',
+  "date-picker": 'export { DatePicker } from "./date-picker";',
+  "swipeable-row": 'export { SwipeableRow } from "./swipeable-row";',
+  popover: 'export { Popover } from "./popover";',
   // ── Starters & Templates Screens v0.6.0 ──────────────────────────────────
   "minimal-screen": 'export { RashwrightMinimalScreen } from "./minimal-screen";',
   "auth-screen": 'export { RashwrightAuthScreen } from "./auth-screen";',
@@ -757,6 +768,8 @@ export function setupFoundations(
     { src: "hooks/use-device.ts", dest: join(basePrefix, "hooks/use-device.ts").replace(/\\/g, "/") },
     { src: "hooks/useBackHandler.ts", dest: join(basePrefix, "hooks/useBackHandler.ts").replace(/\\/g, "/") },
     { src: "hooks/useScrollAwareTabBar.ts", dest: join(basePrefix, "hooks/useScrollAwareTabBar.ts").replace(/\\/g, "/") },
+    { src: "hooks/use-responsive.ts", dest: join(basePrefix, "hooks/use-responsive.ts").replace(/\\/g, "/") },
+    { src: "lib/responsive.ts", dest: join(basePrefix, "lib/responsive.ts").replace(/\\/g, "/") },
     { src: "theme/index.ts", dest: join(basePrefix, "theme/index.ts").replace(/\\/g, "/") },
     { src: "theme/tokens/colors.ts", dest: join(basePrefix, "theme/tokens/colors.ts").replace(/\\/g, "/") },
     { src: "theme/tokens/glass.ts", dest: join(basePrefix, "theme/tokens/glass.ts").replace(/\\/g, "/") },

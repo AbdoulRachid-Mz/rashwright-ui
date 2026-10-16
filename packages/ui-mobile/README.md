@@ -2,10 +2,10 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile" width="180" />
 </p>
 
-# @rashwright/ui-mobile — v0.9.0
+# @rashwright/ui-mobile — v1.1.0
 
-[![npm version](https://img.shields.io/badge/npm-%400.9.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
-[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2059-000000?logo=expo)](#)
+[![npm version](https://img.shields.io/badge/npm-%401.1.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+[![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2058-000000?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6?logo=typescript)](#)
 [![NativeWind](https://img.shields.io/badge/NativeWind-v4%20%7C%20v5-06b6d4?logo=tailwindcss)](#)
 
@@ -20,9 +20,9 @@
 > ```
 
 Ce package `@rashwright/ui-mobile` est le **fournisseur de code source** et de **Skills IA** de l'écosystème Rashwright. Il est consommé par `@rashwright/cli` (localement ou via CDN unpkg) pour fournir :
-- le **registry JSON central** (61 composants, matrices Expo SDK 54 à 59)
+- le **registry JSON central** (65 composants, matrices Expo SDK 54 à 59)
 - le **code source TypeScript** de chaque composant (copié directement par le CLI dans votre projet)
-- le **catalogue exhaustif de Skills IA** (61 skills composants, 4 modules core, 1 skill global dans `skills/`)
+- le **catalogue exhaustif de Skills IA** (65 skills composants, 4 modules core, 1 skill global dans `skills/`)
 - les **7 Templates Autonomes Complets** distribuables sous `templates/<id>/` (`auth`, `commerce`, `dashboard`, `minimal`, `onboarding`, `settings`, `showcase`)
 - le **moteur Liquid Glass** (8 primitives sous `components/ui/liquid/`)
 - le **moteur d'upload** Rashwright (`lib/upload/`) avec 5 providers inlinés
@@ -116,6 +116,26 @@ rs-ui add button
 - **7 Templates Autonomes Complets** : `auth`, `commerce`, `dashboard`, `minimal`, `onboarding`, `settings`, `showcase` — chacun sous `templates/<id>/` avec `template.json`, `types.ts`, composants internes et `index.ts`.
 - **6 nouveaux composants** : `accordion`, `collapsible`, `otp-input`, `rating`, `data-table`, `form`.
 - **Architecture /src standardisée** : Reset automatique du template Expo, génération Expo Router (`src/app/_layout.tsx` + `src/app/index.tsx`).
+
+## 🆕 Nouveautés v1.0.1
+
+- 💎 **Templates Autonomes Enrichis & Premium** :
+  - **`auth`** : 2 écrans séparés (`sign-in.tsx`, `sign-up.tsx`) + composant `GoogleAuthButton` vectoriel haptique Glass.
+  - **`commerce`** : catalogue complet `products-screen.tsx` (recherche, filtres, compteur) et écran détail complet `product-detail-screen.tsx` (`productId`) avec sélection de variantes, notation et bouton panier sticky.
+  - **`onboarding`** : flow fluide avec redirection automatique vers un écran d'accueil dédié `onboarding-home-screen.tsx` (`HomeScreen`).
+  - **`dashboard`** : sélecteur de périodes interactif (7j, 30j, 90j, 1 an), barre d'actions rapides et métriques interactives.
+  - **`settings`** : sélecteur d'apparence à 3 modes (Système 🖥️, Clair ☀️, Sombre 🌙) synchronisé avec `ThemeContext` et toggles interactifs.
+- 🚀 **Prise en charge Expo SDK 58 Stable** : Matrice de compatibilité certifiée SDK 54 à 58.
+- 🧱 **Composant `ThemedView` Auto-Suffisant** : Sous-composant `InlineGridCarousel` intégré directement dans `view.tsx` sans dépendre statiquement de `carousel.tsx`.
+- 📦 **Fondations consolidées** : Ingestion automatique de `use-responsive.ts` et `lib/responsive.ts` lors de `setupFoundations`.
+
+## 🆕 Nouveautés v1.0.0
+
+- 🤖 **Serveur Model Context Protocol (MCP) IA** : Serveur JSON-RPC 2.0 stdio complet (`rs-ui mcp`) pour Cursor, Claude Desktop et VS Code.
+- 📐 **Moteur Responsive & Grille Multi-Colonnes** : Breakpoints standard (`sm`, `md`, `lg`, `xl`, `2xl`) dans `lib/responsive.ts` et `useResponsive()`.
+- 🔍 **Recherche Floue Haute Vitesse** : Commande `rs-ui search <query>` dans le terminal.
+- 🎨 **Comparateur Visuel en Ligne de Commande** : Commande `rs-ui diff [component]`.
+- 🌪️ **Double Moteur de Style (Dual Engine)** : StyleSheet natif + NativeWind v4/v5 avec injection `global.css`.
 
 ## 🆕 Nouveautés v0.3.0
 

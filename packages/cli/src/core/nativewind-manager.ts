@@ -80,6 +80,7 @@ export function generateTailwindConfig(version: NativeWindVersion, useSrc: boole
 
   return `/** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: "class",
   content: ${contentPattern},
   presets: [require("nativewind/preset")],
   theme: {
@@ -163,10 +164,12 @@ export function generateBabelConfig(version: NativeWindVersion): string {
 export function generateNativeWindEnv(version: NativeWindVersion): string {
   if (version === "v5") {
     return `/// <reference types="react-native-css/types" />
+declare module "*.css";
 `;
   }
 
   return `/// <reference types="nativewind/types" />
+declare module "*.css";
 `;
 }
 
@@ -232,15 +235,13 @@ export function updateAppJsonForNativeWind(
     web.bundler = "metro";
     parsed.expo.web = web;
 
-    // 2. Pour v5 ou gestion système : userInterfaceStyle automatic + plugin expo-system-ui
-    if (version === "v5") {
-      parsed.expo.userInterfaceStyle = "automatic";
-      const plugins = (parsed.expo.plugins as string[]) || [];
-      if (!plugins.includes("expo-system-ui")) {
-        plugins.push("expo-system-ui");
-      }
-      parsed.expo.plugins = plugins;
+    // 2. Pour NativeWind et gestion système : userInterfaceStyle automatic + plugin expo-system-ui
+    parsed.expo.userInterfaceStyle = "automatic";
+    const plugins = (parsed.expo.plugins as string[]) || [];
+    if (!plugins.includes("expo-system-ui")) {
+      plugins.push("expo-system-ui");
     }
+    parsed.expo.plugins = plugins;
 
     writeFileSync(appJsonPath, JSON.stringify(parsed, null, 2) + "\n", "utf-8");
   } catch {

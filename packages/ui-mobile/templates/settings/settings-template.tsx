@@ -7,6 +7,8 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  type StyleProp,
+  type ViewStyle,
 } from 'react-native';
 import Card from '@/components/ui/card';
 import Divider from '@/components/ui/divider';
@@ -15,7 +17,7 @@ import RashwrightLogo from '@/components/ui/rashwright-logo';
 import { useTheme } from '@/contexts/theme-context';
 import { ProfileSection } from './components/profile-section';
 import { PreferencesSection } from './components/preferences-section';
-import type { SettingsTemplateProps, SettingsSection, UserProfile } from './types';
+import type { SettingsTemplateProps, SettingsSection, UserProfile, ThemeModeOption } from './types';
 
 const DEFAULT_PROFILE: UserProfile = {
   name: 'Alex Martin',
@@ -31,24 +33,33 @@ const DEFAULT_SECTIONS: SettingsSection[] = [
   { id: 'about',     title: 'À propos',          icon: 'ℹ️' },
 ];
 
+export interface SettingsTemplatePropsWithStyle extends SettingsTemplateProps {
+  style?: StyleProp<ViewStyle>;
+}
+
 export function SettingsTemplate({
   profile = DEFAULT_PROFILE,
   sections = DEFAULT_SECTIONS,
-  isDarkMode: isDarkModeProp,
+  themeMode: themeModeProp,
   notificationsEnabled: notificationsEnabledProp,
-  onToggleDarkMode,
+  liquidGlassEnabled: liquidGlassEnabledProp,
+  onThemeModeChange,
   onToggleNotifications,
+  onToggleLiquidGlass,
   onEditProfile,
   onLogout,
-}: SettingsTemplateProps) {
-  const { theme } = useTheme();
+  style,
+}: SettingsTemplatePropsWithStyle) {
+  const { theme, mode, setMode, liquidGlassEnabled: ctxLiquidGlass, setLiquidGlassEnabled: ctxSetLiquidGlass } = useTheme();
 
-  const [darkMode, setDarkMode] = useState<boolean>(isDarkModeProp ?? false);
   const [notifications, setNotifications] = useState<boolean>(notificationsEnabledProp ?? true);
 
-  const handleToggleDarkMode = (value: boolean) => {
-    setDarkMode(value);
-    onToggleDarkMode?.(value);
+  const activeThemeMode: ThemeModeOption = themeModeProp ?? mode;
+  const isLiquidGlass = liquidGlassEnabledProp ?? ctxLiquidGlass;
+
+  const handleThemeModeChange = (newMode: ThemeModeOption) => {
+    setMode(newMode);
+    onThemeModeChange?.(newMode);
   };
 
   const handleToggleNotifications = (value: boolean) => {
@@ -56,9 +67,14 @@ export function SettingsTemplate({
     onToggleNotifications?.(value);
   };
 
+  const handleToggleLiquidGlass = (value: boolean) => {
+    ctxSetLiquidGlass(value);
+    onToggleLiquidGlass?.(value);
+  };
+
   return (
     <ScrollView
-      style={[styles.scroll, { backgroundColor: theme.colors.background }]}
+      style={[styles.scroll, { backgroundColor: theme.colors.background }, style]}
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
@@ -75,13 +91,15 @@ export function SettingsTemplate({
 
       {/* Preferences */}
       <Text style={[styles.sectionLabel, { color: theme.colors.mutedForeground }]}>
-        Préférences
+        Préférences système
       </Text>
       <PreferencesSection
-        isDarkMode={darkMode}
+        themeMode={activeThemeMode}
         notificationsEnabled={notifications}
-        onToggleDarkMode={handleToggleDarkMode}
+        liquidGlassEnabled={isLiquidGlass}
+        onThemeModeChange={handleThemeModeChange}
         onToggleNotifications={handleToggleNotifications}
+        onToggleLiquidGlass={handleToggleLiquidGlass}
       />
 
       <Divider style={styles.divider} />

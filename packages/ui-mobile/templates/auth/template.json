@@ -1,16 +1,19 @@
 {
   "id": "auth",
   "name": "Authentication Suite",
-  "description": "Suite complète d'authentification : formulaires de connexion, inscription et validation OTP sécurisée.",
-  "version": "1.0.0",
+  "description": "Suite complète d'authentification : écrans séparés SignIn et SignUp, bouton Google Auth et validation OTP sécurisée.",
+  "version": "1.0.1",
   "componentName": "AuthTemplate",
   "entrypoint": "auth-template.tsx",
   "files": [
     "auth-template.tsx",
+    "sign-in.tsx",
+    "sign-up.tsx",
     "types.ts",
     "components/login-form.tsx",
     "components/register-form.tsx",
     "components/otp-step.tsx",
+    "components/google-auth-button.tsx",
     "index.ts"
   ],
   "requiredComponents": [
