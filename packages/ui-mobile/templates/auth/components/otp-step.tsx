@@ -8,7 +8,8 @@ import OtpInput from "@/components/ui/otp-input";
 
 export interface OtpStepProps {
   onVerify: (otp: string) => void;
-  onBackToLogin: () => void;
+  onBackToLogin?: () => void;
+  onBack?: () => void;
   onResend?: () => void;
   isLoading?: boolean;
 }
@@ -16,11 +17,13 @@ export interface OtpStepProps {
 export function OtpStep({
   onVerify,
   onBackToLogin,
+  onBack,
   onResend,
   isLoading,
 }: OtpStepProps) {
   const { theme } = useTheme();
   const [code, setCode] = useState("");
+  const handleBack = onBack || onBackToLogin;
 
   return (
     <View style={styles.container}>
@@ -56,7 +59,7 @@ export function OtpStep({
         </TouchableOpacity>
       )}
 
-      <TouchableOpacity onPress={onBackToLogin} style={styles.backBtn}>
+      <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
         <Text style={[styles.backText, { color: theme.colors.mutedForeground }]}>
           ← Retour à la connexion
         </Text>

@@ -14,6 +14,13 @@ import { TEMPLATES_ROOT } from "./paths.js";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
+export interface TemplateScreenSpec {
+  route: string;
+  file: string;
+  componentName: string;
+  title?: string;
+}
+
 /** Manifeste d'un template autonome (correspond à template.json). */
 export interface TemplateDefinition {
   id: string;
@@ -31,6 +38,8 @@ export interface TemplateDefinition {
   /** Dépendances Expo. */
   expoDependencies: string[];
   supportsGlass: boolean;
+  /** Écrans additionnels pour Expo Router / navigation */
+  screens?: TemplateScreenSpec[];
 }
 
 // ── Résolution du répertoire source ───────────────────────────────────────────
@@ -86,6 +95,7 @@ function readTemplateJson(
         ? parsed.expoDependencies
         : [],
       supportsGlass: parsed.supportsGlass ?? false,
+      screens: Array.isArray(parsed.screens) ? parsed.screens : undefined,
     };
   } catch {
     return null;

@@ -48,7 +48,7 @@ export const Icon: React.FC<IconProps> = ({
     case "feather":
       return (
         <Feather
-          name={name satisfies string}
+          name={name as any}
           size={pixelSize}
           color={resolvedColor}
           style={style}
@@ -57,7 +57,7 @@ export const Icon: React.FC<IconProps> = ({
     case "material":
       return (
         <MaterialCommunityIcons
-          name={name satisfies string}
+          name={name as any}
           size={pixelSize}
           color={resolvedColor}
           style={style}
@@ -67,7 +67,7 @@ export const Icon: React.FC<IconProps> = ({
     default:
       return (
         <Ionicons
-          name={name satisfies string}
+          name={name as any}
           size={pixelSize}
           color={resolvedColor}
           style={style}

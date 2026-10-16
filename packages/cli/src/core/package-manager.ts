@@ -53,7 +53,7 @@ export function detectPackageManager(cwd: string = process.cwd()): PackageManage
 export function buildProjectInstallCommand(pm: PackageManager): string {
   switch (pm) {
     case "bun":
-      return "bun install";
+      return "bun install --force";
     case "pnpm":
       return "pnpm install";
     case "yarn":

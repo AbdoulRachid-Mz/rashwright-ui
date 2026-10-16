@@ -1,31 +1,27 @@
 ---
-name: rs-ui/showcase-screen
-description: Écran de démonstration interactif avec sélecteur de thèmes, toggle Glass et galerie des composants.
+name: rs-ui/search-input
+description: Champ de recherche avec icône loupe, bouton d'effacement et debounce intégré.
 version: 0.3.0
 componentVersion: 0.3.0
-category: Starter
+category: Forms
 dependencies:
   - none
 expoDependencies:
-  - none
+  - @expo/vector-icons
 requiresComponents:
-  - badge
-  - button
-  - card
-  - glass-card
-  - rashwright-logo
+  - icon-button
   - text-input
-supportsGlass: true
+supportsGlass: false
 ---
 
-# ShowcaseScreen — Rashwright UI Mobile
+# SearchInput — Rashwright UI Mobile
 
-Écran de démonstration interactif avec sélecteur de thèmes, toggle Glass et galerie des composants.
+Champ de recherche avec icône loupe, bouton d'effacement et debounce intégré.
 
 ## Installation
 
 ```bash
-rs-ui add showcase-screen
+rs-ui add search-input
 ```
 
 > ℹ️ Ce composant fonctionne directement avec Expo Go ou un development build standard.
@@ -36,15 +32,15 @@ rs-ui add showcase-screen
 ```tsx
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { ShowcaseScreen } from '@/components/ui/showcase-screen';
+import { SearchInput } from '@/components/ui/search-input';
 import { useTheme } from '@/contexts/theme-context';
 
-export function ExampleShowcaseScreen() {
+export function ExampleSearchInput() {
   const { theme } = useTheme();
 
   return (
     <View style={styles.container}>
-      <ShowcaseScreen />
+      <SearchInput />
     </View>
   );
 }
@@ -64,18 +60,15 @@ const styles = StyleSheet.create({
 | `children` | `React.ReactNode` | Contenu enfant |
 
 
-### Support Liquid Glass
-Ce composant supporte le variant `glass` ou le style translucide Liquid Glass avec réfraction et bordure spéculaire.
-
 ## Dépendances & Prérequis
 
 - **Dépendances npm** : Aucune
-- **Dépendances Expo** : Aucune
-- **Composants requis** : badge, button, card, glass-card, rashwright-logo, text-input
+- **Dépendances Expo** : @expo/vector-icons
+- **Composants requis** : icon-button, text-input
 - **Providers requis** : ThemeProvider
 
 ## Bonnes Pratiques & Erreurs Fréquentes
 
 1. **Typage strict** : Ne pas caster les props vers `any`. Utilisez les interfaces exportées par le composant.
 2. **Cohérence des thèmes** : Ne pas surcharger les couleurs avec des valeurs fixes ; appuyez-vous sur les tokens `theme.colors` injectés par le `ThemeProvider`.
-3. **Import alias** : Toujours importer depuis `@/components/ui/showcase-screen` ou `@/components/ui`.
+3. **Import alias** : Toujours importer depuis `@/components/ui/search-input` ou `@/components/ui`.

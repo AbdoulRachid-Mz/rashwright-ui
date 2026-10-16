@@ -23,7 +23,8 @@ import LiquidHighlight from "./liquid/liquid-highlight";
 
 export interface CheckboxProps {
   checked: boolean;
-  onValueChange: (checked: boolean) => void;
+  onValueChange?: (checked: boolean) => void;
+  onCheckedChange?: (checked: boolean) => void;
   label?: string;
   description?: string;
   disabled?: boolean;
@@ -36,6 +37,7 @@ export interface CheckboxProps {
 export const Checkbox: React.FC<CheckboxProps> = ({
   checked,
   onValueChange,
+  onCheckedChange,
   label,
   description,
   disabled = false,
@@ -68,7 +70,9 @@ export const Checkbox: React.FC<CheckboxProps> = ({
 
   const handleToggle = () => {
     if (!disabled) {
-      onValueChange(!checked);
+      const next = !checked;
+      onValueChange?.(next);
+      onCheckedChange?.(next);
     }
   };
 

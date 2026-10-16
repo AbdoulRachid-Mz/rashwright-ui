@@ -1,27 +1,27 @@
 ---
-name: rs-ui/upload-video
-description: Sélecteur et uploader de vidéo avec preview, durée et multi-providers.
+name: rs-ui/checkbox
+description: Case à cocher animée avec label et état indéterminé.
 version: 0.3.0
 componentVersion: 0.3.0
-category: Media
+category: Forms
 dependencies:
   - none
 expoDependencies:
   - @expo/vector-icons
-  - expo-image-picker
+  - react-native-reanimated
 requiresComponents:
   - none
 supportsGlass: false
 ---
 
-# UploadVideo — Rashwright UI Mobile
+# Checkbox — Rashwright UI Mobile
 
-Sélecteur et uploader de vidéo avec preview, durée et multi-providers.
+Case à cocher animée avec label et état indéterminé.
 
 ## Installation
 
 ```bash
-rs-ui add upload-video
+rs-ui add checkbox
 ```
 
 > ℹ️ Ce composant fonctionne directement avec Expo Go ou un development build standard.
@@ -32,15 +32,15 @@ rs-ui add upload-video
 ```tsx
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { UploadVideo } from '@/components/ui/upload-video';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useTheme } from '@/contexts/theme-context';
 
-export function ExampleUploadVideo() {
+export function ExampleCheckbox() {
   const { theme } = useTheme();
 
   return (
     <View style={styles.container}>
-      <UploadVideo />
+      <Checkbox />
     </View>
   );
 }
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
 ## Dépendances & Prérequis
 
 - **Dépendances npm** : Aucune
-- **Dépendances Expo** : @expo/vector-icons, expo-image-picker
+- **Dépendances Expo** : @expo/vector-icons, react-native-reanimated
 - **Composants requis** : Aucun
 - **Providers requis** : ThemeProvider
 
@@ -71,4 +71,4 @@ const styles = StyleSheet.create({
 
 1. **Typage strict** : Ne pas caster les props vers `any`. Utilisez les interfaces exportées par le composant.
 2. **Cohérence des thèmes** : Ne pas surcharger les couleurs avec des valeurs fixes ; appuyez-vous sur les tokens `theme.colors` injectés par le `ThemeProvider`.
-3. **Import alias** : Toujours importer depuis `@/components/ui/upload-video` ou `@/components/ui`.
+3. **Import alias** : Toujours importer depuis `@/components/ui/checkbox` ou `@/components/ui`.

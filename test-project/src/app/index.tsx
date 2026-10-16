@@ -1,6 +1,6 @@
 import React from "react";
-import { RashwrightShowcaseScreen } from "@/components/ui/showcase-screen";
+import { RashwrightCommerceScreen } from "@/components/ui/commerce-screen";
 
 export default function Index() {
-  return <RashwrightShowcaseScreen />;
+  return <RashwrightCommerceScreen />;
 }

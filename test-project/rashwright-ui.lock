@@ -1,6 +1,6 @@
 {
   "lockfileVersion": 1,
-  "generatedAt": "2026-10-16T13:16:06.347Z",
+  "generatedAt": "2026-10-16T16:56:45.737Z",
   "components": {
     "button": {
       "version": "0.3.0",
@@ -9,12 +9,12 @@
         {
           "path": "src/components/ui/button.tsx",
           "hash": "sha256:0da186f2b0189aae465c6ee7566a78b0b71337586ee44c0a1102c1a18a1e771e",
-          "installedAt": "2026-10-16T13:16:06.313Z"
+          "installedAt": "2026-10-16T14:50:25.739Z"
         }
       ],
       "dependencies": [],
       "expoDependencies": [],
-      "installedAt": "2026-10-16T13:16:06.313Z"
+      "installedAt": "2026-10-16T14:50:25.740Z"
     },
     "card": {
       "version": "0.3.0",
@@ -23,26 +23,12 @@
         {
           "path": "src/components/ui/card.tsx",
           "hash": "sha256:153ae04af9aa4e7ad542b3de65664b229cec3572d6686ab6e6a651e095d6957e",
-          "installedAt": "2026-10-16T13:16:06.318Z"
+          "installedAt": "2026-10-16T14:50:25.744Z"
         }
       ],
       "dependencies": [],
       "expoDependencies": [],
-      "installedAt": "2026-10-16T13:16:06.318Z"
-    },
-    "glass-card": {
-      "version": "0.3.0",
-      "sourceHash": "sha256:d26992fa918b6378742e206ea01f537a70739980a8a00951eb67e87f308c3e0c",
-      "files": [
-        {
-          "path": "src/components/ui/glass-card.tsx",
-          "hash": "sha256:d26992fa918b6378742e206ea01f537a70739980a8a00951eb67e87f308c3e0c",
-          "installedAt": "2026-10-16T13:16:06.321Z"
-        }
-      ],
-      "dependencies": [],
-      "expoDependencies": [],
-      "installedAt": "2026-10-16T13:16:06.321Z"
+      "installedAt": "2026-10-16T14:50:25.744Z"
     },
     "badge": {
       "version": "0.3.0",
@@ -51,54 +37,40 @@
         {
           "path": "src/components/ui/badge.tsx",
           "hash": "sha256:6d27bdf2acdff2b075b70274199c00217d38770f0e3af063c5401141c256f929",
-          "installedAt": "2026-10-16T13:16:06.324Z"
+          "installedAt": "2026-10-16T14:50:25.748Z"
         }
       ],
       "dependencies": [],
       "expoDependencies": [],
-      "installedAt": "2026-10-16T13:16:06.324Z"
+      "installedAt": "2026-10-16T14:50:25.748Z"
     },
-    "text-input": {
+    "rating": {
       "version": "0.3.0",
-      "sourceHash": "sha256:a1e5089fad92dc324a2edf547dead2425061493f06550b6aaa3f54f5d170f506",
+      "sourceHash": "sha256:48ff9a2bf3b83d18b90c2fe225182ee3442c8100166f50afd8a05e0069c94246",
       "files": [
         {
-          "path": "src/components/ui/text-input.tsx",
-          "hash": "sha256:a1e5089fad92dc324a2edf547dead2425061493f06550b6aaa3f54f5d170f506",
-          "installedAt": "2026-10-16T13:16:06.327Z"
+          "path": "src/components/ui/rating.tsx",
+          "hash": "sha256:48ff9a2bf3b83d18b90c2fe225182ee3442c8100166f50afd8a05e0069c94246",
+          "installedAt": "2026-10-16T14:50:25.754Z"
         }
       ],
       "dependencies": [],
       "expoDependencies": [],
-      "installedAt": "2026-10-16T13:16:06.327Z"
+      "installedAt": "2026-10-16T14:50:25.754Z"
     },
-    "upload-image": {
+    "search-input": {
       "version": "0.3.0",
-      "sourceHash": "sha256:46cc9486e3d66f0147bd02110aa57931ed5dc45f303cd01d2c4693192dd90842",
+      "sourceHash": "sha256:4d21d9efef026a8e684568424d24f0af1cb792dff4766b9bf189f6be7665538d",
       "files": [
         {
-          "path": "src/components/ui/upload-image.tsx",
-          "hash": "sha256:46cc9486e3d66f0147bd02110aa57931ed5dc45f303cd01d2c4693192dd90842",
-          "installedAt": "2026-10-16T13:16:06.332Z"
+          "path": "src/components/ui/search-input.tsx",
+          "hash": "sha256:4d21d9efef026a8e684568424d24f0af1cb792dff4766b9bf189f6be7665538d",
+          "installedAt": "2026-10-16T14:50:25.757Z"
         }
       ],
       "dependencies": [],
       "expoDependencies": [],
-      "installedAt": "2026-10-16T13:16:06.332Z"
-    },
-    "upload-video": {
-      "version": "0.3.0",
-      "sourceHash": "sha256:63c5f7c7a2a71426bced3d00f1488f3b85afaece4dd4ed414b5209d537eba739",
-      "files": [
-        {
-          "path": "src/components/ui/upload-video.tsx",
-          "hash": "sha256:63c5f7c7a2a71426bced3d00f1488f3b85afaece4dd4ed414b5209d537eba739",
-          "installedAt": "2026-10-16T13:16:06.336Z"
-        }
-      ],
-      "dependencies": [],
-      "expoDependencies": [],
-      "installedAt": "2026-10-16T13:16:06.336Z"
+      "installedAt": "2026-10-16T14:50:25.757Z"
     },
     "rashwright-logo": {
       "version": "0.3.0",
@@ -107,63 +79,277 @@
         {
           "path": "src/components/ui/rashwright-logo.tsx",
           "hash": "sha256:3b1bae79b6b7432e010c5646c5957e2c87573c5280fcf25be6728f234451346b",
-          "installedAt": "2026-10-16T13:16:06.339Z"
+          "installedAt": "2026-10-16T14:50:25.760Z"
         }
       ],
       "dependencies": [],
       "expoDependencies": [],
-      "installedAt": "2026-10-16T13:16:06.339Z"
+      "installedAt": "2026-10-16T14:50:25.760Z"
     },
-    "showcase-screen": {
+    "commerce-screen": {
       "version": "0.3.0",
-      "sourceHash": "sha256:757f032b5e28bbcd8db5ef5a28a630e51699ab90bb456b5ba817335a2ffd5387",
+      "sourceHash": "sha256:e8bef1e222876c8ba3ae212021ff20c430bd70fe933fe38771032e7b3369c8c5",
       "files": [
         {
-          "path": "src/components/ui/showcase-screen.tsx",
-          "hash": "sha256:757f032b5e28bbcd8db5ef5a28a630e51699ab90bb456b5ba817335a2ffd5387",
-          "installedAt": "2026-10-16T13:16:06.342Z"
+          "path": "src/components/ui/commerce-screen.tsx",
+          "hash": "sha256:e8bef1e222876c8ba3ae212021ff20c430bd70fe933fe38771032e7b3369c8c5",
+          "installedAt": "2026-10-16T14:50:25.763Z"
         }
       ],
       "dependencies": [],
       "expoDependencies": [],
-      "installedAt": "2026-10-16T13:16:06.342Z"
+      "installedAt": "2026-10-16T14:50:25.763Z"
+    },
+    "flat-list": {
+      "version": "1.0.0",
+      "sourceHash": "sha256:b3070b43a7d8c78f55342a89df7ddb8a494275a691c9bb730e431a0492a08105",
+      "files": [
+        {
+          "path": "src/components/ui/flat-list.tsx",
+          "hash": "sha256:b3070b43a7d8c78f55342a89df7ddb8a494275a691c9bb730e431a0492a08105",
+          "installedAt": "2026-10-16T14:53:49.245Z"
+        }
+      ],
+      "dependencies": [],
+      "expoDependencies": [],
+      "installedAt": "2026-10-16T14:53:49.245Z"
+    },
+    "carousel": {
+      "version": "1.0.0",
+      "sourceHash": "sha256:3d318843cfc10e5cf669e1bee12bf621bff33a96cdac9712d474171afa05a039",
+      "files": [
+        {
+          "path": "src/components/ui/carousel.tsx",
+          "hash": "sha256:3d318843cfc10e5cf669e1bee12bf621bff33a96cdac9712d474171afa05a039",
+          "installedAt": "2026-10-16T14:53:49.315Z"
+        }
+      ],
+      "dependencies": [],
+      "expoDependencies": [
+        "@expo/vector-icons",
+        "react-native-reanimated"
+      ],
+      "installedAt": "2026-10-16T14:53:49.315Z"
+    },
+    "divider": {
+      "version": "1.0.0",
+      "sourceHash": "sha256:83753387a3a42b064163f69f7cd89f7769ba438071f8158883064f44a9afb012",
+      "files": [
+        {
+          "path": "src/components/ui/divider.tsx",
+          "hash": "sha256:83753387a3a42b064163f69f7cd89f7769ba438071f8158883064f44a9afb012",
+          "installedAt": "2026-10-16T16:53:11.928Z"
+        }
+      ],
+      "dependencies": [],
+      "expoDependencies": [],
+      "installedAt": "2026-10-16T16:53:11.928Z"
+    },
+    "text-input": {
+      "version": "1.0.0",
+      "sourceHash": "sha256:a1e5089fad92dc324a2edf547dead2425061493f06550b6aaa3f54f5d170f506",
+      "files": [
+        {
+          "path": "src/components/ui/text-input.tsx",
+          "hash": "sha256:a1e5089fad92dc324a2edf547dead2425061493f06550b6aaa3f54f5d170f506",
+          "installedAt": "2026-10-16T16:53:11.949Z"
+        }
+      ],
+      "dependencies": [],
+      "expoDependencies": [],
+      "installedAt": "2026-10-16T16:53:11.949Z"
+    },
+    "icon-button": {
+      "version": "1.0.0",
+      "sourceHash": "sha256:24ba66b94786dee6c503b82117fc5aed65694bdf4e19cb435a5d76dcf119c3b0",
+      "files": [
+        {
+          "path": "src/components/ui/icon-button.tsx",
+          "hash": "sha256:24ba66b94786dee6c503b82117fc5aed65694bdf4e19cb435a5d76dcf119c3b0",
+          "installedAt": "2026-10-16T16:53:11.972Z"
+        }
+      ],
+      "dependencies": [],
+      "expoDependencies": [],
+      "installedAt": "2026-10-16T16:53:11.972Z"
+    },
+    "icon": {
+      "version": "1.0.0",
+      "sourceHash": "sha256:880f248defd5bb0822046d3f838b2ec20307390e56e73153ec16ce2687f7ed28",
+      "files": [
+        {
+          "path": "src/components/ui/icon.tsx",
+          "hash": "sha256:880f248defd5bb0822046d3f838b2ec20307390e56e73153ec16ce2687f7ed28",
+          "installedAt": "2026-10-16T16:53:11.992Z"
+        }
+      ],
+      "dependencies": [],
+      "expoDependencies": [
+        "@expo/vector-icons"
+      ],
+      "installedAt": "2026-10-16T16:53:11.992Z"
+    },
+    "checkbox": {
+      "version": "1.0.0",
+      "sourceHash": "sha256:7ffa30c015b3994e6760212a34ecbbc643f781cb71c9305966f551c8d56d81da",
+      "files": [
+        {
+          "path": "src/components/ui/checkbox.tsx",
+          "hash": "sha256:7ffa30c015b3994e6760212a34ecbbc643f781cb71c9305966f551c8d56d81da",
+          "installedAt": "2026-10-16T16:56:45.168Z"
+        }
+      ],
+      "dependencies": [],
+      "expoDependencies": [
+        "@expo/vector-icons",
+        "react-native-reanimated"
+      ],
+      "installedAt": "2026-10-16T16:56:45.168Z"
+    },
+    "otp-input": {
+      "version": "1.0.0",
+      "sourceHash": "sha256:613cf5baf86dbff5edbf85d2c2ab4995c0822197719c52c17aaadd6786f27cd2",
+      "files": [
+        {
+          "path": "src/components/ui/otp-input.tsx",
+          "hash": "sha256:613cf5baf86dbff5edbf85d2c2ab4995c0822197719c52c17aaadd6786f27cd2",
+          "installedAt": "2026-10-16T16:56:45.266Z"
+        }
+      ],
+      "dependencies": [],
+      "expoDependencies": [
+        "react-native-reanimated"
+      ],
+      "installedAt": "2026-10-16T16:56:45.266Z"
     }
   },
   "templates": {
-    "showcase": {
-      "version": "0.7.0",
-      "installPath": "src/components/templates/showcase",
+    "commerce": {
+      "version": "1.0.1",
+      "installPath": "src/components/templates/commerce",
       "requiredComponents": [
         "card",
         "button",
         "badge",
-        "glass-card",
+        "rating",
+        "divider",
+        "search-input",
         "text-input",
-        "rashwright-logo",
-        "avatar",
-        "stat-card",
-        "rating"
+        "icon-button",
+        "icon",
+        "rashwright-logo"
       ],
       "files": [
         {
-          "path": "src/components/templates/showcase/template.json",
-          "hash": "sha256:d3fbdcc00979519d91901b98e3a716abca26907ed97cefb361fb3b989c1670c4",
-          "installedAt": "2026-10-16T13:16:06.345Z"
+          "path": "src/components/templates/commerce/template.json",
+          "hash": "sha256:93fe9715a73423f3c613a028cbce1a4a8d80a7eacd62398078dc5cd5cd2c5762",
+          "installedAt": "2026-10-16T16:53:12.016Z"
         },
         {
-          "path": "src/components/templates/showcase/showcase-template.tsx",
-          "hash": "sha256:357ca3ec91e8da2c16530b60843031cd0d1306ce5834b2e5b5278afd8bbbf7db",
-          "installedAt": "2026-10-16T13:16:06.346Z"
+          "path": "src/components/templates/commerce/types.ts",
+          "hash": "sha256:e0be6d4b18cfe22dae8d89a5e4ecf3dc14f27a6a251e75bc71720f6cf4397f2e",
+          "installedAt": "2026-10-16T16:53:12.018Z"
         },
         {
-          "path": "src/components/templates/showcase/index.ts",
-          "hash": "sha256:095debe8ce6b99a6da60f1134a9ec888acb3a3277e6d0d94a38e7dd266b48ebb",
-          "installedAt": "2026-10-16T13:16:06.347Z"
+          "path": "src/components/templates/commerce/commerce-template.tsx",
+          "hash": "sha256:762e5d45f5dd796fd111886d52c60bfaa02fa194889ed1274322194d92b4a2ed",
+          "installedAt": "2026-10-16T16:53:12.020Z"
+        },
+        {
+          "path": "src/components/templates/commerce/products-screen.tsx",
+          "hash": "sha256:7f90c63ff8781cdff45ec809ee0c64e86be3d1b9093350a962f8c88d6f6185c3",
+          "installedAt": "2026-10-16T16:53:12.052Z"
+        },
+        {
+          "path": "src/components/templates/commerce/product-detail-screen.tsx",
+          "hash": "sha256:78582319d44cace821446cf6e2ed83c0f4e96145e7ac9b7290357fb4ca35b5cc",
+          "installedAt": "2026-10-16T16:53:12.080Z"
+        },
+        {
+          "path": "src/components/templates/commerce/index.ts",
+          "hash": "sha256:b29af003739f0b820495ea7afacb2779b42c8ecea415b424533d67689ec1c478",
+          "installedAt": "2026-10-16T16:53:12.082Z"
+        },
+        {
+          "path": "src/components/templates/commerce/components/product-card.tsx",
+          "hash": "sha256:d3dba73883556c9b138499bb72439e3357636af9bc72a3652a20e067dc84a398",
+          "installedAt": "2026-10-16T16:53:12.085Z"
+        },
+        {
+          "path": "src/components/templates/commerce/components/category-filter.tsx",
+          "hash": "sha256:3221cdd7fa5ac8770bea7dddcc3c47d2f76199695871891aff003b3503dc4196",
+          "installedAt": "2026-10-16T16:53:12.088Z"
         }
       ],
       "dependencies": [],
       "expoDependencies": [],
-      "installedAt": "2026-10-16T13:16:06.347Z"
+      "installedAt": "2026-10-16T16:53:12.088Z"
+    },
+    "auth": {
+      "version": "1.0.1",
+      "installPath": "src/components/templates/auth",
+      "requiredComponents": [
+        "card",
+        "button",
+        "text-input",
+        "checkbox",
+        "otp-input",
+        "divider",
+        "badge",
+        "rashwright-logo"
+      ],
+      "files": [
+        {
+          "path": "src/components/templates/auth/auth-template.tsx",
+          "hash": "sha256:ee1000334d7f99e76658f5bf9f242340228df1a68f13b2ba86983799ea021e01",
+          "installedAt": "2026-10-16T16:56:45.340Z"
+        },
+        {
+          "path": "src/components/templates/auth/sign-in.tsx",
+          "hash": "sha256:2e81890ad21d6261f10db98203d2c39401033ee61b26f3f3c002b17ba978e1a2",
+          "installedAt": "2026-10-16T16:56:45.372Z"
+        },
+        {
+          "path": "src/components/templates/auth/sign-up.tsx",
+          "hash": "sha256:e0a15e4e79cdc6bea4aa620ffb384facb2d5a23c1a2e17af81d5510bec70d692",
+          "installedAt": "2026-10-16T16:56:45.416Z"
+        },
+        {
+          "path": "src/components/templates/auth/types.ts",
+          "hash": "sha256:2cb178788e5aa5a681504a65c7fb1098bd58c5058ed370c9bb2d42302e7f7ccb",
+          "installedAt": "2026-10-16T16:56:45.465Z"
+        },
+        {
+          "path": "src/components/templates/auth/components/login-form.tsx",
+          "hash": "sha256:c301cd44739e1fdb4b763dd5238e876af494c219517a2bc6fadce9427ed79b2c",
+          "installedAt": "2026-10-16T16:56:45.508Z"
+        },
+        {
+          "path": "src/components/templates/auth/components/register-form.tsx",
+          "hash": "sha256:3651e9defd47f704b6fc809c3c1baf794f12bdf3f40529461eec5167956a26f5",
+          "installedAt": "2026-10-16T16:56:45.544Z"
+        },
+        {
+          "path": "src/components/templates/auth/components/otp-step.tsx",
+          "hash": "sha256:39a6cf27c816908cb5d81d69c28dfb0dff052bef44625cb1b38e10f4cd4d8491",
+          "installedAt": "2026-10-16T16:56:45.608Z"
+        },
+        {
+          "path": "src/components/templates/auth/components/google-auth-button.tsx",
+          "hash": "sha256:ef9788ae5f51811b50d7a2ad1f0cd0381a68c03bda9b9100bc970a10058c2e88",
+          "installedAt": "2026-10-16T16:56:45.674Z"
+        },
+        {
+          "path": "src/components/templates/auth/index.ts",
+          "hash": "sha256:0e131b7e96703b7c7cdcd05d66315782456bed5ebdc9e803b7f85a7c166167f9",
+          "installedAt": "2026-10-16T16:56:45.737Z"
+        }
+      ],
+      "dependencies": [],
+      "expoDependencies": [
+        "expo-haptics"
+      ],
+      "installedAt": "2026-10-16T16:56:45.737Z"
     }
   }
 }

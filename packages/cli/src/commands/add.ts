@@ -3,7 +3,7 @@ import chalk from "chalk";
 import ora from "ora";
 import { confirm, checkbox, Separator } from "@inquirer/prompts";
 import { join, dirname } from "node:path";
-import { existsSync, readFileSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, readdirSync } from "node:fs";
 import { detectProject } from "../core/project-detector.js";
 import { detectExpo } from "../core/expo-detector.js";
 import { readConfig, writeConfig, markComponentInstalled, isComponentInstalled, type RashwrightConfig } from "../core/config-manager.js";
@@ -56,7 +56,7 @@ export function addCommand(): Command {
       dryRun?: boolean;
       interactive?: boolean;
       nonInteractive?: boolean;
-    }) => {
+    }, cmd?: Command) => {
       const cwd = process.cwd();
 
       console.log();
@@ -107,12 +107,13 @@ export function addCommand(): Command {
       });
 
       // ── 2a. Résolution de l'option --template ──────────────────────────
+      const requestedTemplate = options.template || (cmd?.parent?.opts()?.template as string | undefined);
       let templateDef: TemplateDefinition | null = null;
-      if (options.template) {
-        templateDef = getTemplateDefinition(options.template, TEMPLATES_ROOT);
+      if (requestedTemplate) {
+        templateDef = getTemplateDefinition(requestedTemplate, TEMPLATES_ROOT);
         if (!templateDef) {
           const avail = listTemplateIds(TEMPLATES_ROOT);
-          console.log(chalk.red(`  ✖ Template "${options.template}" introuvable.`));
+          console.log(chalk.red(`  ✖ Template "${requestedTemplate}" introuvable.`));
           console.log(chalk.dim(`    Templates disponibles : ${avail.join(", ")}`));
           process.exit(1);
         }
@@ -126,7 +127,7 @@ export function addCommand(): Command {
         }
       }
 
-      const interactive = Boolean(options.interactive) && !options.yes && !options.dryRun && !options.nonInteractive && !options.template;
+      const interactive = Boolean(options.interactive) && !options.yes && !options.dryRun && !options.nonInteractive && !requestedTemplate;
 
       if (options.all) {
         const index = loadRegistryIndex(resolved.registryRoot);
@@ -512,6 +513,37 @@ export function addCommand(): Command {
         );
 
         tplSpinner.succeed(`Template ${templateDef.id} installé dans ${templateTargetRel}`);
+
+        // Génération automatique des routes Expo Router si le dossier app existe
+        if (templateDef.screens && templateDef.screens.length > 0) {
+          const useSrc = config.componentsPath.startsWith("src/") || existsSync(join(cwd, "src"));
+          const appDir = join(cwd, useSrc ? "src/app" : "app");
+          if (existsSync(appDir)) {
+            const importAlias = templateTargetRel.startsWith("src/")
+              ? `@/${templateTargetRel.slice(4)}`
+              : `@/${templateTargetRel}`;
+            for (const s of templateDef.screens) {
+              const cleanRoute = s.route.replace(/^\//, "").replace(/\.tsx$/, "");
+              const screenFilePath = join(appDir, `${cleanRoute}.tsx`);
+              if (!existsSync(screenFilePath) || options.force) {
+                if (!existsSync(dirname(screenFilePath))) {
+                  mkdirSync(dirname(screenFilePath), { recursive: true });
+                }
+                const routeContent = `import React from "react";
+import { ${s.componentName} } from "${importAlias}";
+
+export default function ${s.componentName}Route() {
+  return <${s.componentName} />;
+}
+`;
+                if (!options.dryRun) {
+                  writeFileSync(screenFilePath, routeContent, "utf-8");
+                }
+                console.log(chalk.green(`    ✔ Route écran créée : ${useSrc ? "src/app" : "app"}/${cleanRoute}.tsx (${s.componentName})`));
+              }
+            }
+          }
+        }
       }
 
       // ── 8. Régénérer index.ts du dossier UI & synchroniser la config ────

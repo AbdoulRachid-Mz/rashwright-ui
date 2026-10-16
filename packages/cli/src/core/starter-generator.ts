@@ -687,6 +687,12 @@ export interface ScreenComponentSpec {
  *   - _layout.tsx: <ThemeProvider initialPreset={preset}><Slot /></ThemeProvider>
  *   - index.tsx : <ScreenComponent />
  */
+export interface ExtraScreenRoute {
+  routeName: string;
+  componentName: string;
+  importPath: string;
+}
+
 export function writeExpoRouterLayout(
   targetProjectRoot: string,
   componentsPath: string = "src/components/ui",
@@ -698,6 +704,7 @@ export function writeExpoRouterLayout(
   },
   themeMode: "system" | "light" | "dark" = "system",
   withNativeWind = false,
+  extraScreens: ExtraScreenRoute[] = [],
 ): void {
   if (dryRun) return;
 
@@ -741,6 +748,22 @@ export default function Index() {
 }
 `;
   writeFileSync(join(appDir, "index.tsx"), indexContent, "utf-8");
+
+  for (const extra of extraScreens) {
+    const extraContent = `import React from "react";
+import { ${extra.componentName} } from "${extra.importPath}";
+
+export default function ${extra.componentName}Route() {
+  return <${extra.componentName} />;
+}
+`;
+    const cleanRouteName = extra.routeName.replace(/^\//, "").replace(/\.tsx$/, "");
+    const routeFile = join(appDir, `${cleanRouteName}.tsx`);
+    if (!existsSync(dirname(routeFile))) {
+      mkdirSync(dirname(routeFile), { recursive: true });
+    }
+    writeFileSync(routeFile, extraContent, "utf-8");
+  }
 }
 
 /**
@@ -914,6 +937,7 @@ export function generateShowcaseScreen(
   },
   themeMode: "system" | "light" | "dark" = "system",
   withNativeWind = false,
+  extraScreens: ExtraScreenRoute[] = [],
 ): string | null {
   if (dryRun) return null;
 
@@ -930,6 +954,7 @@ export function generateShowcaseScreen(
       screenComponent,
       themeMode,
       withNativeWind,
+      extraScreens,
     );
     // Supprimer l'ancien index.ts / index.js racine du template Expo qui importait ./App
     for (const staleFile of ["index.ts", "index.js"]) {

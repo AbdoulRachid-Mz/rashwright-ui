@@ -1,8 +1,8 @@
-# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI MOBILE (v1.0.1 → v1.1.0)
+# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI MOBILE (v1.1.0 → v1.1.1 → v1.3.0)
 
 > **Fichier de suivi dynamique (`TASK.md`)**  
 > Dernière mise à jour : 2026-10-16  
-> Statut général : **v1.1.0 Validée & Prête (65 composants, 194 tests Vitest réussis, 40 suites de tests, Quality Gate 100% vert, 0 erreur TypeScript strict)**
+> Statut général : **v1.1.1 Validée & Prête (Correctif NativeWind v5 bun install --force, multi-écrans Expo Router pour templates auth/commerce/onboarding, résolutions options Commander add -t, 65 composants, 194 tests Vitest réussis, 40 suites de tests, Quality Gate 100% vert, 0 erreur TypeScript strict)**
 
 ---
 
@@ -19,10 +19,11 @@
 | **v0.9.0** | Intégration NativeWind (v4 & v5) & Indépendance Native | ✅ Publié | 10 / 10 tâches |
 | **v1.0.0** | Release Majeure : MCP Server IA, Grille Responsive & Standardisation Finale | ✅ Publié | 8 / 8 tâches |
 | **v1.0.1** | Templates Premium (Auth 2-écrans + Google, Commerce catalogue & détail, Onboarding HomeScreen, Dashboard & Settings 3-mode), SDK 58 Stable & Fix NativeWind | ✅ Validé | 7 / 7 tâches |
-| **v1.1.0** | Nouveaux Composants Mobiles Clés (`date-picker`, `calendar`, `swipeable-row`, `segmented-control`, `tooltip`, `popover`, `shimmer`, `skeleton`) | ✅ Validé | 6 / 6 tâches |
-| **v1.2.0** | Templates Métiers Spécialisés (`chat`, `finance`, `social`) & Commandes CLI Template | 🔄 Planifié | 0 / 4 tâches |
-| **v1.3.0** | Gestion de Cycle de Vie CLI (`rs-ui upgrade`), 3-Way Merge & AST Transformers | 📅 Planifié | 0 / 3 tâches |
-| **v1.4.0** | Outils MCP IA Génératifs (`generate_screen`, `audit_accessibility`, `convert_styling`) | 📅 Planifié | 0 / 3 tâches |
+| **v1.1.0** | Nouveaux Composants Mobiles Clés (`date-picker`, `calendar`, `swipeable-row`, `segmented-control`, `tooltip`, `popover`, `shimmer`, `skeleton`) | ✅ Publié | 6 / 6 tâches |
+| **v1.1.1** | Patch Stabilité : NativeWind v5 `--force`, résolutions options Commander `add -t`, génération multi-écrans Expo Router et typage TS | ✅ Validé | 5 / 5 tâches |
+| **v1.3.0 (Phase 9)** | Gestion de Cycle de Vie CLI (`rs-ui upgrade`), 3-Way Merge & AST Transformers | 🔄 En cours | 0 / 3 tâches |
+| **v1.4.0 (Phase 10)** | Outils MCP IA Génératifs (`generate_screen`, `audit_accessibility`, `convert_styling`) | 📅 Planifié | 0 / 3 tâches |
+| **v1.2.0 (Phase 8)** | Templates Métiers Spécialisés (`chat`, `finance`, `social`) & Commandes CLI Template | 📅 Planifié | 0 / 4 tâches |
 | **v1.5.0** | Showcase Interactif Storybook & Tests End-to-End Automatisés Maestro | 📅 Planifié | 0 / 2 tâches |
 
 ---
@@ -125,6 +126,18 @@
 * [x] **TASK-13.1.6** : Développer la suite `ShimmerSkeleton` (`components/ui/skeleton.tsx`, `components/ui/shimmer.tsx`, `components/ui/screen-skeleton.tsx`) avec presets `Skeleton.Card`, `Skeleton.Avatar`, `Skeleton.Text` et animation continue `LinearGradient`.
 
 ---
+
+### Phase 7.1 : Patch Stabilité v1.1.1 (✅ ACHEVÉ)
+
+* [x] **TASK-13.2.1** : Ajout du flag `--force` sur `bun install` dans `packages/cli/src/core/package-manager.ts` (`buildProjectInstallCommand`), résolvant le conflit NativeWind v5 / Tailwind v4 ESM.
+* [x] **TASK-13.2.2** : Élimination du conflit d'option Commander.js `-t, --template` au niveau racine (`packages/cli/src/index.ts`) permettant l'exécution directe de `rs-ui add --template <id>` et `rs-ui add -t <id>`.
+* [x] **TASK-13.2.3** : Prise en charge des templates multi-écrans : définition du champ `screens` dans `template.json` et `templates-manager.ts`, génération automatique des routes Expo Router (`sign-in.tsx`, `sign-up.tsx`, `products.tsx`, `product-detail.tsx`, `home.tsx`) dans `init.ts`, `add.ts` et `starter-generator.ts`.
+* [x] **TASK-13.2.4** : Résolution intégrale des erreurs TypeScript :
+  - `icon.tsx` : cast `name as any` pour satisfaire les unions strictes `@expo/vector-icons`.
+  - `checkbox.tsx` : support simultané de `onValueChange` et `onCheckedChange`.
+  - `otp-step.tsx` : support de la prop `onBack`.
+  - `commerce/types.ts` & `commerce/index.ts` : props d'écran optionnelles (`onSelectProduct?`, `onBack?`) et export par défaut valide.
+* [x] **TASK-13.2.5** : Validation Quality Gate 100% vert (194/194 tests Vitest réussis sur 40 suites, 0 erreur `check-types`, tests test-project validés exit 0).
 
 ### Phase 8 : Nouveaux Templates Métiers Spécialisés (v1.2.0 📅 PLANIFIÉ)
 

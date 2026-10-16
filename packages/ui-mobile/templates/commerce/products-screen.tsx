@@ -177,7 +177,7 @@ export function ProductsScreen({
             <View key={product.id} style={styles.gridItem}>
               <ProductCard
                 product={product}
-                onPress={() => onSelectProduct(product.id)}
+                onPress={() => onSelectProduct?.(product.id)}
                 onAddToCart={() => onAddToCart?.(product.id)}
               />
             </View>

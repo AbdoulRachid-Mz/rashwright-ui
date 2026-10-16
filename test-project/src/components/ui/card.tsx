@@ -43,11 +43,11 @@ const useCardContext = () => {
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 const AnimatedView = Animated.createAnimatedComponent(View);
 
-// Base Card Props
 export interface CardProps {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   className?: string;
+  variant?: "default" | "outline" | "glass" | string;
   onPress?: TouchableOpacityProps["onPress"];
   disabled?: boolean;
   activeOpacity?: number;
@@ -62,6 +62,7 @@ const CardRoot = ({
   children,
   style,
   className,
+  variant,
   onPress,
   disabled = false,
   activeOpacity = 0.8,
@@ -71,6 +72,8 @@ const CardRoot = ({
   noBlur = false,
 }: CardProps) => {
   const { theme, isDark } = useTheme();
+  const effectiveMaterial = variant === "glass" ? ("glass" as LiquidMaterial) : material;
+  const effectiveNoBlur = variant === "glass" ? false : noBlur;
 
   // Animation values for smooth entry and press interactions
   const progress = useSharedValue(animateEntry ? 0 : 1);
@@ -132,8 +135,8 @@ const CardRoot = ({
     <CardContext.Provider value={{ theme, isDark }}>
       <Animated.View style={animatedStyle} className={className}>
         <LiquidSurface
-          material={material}
-          noBlur={noBlur}
+          material={effectiveMaterial}
+          noBlur={effectiveNoBlur}
           borderRadius={theme.borderRadius.lg}
           style={[styles.container, style]}
         >

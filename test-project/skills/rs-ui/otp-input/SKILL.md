@@ -1,26 +1,26 @@
 ---
-name: rs-ui/glass-card
-description: Carte Glass UI avec effet blur, gradient et bordure translucide. Nécessite expo-blur et expo-linear-gradient.
+name: rs-ui/otp-input
+description: Champ OTP avec cases individuelles, focus automatique et support Glass.
 version: 0.3.0
 componentVersion: 0.3.0
-category: Glass
+category: Forms
 dependencies:
   - none
 expoDependencies:
-  - none
+  - expo-haptics
 requiresComponents:
   - none
-supportsGlass: false
+supportsGlass: true
 ---
 
-# GlassCard — Rashwright UI Mobile
+# OtpInput — Rashwright UI Mobile
 
-Carte Glass UI avec effet blur, gradient et bordure translucide. Nécessite expo-blur et expo-linear-gradient.
+Champ OTP avec cases individuelles, focus automatique et support Glass.
 
 ## Installation
 
 ```bash
-rs-ui add glass-card
+rs-ui add otp-input
 ```
 
 > ℹ️ Ce composant fonctionne directement avec Expo Go ou un development build standard.
@@ -31,15 +31,15 @@ rs-ui add glass-card
 ```tsx
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { GlassCard } from '@/components/ui/glass-card';
+import { OtpInput } from '@/components/ui/otp-input';
 import { useTheme } from '@/contexts/theme-context';
 
-export function ExampleGlassCard() {
+export function ExampleOtpInput() {
   const { theme } = useTheme();
 
   return (
     <View style={styles.container}>
-      <GlassCard />
+      <OtpInput />
     </View>
   );
 }
@@ -55,14 +55,19 @@ const styles = StyleSheet.create({
 
 | Prop | Type | Description |
 |---|---|---|
-| `style` | `StyleProp<ViewStyle>` | Styles personnalisés additionnels |
-| `children` | `React.ReactNode` | Contenu enfant |
+| `length` | `number` | Propriété `length` du composant |
+| `variant` | `'default' \| 'outline' \| 'glass'` | Propriété `variant` du composant |
+| `error` | `boolean` | Propriété `error` du composant |
+| `onComplete` | `function` | Propriété `onComplete` du composant |
 
+
+### Support Liquid Glass
+Ce composant supporte le variant `glass` ou le style translucide Liquid Glass avec réfraction et bordure spéculaire.
 
 ## Dépendances & Prérequis
 
 - **Dépendances npm** : Aucune
-- **Dépendances Expo** : Aucune
+- **Dépendances Expo** : expo-haptics
 - **Composants requis** : Aucun
 - **Providers requis** : ThemeProvider
 
@@ -70,4 +75,4 @@ const styles = StyleSheet.create({
 
 1. **Typage strict** : Ne pas caster les props vers `any`. Utilisez les interfaces exportées par le composant.
 2. **Cohérence des thèmes** : Ne pas surcharger les couleurs avec des valeurs fixes ; appuyez-vous sur les tokens `theme.colors` injectés par le `ThemeProvider`.
-3. **Import alias** : Toujours importer depuis `@/components/ui/glass-card` ou `@/components/ui`.
+3. **Import alias** : Toujours importer depuis `@/components/ui/otp-input` ou `@/components/ui`.

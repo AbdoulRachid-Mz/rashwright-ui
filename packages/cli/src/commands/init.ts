@@ -643,6 +643,28 @@ export function initCommand(): Command {
           importFile: selectedTemplate === "showcase" ? "showcase-screen" : `${selectedTemplate}-screen`,
           componentName: templateMeta.screenComponentName,
         };
+
+        const tplDef = getTemplateDefinition(selectedTemplate, TEMPLATES_ROOT);
+        const extraScreens: Array<{ routeName: string; componentName: string; importPath: string }> = [];
+        const baseNorm = componentsPath.replace(/\\/g, "/");
+        const templatesBaseRel = baseNorm.endsWith("/ui")
+          ? baseNorm.slice(0, -3) + "/templates"
+          : baseNorm + "/templates";
+        const tplImport = templatesBaseRel.startsWith("src/")
+          ? `@/${templatesBaseRel.slice(4)}/${selectedTemplate}`
+          : `@/${templatesBaseRel}/${selectedTemplate}`;
+
+        const screensList = tplDef?.screens ?? templateMeta.screens;
+        if (screensList) {
+          for (const s of screensList) {
+            extraScreens.push({
+              routeName: s.route,
+              componentName: s.componentName,
+              importPath: tplImport,
+            });
+          }
+        }
+
         const showcaseSpinner = ora(`Génération de l'écran starter (${templateMeta.name})...`).start();
         showcaseFile = generateShowcaseScreen(
           cwd,
@@ -651,7 +673,8 @@ export function initCommand(): Command {
           options.dryRun,
           screenSpec,
           themeMode,
-          nativeWindEnabled
+          nativeWindEnabled,
+          extraScreens
         );
         if (nativeWindEnabled) {
           injectGlobalCssImport(cwd, hasSrc ? "src/global.css" : "global.css", options.dryRun);
@@ -754,7 +777,7 @@ export function initCommand(): Command {
             baseInstallSpinner.succeed("Dépendances de base installées (expo disponible)");
           } catch (err) {
             installFailed = true;
-            installFailedSteps.push(`${selectedPm === "bun" ? "bun install" : selectedPm === "pnpm" ? "pnpm install" : selectedPm === "yarn" ? "yarn install" : "npm install"}`);
+            installFailedSteps.push(`${selectedPm === "bun" ? "bun install --force" : selectedPm === "pnpm" ? "pnpm install" : selectedPm === "yarn" ? "yarn install" : "npm install"}`);
             baseInstallSpinner.fail("Échec de l'installation des dépendances de base");
             console.error(err);
             // Sans expo dans node_modules, expo install ne peut pas fonctionner → on saute les étapes B et C

@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/contexts/theme-context";
 
 export default function RootLayout() {
   return (
-    <ThemeProvider initialMode="dark" initialPreset="default">
+    <ThemeProvider initialMode="dark" initialPreset="amber">
       <Slot />
     </ThemeProvider>
   );

@@ -1,0 +1,47 @@
+{
+  "id": "commerce",
+  "name": "Commerce Suite",
+  "description": "Boutique e-commerce premium avec catalogue de produits, écran de détail produit complet (productId), sélection de variantes et gestion du panier.",
+  "version": "1.0.1",
+  "componentName": "CommerceTemplate",
+  "entrypoint": "commerce-template.tsx",
+  "files": [
+    "template.json",
+    "types.ts",
+    "commerce-template.tsx",
+    "products-screen.tsx",
+    "product-detail-screen.tsx",
+    "index.ts",
+    "components/product-card.tsx",
+    "components/category-filter.tsx"
+  ],
+  "requiredComponents": [
+    "card",
+    "button",
+    "badge",
+    "rating",
+    "divider",
+    "search-input",
+    "text-input",
+    "icon-button",
+    "icon",
+    "rashwright-logo"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "supportsGlass": true,
+  "screens": [
+    {
+      "route": "products",
+      "file": "products-screen.tsx",
+      "componentName": "ProductsScreen",
+      "title": "Catalogue"
+    },
+    {
+      "route": "product-detail",
+      "file": "product-detail-screen.tsx",
+      "componentName": "ProductDetailScreen",
+      "title": "Détail Produit"
+    }
+  ]
+}

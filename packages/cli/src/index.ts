@@ -30,19 +30,24 @@ const { version: CLI_VERSION } = require("../package.json") as {
 
 const program = new Command();
 
+const rawArgs = process.argv.slice(2);
+if (rawArgs[0] === "--template" || rawArgs[0] === "-t") {
+  if (rawArgs[1] === "list" || rawArgs[1] === "ls") {
+    displayTemplateList();
+    process.exit(0);
+  }
+  if (rawArgs[1] === "help") {
+    displayTemplateHelp();
+    process.exit(0);
+  }
+}
+
 program
   .name("rs-ui")
   .description("Rashwright UI Mobile — Système de composants React Native / Expo")
   .version(CLI_VERSION)
-  .option("-t, --template <action>", "Gérer les templates (ex: rs-ui --template list, rs-ui --template help)")
-  .action((options: { template?: string }) => {
-    if (options.template === "list" || options.template === "ls") {
-      displayTemplateList();
-    } else if (options.template === "help") {
-      displayTemplateHelp();
-    } else {
-      program.help();
-    }
+  .action(() => {
+    program.help();
   });
 
 program.addCommand(initCommand());

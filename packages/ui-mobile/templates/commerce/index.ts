@@ -1,5 +1,5 @@
-// @/components/templates/commerce/index.ts
-export { CommerceTemplate } from "./commerce-template";
+import { CommerceTemplate } from "./commerce-template";
+export { CommerceTemplate };
 export { ProductsScreen, SAMPLE_COMMERCE_PRODUCTS, SAMPLE_CATEGORIES } from "./products-screen";
 export { ProductDetailScreen } from "./product-detail-screen";
 export { ProductCard } from "./components/product-card";

@@ -13,24 +13,50 @@
   "components": {
     "button": "1.0.0",
     "card": "1.0.0",
-    "glass-card": "1.0.0",
     "badge": "1.0.0",
-    "text-input": "1.0.0",
-    "upload-image": "1.0.0",
-    "upload-video": "1.0.0",
+    "rating": "1.0.0",
+    "search-input": "1.0.0",
     "rashwright-logo": "1.0.0",
-    "showcase-screen": "1.0.0"
+    "commerce-screen": "1.0.0",
+    "flat-list": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-16T14:53:49.248Z"
+    },
+    "divider": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-16T16:53:11.929Z"
+    },
+    "text-input": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-16T16:53:11.949Z"
+    },
+    "icon-button": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-16T16:53:11.973Z"
+    },
+    "icon": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-16T16:53:11.993Z"
+    },
+    "checkbox": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-16T16:56:45.170Z"
+    },
+    "otp-input": {
+      "version": "1.0.0",
+      "installedAt": "2026-10-16T16:56:45.267Z"
+    }
   },
-  "themePreset": "default",
+  "themePreset": "amber",
   "themeMode": "dark",
   "starter": {
     "installed": true,
     "reset": false,
-    "template": "showcase"
+    "template": "commerce"
   },
   "nativewind": {
     "enabled": true,
-    "version": "v4",
+    "version": "v5",
     "css": "src/global.css"
   }
 }

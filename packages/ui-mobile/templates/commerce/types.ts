@@ -27,7 +27,7 @@ export interface ProductsScreenProps {
   products?: Product[];
   categories?: string[];
   cartCount?: number;
-  onSelectProduct: (productId: string) => void;
+  onSelectProduct?: (productId: string) => void;
   onAddToCart?: (productId: string) => void;
   onOpenCart?: () => void;
 }
@@ -35,7 +35,7 @@ export interface ProductsScreenProps {
 export interface ProductDetailScreenProps {
   productId?: string;
   product?: Product;
-  onBack: () => void;
+  onBack?: () => void;
   onAddToCart?: (productId: string, quantity: number, selectedColor?: string, selectedSize?: string) => void;
   onBuyNow?: (productId: string, quantity: number) => void;
   onOpenCart?: () => void;

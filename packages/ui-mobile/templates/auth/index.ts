@@ -1,5 +1,5 @@
-// @/components/templates/auth/index.ts
-export { AuthTemplate } from "./auth-template";
+import { AuthTemplate } from "./auth-template";
+export { AuthTemplate };
 export { SignInScreen } from "./sign-in";
 export { SignUpScreen } from "./sign-up";
 export { GoogleAuthButton } from "./components/google-auth-button";

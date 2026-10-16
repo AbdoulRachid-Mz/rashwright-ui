@@ -1,4 +1,6 @@
-/* global.css — NativeWind v4 (Tailwind CSS v3.4) */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* global.css — NativeWind v5 (Tailwind CSS v4 Next-Gen) */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+@import "nativewind/theme";

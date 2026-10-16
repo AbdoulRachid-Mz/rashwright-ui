@@ -30,5 +30,19 @@
   "expoDependencies": [
     "expo-haptics"
   ],
-  "supportsGlass": true
+  "supportsGlass": true,
+  "screens": [
+    {
+      "route": "sign-in",
+      "file": "sign-in.tsx",
+      "componentName": "SignInScreen",
+      "title": "Connexion"
+    },
+    {
+      "route": "sign-up",
+      "file": "sign-up.tsx",
+      "componentName": "SignUpScreen",
+      "title": "Inscription"
+    }
+  ]
 }

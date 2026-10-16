@@ -72,7 +72,7 @@ describe("initCommand and bootstrap pipeline", () => {
       // La commande de base ne doit PAS déclencher expo install
       expect(cmd).not.toContain("expo");
       // Elle doit être la commande d'install du PM
-      if (pm === "bun")  expect(cmd).toBe("bun install");
+      if (pm === "bun")  expect(cmd).toBe("bun install --force");
       if (pm === "npm")  expect(cmd).toBe("npm install");
       if (pm === "pnpm") expect(cmd).toBe("pnpm install");
       if (pm === "yarn") expect(cmd).toBe("yarn install");

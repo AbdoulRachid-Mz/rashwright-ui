@@ -23,5 +23,13 @@
   "expoDependencies": [
     "expo-haptics"
   ],
-  "supportsGlass": true
+  "supportsGlass": true,
+  "screens": [
+    {
+      "route": "home",
+      "file": "onboarding-home-screen.tsx",
+      "componentName": "OnboardingHomeScreen",
+      "title": "Accueil"
+    }
+  ]
 }

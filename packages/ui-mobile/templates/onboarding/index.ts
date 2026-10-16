@@ -1,5 +1,5 @@
-// @/components/templates/onboarding/index.ts
-export { OnboardingTemplate } from "./onboarding-template";
+import { OnboardingTemplate } from "./onboarding-template";
+export { OnboardingTemplate };
 export { OnboardingHomeScreen } from "./onboarding-home-screen";
 export { OnboardingSlide } from "./components/onboarding-slide";
 

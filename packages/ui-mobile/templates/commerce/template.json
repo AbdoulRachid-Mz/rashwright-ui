@@ -15,8 +15,33 @@
     "components/product-card.tsx",
     "components/category-filter.tsx"
   ],
-  "requiredComponents": ["card", "button", "badge", "rating", "divider", "rashwright-logo"],
+  "requiredComponents": [
+    "card",
+    "button",
+    "badge",
+    "rating",
+    "divider",
+    "search-input",
+    "text-input",
+    "icon-button",
+    "icon",
+    "rashwright-logo"
+  ],
   "dependencies": [],
   "expoDependencies": [],
-  "supportsGlass": true
+  "supportsGlass": true,
+  "screens": [
+    {
+      "route": "products",
+      "file": "products-screen.tsx",
+      "componentName": "ProductsScreen",
+      "title": "Catalogue"
+    },
+    {
+      "route": "product-detail",
+      "file": "product-detail-screen.tsx",
+      "componentName": "ProductDetailScreen",
+      "title": "Détail Produit"
+    }
+  ]
 }

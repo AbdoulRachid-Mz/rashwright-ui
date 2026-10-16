@@ -1,28 +1,26 @@
 ---
-name: rs-ui/upload-image
-description: Sélecteur et uploader d'image avec preview, recadrage et multi-providers.
+name: rs-ui/icon-button
+description: Bouton icône rond avec variants de style et retour haptique optionnel.
 version: 0.3.0
 componentVersion: 0.3.0
-category: Media
+category: Basic
 dependencies:
   - none
 expoDependencies:
-  - @expo/vector-icons
-  - expo-image-manipulator
-  - expo-image-picker
+  - none
 requiresComponents:
   - none
-supportsGlass: false
+supportsGlass: true
 ---
 
-# UploadImage — Rashwright UI Mobile
+# IconButton — Rashwright UI Mobile
 
-Sélecteur et uploader d'image avec preview, recadrage et multi-providers.
+Bouton icône rond avec variants de style et retour haptique optionnel.
 
 ## Installation
 
 ```bash
-rs-ui add upload-image
+rs-ui add icon-button
 ```
 
 > ℹ️ Ce composant fonctionne directement avec Expo Go ou un development build standard.
@@ -33,15 +31,15 @@ rs-ui add upload-image
 ```tsx
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { UploadImage } from '@/components/ui/upload-image';
+import { IconButton } from '@/components/ui/icon-button';
 import { useTheme } from '@/contexts/theme-context';
 
-export function ExampleUploadImage() {
+export function ExampleIconButton() {
   const { theme } = useTheme();
 
   return (
     <View style={styles.container}>
-      <UploadImage />
+      <IconButton />
     </View>
   );
 }
@@ -61,10 +59,13 @@ const styles = StyleSheet.create({
 | `children` | `React.ReactNode` | Contenu enfant |
 
 
+### Support Liquid Glass
+Ce composant supporte le variant `glass` ou le style translucide Liquid Glass avec réfraction et bordure spéculaire.
+
 ## Dépendances & Prérequis
 
 - **Dépendances npm** : Aucune
-- **Dépendances Expo** : @expo/vector-icons, expo-image-manipulator, expo-image-picker
+- **Dépendances Expo** : Aucune
 - **Composants requis** : Aucun
 - **Providers requis** : ThemeProvider
 
@@ -72,4 +73,4 @@ const styles = StyleSheet.create({
 
 1. **Typage strict** : Ne pas caster les props vers `any`. Utilisez les interfaces exportées par le composant.
 2. **Cohérence des thèmes** : Ne pas surcharger les couleurs avec des valeurs fixes ; appuyez-vous sur les tokens `theme.colors` injectés par le `ThemeProvider`.
-3. **Import alias** : Toujours importer depuis `@/components/ui/upload-image` ou `@/components/ui`.
+3. **Import alias** : Toujours importer depuis `@/components/ui/icon-button` ou `@/components/ui`.

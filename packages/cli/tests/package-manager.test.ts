@@ -112,7 +112,7 @@ describe("package-manager", () => {
 
   describe("REGRESSION: install order — base before expo", () => {
     it("buildProjectInstallCommand returns the correct base install command for each PM", () => {
-      expect(buildProjectInstallCommand("bun")).toBe("bun install");
+      expect(buildProjectInstallCommand("bun")).toBe("bun install --force");
       expect(buildProjectInstallCommand("npm")).toBe("npm install");
       expect(buildProjectInstallCommand("pnpm")).toBe("pnpm install");
       expect(buildProjectInstallCommand("yarn")).toBe("yarn install");

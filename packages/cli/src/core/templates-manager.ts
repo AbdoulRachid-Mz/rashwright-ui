@@ -14,6 +14,13 @@ export type TemplateType =
   | "commerce"
   | "settings";
 
+export interface TemplateScreenDef {
+  route: string;
+  file: string;
+  componentName: string;
+  title?: string;
+}
+
 export interface TemplateMetadata {
   id: TemplateType;
   name: string;
@@ -21,6 +28,7 @@ export interface TemplateMetadata {
   requiredComponents: string[];
   screenFile: string;
   screenComponentName: string;
+  screens?: TemplateScreenDef[];
 }
 
 export const AVAILABLE_TEMPLATES: Record<TemplateType, TemplateMetadata> = {
@@ -66,6 +74,10 @@ export const AVAILABLE_TEMPLATES: Record<TemplateType, TemplateMetadata> = {
     ],
     screenFile: "components/ui/auth-screen.tsx",
     screenComponentName: "RashwrightAuthScreen",
+    screens: [
+      { route: "sign-in", file: "sign-in.tsx", componentName: "SignInScreen", title: "Connexion" },
+      { route: "sign-up", file: "sign-up.tsx", componentName: "SignUpScreen", title: "Inscription" },
+    ],
   },
   onboarding: {
     id: "onboarding",
@@ -74,6 +86,9 @@ export const AVAILABLE_TEMPLATES: Record<TemplateType, TemplateMetadata> = {
     requiredComponents: ["button", "card", "badge", "carousel", "rashwright-logo"],
     screenFile: "components/ui/onboarding-screen.tsx",
     screenComponentName: "RashwrightOnboardingScreen",
+    screens: [
+      { route: "home", file: "onboarding-home-screen.tsx", componentName: "OnboardingHomeScreen", title: "Accueil" },
+    ],
   },
   dashboard: {
     id: "dashboard",
@@ -96,15 +111,23 @@ export const AVAILABLE_TEMPLATES: Record<TemplateType, TemplateMetadata> = {
     name: "E-Commerce & Store",
     description: "Boutique en ligne avec barre de recherche, filtres par catégorie, cartes produits et avis",
     requiredComponents: [
-      "button",
       "card",
+      "button",
       "badge",
       "rating",
+      "divider",
       "search-input",
+      "text-input",
+      "icon-button",
+      "icon",
       "rashwright-logo",
     ],
     screenFile: "components/ui/commerce-screen.tsx",
     screenComponentName: "RashwrightCommerceScreen",
+    screens: [
+      { route: "products", file: "products-screen.tsx", componentName: "ProductsScreen", title: "Catalogue" },
+      { route: "product-detail", file: "product-detail-screen.tsx", componentName: "ProductDetailScreen", title: "Détail Produit" },
+    ],
   },
   settings: {
     id: "settings",
