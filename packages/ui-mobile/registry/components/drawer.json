@@ -17,7 +17,7 @@
     "ThemeProvider",
     "GestureHandlerRootView"
   ],
-  "supportsGlass": false,
+  "supportsGlass": true,
   "platforms": [
     "ios",
     "android"

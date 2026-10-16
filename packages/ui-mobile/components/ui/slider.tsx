@@ -31,6 +31,7 @@ export interface SliderProps {
   disabled?: boolean;
   label?: string;
   valueFormatter?: (value: number) => string;
+  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -44,6 +45,7 @@ export const Slider: React.FC<SliderProps> = ({
   disabled = false,
   label,
   valueFormatter,
+  className,
   style,
 }) => {
   const { theme, isDark } = useTheme();
@@ -119,7 +121,7 @@ export const Slider: React.FC<SliderProps> = ({
     : `${Math.round(currentValue)}`;
 
   return (
-    <View style={[styles.wrapper, disabled && { opacity: 0.5 }, style]}>
+    <View className={className} style={[styles.wrapper, disabled && { opacity: 0.5 }, style]}>
       {(label || valueFormatter) && (
         <View style={styles.labelRow}>
           {label && (

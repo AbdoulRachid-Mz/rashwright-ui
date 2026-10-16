@@ -31,6 +31,7 @@ export interface SelectProps<T extends string = string> {
   placeholder?: string;
   label?: string;
   disabled?: boolean;
+  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -42,6 +43,7 @@ export function Select<T extends string = string>({
   placeholder = "Sélectionner...",
   label,
   disabled = false,
+  className,
   style,
 }: SelectProps<T>) {
   const { theme, isDark } = useTheme();
@@ -63,7 +65,7 @@ export function Select<T extends string = string>({
   };
 
   return (
-    <View style={[styles.wrapper, style]}>
+    <View className={className} style={[styles.wrapper, style]}>
       {label && (
         <ThemedText variant="sm" weight="medium">
           {label}

@@ -20,14 +20,15 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from "@/contexts/theme-context";
+import { useResponsive, type ResponsiveValue } from "@/hooks/use-responsive";
 import ThemedText from './text';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-interface CarouselProps<T> {
+export interface CarouselProps<T> {
   data: T[];
   renderItem: (item: T, index: number) => React.ReactNode;
-  itemsPerView?: number;
+  itemsPerView?: ResponsiveValue<number>;
   itemWidth?: number;
   spacing?: number;
   autoPlay?: boolean;
@@ -35,6 +36,7 @@ interface CarouselProps<T> {
   showIndicators?: boolean;
   showArrows?: boolean;
   loop?: boolean;
+  className?: string;
   containerStyle?: ViewStyle;
   contentContainerStyle?: ViewStyle;
   onItemPress?: (item: T, index: number) => void;
@@ -51,17 +53,22 @@ export function Carousel<T>({
   showIndicators = true,
   showArrows = true,
   loop = false,
+  className,
   containerStyle,
   contentContainerStyle,
   onItemPress,
 }: CarouselProps<T>) {
   const { theme } = useTheme();
+  const { resolve } = useResponsive();
   const flatListRef = useRef<FlatList<T>>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(autoPlay);
   const autoPlayTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const calculatedItemWidth = itemWidth || (SCREEN_WIDTH - 32 - (itemsPerView - 1) * spacing) / itemsPerView;
+  const resolvedItemsPerView = Math.max(1, resolve(itemsPerView, 1));
+  const calculatedItemWidth =
+    itemWidth ||
+    (SCREEN_WIDTH - 32 - (resolvedItemsPerView - 1) * spacing) / resolvedItemsPerView;
 
   const scrollToIndex = (index: number) => {
     const targetIndex = Math.max(0, Math.min(index, data.length - 1));
@@ -165,7 +172,7 @@ export function Carousel<T>({
   };
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View className={className} style={[styles.container, containerStyle]}>
       <FlatList
         ref={flatListRef}
         data={data}
@@ -199,6 +206,8 @@ export function Carousel<T>({
     </View>
   );
 };
+
+export default Carousel;
 
 const styles = StyleSheet.create({
   container: {

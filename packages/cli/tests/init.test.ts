@@ -16,6 +16,7 @@ describe("initCommand and bootstrap pipeline", () => {
     const optionNames = cmd.options.map((o) => o.long);
     expect(optionNames).toContain("--sdk");
     expect(optionNames).toContain("--theme");
+    expect(optionNames).toContain("--theme-mode");
     expect(optionNames).toContain("--template");
     expect(optionNames).toContain("--primary");
     expect(optionNames).toContain("--glass");

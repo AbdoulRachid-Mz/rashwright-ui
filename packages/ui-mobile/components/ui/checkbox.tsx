@@ -28,6 +28,7 @@ export interface CheckboxProps {
   description?: string;
   disabled?: boolean;
   size?: "sm" | "md" | "lg";
+  className?: string;
   style?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
 }
@@ -39,6 +40,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   description,
   disabled = false,
   size = "md",
+  className,
   style,
   labelStyle,
 }) => {
@@ -72,6 +74,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
 
   return (
     <LiquidPressable
+      className={className}
       onPress={handleToggle}
       disabled={disabled}
       viscosity="soft"

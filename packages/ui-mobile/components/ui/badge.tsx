@@ -33,6 +33,7 @@ export interface BadgeProps {
   icon?: React.ReactNode;
   loading?: boolean;
   error?: boolean;
+  className?: string;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
   rounded?: boolean;
@@ -47,6 +48,7 @@ export const Badge: React.FC<BadgeProps> = ({
   icon,
   loading = false,
   error = false,
+  className,
   style,
   textStyle,
   rounded = true,
@@ -250,6 +252,7 @@ export const Badge: React.FC<BadgeProps> = ({
 
   const content = (
     <View
+      className={className}
       style={[containerStyles, style]}
       accessibilityRole={onPress ? "button" : "text"}
       accessibilityLabel={accessibilityLabel}
@@ -284,7 +287,7 @@ export const Badge: React.FC<BadgeProps> = ({
 
   if (onPress) {
     return (
-      <LiquidPressable onPress={onPress} viscosity="soft">
+      <LiquidPressable className={className} onPress={onPress} viscosity="soft">
         {content}
       </LiquidPressable>
     );

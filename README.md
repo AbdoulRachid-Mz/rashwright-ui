@@ -6,16 +6,17 @@
 
 > Système moderne de composants **distribuables** pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie *shadcn/ui* : **vous copiez les composants dans votre codebase, vous en êtes propriétaire**.
 
-**Statut v0.9.0** : ✅ Version v0.9.0 — `@rashwright/cli@0.9.0` · `@rashwright/ui-mobile@0.9.0`  
-**Composants & Templates** : 61 composants UI + 8 primitives Liquid Glass + 7 Templates Autonomes · **Skills IA** : 61 skills composants + 4 modules + 1 global · **NativeWind** : Support v4 (Tailwind v3.4) & v5 (CSS-first Tailwind v4) intégré dans `rs-ui init` · **Indépendance native** : 100% `StyleSheet.create` + `useTheme()` par défaut · **SDK Expo** : SDK 54 à 59 · **Tests** : 171 tests unitaires Vitest · **Typing strict** : Zéro `any`.
+**Statut v1.0.0** : ✅ Version Majeure v1.0.0 — `@rashwright/cli@1.0.0` · `@rashwright/ui-mobile@1.0.0`  
+**Composants & Templates** : 61 composants UI + 8 primitives Liquid Glass + 7 Templates Autonomes · **Serveur MCP IA** : Compatible Cursor, Claude Desktop, VS Code (`rs-ui mcp`) · **Moteur Responsive** : Breakpoints `sm`, `md`, `lg`, `xl`, `2xl`, grille fluide et tri intégré · **NativeWind** : Support v4 & v5 avec injection automatique `global.css` · **Indépendance native** : 100% `StyleSheet.create` + `useTheme()` par défaut · **SDK Expo** : SDK 54 à 59 · **Tests** : 194 tests unitaires Vitest · **Typing strict** : Zéro `any`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v0.9.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
-  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v0.9.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v1.0.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v1.0.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
   <a href="https://github.com/AbdoulRachid-Mz/rashwright-ui"><img src="https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github" alt="GitHub" /></a>
   <img src="https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2059-000000.svg?logo=expo" alt="Expo SDK" />
-  <img src="https://img.shields.io/badge/Bun-1.4%2B-fbf0df.svg?logo=bun" alt="Bun" />
-  <img src="https://img.shields.io/badge/TypeScript-5.5%2B-3178c6.svg?logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/MCP%20Server-JSON--RPC%202.0-8A2BE2.svg" alt="MCP Server" />
+  <img src="https://img.shields.io/badge/Tests-194%20passed-success.svg" alt="Tests" />
+  <img src="https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6.svg?logo=typescript" alt="TypeScript" />
 </p>
 
 ---
@@ -75,9 +76,38 @@ Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`
 - ✅ **Commande `rs-ui reset`** : Archivage ou suppression en une commande des fichiers de démonstration du starter.
 - ✅ **61 composants** au catalogue avec typage strict TypeScript et zéro `any`.
 
+## 🌟 Nouveautés Majeures de la Version v1.0.0
+
+- 🤖 **Serveur Model Context Protocol (MCP) IA Intégré (`rs-ui mcp`)** :
+  - Expose un serveur MCP standard JSON-RPC 2.0 sur `stdio` pour connecter directement vos IDEs et agents IA (**Cursor**, **Claude Desktop**, **VS Code Roo/Cline**, **Gemini Code Assist**).
+  - Outils MCP disponibles : `list_components`, `get_component` (avec code source TSX complet), `search_registry`, `get_theme_tokens`, `get_skill`, `list_templates`, `get_template`.
+  - Commande `rs-ui mcp setup cursor --write` ou `rs-ui mcp setup claude` pour une installation instantanée en un clic.
+
+- 📐 **Moteur Responsive & Grille Multi-Colonnes Adaptative** :
+  - Détecteur de breakpoints standard (`sm: 640`, `md: 768`, `lg: 1024`, `xl: 1280`, `2xl: 1536`) dans `lib/responsive.ts` et hook réactif `useResponsive()`.
+  - `ThemedView` et `ThemedFlatList` enrichis avec les props `grid`, `columns={{ sm: 1, md: 2, lg: 3 }}`, `gap`, `rowGap`, `columnGap`.
+  - Tri dynamique intégré : `sortBy="asc" | "desc"`, `sortKey`, `sortFn`.
+  - Insertion native de carrousels pleine largeur : prop `carousels` dans la grille sans casser la virtualisation ni le layout flexbox.
+
+- 🔍 **Recherche Floue Haute Vitesse (`rs-ui search <query>`)** :
+  - Recherche instantanée parmi les 61 composants, 7 templates autonomes et hooks, avec score de pertinence et commande d'installation suggérée.
+
+- 🎨 **Comparateur Visuel en Ligne de Commande (`rs-ui diff [component]`)** :
+  - Différentiel side-by-side couleur entre vos composants locaux personnalisés et les versions officielles du registre.
+
+- 🌪️ **Double Moteur de Style (Dual Engine)** :
+  - Mode A (Défaut) : `StyleSheet.create` + `useTheme()` — **Zéro dépendance tierce**.
+  - Mode B (Optionnel) : NativeWind v4 (Tailwind v3.4) & v5 (CSS-first Tailwind v4) avec injection automatique de `global.css` dans `App.tsx` ou `_layout.tsx`.
+
+- 🧪 **Quality Gate Absolu & Zéro `any`** :
+  - **194 tests unitaires Vitest automatisés (40 suites de tests)** à 100% de réussite.
+  - Typage TypeScript strict à 100% sur l'ensemble du monorepo.
+
 ---
 
-## 🆕 Nouveautés de la version v0.7.0
+## 🆕 Historique des Versions Précédentes
+
+### Version v0.7.0
 
 - 🧩 **Refactor Complet du Moteur de Templates (Modules Autonomes)** :
   - **Fin des chaînes TSX en dur dans le CLI** : chaque template est désormais un module indépendant autonome dans `@rashwright/ui-mobile/templates/<id>/` avec son manifeste `template.json`, ses types stricts, ses sous-composants et son index réutilisable.

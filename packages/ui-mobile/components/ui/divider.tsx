@@ -17,6 +17,7 @@ export interface DividerProps {
   orientation?: DividerOrientation;
   label?: string;
   spacing?: number;
+  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -25,6 +26,7 @@ export const Divider: React.FC<DividerProps> = ({
   orientation = "horizontal",
   label,
   spacing,
+  className,
   style,
 }) => {
   const { theme, isDark } = useTheme();
@@ -51,6 +53,7 @@ export const Divider: React.FC<DividerProps> = ({
   if (orientation === "vertical") {
     return (
       <View
+        className={className}
         style={[
           styles.vertical,
           {
@@ -66,6 +69,7 @@ export const Divider: React.FC<DividerProps> = ({
   if (label) {
     return (
       <View
+        className={className}
         style={[
           styles.labelContainer,
           { marginVertical: defaultSpacing },
@@ -88,6 +92,7 @@ export const Divider: React.FC<DividerProps> = ({
 
   return (
     <View
+      className={className}
       style={[
         styles.horizontal,
         {

@@ -66,7 +66,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   };
 
   return (
-    <View style={[styles.wrapper, containerStyle]}>
+    <View className={props.className} style={[styles.wrapper, containerStyle]}>
       <View style={styles.inputContainer}>
         <TextInput
           value={currentValue}

@@ -11,6 +11,7 @@ export interface AvatarProps {
   name?: string;
   size?: number | "xs" | "sm" | "md" | "lg" | "xl";
   verified?: boolean;
+  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -54,6 +55,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   name = "Utilisateur",
   size = "md",
   verified = false,
+  className,
   style,
 }) => {
   const { theme, isDark } = useTheme();
@@ -66,6 +68,7 @@ export const Avatar: React.FC<AvatarProps> = ({
 
   return (
     <View
+      className={className}
       style={[
         styles.container,
         { width: pixelSize, height: pixelSize, borderRadius: pixelSize / 2 },

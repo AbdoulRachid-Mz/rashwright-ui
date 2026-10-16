@@ -17,7 +17,7 @@
 | **Patch Tabs** | Audit & Refonte Complète du composant Tabs (Accessibilité, Layout) | ✅ Validé | 6 / 6 tâches |
 | **v0.8.0** | Primitives Headless Mobiles & Registre RFC v4 | ✅ Validé | 11 / 11 tâches |
 | **v0.9.0** | Intégration NativeWind (v4 & v5) & Indépendance Native | ✅ Publié | 10 / 10 tâches |
-| **v1.0.0** | Release Majeure : MCP Server IA & Standardisation Finale | 🔄 En cours | 0 / 8 tâches |
+| **v1.0.0** | Release Majeure : MCP Server IA, Grille Responsive & Standardisation Finale | ✅ Validé | 8 / 8 tâches |
 
 ---
 
@@ -70,20 +70,30 @@
 
 ---
 
-### Phase 4 : Release Majeure v1.0.0 & Serveur MCP IA (🔄 EN COURS)
+### Phase 4 : Release Majeure v1.0.0 & Serveur MCP IA (✅ ACHEVÉ)
 
-* [ ] **TASK-10.1.1** : Développer le serveur Model Context Protocol (MCP) `packages/cli/src/mcp/` pour permettre aux assistants IA d'inspecter le registre en temps réel.
-* [ ] **TASK-10.1.2** : Ajouter la commande `rs-ui mcp` pour enregistrer automatiquement le serveur MCP dans les configurations Cursor / VS Code / Claude Desktop.
-* [ ] **TASK-10.1.3** : Implémenter la recherche floue `rs-ui search <query>` dans le terminal.
-* [ ] **TASK-10.1.4** : Enrichir `rs-ui diff` avec affichage couleur side-by-side et patch interactif.
-* [ ] **TASK-10.1.5** : Finaliser le catalogue complet des 61 composants en double mode (StyleSheet / NativeWind optionnel).
-* [ ] **TASK-10.1.6** : Refonte du site de documentation et showcase interactif Expo Snack / Web.
-* [ ] **TASK-10.1.7** : Audit de sécurité, de performance et validation finale de l'idempotence.
-* [ ] **TASK-10.1.8** : Release officielle **v1.0.0**.
+* [x] **TASK-10.1.1** : Développer le serveur Model Context Protocol (MCP) `packages/cli/src/mcp/` pour permettre aux assistants IA d'inspecter le registre en temps réel (`list_components`, `get_component`, `search_registry`, `get_theme_tokens`, `get_skill`, `list_templates`).
+* [x] **TASK-10.1.2** : Ajouter la commande `rs-ui mcp` et `rs-ui mcp setup` pour enregistrer automatiquement le serveur MCP dans les configurations Cursor / VS Code / Claude Desktop.
+* [x] **TASK-10.1.3** : Implémenter la recherche floue `rs-ui search <query>` dans le terminal avec support `--json`, `--components-only` et `--templates-only`.
+* [x] **TASK-10.1.4** : Enrichir `rs-ui diff` avec affichage couleur side-by-side, comparaison avec le registre et sortie JSON.
+* [x] **TASK-10.1.5** : Implémenter le moteur responsive (`lib/responsive.ts`, `hooks/use-responsive.ts`), props `grid`, `columns` adaptatif (breakpoints `sm`, `md`, `lg`, `xl`, `2xl`), tri (`sortBy`, `sortOrder`, `sortFn`) et insertion native de carrousels pleine largeur dans `view.tsx` et `flat-list.tsx`.
+* [x] **TASK-10.1.6** : Mise à jour complète de la documentation et des guides skills (`skills/flat-list/SKILL.md`, `skills/view/SKILL.md`, `skills/carousel/SKILL.md`).
+* [x] **TASK-10.1.7** : Audit de typage strict TypeScript (zéro `any`), support NativeWind v4/v5 avec injection `global.css`, et validation Quality Gate 100% vert (194/194 tests Vitest réussis sur 40 suites).
+* [x] **TASK-10.1.8** : Release officielle **v1.0.0** (bumps packages et workspace root, alignement dépendances semver).
 
 ---
 
 ## 📌 Journal des actions effectuées
+
+### 2026-10-16 — Release Majeure v1.0.0
+- **Serveur MCP IA (Model Context Protocol)** : Implémentation du serveur JSON-RPC 2.0 stdio (`packages/cli/src/mcp/`) avec outils `list_components`, `get_component`, `search_registry`, `get_theme_tokens`, `get_skill`, `list_templates`, `get_template`.
+- **Commandes CLI `rs-ui mcp` & `rs-ui mcp setup`** : Intégration en un clic avec Cursor (`.cursor/mcp.json`), Claude Desktop (`claude_desktop_config.json`) et VS Code (`.vscode/mcp.json`).
+- **Commandes `rs-ui search <query>` & `rs-ui diff [component]`** : Recherche floue universelle et comparateur coloré temps réel avec le registre officiel.
+- **Moteur Responsive & Grille multi-colonnes** : Breakpoints standard `sm: 640`, `md: 768`, `lg: 1024`, `xl: 1280`, `2xl: 1536` (`lib/responsive.ts`, `hooks/use-responsive.ts`).
+- **Enrichissement de `view.tsx` & `flat-list.tsx`** : Props `grid`, `columns` responsive `{ sm: 1, md: 2, lg: 3 }`, tri dynamique (`sortBy`, `sortOrder`, `sortFn`), et insertion native de carrousels pleine largeur (`carousels`).
+- **Skills IA actualisés** : `skills/flat-list/SKILL.md`, `skills/view/SKILL.md`, `skills/carousel/SKILL.md`.
+- **Quality Gate 100% vert** : 40 suites de tests, **194 tests passés sur 194**, zéro erreur TypeScript strict, build CLI 0.33 MB.
+- **Bump de version v1.0.0** : `@rashwright/cli`, `@rashwright/ui-mobile`, `package.json` racine et registre.
 
 ### 2026-10-14 — Release v0.9.0
 - Intégration NativeWind v4 & v5 dans `rs-ui init` : prompt interactif, flags `--nativewind [v4|v5]` / `--no-nativewind`, activation par défaut = Oui.

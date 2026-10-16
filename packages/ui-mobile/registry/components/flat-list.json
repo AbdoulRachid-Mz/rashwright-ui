@@ -9,7 +9,9 @@
   "dependencies": [],
   "expoDependencies": [],
   "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "requiresComponents": [
+    "carousel"
+  ],
   "providers": [
     "ThemeProvider"
   ],

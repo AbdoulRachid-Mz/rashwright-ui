@@ -34,6 +34,7 @@ export interface RatingProps {
   allowHalf?: boolean;
   emptyColor?: string;
   fillColor?: string;
+  className?: string;
   style?: StyleProp<ViewStyle>;
   accessibilityLabel?: string;
 }
@@ -225,6 +226,7 @@ export const Rating: React.FC<RatingProps> = ({
   allowHalf = false,
   emptyColor,
   fillColor,
+  className,
   style,
   accessibilityLabel,
 }) => {
@@ -260,6 +262,7 @@ export const Rating: React.FC<RatingProps> = ({
 
   return (
     <View
+      className={className}
       style={[
         styles.container,
         style,

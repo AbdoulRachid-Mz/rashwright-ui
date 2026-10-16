@@ -18,6 +18,10 @@ import { migrateCommand } from "./commands/migrate.js";
 import { createCommand } from "./commands/create.js";
 import { skillCommand } from "./commands/skill.js";
 import { registryCommand } from "./commands/registry.js";
+import { templateCommand, displayTemplateList, displayTemplateHelp } from "./commands/template.js";
+import { mcpCommand } from "./commands/mcp.js";
+import { searchCommand } from "./commands/search.js";
+import { diffCommand } from "./commands/diff.js";
 
 const require = createRequire(import.meta.url);
 const { version: CLI_VERSION } = require("../package.json") as {
@@ -29,7 +33,17 @@ const program = new Command();
 program
   .name("rs-ui")
   .description("Rashwright UI Mobile — Système de composants React Native / Expo")
-  .version(CLI_VERSION);
+  .version(CLI_VERSION)
+  .option("-t, --template <action>", "Gérer les templates (ex: rs-ui --template list, rs-ui --template help)")
+  .action((options: { template?: string }) => {
+    if (options.template === "list" || options.template === "ls") {
+      displayTemplateList();
+    } else if (options.template === "help") {
+      displayTemplateHelp();
+    } else {
+      program.help();
+    }
+  });
 
 program.addCommand(initCommand());
 program.addCommand(addCommand());
@@ -47,6 +61,10 @@ program.addCommand(migrateCommand());
 program.addCommand(createCommand());
 program.addCommand(skillCommand());
 program.addCommand(registryCommand());
+program.addCommand(templateCommand());
+program.addCommand(mcpCommand());
+program.addCommand(searchCommand());
+program.addCommand(diffCommand());
 
 // Support de l'alias direct binaire `rs-ui-reset`
 const invokedBin = basename(process.argv[1] || "");

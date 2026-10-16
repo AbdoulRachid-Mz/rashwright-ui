@@ -3,18 +3,33 @@
   "version": "1.0.0",
   "description": "Champ OTP avec cases individuelles, focus automatique et support Glass.",
   "category": "Forms",
-  "files": ["components/ui/otp-input.tsx"],
+  "files": [
+    "components/ui/otp-input.tsx"
+  ],
   "dependencies": [],
-  "expoDependencies": ["expo-haptics"],
-  "optionalExpoDependencies": [],
+  "expoDependencies": [
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
   "requiresComponents": [],
-  "providers": ["ThemeProvider"],
+  "providers": [
+    "ThemeProvider"
+  ],
   "supportsGlass": true,
-  "platforms": ["ios", "android"],
+  "platforms": [
+    "ios",
+    "android"
+  ],
   "nativeRebuildRequired": false,
   "props": {
     "length": "number",
-    "variant": ["default", "outline", "glass"],
+    "variant": [
+      "default",
+      "outline",
+      "glass"
+    ],
     "error": "boolean",
     "onComplete": "function"
   }

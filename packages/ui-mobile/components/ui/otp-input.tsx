@@ -31,6 +31,7 @@ export interface OtpInputProps {
   disabled?: boolean;
   autoFocus?: boolean;
   secureTextEntry?: boolean;
+  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -137,6 +138,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({
   disabled = false,
   autoFocus = false,
   secureTextEntry = false,
+  className,
   style,
 }) => {
   const { theme } = useTheme();
@@ -213,6 +215,7 @@ export const OtpInput: React.FC<OtpInputProps> = ({
 
   return (
     <View
+      className={className}
       style={[styles.container, style]}
       accessibilityRole="none"
       accessibilityLabel="OTP input"

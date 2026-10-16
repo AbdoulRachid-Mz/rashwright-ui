@@ -13,6 +13,7 @@ import {
 import { useTheme } from "@/contexts/theme-context";
 import { createGlassTheme } from "@/constants/glass-theme";
 import LiquidPressable from "./liquid/liquid-pressable";
+import SearchInput from "./search-input";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -47,63 +48,6 @@ interface SortState {
   key: string;
   direction: SortDirection;
 }
-
-// ─── Search Input (inline, no dep) ───────────────────────────────────────────
-
-interface InlineSearchProps {
-  value: string;
-  onChange: (v: string) => void;
-  placeholder: string;
-  borderColor: string;
-  backgroundColor: string;
-  textColor: string;
-  placeholderColor: string;
-  borderRadius: number;
-}
-
-const InlineSearch: React.FC<InlineSearchProps> = ({
-  value,
-  onChange,
-  placeholder,
-  borderColor,
-  backgroundColor,
-  textColor,
-  placeholderColor,
-  borderRadius,
-}) => {
-  const { TextInput } = require("react-native") as typeof import("react-native");
-  return (
-    <View
-      style={[
-        styles.searchContainer,
-        { borderColor, backgroundColor, borderRadius },
-      ]}
-    >
-      <Text style={[styles.searchIcon, { color: placeholderColor }]}>🔍</Text>
-      <TextInput
-        style={[styles.searchInput, { color: textColor }]}
-        value={value}
-        onChangeText={onChange}
-        placeholder={placeholder}
-        placeholderTextColor={placeholderColor}
-        autoCorrect={false}
-        autoCapitalize="none"
-        returnKeyType="search"
-        accessibilityLabel="Search table"
-      />
-      {value.length > 0 && (
-        <Pressable
-          onPress={() => onChange("")}
-          accessibilityLabel="Clear search"
-          accessibilityRole="button"
-          hitSlop={8}
-        >
-          <Text style={[styles.clearIcon, { color: placeholderColor }]}>✕</Text>
-        </Pressable>
-      )}
-    </View>
-  );
-};
 
 // ─── DataTable ────────────────────────────────────────────────────────────────
 
@@ -353,15 +297,11 @@ function DataTableInner<T extends Record<string, unknown>>(
     >
       {searchable && (
         <View style={{ padding: 8 }}>
-          <InlineSearch
+          <SearchInput
             value={searchQuery}
-            onChange={setSearchQuery}
+            onChangeText={setSearchQuery}
             placeholder={searchPlaceholder}
-            borderColor={borderColor}
-            backgroundColor={theme.colors.background}
-            textColor={textColor}
-            placeholderColor={mutedColor}
-            borderRadius={radius}
+            onClear={() => setSearchQuery("")}
           />
         </View>
       )}

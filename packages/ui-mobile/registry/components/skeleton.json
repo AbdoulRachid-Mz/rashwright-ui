@@ -3,13 +3,22 @@
   "version": "1.0.0",
   "description": "Squelette de chargement animé. Nécessite react-native-reanimated.",
   "category": "States",
-  "files": ["components/ui/skeleton.tsx"],
+  "files": [
+    "components/ui/skeleton.tsx"
+  ],
   "dependencies": [],
-  "expoDependencies": ["react-native-reanimated"],
+  "expoDependencies": [
+    "react-native-reanimated"
+  ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
-  "providers": ["ThemeProvider"],
-  "supportsGlass": false,
-  "platforms": ["ios", "android"],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android"
+  ],
   "nativeRebuildRequired": false
 }

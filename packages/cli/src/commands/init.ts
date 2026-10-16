@@ -31,7 +31,12 @@ import {
   setupStarterTemplate,
   type TemplateType,
 } from "../core/templates-manager.js";
-import { setupNativeWind, type NativeWindVersion } from "../core/nativewind-manager.js";
+import {
+  setupNativeWind,
+  getNativeWindPackages,
+  injectGlobalCssImport,
+  type NativeWindVersion,
+} from "../core/nativewind-manager.js";
 
 const CORE_EXPO_DEPS = [
   // Navigation (OBLIGATOIRE — "main": "expo-router/entry" est écrit dans package.json)
@@ -43,6 +48,8 @@ const CORE_EXPO_DEPS = [
   // Web (app.json contient "web" → react-dom + react-native-web requis)
   "react-dom",
   "react-native-web",
+  // Thème Système natif
+  "expo-system-ui",
   // Primitives React Native animées & gestes
   "react-native-reanimated",
   "react-native-gesture-handler",
@@ -100,6 +107,7 @@ export function initCommand(): Command {
     .argument("[project-name]", "Nom du projet Expo à créer (si aucun projet React Native existant)")
     .option("--sdk <version>", "Version Expo SDK pour un nouveau projet (57, 56, 55, 54 ou 'latest')")
     .option("--theme <preset>", "Choisir parmi les thèmes : default, emerald, violet, amber, rose, slate, green, red, cyan, custom", "default")
+    .option("--theme-mode <mode>", "Mode d'apparence initial : system, light, dark (défaut : system)")
     .option("--template <type>", "Choisir le Starter Template : minimal, showcase, auth, onboarding, dashboard, commerce, settings", "showcase")
     .option("--primary <color>", "Couleur primaire personnalisée en hexadécimal (ex: #2563EB)")
     .option("--dark-primary <color>", "Couleur primaire sombre personnalisée (ex: #3B82F6)")
@@ -336,6 +344,10 @@ export function initCommand(): Command {
       // ── 3. Options interactives (Thème, Glass, dossier composants) ──────
       let glassEnabled = options.glass ?? false;
       let themePreset = options.theme || "default";
+      let themeMode: "system" | "light" | "dark" = "system";
+      if (options.themeMode && ["system", "light", "dark"].includes(options.themeMode.toLowerCase())) {
+        themeMode = options.themeMode.toLowerCase() as "system" | "light" | "dark";
+      }
       let nativeWindEnabled = false;
       let nativeWindVersion: NativeWindVersion = "v4";
 
@@ -492,6 +504,18 @@ export function initCommand(): Command {
           };
         }
 
+        if (!options.themeMode) {
+          themeMode = await select<"system" | "light" | "dark">({
+            message: "Choisir le mode d'apparence initial (thème) :",
+            choices: [
+              { name: "System (Recommandé — synchronisé avec le système d'exploitation)", value: "system" },
+              { name: "Light (Mode clair forcé par défaut)", value: "light" },
+              { name: "Dark (Mode sombre forcé par défaut)", value: "dark" },
+            ],
+            default: "system",
+          });
+        }
+
         componentsPath = await input({
           message: "Chemin d'installation des composants UI :",
           default: defaultComponentsPath,
@@ -534,24 +558,26 @@ export function initCommand(): Command {
       }
 
       // ── 4. Plan des dépendances ──────────────────────────────────────────
-      const expoDepsToInstall = [
-        ...CORE_EXPO_DEPS,
-        ...(glassEnabled ? GLASS_EXTRA_DEPS : []),
-      ];
-      const npmDepsToInstall = [
-        ...CORE_NPM_DEPS,
-        ...(nativeWindEnabled
-          ? nativeWindVersion === "v5"
-            ? ["nativewind@^5.0.0-preview", "tailwindcss@^4.0.0"]
-            : ["nativewind@^4.0.1", "tailwindcss@^3.4.0"]
-          : []),
-      ];
+      const nwPackages = nativeWindEnabled ? getNativeWindPackages(nativeWindVersion) : null;
+      const expoDepsToInstall = Array.from(
+        new Set([
+          ...CORE_EXPO_DEPS,
+          ...(glassEnabled ? GLASS_EXTRA_DEPS : []),
+          ...(nwPackages ? nwPackages.expoDeps : []),
+        ])
+      );
+      const npmDepsToInstall = Array.from(
+        new Set([
+          ...CORE_NPM_DEPS,
+          ...(nwPackages ? [...nwPackages.runtimeDeps, ...nwPackages.devDeps] : []),
+        ])
+      );
 
       console.log();
       console.log(chalk.bold("  Configuration appliquée :"));
       console.log(chalk.dim(`  • Gestionnaire    : ${selectedPm}`));
       console.log(chalk.dim(`  • Dossier composants : ${componentsPath}`));
-      console.log(chalk.dim(`  • Thème           : ${themePreset}`));
+      console.log(chalk.dim(`  • Thème           : ${themePreset} (Mode: ${themeMode})`));
       console.log(chalk.dim(`  • Style           : ${glassEnabled ? "Liquid Glass" : "Default"}`));
       console.log(chalk.dim(`  • NativeWind      : ${nativeWindEnabled ? `Activé (${nativeWindVersion})` : "Désactivé (100% natif)"}`));
       console.log(chalk.dim(`  • Dépendances Expo : ${expoDepsToInstall.join(", ")}`));
@@ -616,7 +642,18 @@ export function initCommand(): Command {
           componentName: templateMeta.screenComponentName,
         };
         const showcaseSpinner = ora(`Génération de l'écran starter (${templateMeta.name})...`).start();
-        showcaseFile = generateShowcaseScreen(cwd, componentsPath, themePreset, options.dryRun, screenSpec);
+        showcaseFile = generateShowcaseScreen(
+          cwd,
+          componentsPath,
+          themePreset,
+          options.dryRun,
+          screenSpec,
+          themeMode,
+          nativeWindEnabled
+        );
+        if (nativeWindEnabled) {
+          injectGlobalCssImport(cwd, hasSrc ? "src/global.css" : "global.css", options.dryRun);
+        }
         showcaseSpinner.succeed(`Écran starter configuré (${showcaseFile ? showcaseFile.replace(cwd, "") : "App"})`);
       }
 
@@ -631,6 +668,7 @@ export function initCommand(): Command {
         componentsPath,
         theme: (glassEnabled ? "glass" : "default") as "glass" | "default",
         themePreset,
+        themeMode,
         ...(customColors ? { customColors: customColors as unknown as Record<string, string> } : {}),
         glass: glassEnabled,
         typescript: project.hasTypeScript,

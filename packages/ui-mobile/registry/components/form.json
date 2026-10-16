@@ -3,14 +3,23 @@
   "version": "1.0.0",
   "description": "Composants de formulaire (Field, Label, Message, Description) compatibles react-hook-form.",
   "category": "Forms",
-  "files": ["components/ui/form.tsx"],
+  "files": [
+    "components/ui/form.tsx"
+  ],
   "dependencies": [],
-  "expoDependencies": [],
+  "expoDependencies": [
+    "react-native-reanimated"
+  ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
-  "providers": ["ThemeProvider"],
+  "providers": [
+    "ThemeProvider"
+  ],
   "supportsGlass": false,
-  "platforms": ["ios", "android"],
+  "platforms": [
+    "ios",
+    "android"
+  ],
   "nativeRebuildRequired": false,
   "props": {
     "label": "string",

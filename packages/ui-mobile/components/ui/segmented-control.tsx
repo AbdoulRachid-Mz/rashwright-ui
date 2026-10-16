@@ -34,6 +34,7 @@ export interface SegmentedControlProps<T extends string = string> {
   defaultValue?: T;
   onValueChange?: (value: T) => void;
   disabled?: boolean;
+  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -43,6 +44,7 @@ export function SegmentedControl<T extends string = string>({
   defaultValue,
   onValueChange,
   disabled = false,
+  className,
   style,
 }: SegmentedControlProps<T>) {
   const { theme, isDark } = useTheme();
@@ -90,6 +92,7 @@ export function SegmentedControl<T extends string = string>({
 
   return (
     <LiquidSurface
+      className={className}
       material="soft"
       borderRadius={theme.borderRadius.full}
       style={[styles.container, style]}

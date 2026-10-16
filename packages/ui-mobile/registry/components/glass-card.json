@@ -13,7 +13,7 @@
   "providers": [
     "ThemeProvider"
   ],
-  "supportsGlass": false,
+  "supportsGlass": true,
   "platforms": [
     "ios",
     "android"

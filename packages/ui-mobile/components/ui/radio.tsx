@@ -36,6 +36,7 @@ export interface RadioGroupProps<T extends string = string> {
   onValueChange?: (value: T) => void;
   disabled?: boolean;
   children: React.ReactNode;
+  className?: string;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -45,6 +46,7 @@ export function RadioGroup<T extends string = string>({
   onValueChange,
   disabled = false,
   children,
+  className,
   style,
 }: RadioGroupProps<T>) {
   const [internalValue, setInternalValue] = React.useState<T | undefined>(
@@ -70,7 +72,7 @@ export function RadioGroup<T extends string = string>({
         disabled,
       }}
     >
-      <View style={[styles.group, style]}>{children}</View>
+      <View className={className} style={[styles.group, style]}>{children}</View>
     </RadioGroupContext.Provider>
   );
 }
@@ -81,6 +83,7 @@ export interface RadioProps<T extends string = string> {
   description?: string;
   disabled?: boolean;
   size?: "sm" | "md" | "lg";
+  className?: string;
   style?: StyleProp<ViewStyle>;
   labelStyle?: StyleProp<TextStyle>;
 }
@@ -91,6 +94,7 @@ export function Radio<T extends string = string>({
   description,
   disabled: itemDisabled,
   size = "md",
+  className,
   style,
   labelStyle,
 }: RadioProps<T>) {
@@ -128,6 +132,7 @@ export function Radio<T extends string = string>({
 
   return (
     <LiquidPressable
+      className={className}
       onPress={handlePress}
       disabled={isDisabled}
       viscosity="soft"

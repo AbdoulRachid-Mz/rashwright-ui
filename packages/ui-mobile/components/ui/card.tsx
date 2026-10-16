@@ -61,6 +61,7 @@ export interface CardProps {
 const CardRoot = ({
   children,
   style,
+  className,
   onPress,
   disabled = false,
   activeOpacity = 0.8,
@@ -129,7 +130,7 @@ const CardRoot = ({
 
   return (
     <CardContext.Provider value={{ theme, isDark }}>
-      <Animated.View style={animatedStyle}>
+      <Animated.View style={animatedStyle} className={className}>
         <LiquidSurface
           material={material}
           noBlur={noBlur}
@@ -152,11 +153,12 @@ export interface CardHeaderProps {
   className?: string;
 }
 
-const CardHeader = ({ children, style }: CardHeaderProps) => {
+const CardHeader = ({ children, style, className }: CardHeaderProps) => {
   const { theme } = useCardContext();
 
   return (
     <View
+      className={className}
       style={[
         styles.headerContainer,
         { marginBottom: theme.spacing.sm },
@@ -175,11 +177,12 @@ export interface CardTitleProps {
   className?: string;
 }
 
-const CardTitle = ({ children, style }: CardTitleProps) => {
+const CardTitle = ({ children, style, className }: CardTitleProps) => {
   const { theme } = useCardContext();
 
   return (
     <ThemedText
+      className={className}
       style={[
         styles.titleText,
         {
@@ -201,11 +204,12 @@ export interface CardDescriptionProps {
   className?: string;
 }
 
-const CardDescription = ({ children, style }: CardDescriptionProps) => {
+const CardDescription = ({ children, style, className }: CardDescriptionProps) => {
   const { theme } = useCardContext();
 
   return (
     <ThemedText
+      className={className}
       style={[
         styles.descriptionText,
         {
@@ -228,11 +232,12 @@ export interface CardContentProps {
   className?: string;
 }
 
-const CardContent = ({ children, style }: CardContentProps) => {
+const CardContent = ({ children, style, className }: CardContentProps) => {
   const { theme } = useCardContext();
 
   return (
     <View
+      className={className}
       style={[
         styles.contentContainer,
         { paddingVertical: theme.spacing.xs },
@@ -251,11 +256,12 @@ export interface CardFooterProps {
   className?: string;
 }
 
-const CardFooter = ({ children, style }: CardFooterProps) => {
+const CardFooter = ({ children, style, className }: CardFooterProps) => {
   const { theme } = useCardContext();
 
   return (
     <View
+      className={className}
       style={[
         styles.footerContainer,
         {

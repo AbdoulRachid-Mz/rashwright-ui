@@ -685,6 +685,8 @@ export function writeExpoRouterLayout(
     importFile: "showcase-screen",
     componentName: "RashwrightShowcaseScreen",
   },
+  themeMode: "system" | "light" | "dark" = "system",
+  withNativeWind = false,
 ): void {
   if (dryRun) return;
 
@@ -695,13 +697,24 @@ export function writeExpoRouterLayout(
   const cleanComponentsPath = componentsPath.replace(/^src\//, "");
   const showcaseCompImportPath = `@/${cleanComponentsPath}/${screenComponent.importFile}`;
 
-  const layoutContent = `import { Slot } from "expo-router";
+  const hasGlobalCss =
+    withNativeWind ||
+    existsSync(join(targetProjectRoot, "src", "global.css")) ||
+    existsSync(join(targetProjectRoot, "global.css"));
+
+  const cssImport = hasGlobalCss
+    ? useSrc
+      ? 'import "../global.css";\n'
+      : 'import "./global.css";\n'
+    : "";
+
+  const layoutContent = `${cssImport}import { Slot } from "expo-router";
 import React from "react";
 import { ThemeProvider } from "@/contexts/theme-context";
 
 export default function RootLayout() {
   return (
-    <ThemeProvider initialMode="system" initialPreset="${themePreset as any}">
+    <ThemeProvider initialMode="${themeMode}" initialPreset="${themePreset as any}">
       <Slot />
     </ThemeProvider>
   );
@@ -886,6 +899,8 @@ export function generateShowcaseScreen(
     importFile: "showcase-screen",
     componentName: "RashwrightShowcaseScreen",
   },
+  themeMode: "system" | "light" | "dark" = "system",
+  withNativeWind = false,
 ): string | null {
   if (dryRun) return null;
 
@@ -894,7 +909,15 @@ export function generateShowcaseScreen(
     existsSync(join(targetProjectRoot, "app"));
 
   if (hasExpoRouter) {
-    writeExpoRouterLayout(targetProjectRoot, componentsPath, themePreset, dryRun, screenComponent);
+    writeExpoRouterLayout(
+      targetProjectRoot,
+      componentsPath,
+      themePreset,
+      dryRun,
+      screenComponent,
+      themeMode,
+      withNativeWind,
+    );
     // Supprimer l'ancien index.ts / index.js racine du template Expo qui importait ./App
     for (const staleFile of ["index.ts", "index.js"]) {
       const absStale = join(targetProjectRoot, staleFile);
@@ -927,13 +950,26 @@ export function generateShowcaseScreen(
   const classicApp = join(targetProjectRoot, "App.tsx");
   const cleanComponentsPath = componentsPath.replace(/^src\//, "");
   const showcaseRel = `@/${cleanComponentsPath}/${screenComponent.importFile}`;
-  const content = `import React from "react";
+
+  const hasSrc = existsSync(join(targetProjectRoot, "src"));
+  const hasGlobalCss =
+    withNativeWind ||
+    existsSync(join(targetProjectRoot, "src", "global.css")) ||
+    existsSync(join(targetProjectRoot, "global.css"));
+
+  const cssImport = hasGlobalCss
+    ? hasSrc
+      ? 'import "./src/global.css";\n'
+      : 'import "./global.css";\n'
+    : "";
+
+  const content = `${cssImport}import React from "react";
 import { ThemeProvider } from "@/contexts/theme-context";
 import { ${screenComponent.componentName} } from "${showcaseRel}";
 
 export default function App() {
   return (
-    <ThemeProvider initialMode="system" initialPreset="${themePreset as any}">
+    <ThemeProvider initialMode="${themeMode}" initialPreset="${themePreset as any}">
       <${screenComponent.componentName} />
     </ThemeProvider>
   );

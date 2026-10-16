@@ -45,6 +45,13 @@ export function buildDependencyTree(
     node.children.push({ name: expoDep, type: "expo", children: [] });
   }
 
+  // Dépendances Expo optionnelles
+  for (const optDep of entry.optionalExpoDependencies || []) {
+    if (!node.children.some((c) => c.name === optDep)) {
+      node.children.push({ name: optDep, type: "expo", children: [] });
+    }
+  }
+
   return node;
 }
 

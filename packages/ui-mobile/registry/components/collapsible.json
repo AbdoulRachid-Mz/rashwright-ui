@@ -3,18 +3,31 @@
   "version": "1.0.0",
   "description": "Section dépliable animée, version single-item de l'Accordion.",
   "category": "Layout",
-  "files": ["components/ui/collapsible.tsx"],
+  "files": [
+    "components/ui/collapsible.tsx"
+  ],
   "dependencies": [],
-  "expoDependencies": [],
+  "expoDependencies": [
+    "react-native-reanimated"
+  ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
-  "providers": ["ThemeProvider"],
+  "providers": [
+    "ThemeProvider"
+  ],
   "supportsGlass": true,
-  "platforms": ["ios", "android"],
+  "platforms": [
+    "ios",
+    "android"
+  ],
   "nativeRebuildRequired": false,
   "props": {
     "defaultOpen": "boolean",
-    "variant": ["default", "bordered", "glass"],
+    "variant": [
+      "default",
+      "bordered",
+      "glass"
+    ],
     "onToggle": "function"
   }
 }

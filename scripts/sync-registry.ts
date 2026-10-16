@@ -209,7 +209,8 @@ for (const [name, a] of analyses) {
     a.content.includes("variant:'glass'") ||
     a.content.includes("supportsGlass");
 
-  const supportsGlass = a.usesLiquid || hasGlassKeywords;
+  const usesLiquid = a.content.includes("./liquid/") || a.content.includes("liquid/liquid-") || a.usesLiquid;
+  const supportsGlass = usesLiquid || hasGlassKeywords || name === "tabs";
 
   // ---- nativeRebuildRequired ----
   // vrai si usage explicite de Gesture.* (hors simple import)

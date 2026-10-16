@@ -21,6 +21,7 @@ export interface StatCardProps {
   trend?: StatTrend;
   icon?: ReactNode;
   material?: LiquidMaterial;
+  className?: string;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 }
@@ -32,6 +33,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   trend = "neutral",
   icon,
   material = "regular",
+  className,
   onPress,
   style,
 }) => {
@@ -57,6 +59,7 @@ export const StatCard: React.FC<StatCardProps> = ({
 
   const cardContent = (
     <LiquidSurface
+      className={className}
       material={material}
       borderRadius={theme.borderRadius.lg}
       style={[styles.container, style]}
@@ -101,6 +104,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   if (onPress) {
     return (
       <LiquidPressable
+        className={className}
         onPress={onPress}
         viscosity="medium"
         style={styles.pressable}

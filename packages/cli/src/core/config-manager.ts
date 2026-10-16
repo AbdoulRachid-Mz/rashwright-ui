@@ -21,6 +21,7 @@ export interface RashwrightConfig {
   componentsPath: string;
   theme: "default" | "glass";
   themePreset?: string;
+  themeMode?: "system" | "light" | "dark";
   customColors?: Record<string, string>;
   glass: boolean;
   typescript: boolean;

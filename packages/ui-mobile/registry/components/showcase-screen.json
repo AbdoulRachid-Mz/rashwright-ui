@@ -7,7 +7,9 @@
     "components/ui/showcase-screen.tsx"
   ],
   "dependencies": [],
-  "expoDependencies": [],
+  "expoDependencies": [
+    "react-native-safe-area-context"
+  ],
   "optionalExpoDependencies": [],
   "requiresComponents": [
     "badge",
