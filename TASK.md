@@ -1,8 +1,8 @@
-# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI MOBILE (v1.1.0 → v1.1.1 → v1.3.0)
+# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI MOBILE (v1.1.0 → v1.4.0)
 
 > **Fichier de suivi dynamique (`TASK.md`)**  
-> Dernière mise à jour : 2026-10-16  
-> Statut général : **v1.1.1 Validée & Prête (Correctif NativeWind v5 bun install --force, multi-écrans Expo Router pour templates auth/commerce/onboarding, résolutions options Commander add -t, 65 composants, 194 tests Vitest réussis, 40 suites de tests, Quality Gate 100% vert, 0 erreur TypeScript strict)**
+> Dernière mise à jour : 2026-10-17  
+> Statut général : **v1.4.0 Validée & Prête (Auto-remédiation `rs-ui fix`, 68 composants avec `command`, `color-picker`, `navigation-menu`, code preview `rs-ui info --preview`, showcase Storybook, 6 tests Maestro E2E, 218 tests Vitest réussis, 46 suites de tests, Quality Gate 100% vert, 0 erreur TypeScript strict)**
 
 ---
 

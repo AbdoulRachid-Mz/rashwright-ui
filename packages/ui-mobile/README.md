@@ -2,9 +2,9 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile" width="180" />
 </p>
 
-# @rashwright/ui-mobile — v1.2.0
+# @rashwright/ui-mobile — v1.4.0
 
-[![npm version](https://img.shields.io/badge/npm-%401.2.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+[![npm version](https://img.shields.io/badge/npm-%401.4.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2058-000000?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6?logo=typescript)](#)
 [![NativeWind](https://img.shields.io/badge/NativeWind-v4%20%7C%20v5-06b6d4?logo=tailwindcss)](#)
@@ -45,9 +45,9 @@
 
 
 Ce package `@rashwright/ui-mobile` est le **fournisseur de code source** et de **Skills IA** de l'écosystème Rashwright. Il est consommé par `@rashwright/cli` (localement ou via CDN unpkg) pour fournir :
-- le **registry JSON central** (65 composants, matrices Expo SDK 54 à 58)
+- le **registry JSON central** (68 composants, matrices Expo SDK 54 à 58)
 - le **code source TypeScript** de chaque composant (copié directement par le CLI dans votre projet)
-- le **catalogue exhaustif de Skills IA** (65 skills composants, 4 modules core, 1 skill global dans `skills/`)
+- le **catalogue exhaustif de Skills IA** (68 skills composants, 4 modules core, 1 skill global dans `skills/`)
 - les **10 Templates Autonomes Complets** distribuables sous `templates/<id>/` (`auth`, `commerce`, `dashboard`, `minimal`, `onboarding`, `settings`, `showcase`, `chat`, `finance`, `social`)
 - le **moteur Liquid Glass** (8 primitives sous `components/ui/liquid/`)
 - le **moteur d'upload** Rashwright (`lib/upload/`) avec 5 providers inlinés
@@ -197,6 +197,16 @@ rs-ui add button
   - Résolution de `ignoreDeprecations: "5.0"` pour TypeScript 5.x.
   - Remplacement de `SafeAreaView` déprécié par `react-native-safe-area-context`.
   - Correction du chemin de logo vers `@/assets/primary.png`.
+---
+
+## 🚀 Nouveautés v1.4.0
+
+- 🧩 **3 Nouveaux Composants Mobiles Clés** :
+  - `Command` (`components/ui/command.tsx`) : Palette de recherche rapide et d'actions mobiles (cmd+k style), filtres, raccourcis tactiles, état vide et modale dialog Liquid Glass.
+  - `ColorPicker` (`components/ui/color-picker.tsx`) : Nuancier tactile 12 presets, aperçu dynamique, champ hexadécimal et retour haptique.
+  - `NavigationMenu` (`components/ui/navigation-menu.tsx`) : Menu accordéon hiérarchique avec chevrons rotatifs, capsules actives et badges.
+- 📦 **Catalogue étendu à 68 composants** et 10 templates métiers autonomes (`chat`, `finance`, `social`...).
+- 🛡️ **Typage 100% strict** : Zéro `any`, intégration parfaite de `createGlassTheme(theme, isDark)`.
 
 ---
 

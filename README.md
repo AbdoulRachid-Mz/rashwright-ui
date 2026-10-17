@@ -6,16 +6,16 @@
 
 > Système moderne de composants **distribuables** pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie *shadcn/ui* : **vous copiez les composants dans votre codebase, vous en êtes propriétaire**.
 
-**Statut v1.2.0** : ✅ Version v1.2.0 — `@rashwright/cli@1.2.0` · `@rashwright/ui-mobile@1.2.0`  
-**Composants & Templates** : 65 composants UI + 8 primitives Liquid Glass + 10 Templates Autonomes (Auth, Commerce, Onboarding, Dashboard, Settings, Showcase, Minimal, Chat, Finance, Social) · **Cycle de Vie CLI & 3-Way Merge** : `rs-ui upgrade`, fusion différentielle sans écrasement et AST Transformers (`--alias`) · **Serveur MCP IA Avancé** : Compatible Cursor, Claude Desktop, VS Code avec 9 outils (`generate_screen`, `audit_accessibility`, `convert_styling`) · **SDK Expo** : SDK 54 à 58 (SDK 58 stable Recommandé) · **Tests** : 212 tests unitaires Vitest · **Typing strict** : Zéro `any`.
+**Statut v1.4.0** : ✅ Version v1.4.0 — `@rashwright/cli@1.4.0` · `@rashwright/ui-mobile@1.4.0`  
+**Composants & Templates** : 68 composants UI + 8 primitives Liquid Glass + 10 Templates Autonomes (Auth, Commerce, Onboarding, Dashboard, Settings, Showcase, Minimal, Chat, Finance, Social) · **Cycle de Vie CLI, Auto-Remédiation & 3-Way Merge** : `rs-ui fix`, `rs-ui upgrade`, fusion différentielle sans écrasement et AST Transformers (`--alias`) · **Visualisation & E2E** : `rs-ui showcase` / `rs-ui storybook`, code preview `rs-ui info --preview`, et suite Maestro E2E (6 flows) · **Serveur MCP IA Avancé** : Compatible Cursor, Claude Desktop, VS Code avec 9 outils (`generate_screen`, `audit_accessibility`, `convert_styling`) · **SDK Expo** : SDK 54 à 58 (SDK 58 stable Recommandé) · **Tests** : 218 tests unitaires Vitest · **Typing strict** : Zéro `any`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v1.2.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
-  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v1.2.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v1.4.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v1.4.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
   <a href="https://github.com/AbdoulRachid-Mz/rashwright-ui"><img src="https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github" alt="GitHub" /></a>
   <img src="https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000000.svg?logo=expo" alt="Expo SDK" />
   <img src="https://img.shields.io/badge/MCP%20Server-JSON--RPC%202.0-8A2BE2.svg" alt="MCP Server" />
-  <img src="https://img.shields.io/badge/Tests-212%20passed-success.svg" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-218%20passed-success.svg" alt="Tests" />
   <img src="https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6.svg?logo=typescript" alt="TypeScript" />
 </p>
 
@@ -77,7 +77,29 @@ Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`
 - ✅ **Moteur Liquid Glass intégré** : Effets de flou dynamique, reflets physiques, bordures translucides, rebonds tactiles haptiques — activable via `--glass` dans `rs-ui init`.
 - ✅ **9 thèmes + Custom Engine** : `default`, `emerald`, `violet`, `amber`, `rose`, `slate`, `green`, `red`, `cyan`, et création de thème custom.
 - ✅ **Commande `rs-ui reset`** : Archivage ou suppression en une commande des fichiers de démonstration du starter.
-- ✅ **61 composants** au catalogue avec typage strict TypeScript et zéro `any`.
+- ✅ **68 composants** au catalogue avec typage strict TypeScript et zéro `any`.
+
+## 🌟 Nouveautés de la Version v1.4.0
+
+- 🛠️ **Commande `rs-ui fix` (Auto-Remédiation d'Environnement)** :
+  - Détecte et répare automatiquement les anomalies de configuration d'un projet React Native / Expo :
+    - Injection du plugin `react-native-reanimated/plugin` dans `babel.config.js`.
+    - Installation automatique des modules natifs Expo manquants via le package manager du projet (`bun`, `pnpm`, `yarn`, `npm`).
+    - Génération de `nativewind-env.d.ts` avec déclaration ambiante `declare module "*.css";`.
+    - Synchronisation des fiches de Skills IA (`skills/rs-ui/`) pour tous les composants installés.
+    - Support des drapeaux `--dry-run`, `-y, --yes` et `--json`.
+
+- 💎 **3 Nouveaux Composants Mobiles Avancés (Catalogue porté à 68 composants)** :
+  - **`Command`** (`components/ui/command.tsx`) : palette de recherche rapide et d'actions contextuelles (inspiration cmd+k mobile), filtres par sections groupées, raccourcis tactiles, état vide et modale dialog Liquid Glass.
+  - **`ColorPicker`** (`components/ui/color-picker.tsx`) : sélecteur de couleurs tactile avec nuancier de 12 presets, champ d'édition hexadécimale directe, aperçu dynamique et haptique.
+  - **`NavigationMenu`** (`components/ui/navigation-menu.tsx`) : menu accordéon hiérarchique avec chevrons rotatifs, capsules d'état actif, badges de notification et accessibilité WAI-ARIA `menuitem`.
+
+- 🔍 **Visualisation CLI enrichie (`rs-ui info --preview`)** :
+  - Le drapeau `-p, --preview` extrait automatiquement le code TSX d'exemple depuis le Skill IA correspondant et l'affiche dans une boîte de terminal formatée ASCII avant installation.
+
+- 🎪 **Showcase Storybook Mobile (`rs-ui showcase`) & E2E Maestro** :
+  - Commande `rs-ui showcase` (alias `rs-ui storybook`) avec options `--web`, `--port`, `--theme`, `--inject`.
+  - 6 flows de tests end-to-end automatisés Maestro (`e2e/maestro/`) intégrés au Quality Gate (`bun run validate-maestro`).
 
 ## 🌟 Nouveautés de la Version v1.0.1
 
@@ -443,13 +465,13 @@ rs-ui doctor
 ```text
 Dépôt GitHub rashwright-ui             npm registry (public)
            │                                  │
-           ├── packages/cli/       ──────▶   @rashwright/cli@1.1.0
-           │    └── commandes: rs-ui / rs-ui-reset / rs-ui-mcp
+           ├── packages/cli/       ──────▶   @rashwright/cli@1.4.0
+           │    └── commandes: rs-ui / rs-ui-reset / rs-ui-mcp / rs-ui fix / rs-ui showcase
            │
-           └── packages/ui-mobile/ ──────▶   @rashwright/ui-mobile@1.1.0
-                ├── components/ui/              (65 composants sources)
-                ├── templates/                  (7 templates autonomes)
-                ├── skills/                     (65 skills + modules core)
+           └── packages/ui-mobile/ ──────▶   @rashwright/ui-mobile@1.4.0
+                ├── components/ui/              (68 composants sources)
+                ├── templates/                  (10 templates autonomes)
+                ├── skills/                     (68 skills + modules core)
                 ├── registry/                   (métadonnées & matrices SDK 54 à 59)
                 ├── liquid/ primitives          (moteur Liquid Glass)
                 └── lib/upload/                 (moteur d'upload inliné)
@@ -457,16 +479,14 @@ Dépôt GitHub rashwright-ui             npm registry (public)
 
 ---
 
-## 🚀 Nouveautés v1.1.0
+## 🚀 Nouveautés v1.4.0
 
-- **5 Nouveaux Composants UI Essentiels** :
-  - `Calendar` : Calendrier mensuel interactif avec sélection unique, multiple ou plage (`range`), localisation FR native via `Intl` et variant glass.
-  - `DatePicker` : Sélecteur de date en modal bottom-sheet avec trigger personnalisable, boutons Confirmer/Annuler et synchronisation draft/value.
-  - `SwipeableRow` : Balayage tactile fluide droite/gauche basé sur `PanResponder` natif (zéro dépendance externe lourde) avec retour haptique et actions personnalisées.
-  - `Popover` : Panneau contextuel flottant avec 8 options de placement, calcul automatique des coordonnées d'écran via `measure`, flèche géométrique et fermeture backdrop.
-  - `SegmentedControl` : Capsule animée par ressort (`withSpring`) fluide avec support du thème et accessibilité WAI-ARIA `tablist`.
-- **Catalogue étendu à 65 composants** validés avec zéro erreur TypeScript strict.
-- **Quality Gate 100% vert** : 194/194 tests Vitest réussis (40 suites).
+- **Commande `rs-ui fix`** : Détection et auto-remédiation de l'environnement (Reanimated Babel, dépendances Expo natives, typages CSS, Skills IA).
+- **3 Nouveaux Composants Mobiles Avancés** : `Command`, `ColorPicker`, `NavigationMenu`.
+- **Catalogue étendu à 68 composants** et 10 templates autonomes prêts à l'emploi.
+- **Visualisation CLI enrichie (`rs-ui info --preview`)** : extrait canonique TSX dans le terminal.
+- **Showcase Storybook Mobile & Tests Maestro E2E (6 flows)**.
+- **Quality Gate 100% vert** : 46 suites de tests, 218 tests Vitest réussis sur 218.
 
 Pour la documentation dédiée aux contributeurs, consulter **[CONTRIBUTOR.md](./CONTRIBUTOR.md)**.
 

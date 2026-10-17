@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v1.2.0 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v1.4.0 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -10,7 +10,7 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-1.2.0-blue)](#)
+[![version](https://img.shields.io/badge/version-1.4.0-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
@@ -256,6 +256,14 @@ bunx expo install expo-router react-dom react-native-web
 - **🧩 Component-Detector Automatique (Modèle shadcn/ui)** :
   - Détection récursive et installation conditionnelle des logiques internes (`hooks/use-responsive.ts`, `lib/responsive.ts`, utilitaires `lib/upload/`) et packages Expo/npm manquants (`expo-device`, `react-native-reanimated`).
 - **🧪 Quality Gate 100% Vert** : 194 tests Vitest passés sur 40 suites, 0 erreur TypeScript strict (`bunx tsc --noEmit` exit 0).
+
+## 🆕 Nouveautés v1.4.0 — Commande `rs-ui fix`, Showcase & Code Preview
+
+- **Commande `rs-ui fix` (Auto-Remédiation)** : Réparation automatique en un clic de la configuration et de l'environnement (plugin Reanimated Babel, dépendances natives Expo, déclaration CSS NativeWind, synchronisation des fiches IA Skills).
+- **Showcase Storybook Mobile (`rs-ui showcase`)** : Environnement de test et prévisualisation mobile/web avec options `--web`, `--port`, `--theme`, `--inject`.
+- **Aperçu Code TSX (`rs-ui info --preview`)** : Affichage d'un exemple canonique prêt à copier directement dans la console.
+- **Suite de tests E2E Maestro** : 6 flows déclaratifs automatisés (`bun run test:e2e`).
+- **Nouveaux composants clés** : Support et synchronisation de 68 composants et 10 templates autonomes.
 
 ## 🆕 Nouveautés v1.0.0 — Release Majeure & Serveur MCP IA
 
