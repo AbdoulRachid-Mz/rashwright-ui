@@ -220,6 +220,29 @@ bunx expo install expo-router react-dom react-native-web
 - **🧪 Tests de non-régression** :
   4 nouveaux tests CRITICAL/REGRESSION dans `package-manager.test.ts` et `init.test.ts` verrouillent ces comportements.
 
+## 🆕 Nouveautés v1.2.0 — Cycle de Vie CLI, 3-Way Merge, Outils MCP IA & Nouveaux Templates
+
+- **🔄 Commande `rs-ui upgrade` & 3-Way Merge** :
+  - Mise à jour différentielle intelligente des composants préservant les modifications personnalisées de l'utilisateur.
+  - Résolution des conflits avec marqueurs Git standard (`<<<<<<< LOCAL` / `>>>>>>> REGISTRY`) sans écrasement brutal.
+  - Drapeau `--no-merge` pour forcer l'écrasement si souhaité.
+- **🪄 AST Transformers & Options `--alias`** :
+  - Réécriture chirurgicale des alias d'import (`@/` vers `~/` ou `@app/`) sur `rs-ui add`, `rs-ui update` et `rs-ui upgrade`.
+  - Adaptation automatique aux conventions de projet existantes (ex: Expo Router `~/components`).
+- **🤖 Serveur MCP IA Élargi (`rs-ui mcp`)** :
+  - `generate_screen` : composition assistée par IA d'écrans mobiles complets prêts pour la production.
+  - `audit_accessibility` : audit automatique ARIA, détection des cibles tactiles trop petites (<44px) et des labels manquants.
+  - `convert_styling` : convertisseur bidirectionnel instantané entre `StyleSheet.create` et classes NativeWind Tailwind.
+- **📦 3 Nouveaux Templates Métiers Autonomes (10 templates au total)** :
+  - `chat` : messagerie instantanée fluide avec bulles Glass, liste de messages et barre de saisie.
+  - `finance` : portefeuille financier, carte de solde avec bascule de confidentialité et historique des opérations.
+  - `social` : carrousel de stories horizontales et fil d'actualités avec likes interactifs et commentaires.
+  - Commande `rs-ui template remove <name>` pour désinstaller proprement les fichiers d'un template.
+- **⚡ Bun Install `--force` & Fix NativeWind v5** :
+  - Résolution automatique des conflits de verrouillage de dépendances NativeWind v5 RC / Tailwind v4 via `bun install --force`.
+- **🧪 Quality Gate 100% Vert** :
+  - 43 suites de tests, **212 tests unitaires Vitest réussis sur 212**, 0 erreur TypeScript strict (`check-types` exit 0).
+
 ## 🆕 Nouveautés v1.0.1 — Templates Premium, SDK 58 Stable & Fix NativeWind
 
 - **💎 Templates Autonomes Enrichis** :

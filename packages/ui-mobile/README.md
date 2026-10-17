@@ -117,6 +117,23 @@ rs-ui add button
 - **6 nouveaux composants** : `accordion`, `collapsible`, `otp-input`, `rating`, `data-table`, `form`.
 - **Architecture /src standardisée** : Reset automatique du template Expo, génération Expo Router (`src/app/_layout.tsx` + `src/app/index.tsx`).
 
+## 🆕 Nouveautés v1.2.0 — Templates Métiers Spécialisés & Écosystème v1.2.0
+
+- 💬 **Nouveau Template `chat`** : Messagerie instantanée mobile avec bulles Liquid Glass adaptatives, liste de messages et barre de saisie tactile.
+- 💳 **Nouveau Template `finance`** : Portefeuille financier, carte de solde avec bascule de visibilité/confidentialité et historique des opérations catégorisé.
+- 📱 **Nouveau Template `social`** : Réseau social avec carrousel de stories horizontales animées et fil d'actualités avec likes interactifs.
+- 📦 **10 Templates Métiers Autonomes** désormais disponibles et prêts pour l'initialisation ou l'ajout direct via `rs-ui add -t <id>`.
+- ⚡ **Support NativeWind v5 et Bun Install `--force`** assurant une résolution fluide des modules natifs.
+
+## 🆕 Nouveautés v1.1.0 — 65 Composants UI & Composants Mobiles Clés
+
+- 📅 **Nouveau composant `Calendar`** (`components/ui/calendar.tsx`) : navigation mensuelle fluide, sélection unique/multiple/plage (`range`), localisation FR native (`Intl`), variant glass.
+- 🕒 **Nouveau composant `DatePicker`** (`components/ui/date-picker.tsx`) : modal bottom-sheet avec trigger personnalisé, validation par confirmation, synchronisation draft/value.
+- 👆 **Nouveau composant `SwipeableRow`** (`components/ui/swipeable-row.tsx`) : geste tactile de balayage fluide via PanResponder natif (zéro dépendance lourde), actions personnalisées, haptique.
+- 💬 **Nouveau composant `Popover`** (`components/ui/popover.tsx`) : panneau flottant contextuel ancré avec 8 placements, calcul automatique des coordonnées d'écran (`measure`), flèche indicatrice.
+- 💊 **Nouveaux composants `SegmentedControl`, `Skeleton`, `Shimmer`, `ScreenSkeleton`**.
+- 🏆 **Registre étendu à 65 composants** et 212 tests Vitest réussis (100% vert).
+
 ## 🆕 Nouveautés v1.0.1
 
 - 💎 **Templates Autonomes Enrichis & Premium** :
