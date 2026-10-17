@@ -1,0 +1,43 @@
+{
+  "id": "finance",
+  "name": "Finance & Wallet",
+  "description": "Portefeuille financier mobile : solde avec masquage de confidentialité, raccourcis d'actions, historique catégorisé et cartes bancaires Liquid Glass.",
+  "version": "1.0.0",
+  "componentName": "FinanceTemplate",
+  "entrypoint": "finance-template.tsx",
+  "files": [
+    "finance-template.tsx",
+    "wallet-screen.tsx",
+    "transactions-screen.tsx",
+    "types.ts",
+    "components/balance-card.tsx",
+    "components/transaction-item.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": [
+    "card",
+    "button",
+    "badge",
+    "divider",
+    "avatar"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-haptics"
+  ],
+  "supportsGlass": true,
+  "screens": [
+    {
+      "route": "wallet",
+      "file": "wallet-screen.tsx",
+      "componentName": "WalletScreen",
+      "title": "Portefeuille"
+    },
+    {
+      "route": "transactions",
+      "file": "transactions-screen.tsx",
+      "componentName": "TransactionsScreen",
+      "title": "Transactions"
+    }
+  ]
+}

@@ -9,9 +9,9 @@ import {
 import { TEMPLATES_ROOT } from "../src/core/paths.js";
 
 describe("Templates Registry Subsystem", () => {
-  it("discovers all 7 autonomous templates", () => {
+  it("discovers all 10 autonomous templates", () => {
     const templates = loadTemplatesRegistry(TEMPLATES_ROOT);
-    expect(templates.length).toBe(7);
+    expect(templates.length).toBe(10);
 
     const ids = templates.map((t) => t.id);
     expect(ids).toContain("auth");
@@ -21,6 +21,9 @@ describe("Templates Registry Subsystem", () => {
     expect(ids).toContain("onboarding");
     expect(ids).toContain("settings");
     expect(ids).toContain("showcase");
+    expect(ids).toContain("chat");
+    expect(ids).toContain("finance");
+    expect(ids).toContain("social");
   });
 
   it("loads valid manifest definitions matching the autonomous schema", () => {
@@ -59,7 +62,7 @@ describe("Templates Registry Subsystem", () => {
 
   it("lists template IDs using listTemplateIds()", () => {
     const ids = listTemplateIds(TEMPLATES_ROOT);
-    expect(ids).toHaveLength(7);
+    expect(ids).toHaveLength(10);
     expect(ids).toContain("dashboard");
     expect(ids).toContain("commerce");
   });

@@ -1,8 +1,8 @@
 # PLAN STRATÉGIQUE & ROADMAP D'ÉVOLUTION — Rashwright UI Mobile (v1.1.0 → v1.5.0)
 
 > **Document de référence stratégique et technique.**  
-> Dernière mise à jour : 2026-10-16  
-> Statut : **v1.1.0 Publiée & Stabilisée** — 65 composants, 7 templates autonomes, Nouveaux composants (Calendar, DatePicker, SwipeableRow, Popover, SegmentedControl), Serveur MCP IA, Moteur responsive, Dual-styling NativeWind v4/v5, SDK 58 stable, 194 tests Vitest (Quality Gate 100% vert).
+> Dernière mise à jour : 2026-10-17  
+> Statut : **v1.2.0 Publiée & Stabilisée** — 65 composants, 10 templates autonomes (Auth, Commerce, Onboarding, Dashboard, Settings, Showcase, Minimal, Chat, Finance, Social), Moteur de fusion différentielle 3-Way Merge, AST Transformers (`--alias`), Commandes `rs-ui upgrade` et `rs-ui template remove`, Serveur MCP IA étendu (`generate_screen`, `audit_accessibility`, `convert_styling`), 212 tests Vitest réussis (Quality Gate 100% vert).
 
 ---
 

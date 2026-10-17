@@ -10,6 +10,8 @@ describe("Template Command Subsystem (rs-ui template)", () => {
     expect(subcommandNames).toContain("list");
     expect(subcommandNames).toContain("help");
     expect(subcommandNames).toContain("info");
+    expect(subcommandNames).toContain("add");
+    expect(subcommandNames).toContain("remove");
   });
 
   it("handles info subcommand requiring name", () => {

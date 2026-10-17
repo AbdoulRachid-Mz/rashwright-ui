@@ -6,16 +6,16 @@
 
 > Système moderne de composants **distribuables** pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie *shadcn/ui* : **vous copiez les composants dans votre codebase, vous en êtes propriétaire**.
 
-**Statut v1.1.0** : ✅ Version v1.1.0 — `@rashwright/cli@1.1.0` · `@rashwright/ui-mobile@1.1.0`  
-**Composants & Templates** : 65 composants UI + 8 primitives Liquid Glass + 7 Templates Autonomes (Auth double écran, Commerce catalogue & détail, Onboarding HomeScreen, Dashboard & Settings 3-mode) · **Nouveaux composants** : `Calendar`, `DatePicker`, `SwipeableRow`, `Popover`, `SegmentedControl` · **Serveur MCP IA** : Compatible Cursor, Claude Desktop, VS Code (`rs-ui mcp`) · **Moteur Responsive** : Breakpoints `sm`, `md`, `lg`, `xl`, `2xl`, grille fluide et tri intégré · **NativeWind** : Support v4 (`darkMode: "class"`) & v5 avec injection automatique `global.css` · **Indépendance native** : 100% `StyleSheet.create` + `useTheme()` par défaut · **SDK Expo** : SDK 54 à 58 (SDK 58 stable Recommandé) · **Tests** : 194 tests unitaires Vitest · **Typing strict** : Zéro `any`.
+**Statut v1.2.0** : ✅ Version v1.2.0 — `@rashwright/cli@1.2.0` · `@rashwright/ui-mobile@1.2.0`  
+**Composants & Templates** : 65 composants UI + 8 primitives Liquid Glass + 10 Templates Autonomes (Auth, Commerce, Onboarding, Dashboard, Settings, Showcase, Minimal, Chat, Finance, Social) · **Cycle de Vie CLI & 3-Way Merge** : `rs-ui upgrade`, fusion différentielle sans écrasement et AST Transformers (`--alias`) · **Serveur MCP IA Avancé** : Compatible Cursor, Claude Desktop, VS Code avec 9 outils (`generate_screen`, `audit_accessibility`, `convert_styling`) · **SDK Expo** : SDK 54 à 58 (SDK 58 stable Recommandé) · **Tests** : 212 tests unitaires Vitest · **Typing strict** : Zéro `any`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v1.1.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
-  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v1.1.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v1.2.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v1.2.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
   <a href="https://github.com/AbdoulRachid-Mz/rashwright-ui"><img src="https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github" alt="GitHub" /></a>
   <img src="https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000000.svg?logo=expo" alt="Expo SDK" />
   <img src="https://img.shields.io/badge/MCP%20Server-JSON--RPC%202.0-8A2BE2.svg" alt="MCP Server" />
-  <img src="https://img.shields.io/badge/Tests-194%20passed-success.svg" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-212%20passed-success.svg" alt="Tests" />
   <img src="https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6.svg?logo=typescript" alt="TypeScript" />
 </p>
 

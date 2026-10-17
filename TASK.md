@@ -21,10 +21,10 @@
 | **v1.0.1** | Templates Premium (Auth 2-écrans + Google, Commerce catalogue & détail, Onboarding HomeScreen, Dashboard & Settings 3-mode), SDK 58 Stable & Fix NativeWind | ✅ Validé | 7 / 7 tâches |
 | **v1.1.0** | Nouveaux Composants Mobiles Clés (`date-picker`, `calendar`, `swipeable-row`, `segmented-control`, `tooltip`, `popover`, `shimmer`, `skeleton`) | ✅ Publié | 6 / 6 tâches |
 | **v1.1.1** | Patch Stabilité : NativeWind v5 `--force`, résolutions options Commander `add -t`, génération multi-écrans Expo Router et typage TS | ✅ Validé | 5 / 5 tâches |
-| **v1.3.0 (Phase 9)** | Gestion de Cycle de Vie CLI (`rs-ui upgrade`), 3-Way Merge & AST Transformers | 🔄 En cours | 0 / 3 tâches |
-| **v1.4.0 (Phase 10)** | Outils MCP IA Génératifs (`generate_screen`, `audit_accessibility`, `convert_styling`) | 📅 Planifié | 0 / 3 tâches |
-| **v1.2.0 (Phase 8)** | Templates Métiers Spécialisés (`chat`, `finance`, `social`) & Commandes CLI Template | 📅 Planifié | 0 / 4 tâches |
-| **v1.5.0** | Showcase Interactif Storybook & Tests End-to-End Automatisés Maestro | 📅 Planifié | 0 / 2 tâches |
+| **v1.2.0 (Phase 8)** | Templates Métiers Spécialisés (`chat`, `finance`, `social`) & Commandes CLI Template | ✅ Validé | 4 / 4 tâches |
+| **v1.2.0 (Phase 9)** | Gestion de Cycle de Vie CLI (`rs-ui upgrade`), 3-Way Merge & AST Transformers | ✅ Validé | 3 / 3 tâches |
+| **v1.2.0 (Phase 10)** | Outils MCP IA Génératifs (`generate_screen`, `audit_accessibility`, `convert_styling`) | ✅ Validé | 3 / 3 tâches |
+| **v1.5.0 (Phase 11)** | Showcase Interactif Storybook & Tests End-to-End Automatisés Maestro | 📅 Planifié | 0 / 2 tâches |
 
 ---
 
@@ -139,28 +139,28 @@
   - `commerce/types.ts` & `commerce/index.ts` : props d'écran optionnelles (`onSelectProduct?`, `onBack?`) et export par défaut valide.
 * [x] **TASK-13.2.5** : Validation Quality Gate 100% vert (194/194 tests Vitest réussis sur 40 suites, 0 erreur `check-types`, tests test-project validés exit 0).
 
-### Phase 8 : Nouveaux Templates Métiers Spécialisés (v1.2.0 📅 PLANIFIÉ)
+### Phase 8 : Nouveaux Templates Métiers Spécialisés (v1.2.0 ✅ ACHEVÉ)
 
-* [ ] **TASK-14.1.1** : Créer le template `chat` (`templates/chat/`) : messagerie instantanée, liste inversée, bulles Liquid Glass, barre de saisie et upload de médias.
-* [ ] **TASK-14.1.2** : Créer le template `finance` (`templates/finance/`) : portefeuille crypto/banque, solde avec toggle visibilité, historique catégorisé et raccourcis de transactions.
-* [ ] **TASK-14.1.3** : Créer le template `social` (`templates/social/`) : fil d'actualité, carrousel de stories, likes animés et espace commentaires.
-* [ ] **TASK-14.1.4** : Implémenter les commandes CLI du gestionnaire de templates : `rs-ui template list`, `rs-ui template info <id>` et `rs-ui template remove <id>`.
-
----
-
-### Phase 9 : Gestion de Cycle de Vie & AST Transformers (v1.3.0 📅 PLANIFIÉ)
-
-* [ ] **TASK-15.1.1** : Implémenter la commande `rs-ui upgrade` / `rs-ui update` : détection des composants obsolètes via `rashwright-ui.lock`, comparaison différentielle interactive et sauvegarde automatique de secours dans `.rashwright/backups/`.
-* [ ] **TASK-15.1.2** : Intégrer un module AST Transformers (`packages/cli/src/core/transformers/`) pour réécrire chirurgicalement les alias d'imports lors de la copie si le projet cible utilise `~/` ou un chemin customisé.
-* [ ] **TASK-15.1.3** : Mettre en place un mécanisme de fusion différentielle (3-Way Merge) pour préserver les modifications personnalisées de l'utilisateur lors des mises à jour.
+* [x] **TASK-14.1.1** : Créer le template `chat` (`templates/chat/`) : messagerie instantanée, liste de messages, bulles Liquid Glass, barre de saisie et écran `conversation-screen.tsx`.
+* [x] **TASK-14.1.2** : Créer le template `finance` (`templates/finance/`) : portefeuille crypto/banque, solde avec toggle visibilité, historique catégorisé et raccourcis de transactions.
+* [x] **TASK-14.1.3** : Créer le template `social` (`templates/social/`) : fil d'actualité, carrousel de stories, likes animés et espace commentaires.
+* [x] **TASK-14.1.4** : Implémenter les commandes CLI du gestionnaire de templates : `rs-ui template list`, `rs-ui template info <id>` et `rs-ui template remove <id>`.
 
 ---
 
-### Phase 10 : Intelligence Artificielle & Serveur MCP Avancé (v1.4.0 📅 PLANIFIÉ)
+### Phase 9 : Gestion de Cycle de Vie & AST Transformers (v1.2.0 ✅ ACHEVÉ)
 
-* [ ] **TASK-16.1.1** : Développer l'outil MCP `generate_screen` permettant à l'assistant IA de composer un écran complet conforme aux tokens de thème et bonnes pratiques mobiles.
-* [ ] **TASK-16.1.2** : Développer l'outil MCP `audit_accessibility` pour analyser un fichier TSX et détecter les anomalies ARIA ou zones de frappe non conformes.
-* [ ] **TASK-16.1.3** : Développer l'outil MCP `convert_styling` pour convertir automatiquement entre `StyleSheet.create` et classes NativeWind Tailwind.
+* [x] **TASK-15.1.1** : Implémenter la commande `rs-ui upgrade` / `rs-ui update` : détection des composants obsolètes via `rashwright-ui.lock`, comparaison différentielle interactive et sauvegarde automatique de secours dans `.rashwright/backups/`.
+* [x] **TASK-15.1.2** : Intégrer un module AST Transformers (`packages/cli/src/core/transformers/`) pour réécrire chirurgicalement les alias d'imports lors de la copie si le projet cible utilise `~/` ou un chemin customisé (`--alias`).
+* [x] **TASK-15.1.3** : Mettre en place un mécanisme de fusion différentielle (3-Way Merge & 2-Way Merge) pour préserver les modifications personnalisées de l'utilisateur lors des mises à jour.
+
+---
+
+### Phase 10 : Intelligence Artificielle & Serveur MCP Avancé (v1.2.0 ✅ ACHEVÉ)
+
+* [x] **TASK-16.1.1** : Développer l'outil MCP `generate_screen` permettant à l'assistant IA de composer un écran complet conforme aux tokens de thème et bonnes pratiques mobiles.
+* [x] **TASK-16.1.2** : Développer l'outil MCP `audit_accessibility` pour analyser un fichier TSX et détecter les anomalies ARIA ou zones de frappe non conformes.
+* [x] **TASK-16.1.3** : Développer l'outil MCP `convert_styling` pour convertir automatiquement entre `StyleSheet.create` et classes NativeWind Tailwind.
 
 ---
 
@@ -172,6 +172,29 @@
 ---
 
 ## 📌 Journal des actions effectuées
+
+### 2026-10-17 — Release v1.2.0 (Phases 8, 9, 10 : Nouveaux Templates Métiers, Cycle de Vie CLI & MCP Avancé)
+- **Phase 8 (Templates Métiers Spécialisés)** :
+  - `chat` (`templates/chat/`) : messagerie instantanée mobile avec liste de messages, bulles Liquid Glass adaptatives, barre de saisie tactile, écran `conversation-screen.tsx`.
+  - `finance` (`templates/finance/`) : portefeuille financier, carte de solde avec bascule de visibilité/confidentialité, raccourcis d'actions, historique catégorisé avec filtrage dynamique (`wallet-screen.tsx`, `transactions-screen.tsx`).
+  - `social` (`templates/social/`) : réseau social avec carrousel horizontal de stories animées (`story-carousel.tsx`), publications réactives avec likes interactifs et fil d'actualités (`feed-screen.tsx`).
+  - Commandes CLI template : `rs-ui template list`, `rs-ui template info <id>`, `rs-ui template add <id>`, `rs-ui template remove <id>` avec confirmation interactive et suppression propre.
+  - Registre de templates étendu à **10 templates autonomes** prêts à l'emploi.
+- **Phase 9 (Gestion de Cycle de Vie & AST Transformers)** :
+  - Commande `rs-ui upgrade` : mise à niveau chirurgicale des composants installés vers la dernière version du registre.
+  - Moteur de fusion différentielle **3-Way Merge & 2-Way Merge** (`merge-manager.ts`) : préservation des personnalisations utilisateur lors des mises à jour avec génération de marqueurs de conflit Git en cas de divergence directe.
+  - Module **AST Transformers** (`import-transformer.ts`) : réécriture des alias d'importation (`@/` vers `~/` ou `@app/`) via l'option `--alias <prefix>` sur `rs-ui add`, `rs-ui update` et `rs-ui upgrade`.
+  - Prise en charge des drapeaux `--merge` / `--no-merge` pour contrôler la stratégie d'écrasement ou de fusion.
+- **Phase 10 (Intelligence Artificielle & Serveur MCP Avancé)** :
+  - Outil MCP `generate_screen` : génération de code TSX complet d'écrans mobiles avec imports modulaires et SafeAreaView.
+  - Outil MCP `audit_accessibility` : analyse statique a11y détectant les absences de labels vocaux, les cibles tactiles trop petites (<44px) et les rôles interactifs manquants.
+  - Outil MCP `convert_styling` : convertisseur bidirectionnel entre StyleSheet React Native et classes Tailwind NativeWind.
+- **Quality Gate 100% vert** :
+  - 43 suites de tests, **212 tests Vitest réussis sur 212**.
+  - Zéro erreur TypeScript strict sur `@rashwright/cli` et `@rashwright/ui-mobile`.
+  - Bundle CLI optimisé de 0.37 MB.
+  - Validations smoke tests (ESM strict, shebang unique, version semver) validées.
+- **Bumps de version** : Passage officiel en **v1.2.0** sur `@rashwright/cli`, `@rashwright/ui-mobile`, registre et racine.
 
 ### 2026-10-16 — Release v1.1.0 (Nouveaux Composants Mobiles Clés & Registre à 65 composants)
 - **Nouveaux composants UI autonomes** :

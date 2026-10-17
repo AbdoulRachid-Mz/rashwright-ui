@@ -36,10 +36,23 @@ export function updateCommand(): Command {
     .option("-i, --interactive", "Sélectionner interactivement les composants à mettre à jour", false)
     .option("--diff", "Afficher les différences détaillées avant d'écraser")
     .option("--skills", "Mettre à jour également les Skills IA associés", true)
-    .option("--no-skills", "Ne pas mettre à jour les Skills IA")
+    .option("--merge", "Activer la fusion différentielle (3-Way Merge) pour préserver les modifications locales", true)
+    .option("--no-merge", "Désactiver le 3-Way Merge et forcer l'écrasement")
+    .option("--alias <prefix>", "Réécrire les alias d'import (ex: ~/ ou @app/)")
     .option("--yes", "Écraser sans demander confirmation")
     .option("--dry-run", "Afficher les actions prévues sans les exécuter")
-    .action(async (componentArgs: string[], options) => {
+    .action(async (componentArgs: string[], options: {
+      registry?: string;
+      fresh?: boolean;
+      check?: boolean;
+      interactive?: boolean;
+      diff?: boolean;
+      skills?: boolean;
+      yes?: boolean;
+      dryRun?: boolean;
+      merge?: boolean;
+      alias?: string;
+    }) => {
       const cwd = process.cwd();
       const project = detectProject(cwd);
 
@@ -255,6 +268,10 @@ export function updateCommand(): Command {
           const results = copyComponentFiles(entry.files, resolved.sourceRoot, targetDir, {
             overwrite: true,
             dryRun: false,
+            merge: options.merge !== false,
+            importTransform: options.alias
+              ? { toPrefix: options.alias }
+              : (config.aliases ? { aliases: config.aliases } : undefined),
           });
 
           const ok = results.every((r) => r.status !== "failed");

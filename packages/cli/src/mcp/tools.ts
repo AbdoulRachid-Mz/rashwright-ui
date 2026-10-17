@@ -13,6 +13,9 @@ import { getAllComponents, getComponent, loadRegistryIndex } from "../core/regis
 import { loadTemplatesRegistry, getTemplateDefinition } from "../core/templates-registry.js";
 import { parseSkillFrontmatter } from "../core/skills-manager.js";
 import { lightTheme } from "../../../ui-mobile/constants/theme.js";
+import { generateScreenCode } from "./tools/generate-screen.js";
+import { auditAccessibility } from "./tools/audit-accessibility.js";
+import { convertStyling } from "./tools/convert-styling.js";
 
 export interface McpToolDefinition {
   name: string;
@@ -127,6 +130,71 @@ export const MCP_TOOLS: McpToolDefinition[] = [
         },
       },
       required: ["component"],
+    },
+  },
+  {
+    name: "generate_screen",
+    description: "Compose un écran mobile complet et prêt à l'emploi avec navigation, en-tête et composants Rashwright UI.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        title: {
+          type: "string",
+          description: "Titre de l'écran (ex: 'Tableau de bord', 'Mon Profil', 'Connexion').",
+        },
+        screenType: {
+          type: "string",
+          enum: ["dashboard", "list", "form", "profile", "settings", "detail", "empty"],
+          description: "Modèle d'écran (défaut: 'dashboard').",
+        },
+        components: {
+          type: "array",
+          items: { type: "string" },
+          description: "Liste des composants UI à intégrer (ex: ['card', 'button', 'badge']).",
+        },
+        styleMode: {
+          type: "string",
+          enum: ["styleSheet", "nativewind"],
+          description: "Style d'écriture des styles (défaut: 'styleSheet').",
+        },
+        useGlass: {
+          type: "boolean",
+          description: "Activer les variantes Liquid Glass (défaut: true).",
+        },
+      },
+    },
+  },
+  {
+    name: "audit_accessibility",
+    description: "Analyse un fichier TSX mobile pour détecter les anomalies d'accessibilité (labels vocaux manquants, cibles tactiles trop petites, rôles ARIA).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceCode: {
+          type: "string",
+          description: "Le code source TSX à auditer.",
+        },
+      },
+      required: ["sourceCode"],
+    },
+  },
+  {
+    name: "convert_styling",
+    description: "Convertit bidirectionnellement le style entre StyleSheet React Native et classes Tailwind NativeWind.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceCode: {
+          type: "string",
+          description: "Le code source TSX contenant les styles à convertir.",
+        },
+        target: {
+          type: "string",
+          enum: ["nativewind", "stylesheet"],
+          description: "Cible de la conversion ('nativewind' pour Tailwind, 'stylesheet' pour StyleSheet.create).",
+        },
+      },
+      required: ["sourceCode", "target"],
     },
   },
 ];
@@ -432,6 +500,67 @@ export async function executeMcpTool(
                 null,
                 2
               ),
+            },
+          ],
+        };
+      }
+
+      case "generate_screen": {
+        const screenCode = generateScreenCode({
+          title: typeof args.title === "string" ? args.title : undefined,
+          screenType: typeof args.screenType === "string" ? (args.screenType as any) : undefined,
+          components: Array.isArray(args.components) ? args.components.map(String) : undefined,
+          styleMode: typeof args.styleMode === "string" ? (args.styleMode as any) : undefined,
+          useGlass: typeof args.useGlass === "boolean" ? args.useGlass : undefined,
+        });
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: screenCode,
+            },
+          ],
+        };
+      }
+
+      case "audit_accessibility": {
+        const sourceCode = String(args.sourceCode || "");
+        if (!sourceCode.trim()) {
+          return {
+            isError: true,
+            content: [{ type: "text", text: "Le paramètre 'sourceCode' est requis." }],
+          };
+        }
+
+        const audit = auditAccessibility(sourceCode);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(audit, null, 2),
+            },
+          ],
+        };
+      }
+
+      case "convert_styling": {
+        const sourceCode = String(args.sourceCode || "");
+        const target = args.target === "nativewind" ? "nativewind" : "stylesheet";
+
+        if (!sourceCode.trim()) {
+          return {
+            isError: true,
+            content: [{ type: "text", text: "Le paramètre 'sourceCode' est requis." }],
+          };
+        }
+
+        const res = convertStyling(sourceCode, target);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(res, null, 2),
             },
           ],
         };

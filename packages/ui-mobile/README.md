@@ -2,9 +2,9 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile" width="180" />
 </p>
 
-# @rashwright/ui-mobile — v1.1.0
+# @rashwright/ui-mobile — v1.2.0
 
-[![npm version](https://img.shields.io/badge/npm-%401.1.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+[![npm version](https://img.shields.io/badge/npm-%401.2.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2058-000000?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6?logo=typescript)](#)
 [![NativeWind](https://img.shields.io/badge/NativeWind-v4%20%7C%20v5-06b6d4?logo=tailwindcss)](#)
@@ -20,10 +20,10 @@
 > ```
 
 Ce package `@rashwright/ui-mobile` est le **fournisseur de code source** et de **Skills IA** de l'écosystème Rashwright. Il est consommé par `@rashwright/cli` (localement ou via CDN unpkg) pour fournir :
-- le **registry JSON central** (65 composants, matrices Expo SDK 54 à 59)
+- le **registry JSON central** (65 composants, matrices Expo SDK 54 à 58)
 - le **code source TypeScript** de chaque composant (copié directement par le CLI dans votre projet)
 - le **catalogue exhaustif de Skills IA** (65 skills composants, 4 modules core, 1 skill global dans `skills/`)
-- les **7 Templates Autonomes Complets** distribuables sous `templates/<id>/` (`auth`, `commerce`, `dashboard`, `minimal`, `onboarding`, `settings`, `showcase`)
+- les **10 Templates Autonomes Complets** distribuables sous `templates/<id>/` (`auth`, `commerce`, `dashboard`, `minimal`, `onboarding`, `settings`, `showcase`, `chat`, `finance`, `social`)
 - le **moteur Liquid Glass** (8 primitives sous `components/ui/liquid/`)
 - le **moteur d'upload** Rashwright (`lib/upload/`) avec 5 providers inlinés
 - les **tokens de thème** et les **9 presets** (`default`, `emerald`, `violet`, `amber`, `rose`, `slate`, `green`, `red`, `cyan`) + moteur custom

@@ -1,0 +1,35 @@
+{
+  "id": "social",
+  "name": "Social Network",
+  "description": "Réseau social mobile moderne : carrousel horizontal de stories animées, fil d'actualités avec likes interactifs, partages et commentaires.",
+  "version": "1.0.0",
+  "componentName": "SocialTemplate",
+  "entrypoint": "social-template.tsx",
+  "files": [
+    "social-template.tsx",
+    "feed-screen.tsx",
+    "types.ts",
+    "components/story-carousel.tsx",
+    "components/post-card.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": [
+    "card",
+    "avatar",
+    "button",
+    "badge"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-haptics"
+  ],
+  "supportsGlass": true,
+  "screens": [
+    {
+      "route": "feed",
+      "file": "feed-screen.tsx",
+      "componentName": "FeedScreen",
+      "title": "Fil d'actualité"
+    }
+  ]
+}

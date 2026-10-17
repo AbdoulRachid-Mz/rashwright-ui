@@ -42,6 +42,7 @@ export function addCommand(): Command {
     .option("--yes", "Répondre Oui à toutes les questions (mode non interactif)")
     .option("--dry-run", "Afficher les actions sans les exécuter")
     .option("--interactive", "Forcer le mode interactif même si des arguments sont passés", true)
+    .option("--alias <prefix>", "Réécrire les alias d'import (ex: ~/ ou @app/)")
     .option("--no-interactive", "Désactiver le prompt interactif (mode CI/script)")
     .option("--non-interactive", "Alias de --no-interactive")
     .action(async (componentArgs: string[], options: {
@@ -56,6 +57,7 @@ export function addCommand(): Command {
       dryRun?: boolean;
       interactive?: boolean;
       nonInteractive?: boolean;
+      alias?: string;
     }, cmd?: Command) => {
       const cwd = process.cwd();
 
@@ -438,7 +440,13 @@ export function addCommand(): Command {
           comp.entry.files,
           resolved.sourceRoot,
           targetDir,
-          { overwrite, dryRun: options.dryRun },
+          {
+            overwrite,
+            dryRun: options.dryRun,
+            importTransform: options.alias
+              ? { toPrefix: options.alias }
+              : (config.aliases ? { aliases: config.aliases } : undefined),
+          },
         );
 
         const ok = results.every((r) => r.status !== "failed");

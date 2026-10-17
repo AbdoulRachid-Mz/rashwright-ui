@@ -106,4 +106,52 @@ describe("MCP Server (Model Context Protocol)", () => {
     const claudePath = getTargetConfigPath("claude");
     expect(claudePath).toContain("claude_desktop_config.json");
   });
+
+  it("executes 'generate_screen' MCP tool and returns valid TSX screen code", async () => {
+    const result = await executeMcpTool("generate_screen", {
+      title: "Tableau de Bord",
+      screenType: "dashboard",
+      components: ["card", "button", "badge"],
+    });
+
+    expect(result.isError).toBeFalsy();
+    const code = result.content[0].text;
+    expect(code).toContain("export function TableauDeBordScreen");
+    expect(code).toContain('import Card from "@/components/ui/card";');
+    expect(code).toContain('import Button from "@/components/ui/button";');
+    expect(code).toContain("useTheme");
+  });
+
+  it("executes 'audit_accessibility' MCP tool and detects accessibility issues", async () => {
+    const sourceWithIssues = `
+      <TouchableOpacity onPress={handlePress}>
+        <Text>Click me</Text>
+      </TouchableOpacity>
+      <Image source={{ uri: "icon.png" }} />
+    `;
+
+    const result = await executeMcpTool("audit_accessibility", {
+      sourceCode: sourceWithIssues,
+    });
+
+    expect(result.isError).toBeFalsy();
+    const audit = JSON.parse(result.content[0].text);
+    expect(audit.totalIssues).toBeGreaterThan(0);
+    expect(audit.issues.some((i: any) => i.rule === "touchable-has-label")).toBe(true);
+    expect(audit.issues.some((i: any) => i.rule === "image-has-alt")).toBe(true);
+  });
+
+  it("executes 'convert_styling' MCP tool between NativeWind and StyleSheet", async () => {
+    const codeWithTailwind = `<View className="flex-1 p-4 rounded-xl flex-row items-center" />`;
+    const resToSheet = await executeMcpTool("convert_styling", {
+      sourceCode: codeWithTailwind,
+      target: "stylesheet",
+    });
+
+    expect(resToSheet.isError).toBeFalsy();
+    const parsed = JSON.parse(resToSheet.content[0].text);
+    expect(parsed.rulesConvertedCount).toBeGreaterThan(0);
+    expect(parsed.convertedCode).toContain("flex: 1");
+    expect(parsed.convertedCode).toContain("padding: 16");
+  });
 });

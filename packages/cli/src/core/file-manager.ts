@@ -1,5 +1,7 @@
-import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, mkdirSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
+import { transformImports, type TransformImportOptions } from "./transformers/import-transformer.js";
+import { merge2Way } from "./merge-manager.js";
 
 export interface FileCopyResult {
   source: string;
@@ -23,7 +25,12 @@ export function copyComponentFiles(
   files: string[],
   registrySourceRoot: string,
   targetComponentsRoot: string,
-  options: { overwrite?: boolean; dryRun?: boolean } = {}
+  options: {
+    overwrite?: boolean;
+    dryRun?: boolean;
+    importTransform?: TransformImportOptions;
+    merge?: boolean;
+  } = {}
 ): FileCopyResult[] {
   const results: FileCopyResult[] = [];
 
@@ -72,7 +79,18 @@ export function copyComponentFiles(
     }
 
     try {
-      copyFileSync(source, destination);
+      let content = readFileSync(source, "utf-8");
+      if (options.importTransform) {
+        content = transformImports(content, options.importTransform);
+      }
+
+      if (isModified && options.merge && existsSync(destination)) {
+        const localContent = readFileSync(destination, "utf-8");
+        const mergeRes = merge2Way(localContent, content);
+        content = mergeRes.merged;
+      }
+
+      writeFileSync(destination, content, "utf-8");
       results.push({
         source,
         destination,
@@ -104,3 +122,6 @@ export function isFileModified(path: string, referenceContent: string): boolean 
   const current = readFileSync(path, "utf-8");
   return current !== referenceContent;
 }
+
+// Re-export statSync for consumers that need it
+export { statSync };

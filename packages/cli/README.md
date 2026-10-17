@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v1.1.0 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v1.2.0 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -10,7 +10,7 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-1.1.0-blue)](#)
+[![version](https://img.shields.io/badge/version-1.2.0-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
@@ -99,7 +99,10 @@ rs-ui --help
 | `rs-ui info <component>` | Affiche la fiche technique détaillée d'un composant (versions, dépendances, plateformes, etc.). |
 | `rs-ui doctor` | Évalue l'environnement (SDK, dépendances, types) et diagnostique la présence et validité des Skills IA. |
 | `rs-ui remove <component>` | Supprime un composant, retire son Skill IA associé et vérifie les dépendances. |
-| `rs-ui update [components...]` | Met à jour les composants à partir du Registry avec analyse de diff par hash SHA-256. |
+| `rs-ui update [components...]` | Met à jour les composants avec détection de diff par SHA-256 et support 3-Way Merge. |
+| `rs-ui upgrade [components...]` | Met à niveau les composants vers la dernière version du registre avec fusion différentielle (3-Way Merge) et réécriture d'alias (`--alias`). |
+| `rs-ui template <list\|info\|remove>` | Explore, inspecte ou nettoie les 10 templates métiers autonomes (`chat`, `finance`, `social`, etc.). |
+| `rs-ui mcp` | Démarre le serveur MCP IA (JSON-RPC 2.0 stdio) avec 9 outils d'assistance (génération, audit a11y, conversion styling). |
 
 ---
 
