@@ -516,6 +516,9 @@ export const COMPONENT_EXPORTS_MAP: Record<string, string> = {
   "date-picker": 'export { DatePicker } from "./date-picker";',
   "swipeable-row": 'export { SwipeableRow } from "./swipeable-row";',
   popover: 'export { Popover } from "./popover";',
+  "color-picker": 'export { ColorPicker } from "./color-picker";',
+  command: 'export { Command, CommandDialog, CommandGroup, CommandItem, CommandEmpty } from "./command";',
+  "navigation-menu": 'export { NavigationMenu } from "./navigation-menu";',
   // ── Starters & Templates Screens v0.6.0 ──────────────────────────────────
   "minimal-screen": 'export { RashwrightMinimalScreen } from "./minimal-screen";',
   "auth-screen": 'export { RashwrightAuthScreen } from "./auth-screen";',

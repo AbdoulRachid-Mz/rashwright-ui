@@ -1,0 +1,33 @@
+{
+  "name": "command",
+  "version": "1.0.0",
+  "description": "Palette de commande mobile et recherche rapide avec filtres par sections, raccourcis, état vide et modale dialog Liquid Glass.",
+  "category": "Navigation",
+  "files": [
+    "components/ui/command.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "placeholder": "string",
+    "search": "string",
+    "onSearchChange": "function",
+    "variant": [
+      "default",
+      "glass"
+    ]
+  }
+}

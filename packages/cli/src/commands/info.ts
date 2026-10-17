@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import chalk from "chalk";
 import { join } from "node:path";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { loadComponentEntry } from "../core/dependency-resolver.js";
 import { resolveRegistry, ensureComponentDownloaded } from "../core/remote-registry.js";
 import { detectProject } from "../core/project-detector.js";
@@ -16,8 +16,9 @@ export function infoCommand(): Command {
     .argument("<component>", "Nom du composant")
     .option("--registry <url>", "URL du registre distant (ex: https://unpkg.com/@rashwright/ui-mobile@latest)")
     .option("--fresh", "Forcer le rafraîchissement du registre distant sans utiliser le cache")
+    .option("-p, --preview", "Afficher un aperçu et un exemple de code TSX d'utilisation", false)
     .option("--json", "Sortie JSON")
-    .action(async (name: string, options) => {
+    .action(async (name: string, options: { registry?: string; fresh?: boolean; preview?: boolean; json?: boolean }) => {
       const cwd = process.cwd();
       const project = detectProject(cwd);
 
@@ -151,6 +152,31 @@ export function infoCommand(): Command {
 
       if (entry.notes) {
         console.log(chalk.dim(`  Note : ${entry.notes}`));
+        console.log();
+      }
+
+      // ── Option -p, --preview : Aperçu ASCII / Code TSX ────────────────
+      if (options.preview) {
+        console.log(chalk.bold.cyan("  ┌─ Aperçu du code TSX d'exemple ──────────────────────────────┐"));
+        const skillPath = join(resolved.sourceRoot, "skills", entry.name, SKILL_FILENAME);
+        let snippet = "";
+        if (existsSync(skillPath)) {
+          const skillContent = readFileSync(skillPath, "utf-8");
+          const codeMatch = skillContent.match(/```tsx?\r?\n([\s\S]*?)\r?\n```/);
+          if (codeMatch?.[1]) {
+            snippet = codeMatch[1].trim();
+          }
+        }
+
+        if (!snippet) {
+          snippet = `import { ${entry.name.split("-").map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join("")} } from "@/components/ui/${entry.name}";\n\n// Usage canonique\n<${entry.name.split("-").map((s) => s.charAt(0).toUpperCase() + s.slice(1)).join("")} />`;
+        }
+
+        const lines = snippet.split("\n");
+        for (const line of lines) {
+          console.log(chalk.dim("  │ ") + chalk.white(line));
+        }
+        console.log(chalk.bold.cyan("  └─────────────────────────────────────────────────────────────┘"));
         console.log();
       }
     });

@@ -1,0 +1,34 @@
+{
+  "name": "color-picker",
+  "version": "1.0.0",
+  "description": "Sélecteur de couleur tactile avec nuancier de palettes rapides, saisie hexadécimale, retour haptique et variante Liquid Glass.",
+  "category": "Forms",
+  "files": [
+    "components/ui/color-picker.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "value": "string",
+    "onChange": "function",
+    "presets": "string[]",
+    "showInput": "boolean",
+    "variant": [
+      "default",
+      "glass"
+    ]
+  }
+}

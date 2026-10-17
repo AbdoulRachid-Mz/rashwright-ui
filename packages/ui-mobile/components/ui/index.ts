@@ -117,5 +117,8 @@ export { DataTable } from "./data-table";
 export { Form, FormField, FormLabel, FormMessage, FormDescription, useFormField } from "./form";
 export { OtpInput } from "./otp-input";
 export { Rating } from "./rating";
+export { ColorPicker } from "./color-picker";
+export { Command, CommandDialog, CommandGroup, CommandItem, CommandEmpty } from "./command";
+export { NavigationMenu } from "./navigation-menu";
 
 

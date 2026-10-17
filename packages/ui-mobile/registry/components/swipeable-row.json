@@ -3,14 +3,23 @@
   "version": "1.0.0",
   "description": "Ligne glissable avec actions gauche/droite (swipe to action), basé sur PanResponder natif sans dépendances externes.",
   "category": "Navigation",
-  "files": ["components/ui/swipeable-row.tsx"],
+  "files": [
+    "components/ui/swipeable-row.tsx"
+  ],
   "dependencies": [],
-  "expoDependencies": ["expo-haptics"],
-  "optionalExpoDependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
   "requiresComponents": [],
-  "providers": ["ThemeProvider"],
+  "providers": [
+    "ThemeProvider"
+  ],
   "supportsGlass": false,
-  "platforms": ["ios", "android"],
+  "platforms": [
+    "ios",
+    "android"
+  ],
   "nativeRebuildRequired": false,
   "props": {
     "leftActions": "SwipeAction[]",

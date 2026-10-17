@@ -3,17 +3,30 @@
   "version": "1.0.0",
   "description": "Sélecteur de date en bottom-sheet modal avec intégration du Calendar et support du thème.",
   "category": "Forms",
-  "files": ["components/ui/date-picker.tsx"],
+  "files": [
+    "components/ui/date-picker.tsx"
+  ],
   "dependencies": [],
-  "expoDependencies": ["expo-haptics"],
+  "expoDependencies": [],
   "optionalExpoDependencies": [],
-  "requiresComponents": ["calendar"],
-  "providers": ["ThemeProvider"],
+  "requiresComponents": [
+    "calendar"
+  ],
+  "providers": [
+    "ThemeProvider"
+  ],
   "supportsGlass": true,
-  "platforms": ["ios", "android"],
+  "platforms": [
+    "ios",
+    "android"
+  ],
   "nativeRebuildRequired": false,
   "props": {
-    "variant": ["default", "outlined", "glass"],
+    "variant": [
+      "default",
+      "outlined",
+      "glass"
+    ],
     "disabled": "boolean",
     "label": "string"
   }

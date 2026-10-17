@@ -1,0 +1,33 @@
+{
+  "name": "navigation-menu",
+  "version": "1.0.0",
+  "description": "Menu de navigation hiérarchique avec sections dépliables, indicateurs d'état actif, badges et support Liquid Glass.",
+  "category": "Navigation",
+  "files": [
+    "components/ui/navigation-menu.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "sections": "NavigationSection[]",
+    "activeId": "string",
+    "multiple": "boolean",
+    "variant": [
+      "default",
+      "glass"
+    ]
+  }
+}

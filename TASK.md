@@ -25,6 +25,9 @@
 | **v1.2.0 (Phase 9)** | Gestion de Cycle de Vie CLI (`rs-ui upgrade`), 3-Way Merge & AST Transformers | ✅ Validé | 3 / 3 tâches |
 | **v1.2.0 (Phase 10)** | Outils MCP IA Génératifs (`generate_screen`, `audit_accessibility`, `convert_styling`) | ✅ Validé | 3 / 3 tâches |
 | **v1.3.0 (Phase 11)** | Showcase Interactif Storybook (`rs-ui showcase`) & Tests End-to-End Automatisés Maestro (6 flows) | ✅ Validé | 2 / 2 tâches |
+| **v1.3.1 (Phase 12)** | Commande `rs-ui fix` (Auto-remédiation de l'environnement, Babel Reanimated, Dépendances, Typages ambiants) | ✅ Validé | 2 / 2 tâches |
+| **v1.4.0 (Phase 13)** | Nouveaux Composants Mobiles Avancés (`command`, `color-picker`, `navigation-menu`) — Registre à 68 composants | ✅ Validé | 3 / 3 tâches |
+| **v1.4.0 (Phase 14)** | Visualisation CLI enrichie (`rs-ui info <comp> --preview`) avec extrait de code TSX canonique et boîte ASCII | ✅ Validé | 2 / 2 tâches |
 
 ---
 
@@ -171,7 +174,52 @@
 
 ---
 
+### Phase 12 : Commande `rs-ui fix` & Auto-remédiation (v1.3.1 ✅ ACHEVÉ)
+
+* [x] **TASK-18.1.1** : Développer la commande `rs-ui fix` (`packages/cli/src/commands/fix.ts`) pour réparer automatiquement les anomalies de configuration : initialisation de `rashwright-ui.json`, création du dossier de composants, injection du plugin `react-native-reanimated/plugin` dans `babel.config.js`, installation des modules natifs Expo manquants, synchronisation des Skills IA et génération de `nativewind-env.d.ts`.
+* [x] **TASK-18.1.2** : Supporter les options `--dry-run`, `-y, --yes` et `--json`, et écrire la suite de tests `packages/cli/tests/fix.test.ts`.
+
+---
+
+### Phase 13 : Nouveaux Composants Mobiles Avancés (v1.4.0 ✅ ACHEVÉ)
+
+* [x] **TASK-19.1.1** : Développer le composant `Command` (`components/ui/command.tsx`) : palette de commande mobile / recherche rapide avec filtres, raccourcis, état vide et modale dialog Liquid Glass. Fiche registre `registry/components/command.json` et documentation skill `skills/command/SKILL.md`.
+* [x] **TASK-19.1.2** : Développer le composant `ColorPicker` (`components/ui/color-picker.tsx`) : sélecteur de couleur tactile avec nuancier de 12 palettes, saisie hexadécimale, retour haptique et variante Liquid Glass. Fiche registre `registry/components/color-picker.json` et documentation skill `skills/color-picker/SKILL.md`.
+* [x] **TASK-19.1.3** : Développer le composant `NavigationMenu` (`components/ui/navigation-menu.tsx`) : menu de navigation hiérarchique avec sections accordéon, indicateurs d'état actif, badges et support Liquid Glass. Fiche registre `registry/components/navigation-menu.json` et documentation skill `skills/navigation-menu/SKILL.md`.
+
+---
+
+### Phase 14 : Visualisation CLI enrichie (`rs-ui info --preview`) (v1.4.0 ✅ ACHEVÉ)
+
+* [x] **TASK-20.1.1** : Ajouter l'option `-p, --preview` sur `rs-ui info <component>` (`packages/cli/src/commands/info.ts`) pour extraire automatiquement les exemples d'utilisation TSX depuis le Skill IA correspondant et les afficher dans une boîte de terminal élégante avec bordures ASCII.
+* [x] **TASK-20.1.2** : Écrire la suite de tests unitaires `packages/cli/tests/info.test.ts` (test argument + options preview/registry/fresh/json).
+
+---
+
 ## 📌 Journal des actions effectuées
+
+### 2026-10-17 — Releases v1.3.1 & v1.4.0 (Phases 12, 13, 14 : Commande `rs-ui fix`, 68 composants et Visualisation CLI)
+- **Commande `rs-ui fix` (Phase 12)** :
+  - Détection et auto-remédiation des anomalies courantes de projets Expo/React Native.
+  - Réparation de `babel.config.js` (`react-native-reanimated/plugin`).
+  - Installation automatique des modules natifs Expo manquants via le package manager du projet.
+  - Déclaration ambient de modules CSS dans `nativewind-env.d.ts`.
+  - Flags `--dry-run`, `-y, --yes`, `--json`.
+- **Nouveaux Composants Mobiles Clés (Phase 13 — 68 composants au registre)** :
+  - `Command` (`components/ui/command.tsx`) : palette de commande contextuelle avec recherche, sections groupées, raccourcis clavier/tactiles, modale overlay Glass.
+  - `ColorPicker` (`components/ui/color-picker.tsx`) : sélecteur de couleurs avec grille de presets, aperçu interactif, champ hexadécimal et retour haptique.
+  - `NavigationMenu` (`components/ui/navigation-menu.tsx`) : navigation hiérarchique mobile avec sections extensibles, chevrons rotatifs, badges et capsules actives.
+  - Fiches de registre et fiches IA Skills synchronisées pour chacun des 3 composants.
+  - `COMPONENT_EXPORTS_MAP` synchronisé dans le générateur CLI.
+- **Visualisation CLI enrichie (Phase 14)** :
+  - Ajout du drapeau `-p, --preview` sur `rs-ui info <component>`.
+  - Affichage direct du code TSX d'exemple extrait du `SKILL.md` dans une boîte ASCII formatée.
+- **Quality Gate 100% vert** :
+  - 46 suites de tests Vitest, **218 tests réussis sur 218**.
+  - Zéro erreur TypeScript strict sur `@rashwright/cli` et `@rashwright/ui-mobile`.
+  - Validation registre sans faute (68 composants, 68 sources, 8 primitives).
+  - Validation des 6 flux Maestro E2E.
+  - Bundle CLI de 0.38 MB.
 
 ### 2026-10-17 — Phase 11 (Storybook Mobile & Tests End-to-End Maestro)
 - **Showcase Interactif & Storybook Mobile** :

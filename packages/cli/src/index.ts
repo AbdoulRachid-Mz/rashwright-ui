@@ -24,6 +24,7 @@ import { searchCommand } from "./commands/search.js";
 import { diffCommand } from "./commands/diff.js";
 import { upgradeCommand } from "./commands/upgrade.js";
 import { showcaseCommand } from "./commands/showcase.js";
+import { fixCommand } from "./commands/fix.js";
 
 const require = createRequire(import.meta.url);
 const { version: CLI_VERSION } = require("../package.json") as {
@@ -74,6 +75,7 @@ program.addCommand(searchCommand());
 program.addCommand(diffCommand());
 program.addCommand(upgradeCommand());
 program.addCommand(showcaseCommand());
+program.addCommand(fixCommand());
 
 // Support de l'alias direct binaire `rs-ui-reset`
 const invokedBin = basename(process.argv[1] || "");

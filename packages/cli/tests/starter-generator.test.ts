@@ -58,9 +58,9 @@ describe("starter-generator", () => {
     expect(content).not.toContain('export { default as Switch } from "./switch";');
   });
 
-  it("COMPONENT_EXPORTS_MAP includes all 65 components and 6 template screens", () => {
+  it("COMPONENT_EXPORTS_MAP includes all 68 components and 6 template screens", () => {
     const keys = Object.keys(COMPONENT_EXPORTS_MAP);
-    expect(keys.length).toBe(71);
+    expect(keys.length).toBe(74);
     expect(keys).toContain("accordion");
     expect(keys).toContain("collapsible");
     expect(keys).toContain("data-table");
@@ -71,6 +71,9 @@ describe("starter-generator", () => {
     expect(keys).toContain("date-picker");
     expect(keys).toContain("swipeable-row");
     expect(keys).toContain("popover");
+    expect(keys).toContain("color-picker");
+    expect(keys).toContain("command");
+    expect(keys).toContain("navigation-menu");
     expect(keys).toContain("auth-screen");
     expect(keys).toContain("dashboard-screen");
   });
