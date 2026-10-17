@@ -1,0 +1,20 @@
+appId: com.rashwright.mobile
+---
+- launchApp
+
+# Navigation vers la boutique
+- tapOn: "Boutique"
+- assertVisible: "Catalogue Produits"
+
+# Filtrage par catégorie
+- tapOn: "Audio"
+- assertVisible: "Écouteurs Pro Sans Fil"
+
+# Sélection d'un produit
+- tapOn: "Écouteurs Pro Sans Fil"
+- assertVisible: "Détails du Produit"
+- assertVisible: "Ajouter au panier"
+
+# Ajout au panier
+- tapOn: "Ajouter au panier"
+- assertVisible: "Panier (1)"

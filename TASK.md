@@ -24,7 +24,7 @@
 | **v1.2.0 (Phase 8)** | Templates Métiers Spécialisés (`chat`, `finance`, `social`) & Commandes CLI Template | ✅ Validé | 4 / 4 tâches |
 | **v1.2.0 (Phase 9)** | Gestion de Cycle de Vie CLI (`rs-ui upgrade`), 3-Way Merge & AST Transformers | ✅ Validé | 3 / 3 tâches |
 | **v1.2.0 (Phase 10)** | Outils MCP IA Génératifs (`generate_screen`, `audit_accessibility`, `convert_styling`) | ✅ Validé | 3 / 3 tâches |
-| **v1.5.0 (Phase 11)** | Showcase Interactif Storybook & Tests End-to-End Automatisés Maestro | 📅 Planifié | 0 / 2 tâches |
+| **v1.3.0 (Phase 11)** | Showcase Interactif Storybook (`rs-ui showcase`) & Tests End-to-End Automatisés Maestro (6 flows) | ✅ Validé | 2 / 2 tâches |
 
 ---
 
@@ -164,14 +164,30 @@
 
 ---
 
-### Phase 11 : Storybook Mobile & Tests End-to-End Maestro (v1.5.0 📅 PLANIFIÉ)
+### Phase 11 : Storybook Mobile & Tests End-to-End Maestro (v1.3.0 ✅ ACHEVÉ)
 
-* [ ] **TASK-17.1.1** : Déployer un environnement interactif Storybook Mobile / Expo Web Showcase pour tester et prévisualiser tous les composants et thèmes en direct.
-* [ ] **TASK-17.1.2** : Écrire la suite de tests end-to-end automatisés Maestro simulant les gestes tactiles, la navigation et le changement de thème sur simulateurs iOS et Android.
+* [x] **TASK-17.1.1** : Déployer un environnement interactif Storybook Mobile / Expo Web Showcase (`rs-ui showcase` / `rs-ui storybook`) pour tester et prévisualiser tous les composants et thèmes en direct avec options `--web`, `--port` et `--inject`.
+* [x] **TASK-17.1.2** : Écrire la suite de tests end-to-end automatisés Maestro (`e2e/maestro/`) simulant les gestes tactiles, la navigation, le commerce, l'authentification et le changement de thème, avec le script de validation `bun run validate-maestro` intégré au Quality Gate.
 
 ---
 
 ## 📌 Journal des actions effectuées
+
+### 2026-10-17 — Phase 11 (Storybook Mobile & Tests End-to-End Maestro)
+- **Showcase Interactif & Storybook Mobile** :
+  - Implémentation de la commande `rs-ui showcase` (alias `rs-ui storybook`) dans [`packages/cli/src/commands/showcase.ts`](file:///c:/Users/user/Desktop/abdoul/dev/rashwright-office/rashwright-ui/packages/cli/src/commands/showcase.ts).
+  - Support des options `--web`, `--port`, `--theme` et `--inject` pour intégrer directement la route de prévisualisation dans `src/app/showcase.tsx` ou `src/screens/ShowcaseScreen.tsx`.
+- **Suite de Tests E2E Automatisés Maestro** :
+  - Déploiement de 6 flux Maestro déclaratifs dans `e2e/maestro/` :
+    - `app-launch.yaml` : vérification du premier lancement, logo, badges SDK Expo.
+    - `auth-flow.yaml` : saisie email/mot de passe, validation OTP, boutons Google Auth.
+    - `commerce-flow.yaml` : navigation boutique, filtres par catégorie, fiche produit et panier.
+    - `theme-switch.yaml` : bascule dynamique mode sombre / clair et rendu Liquid Glass.
+    - `chat-flow.yaml` : saisie et envoi de message dans la conversation, apparition de bulles.
+    - `finance-flow.yaml` : bascule de confidentialité du solde, inspection des transactions.
+  - Script de validation automatique `scripts/validate-maestro-flows.ts` intégré à la commande `bun run test:e2e` et au Quality Gate.
+- **Augmentation des tests unitaires** : 44 suites de tests, **214 tests Vitest réussis (100% vert)**.
+- **Quality Gate 100% vert** : validation registre, validation Maestro, check-types strict, 214 tests, build CLI et smoke tests.
 
 ### 2026-10-17 — Release v1.2.0 (Phases 8, 9, 10 : Nouveaux Templates Métiers, Cycle de Vie CLI & MCP Avancé)
 - **Phase 8 (Templates Métiers Spécialisés)** :

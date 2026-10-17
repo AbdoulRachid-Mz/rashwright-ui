@@ -19,6 +19,31 @@
 > rs-ui add button card accordion   # ajouter des composants et skills IA
 > ```
 
+> ⚠️ Si vous rencontrez une erreur après `npx expo start`, le problème provient généralement d'une incompatibilité entre les dépendances Babel, `lru-cache` et `yallist`, ou d'une installation incohérente des packages (un contexte fréquent avec NativeWind v5). Les erreurs typiques dans les logs sont :
+> 
+> - `TypeError: Yallist is not a constructor` (problème de version dans l'arbre des dépendances Babel)
+> - `TypeError: Cannot read properties of undefined (reading 'transformFile')` (conséquence de l'échec initial du transformer Babel)
+> 
+> Pour résoudre ce problème, suivez ces étapes :
+> 
+> **Étape 1 — Vérifiez la cohérence des versions installées**
+> Dans PowerShell, à la racine du projet :
+> ```powershell
+> bun pm ls | findstr "lru-cache yallist"
+> bun pm ls | findstr "nativewind react-native-css expo"
+> ```
+> (NativeWind v5 RC0 requiert notamment `nativewind@5.0.0-rc.0` et `react-native-css@3.1.0-rc.0`)
+> 
+> **Étape 2 — Réinstallez proprement les dépendances**
+> Exécutez ces commandes pour réinitialiser votre installation :
+> ```powershell
+> Remove-Item -Recurse -Force node_modules
+> bun install --force
+> bunx expo start --clear
+> ```
+> Si l'erreur persiste, examinez les versions résolues pour corriger le verrouillage des dépendances.
+
+
 Ce package `@rashwright/ui-mobile` est le **fournisseur de code source** et de **Skills IA** de l'écosystème Rashwright. Il est consommé par `@rashwright/cli` (localement ou via CDN unpkg) pour fournir :
 - le **registry JSON central** (65 composants, matrices Expo SDK 54 à 58)
 - le **code source TypeScript** de chaque composant (copié directement par le CLI dans votre projet)

@@ -1,0 +1,18 @@
+appId: com.rashwright.mobile
+---
+- launchApp
+
+# Navigation vers le portefeuille
+- tapOn: "Portefeuille"
+- assertVisible: "Mon Portefeuille"
+- assertVisible: "Solde disponible"
+
+# Bascule de confidentialité du solde
+- tapOn: "👁 Masquer"
+- assertVisible: "•••••••• €"
+- tapOn: "👁 Afficher"
+
+# Consultation d'une transaction
+- assertVisible: "Dernières opérations"
+- tapOn: "Virement Salaire Tech Corp"
+- assertVisible: "+ 3 200,00 €"

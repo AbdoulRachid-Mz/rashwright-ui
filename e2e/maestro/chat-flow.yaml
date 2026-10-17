@@ -1,0 +1,16 @@
+appId: com.rashwright.mobile
+---
+- launchApp
+
+# Navigation vers la messagerie
+- tapOn: "Discussion"
+- assertVisible: "Camille Laurent"
+- assertVisible: "En ligne"
+
+# Saisie et envoi d'un message
+- tapOn: "Écrivez un message..."
+- inputText: "Test automatisé Maestro sur Rashwright UI Mobile"
+- tapOn: "Envoyer"
+
+# Vérification de l'apparition de la bulle
+- assertVisible: "Test automatisé Maestro sur Rashwright UI Mobile"

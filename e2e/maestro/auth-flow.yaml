@@ -1,0 +1,25 @@
+appId: com.rashwright.mobile
+---
+- launchApp
+
+# Navigation vers l'écran d'authentification
+- tapOn: "Connexion"
+- assertVisible: "Bienvenue"
+
+# Saisie des identifiants
+- tapOn: "Email"
+- inputText: "alex@exemple.com"
+
+- tapOn: "Mot de passe"
+- inputText: "SuperSecret123!"
+
+# Validation du formulaire
+- tapOn: "Se connecter"
+
+# Écran de validation OTP
+- assertVisible: "Code de vérification"
+- tapOn: "Code"
+- inputText: "123456"
+
+# Validation réussie
+- assertVisible: "Connexion réussie"

@@ -1,0 +1,14 @@
+appId: com.rashwright.mobile
+---
+- launchApp:
+    clearState: true
+
+# 1. Vérification de l'en-tête et de la présence du logo
+- assertVisible: "Rashwright UI Mobile"
+- assertVisible: "React Native"
+
+# 2. Vérification des badges d'infrastructure
+- assertVisible: "Expo SDK 56+"
+
+# 3. Capture d'écran de l'état initial
+- takeScreenshot: "launch_screen_ready"

@@ -1,0 +1,14 @@
+appId: com.rashwright.mobile
+---
+- launchApp
+
+# Navigation vers les paramètres
+- tapOn: "Paramètres"
+- assertVisible: "Mode sombre"
+
+# Basculement de mode
+- tapOn: "Mode sombre"
+
+# Vérification du mode actif
+- assertVisible: "Liquid Glass"
+- takeScreenshot: "dark_mode_active"
