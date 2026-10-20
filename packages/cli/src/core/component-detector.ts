@@ -15,7 +15,8 @@ import { existsSync, readFileSync, mkdirSync, copyFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { getComponent } from "./registry.js";
 import { getTemplateDefinition } from "./templates-registry.js";
-import { REGISTRY_ROOT, SOURCE_ROOT, TEMPLATES_ROOT } from "./paths.js";
+import { getWidgetDefinition } from "./widgets-registry.js";
+import { REGISTRY_ROOT, SOURCE_ROOT, TEMPLATES_ROOT, WIDGETS_ROOT } from "./paths.js";
 
 export interface ComponentRequirementPlan {
   /** Composants du registre à ajouter (avec dépendances transitives). */
@@ -351,6 +352,73 @@ export function detectMissingTemplateRequirements(
   if (def && Array.isArray(def.files)) {
     const installedPackages = getInstalledPackageNames(projectRoot);
     const sourceDir = join(templatesRoot, def.id);
+    const useSrc = isUsingSrcDirectory(projectRoot);
+
+    for (const relFile of def.files) {
+      const absPath = join(sourceDir, relFile);
+      if (!existsSync(absPath)) continue;
+
+      try {
+        const content = readFileSync(absPath, "utf-8");
+        const targets = extractImportTargets(content);
+
+        for (const target of targets) {
+          for (const [importKey, mapping] of Object.entries(KNOWN_INTERNAL_MAPPINGS)) {
+            if (target === importKey || target.startsWith(importKey + "/") || target.endsWith(importKey.replace("@/", ""))) {
+              for (const f of mapping.sourceFiles) {
+                const destRel = useSrc ? `src/${f}` : f;
+                if (!existsSync(join(projectRoot, destRel))) {
+                  if (!plan.missingInternalFiles.some((m) => m.destinationRelative === destRel)) {
+                    plan.missingInternalFiles.push({
+                      sourceRelative: f,
+                      destinationRelative: destRel,
+                    });
+                  }
+                }
+              }
+              for (const dep of mapping.expoDeps || []) {
+                if (!installedPackages.has(dep) && !plan.missingExpoDeps.includes(dep)) {
+                  plan.missingExpoDeps.push(dep);
+                }
+              }
+              for (const dep of mapping.npmDeps || []) {
+                if (!installedPackages.has(dep) && !plan.missingNpmDeps.includes(dep)) {
+                  plan.missingNpmDeps.push(dep);
+                }
+              }
+            }
+          }
+        }
+      } catch {
+        // Non-bloquant
+      }
+    }
+  }
+
+  return plan;
+}
+
+/**
+ * Détecte l'ensemble des besoins pour un widget modulaire (composants requis, logiques internes et dépendances).
+ */
+export function detectMissingWidgetRequirements(
+  widgetId: string,
+  projectRoot: string,
+  options: {
+    registryRoot?: string;
+    sourceRoot?: string;
+    widgetsRoot?: string;
+  } = {}
+): ComponentRequirementPlan {
+  const widgetsRoot = options.widgetsRoot || WIDGETS_ROOT;
+  const def = getWidgetDefinition(widgetId, widgetsRoot);
+  const baseComponents = def ? def.requiredComponents : [];
+
+  const plan = detectMissingComponentRequirements(baseComponents, projectRoot, options);
+
+  if (def && Array.isArray(def.files)) {
+    const installedPackages = getInstalledPackageNames(projectRoot);
+    const sourceDir = join(widgetsRoot, def.id);
     const useSrc = isUsingSrcDirectory(projectRoot);
 
     for (const relFile of def.files) {

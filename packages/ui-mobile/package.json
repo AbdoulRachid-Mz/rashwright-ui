@@ -1,6 +1,6 @@
 {
   "name": "@rashwright/ui-mobile",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Rashwright UI Mobile — Composants React Native / Expo distribuables",
   "license": "MIT",
   "author": "Rashwright office",
@@ -8,7 +8,15 @@
     "type": "git",
     "url": "git+https://github.com/AbdoulRachid-Mz/rashwright-ui/tree/main/packages/ui-mobile"
   },
-  "keywords": ["react-native", "expo", "ui", "components", "shadcn", "liquid-glass", "registry"],
+  "keywords": [
+    "react-native",
+    "expo",
+    "ui",
+    "components",
+    "shadcn",
+    "liquid-glass",
+    "registry"
+  ],
   "type": "module",
   "sideEffects": false,
   "files": [
@@ -23,6 +31,8 @@
     "registry/**",
     "skills/**",
     "templates/**",
+    "widgets/**",
+    "showcases/**",
     "lib/**",
     "index.ts",
     "README.md"
@@ -60,17 +70,39 @@
     "zustand": ">=5.0.0"
   },
   "peerDependenciesMeta": {
-    "@expo/vector-icons": { "optional": true },
-    "expo-blur": { "optional": true },
-    "expo-haptics": { "optional": true },
-    "expo-image": { "optional": true },
-    "expo-image-picker": { "optional": true },
-    "expo-linear-gradient": { "optional": true },
-    "expo-video": { "optional": true },
-    "react-native-gesture-handler": { "optional": true },
-    "react-native-reanimated": { "optional": true },
-    "react-native-safe-area-context": { "optional": true },
-    "zustand": { "optional": true }
+    "@expo/vector-icons": {
+      "optional": true
+    },
+    "expo-blur": {
+      "optional": true
+    },
+    "expo-haptics": {
+      "optional": true
+    },
+    "expo-image": {
+      "optional": true
+    },
+    "expo-image-picker": {
+      "optional": true
+    },
+    "expo-linear-gradient": {
+      "optional": true
+    },
+    "expo-video": {
+      "optional": true
+    },
+    "react-native-gesture-handler": {
+      "optional": true
+    },
+    "react-native-reanimated": {
+      "optional": true
+    },
+    "react-native-safe-area-context": {
+      "optional": true
+    },
+    "zustand": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

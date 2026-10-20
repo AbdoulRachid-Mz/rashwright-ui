@@ -1,6 +1,6 @@
 {
   "name": "@rashwright/cli",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "CLI rs-ui pour Rashwright UI Mobile",
   "license": "MIT",
   "author": "Rashwright office",
@@ -20,7 +20,14 @@
     "dist/index.js",
     "README.md"
   ],
-  "keywords": ["rashwright", "ui-mobile", "cli", "react-native", "component-library", "rs-ui"],
+  "keywords": [
+    "rashwright",
+    "ui-mobile",
+    "cli",
+    "react-native",
+    "component-library",
+    "rs-ui"
+  ],
   "scripts": {
     "build": "bun build ./src/index.ts --outdir ./dist --target node --format esm --external commander --external inquirer --external chalk --external ora",
     "build:watch": "bun run dev",

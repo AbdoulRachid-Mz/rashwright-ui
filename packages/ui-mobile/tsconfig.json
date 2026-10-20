@@ -24,6 +24,10 @@
     "types/**/*.ts",
     "registry/**/*.json",
     "lib/**/*.ts",
+    "widgets/**/*.ts",
+    "widgets/**/*.tsx",
+    "showcases/**/*.ts",
+    "showcases/**/*.tsx",
     "index.ts"
   ],
   "exclude": ["node_modules"]

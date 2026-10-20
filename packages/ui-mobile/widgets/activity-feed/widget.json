@@ -1,0 +1,31 @@
+{
+  "id": "activity-feed",
+  "name": "Activity Feed Widget",
+  "description": "Flux d'activité chronologique avec avatars/icônes, libellés temporels, statuts, interactions et Liquid Glass.",
+  "version": "1.0.0",
+  "category": "Feed",
+  "componentName": "ActivityFeedWidget",
+  "entrypoint": "activity-feed-widget.tsx",
+  "files": [
+    "widget.json",
+    "types.ts",
+    "activity-feed-widget.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": [
+    "card",
+    "avatar",
+    "badge",
+    "divider",
+    "skeleton"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons"
+  ],
+  "supportsGlass": true,
+  "defaultSize": {
+    "cols": 4,
+    "rows": 3
+  }
+}

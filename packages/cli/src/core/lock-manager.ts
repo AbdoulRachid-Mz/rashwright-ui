@@ -27,11 +27,22 @@ export interface LockedTemplate {
   installedAt?: string;
 }
 
+export interface LockedWidget {
+  version: string;
+  installPath: string;
+  requiredComponents: string[];
+  files: LockedFile[];
+  dependencies: string[];
+  expoDependencies: string[];
+  installedAt?: string;
+}
+
 export interface RashwrightLockfile {
   lockfileVersion: number;
   generatedAt: string;
   components: Record<string, LockedComponent>;
   templates: Record<string, LockedTemplate>;
+  widgets?: Record<string, LockedWidget>;
 }
 
 export const LOCKFILE_NAME = "rashwright-ui.lock";
@@ -214,6 +225,78 @@ export function removeLockedTemplate(
   return lock;
 }
 
+/**
+ * Enregistre ou met à jour un widget dans le lockfile avec le hash de ses fichiers.
+ */
+export function recordLockedWidget(
+  projectRoot: string,
+  widgetId: string,
+  version: string,
+  installPath: string,
+  requiredComponents: string[] = [],
+  relativeFiles: string[] = [],
+  dependencies: string[] = [],
+  expoDependencies: string[] = [],
+  dryRun = false,
+): RashwrightLockfile {
+  const lock = readLockfile(projectRoot) || {
+    lockfileVersion: 1,
+    generatedAt: new Date().toISOString(),
+    components: {},
+    templates: {},
+    widgets: {},
+  };
+
+  if (!lock.widgets) {
+    lock.widgets = {};
+  }
+
+  const files: LockedFile[] = [];
+  for (const rel of relativeFiles) {
+    const normalizedRel = rel.replace(/\\/g, "/");
+    const abs = join(projectRoot, normalizedRel);
+    if (existsSync(abs)) {
+      const content = readFileSync(abs, "utf-8");
+      files.push({
+        path: normalizedRel,
+        hash: computeFileHash(content),
+        installedAt: new Date().toISOString(),
+      });
+    }
+  }
+
+  lock.widgets[widgetId] = {
+    version,
+    installPath: installPath.replace(/\\/g, "/"),
+    requiredComponents,
+    files,
+    dependencies,
+    expoDependencies,
+    installedAt: new Date().toISOString(),
+  };
+
+  lock.generatedAt = new Date().toISOString();
+  writeLockfile(projectRoot, lock, dryRun);
+  return lock;
+}
+
+/**
+ * Retire un widget du lockfile.
+ */
+export function removeLockedWidget(
+  projectRoot: string,
+  widgetId: string,
+  dryRun = false,
+): RashwrightLockfile | null {
+  const lock = readLockfile(projectRoot);
+  if (!lock || !lock.widgets) return null;
+
+  delete lock.widgets[widgetId];
+  lock.generatedAt = new Date().toISOString();
+  writeLockfile(projectRoot, lock, dryRun);
+  return lock;
+}
+
 export type FileIntegrityStatus = "clean" | "modified" | "missing" | "untracked";
 
 /**
@@ -281,6 +364,49 @@ export function checkTemplateIntegrity(
   const missingFiles: string[] = [];
 
   for (const f of lockedTpl.files) {
+    const abs = join(projectRoot, f.path);
+    if (!existsSync(abs)) {
+      missingFiles.push(f.path);
+    } else {
+      const content = readFileSync(abs, "utf-8");
+      const currentHash = computeFileHash(content);
+      if (currentHash !== f.hash) {
+        modifiedFiles.push(f.path);
+      }
+    }
+  }
+
+  if (missingFiles.length > 0) {
+    return { status: "missing", modifiedFiles, missingFiles };
+  }
+  if (modifiedFiles.length > 0) {
+    return { status: "modified", modifiedFiles, missingFiles };
+  }
+  return { status: "clean", modifiedFiles, missingFiles };
+}
+
+/**
+ * Analyse l'intégrité d'un widget installé en comparant le hash de ses fichiers au lockfile.
+ */
+export function checkWidgetIntegrity(
+  projectRoot: string,
+  widgetId: string,
+): {
+  status: FileIntegrityStatus;
+  modifiedFiles: string[];
+  missingFiles: string[];
+} {
+  const lock = readLockfile(projectRoot);
+  const lockedWgt = lock?.widgets?.[widgetId];
+
+  if (!lockedWgt) {
+    return { status: "untracked", modifiedFiles: [], missingFiles: [] };
+  }
+
+  const modifiedFiles: string[] = [];
+  const missingFiles: string[] = [];
+
+  for (const f of lockedWgt.files) {
     const abs = join(projectRoot, f.path);
     if (!existsSync(abs)) {
       missingFiles.push(f.path);

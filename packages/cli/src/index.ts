@@ -19,6 +19,7 @@ import { createCommand } from "./commands/create.js";
 import { skillCommand } from "./commands/skill.js";
 import { registryCommand } from "./commands/registry.js";
 import { templateCommand, displayTemplateList, displayTemplateHelp } from "./commands/template.js";
+import { widgetCommand, displayWidgetList, displayWidgetHelp } from "./commands/widget.js";
 import { mcpCommand } from "./commands/mcp.js";
 import { searchCommand } from "./commands/search.js";
 import { diffCommand } from "./commands/diff.js";
@@ -41,6 +42,17 @@ if (rawArgs[0] === "--template" || rawArgs[0] === "-t") {
   }
   if (rawArgs[1] === "help") {
     displayTemplateHelp();
+    process.exit(0);
+  }
+}
+
+if (rawArgs[0] === "--widget" || rawArgs[0] === "-w") {
+  if (rawArgs[1] === "list" || rawArgs[1] === "ls") {
+    displayWidgetList();
+    process.exit(0);
+  }
+  if (rawArgs[1] === "help") {
+    displayWidgetHelp();
     process.exit(0);
   }
 }
@@ -70,6 +82,7 @@ program.addCommand(createCommand());
 program.addCommand(skillCommand());
 program.addCommand(registryCommand());
 program.addCommand(templateCommand());
+program.addCommand(widgetCommand());
 program.addCommand(mcpCommand());
 program.addCommand(searchCommand());
 program.addCommand(diffCommand());

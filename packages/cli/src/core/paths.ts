@@ -36,3 +36,4 @@ export { UI_MOBILE_ROOT };
 export const REGISTRY_ROOT = join(UI_MOBILE_ROOT, "registry");
 export const SOURCE_ROOT = UI_MOBILE_ROOT;
 export const TEMPLATES_ROOT = join(UI_MOBILE_ROOT, "templates");
+export const WIDGETS_ROOT = join(UI_MOBILE_ROOT, "widgets");

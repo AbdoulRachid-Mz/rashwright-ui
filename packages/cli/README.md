@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v1.5.0 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v1.6.0 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -10,7 +10,7 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-1.5.0-blue)](#)
+[![version](https://img.shields.io/badge/version-1.6.0-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
@@ -102,6 +102,7 @@ rs-ui --help
 | `rs-ui remove <component>` | Supprime un composant, retire son Skill IA associé et vérifie les dépendances. |
 | `rs-ui update [components...]` | Met à jour les composants avec détection de diff par SHA-256 et support 3-Way Merge. |
 | `rs-ui upgrade [components...]` | Met à niveau les composants vers la dernière version du registre avec fusion différentielle (3-Way Merge) et réécriture d'alias (`--alias`). |
+| `rs-ui widget <list\|info\|add\|remove>` | Explore, inspecte ou installe les widgets modulaires autonomes (`metric`, `progress`, `quick-actions`, `chart`, `activity-feed`, `finance`). |
 | `rs-ui template <list\|info\|remove>` | Explore, inspecte ou nettoie les 10 templates métiers autonomes (`chat`, `finance`, `social`, etc.). |
 | `rs-ui mcp` | Démarre le serveur MCP IA (JSON-RPC 2.0 stdio) avec 9 outils d'assistance (génération, audit a11y, conversion styling). |
 
@@ -122,6 +123,7 @@ rs-ui --help
 
 ### Options pour `rs-ui add`
 - `-t, --template <name>` : Installe un template autonome complet (`auth`, `dashboard`, `commerce`, `settings`, etc.) dans `src/components/templates/<name>/`.
+- `-w, --widget <name>` : Installe un widget modulaire autonome (`metric`, `progress`, `quick-actions`, `chart`, `activity-feed`, `finance`) dans `src/components/widgets/<name>/`.
 - `--skills` : Installe automatiquement `skills/rs-ui/<component>/SKILL.md` (activé par défaut).
 - `--no-skills` : Ignore la copie des Skills IA.
 - `--diff` : Affiche un diff textuel (LCS) avant d'écraser un composant existant.

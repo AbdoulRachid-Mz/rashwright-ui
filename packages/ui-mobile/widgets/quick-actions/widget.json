@@ -1,0 +1,30 @@
+{
+  "id": "quick-actions",
+  "name": "Quick Actions Widget",
+  "description": "Grille d'actions rapides configurable avec icônes, libellés, badges et support Liquid Glass.",
+  "version": "1.0.0",
+  "category": "Interactions",
+  "componentName": "QuickActionsWidget",
+  "entrypoint": "quick-actions-widget.tsx",
+  "files": [
+    "widget.json",
+    "types.ts",
+    "quick-actions-widget.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": [
+    "card",
+    "badge",
+    "skeleton"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons",
+    "expo-haptics"
+  ],
+  "supportsGlass": true,
+  "defaultSize": {
+    "cols": 4,
+    "rows": 1
+  }
+}

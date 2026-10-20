@@ -55,6 +55,10 @@ export interface CardProps {
   entryDelay?: number;
   material?: LiquidMaterial;
   noBlur?: boolean;
+  testID?: string;
+  accessibilityRole?: any;
+  accessibilityLabel?: string;
+  accessibilityValue?: { min?: number; max?: number; now?: number; text?: string };
 }
 
 // Main Card Component
@@ -70,6 +74,10 @@ const CardRoot = ({
   entryDelay = 0,
   material = "regular",
   noBlur = false,
+  testID,
+  accessibilityRole,
+  accessibilityLabel,
+  accessibilityValue,
 }: CardProps) => {
   const { theme, isDark } = useTheme();
   const effectiveMaterial = variant === "glass" ? ("glass" as LiquidMaterial) : material;
@@ -123,16 +131,22 @@ const CardRoot = ({
   const Container = onPress ? AnimatedTouchableOpacity : AnimatedView;
   const containerProps = onPress
     ? {
+        testID,
         onPress,
         disabled,
         activeOpacity,
         onPressIn: handlePressIn,
         onPressOut: handlePressOut,
-        accessibilityRole: "button" as const,
+        accessibilityRole: (accessibilityRole || "button") as any,
+        accessibilityLabel,
+        accessibilityValue,
         accessibilityState: { disabled },
       }
     : {
-        accessibilityRole: "none" as const,
+        testID,
+        accessibilityRole: (accessibilityRole || "none") as any,
+        accessibilityLabel,
+        accessibilityValue,
       };
 
   return (

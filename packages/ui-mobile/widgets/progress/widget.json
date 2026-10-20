@@ -1,0 +1,30 @@
+{
+  "id": "progress",
+  "name": "Progress Widget",
+  "description": "Indicateur de progression vers un objectif avec calcul de pourcentage, barre animée, état complété et support Liquid Glass.",
+  "version": "1.0.0",
+  "category": "Analytics",
+  "componentName": "ProgressWidget",
+  "entrypoint": "progress-widget.tsx",
+  "files": [
+    "widget.json",
+    "types.ts",
+    "progress-widget.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": [
+    "card",
+    "progress",
+    "badge",
+    "skeleton"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons"
+  ],
+  "supportsGlass": true,
+  "defaultSize": {
+    "cols": 2,
+    "rows": 1
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "finance",
+  "name": "Finance Widget",
+  "description": "Bloc portefeuille complet avec solde principal, masquage de confidentialité, ratio revenus/dépenses, raccourcis et Liquid Glass.",
+  "version": "1.0.0",
+  "category": "Finance",
+  "componentName": "FinanceWidget",
+  "entrypoint": "finance-widget.tsx",
+  "files": [
+    "widget.json",
+    "types.ts",
+    "finance-widget.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": [
+    "card",
+    "badge",
+    "button",
+    "skeleton"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons",
+    "expo-haptics"
+  ],
+  "supportsGlass": true,
+  "defaultSize": {
+    "cols": 4,
+    "rows": 2
+  }
+}

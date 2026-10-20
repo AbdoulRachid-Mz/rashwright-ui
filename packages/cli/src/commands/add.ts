@@ -11,18 +11,20 @@ import { detectPackageManager, installExpoPackages, installNpmPackages, type Pac
 import { resolveDependencies } from "../core/dependency-resolver.js";
 import { copyComponentFiles } from "../core/file-manager.js";
 import { loadRegistryIndex, getAllComponents, type RegistryEntry, type ResolvedComponent } from "../core/registry.js";
-import { REGISTRY_ROOT, SOURCE_ROOT, TEMPLATES_ROOT } from "../core/paths.js";
+import { REGISTRY_ROOT, SOURCE_ROOT, TEMPLATES_ROOT, WIDGETS_ROOT } from "../core/paths.js";
 import { generateUiIndex, updateTsconfig } from "../core/starter-generator.js";
 import { resolveRegistry, ensureComponentDownloaded } from "../core/remote-registry.js";
 import { computeLineDiff, formatDiffOutput } from "../core/diff.js";
-import { copyComponentSkill } from "../core/skills-manager.js";
-import { recordLockedComponent, recordLockedTemplate } from "../core/lock-manager.js";
+import { copyComponentSkill, copyWidgetSkill } from "../core/skills-manager.js";
+import { recordLockedComponent, recordLockedTemplate, recordLockedWidget } from "../core/lock-manager.js";
 import { executeHook } from "../core/hooks-manager.js";
 import { parseScopedComponentName, getScopedRegistries } from "../core/scoped-registry.js";
 import { getTemplateDefinition, listTemplateIds, type TemplateDefinition } from "../core/templates-registry.js";
+import { getWidgetDefinition, listWidgetIds, type WidgetDefinition } from "../core/widgets-registry.js";
 import {
   detectMissingComponentRequirements,
   detectMissingTemplateRequirements,
+  detectMissingWidgetRequirements,
   copyMissingInternalFiles,
 } from "../core/component-detector.js";
 
@@ -32,6 +34,7 @@ export function addCommand(): Command {
     .description("Ajouter un ou plusieurs composants Rashwright UI au projet")
     .argument("[components...]", "Noms des composants à ajouter")
     .option("-t, --template <name>", "Ajouter un template autonome complet (ex: auth, dashboard, commerce...)")
+    .option("-w, --widget <name>", "Ajouter un widget autonome modulaire (ex: metric, progress, quick-actions, finance, chart, activity-feed)")
     .option("--registry <url>", "URL du registre distant (ex: https://unpkg.com/@rashwright/ui-mobile@latest)")
     .option("--fresh", "Forcer le rafraîchissement du registre distant sans utiliser le cache")
     .option("--diff", "Afficher les différences (diff) avant d'écraser un composant déjà existant")
@@ -47,6 +50,7 @@ export function addCommand(): Command {
     .option("--non-interactive", "Alias de --no-interactive")
     .action(async (componentArgs: string[], options: {
       template?: string;
+      widget?: string;
       registry?: string;
       fresh?: boolean;
       diff?: boolean;
@@ -129,7 +133,36 @@ export function addCommand(): Command {
         }
       }
 
-      const interactive = Boolean(options.interactive) && !options.yes && !options.dryRun && !options.nonInteractive && !requestedTemplate;
+      // ── 2a-bis. Résolution de l'option --widget ou détection automatique ─────────
+      let requestedWidget = options.widget || (cmd?.parent?.opts()?.widget as string | undefined);
+      if (!requestedWidget && componentNames.length === 1 && !requestedTemplate) {
+        const potentialWidget = getWidgetDefinition(componentNames[0], WIDGETS_ROOT);
+        if (potentialWidget) {
+          requestedWidget = potentialWidget.id;
+          componentNames = [];
+        }
+      }
+
+      let widgetDef: WidgetDefinition | null = null;
+      if (requestedWidget) {
+        widgetDef = getWidgetDefinition(requestedWidget, WIDGETS_ROOT);
+        if (!widgetDef) {
+          const avail = listWidgetIds(WIDGETS_ROOT);
+          console.log(chalk.red(`  ✖ Widget "${requestedWidget}" introuvable.`));
+          console.log(chalk.dim(`    Widgets disponibles : ${avail.join(", ")}`));
+          process.exit(1);
+        }
+        console.log(chalk.bold.blue(`  🧩 Widget sélectionné : ${widgetDef.name} (${widgetDef.id})`));
+        console.log(chalk.dim(`     ${widgetDef.description}`));
+        // Fusionner les composants requis du widget
+        for (const req of widgetDef.requiredComponents) {
+          if (!componentNames.includes(req)) {
+            componentNames.push(req);
+          }
+        }
+      }
+
+      const interactive = Boolean(options.interactive) && !options.yes && !options.dryRun && !options.nonInteractive && !requestedTemplate && !requestedWidget;
 
       if (options.all) {
         const index = loadRegistryIndex(resolved.registryRoot);
@@ -138,10 +171,12 @@ export function addCommand(): Command {
       }
 
       // ── 2b. Prompt interactif checkbox si 0 args + mode interactif ──────
-      if (componentNames.length === 0) {
+      if (componentNames.length === 0 && !widgetDef && !templateDef) {
         if (!interactive) {
-          console.log(chalk.red("  ✖ Aucun composant ou template spécifié."));
+          console.log(chalk.red("  ✖ Aucun composant, widget ou template spécifié."));
           console.log(chalk.dim("    Usage: rs-ui add button card drawer"));
+          console.log(chalk.dim("           rs-ui add -w metric"));
+          console.log(chalk.dim("           rs-ui add -t dashboard"));
           console.log(chalk.dim("           rs-ui add  (sans argument, mode interactif)"));
           console.log(chalk.dim("           rs-ui add --all"));
           process.exit(1);
@@ -554,6 +589,52 @@ export default function ${s.componentName}Route() {
         }
       }
 
+      // ── 7c. Copie des fichiers du widget modulaire si spécifié ─────────
+      let widgetTargetRel = "";
+      if (widgetDef) {
+        const wgtSpinner = ora(`Installation des fichiers du widget ${widgetDef.id}...`).start();
+        const baseNorm = config.componentsPath.replace(/\\/g, "/");
+        const widgetsBaseRel = baseNorm.endsWith("/ui")
+          ? baseNorm.slice(0, -3) + "/widgets"
+          : baseNorm + "/widgets";
+        widgetTargetRel = `${widgetsBaseRel}/${widgetDef.id}`;
+        const widgetTargetDir = join(cwd, widgetTargetRel);
+        const widgetSourceDir = join(WIDGETS_ROOT, widgetDef.id);
+
+        const copiedWidgetFiles: string[] = [];
+
+        for (const relFile of widgetDef.files) {
+          const srcFile = join(widgetSourceDir, relFile);
+          const dstFile = join(widgetTargetDir, relFile);
+          if (!options.dryRun && existsSync(srcFile)) {
+            const parentDir = dirname(dstFile);
+            if (!existsSync(parentDir)) {
+              mkdirSync(parentDir, { recursive: true });
+            }
+            copyFileSync(srcFile, dstFile);
+          }
+          copiedWidgetFiles.push(`${widgetTargetRel}/${relFile}`);
+        }
+
+        recordLockedWidget(
+          cwd,
+          widgetDef.id,
+          widgetDef.version,
+          widgetTargetRel,
+          widgetDef.requiredComponents,
+          copiedWidgetFiles,
+          widgetDef.dependencies,
+          widgetDef.expoDependencies,
+          options.dryRun,
+        );
+
+        if (options.skills !== false) {
+          copyWidgetSkill(widgetDef.id, resolved.sourceRoot, cwd, options.dryRun);
+        }
+
+        wgtSpinner.succeed(`Widget ${widgetDef.id} installé dans ${widgetTargetRel}`);
+      }
+
       // ── 8. Régénérer index.ts du dossier UI & synchroniser la config ────
       if (!options.dryRun) {
         generateUiIndex(targetDir, Object.keys(updatedConfig.components), options.dryRun);
@@ -569,6 +650,17 @@ export default function ${s.componentName}Route() {
       console.log(chalk.bold.green("  ✔ Installation terminée"));
       console.log(chalk.dim(`    ✔ index.ts synchronisé avec ${Object.keys(updatedConfig.components).length} composants`));
       console.log();
+
+      if (widgetDef) {
+        console.log(chalk.bold.blue(`  🧩 Widget "${widgetDef.id}" prêt à l'emploi :`));
+        console.log(chalk.dim(`     Emplacement : ${widgetTargetRel}`));
+        const importAlias = widgetTargetRel.startsWith("src/")
+          ? `@/${widgetTargetRel.slice(4)}`
+          : `@/${widgetTargetRel}`;
+        console.log(chalk.cyan(`     import { ${widgetDef.componentName} } from "${importAlias}";`));
+        console.log(chalk.dim(`     Documentation & IA Skill : skills/rs-ui/widgets/${widgetDef.id}/SKILL.md`));
+        console.log();
+      }
 
       if (templateDef) {
         console.log(chalk.bold.magenta(`  📦 Template "${templateDef.id}" prêt à l'emploi :`));

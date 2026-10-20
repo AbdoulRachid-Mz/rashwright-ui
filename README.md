@@ -6,16 +6,16 @@
 
 > Système moderne de composants **distribuables** pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie *shadcn/ui* : **vous copiez les composants dans votre codebase, vous en êtes propriétaire**.
 
-**Statut v1.5.0** : ✅ Version v1.5.0 — `@rashwright/cli@1.5.0` · `@rashwright/ui-mobile@1.5.0`  
-**Composants & Templates** : 79 composants UI + 8 primitives Liquid Glass + 10 Templates Autonomes (Auth, Commerce, Onboarding, Dashboard, Settings, Showcase, Minimal, Chat, Finance, Social) · **Nouveaux Composants v1.5.0** : LikeButton, PasswordStrength, CopyButton, FloatingLabelInput, HoldButton, SwipeActionButton, TagInput, ReorderableList, NumberInput, InlineEdit, ExpandableText · **Accessibilité WCAG 2.1 AA** : `accessibilityRole`, `accessibilityState`, `accessibilityLabel` sur tous les composants interactifs · **Cycle de Vie CLI, Auto-Remédiation & 3-Way Merge** : `rs-ui fix`, `rs-ui upgrade`, fusion différentielle sans écrasement et AST Transformers (`--alias`) · **Fix NativeWind v5** : `npm install --legacy-peer-deps` (résout les conflits peer-deps sans bloquer) · **Visualisation & E2E** : `rs-ui showcase` / `rs-ui storybook`, code preview `rs-ui info --preview`, et suite Maestro E2E (6 flows) · **Serveur MCP IA Avancé** : Compatible Cursor, Claude Desktop, VS Code avec 9 outils · **SDK Expo** : SDK 54 à 58 · **Tests** : 227 tests unitaires Vitest · **Typing strict** : Zéro `any`.
+**Statut v1.6.0** : ✅ Version v1.6.0 — `@rashwright/cli@1.6.0` · `@rashwright/ui-mobile@1.6.0`  
+**Moteur de Widgets Modulaires & Showcases** : 6 Widgets autonomes (`MetricWidget`, `ProgressWidget`, `QuickActionsWidget`, `ChartWidget`, `ActivityFeedWidget`, `FinanceWidget`) + 2 Showcases d'intégration (`FinanceDashboardShowcase`, `AnalyticsDashboardShowcase`) · **Commandes dédiées** : `rs-ui widget list/info/add/remove` et `rs-ui add -w <id>` avec détection automatique et résolution de dépendances · **Composants & Templates** : 79 composants UI + 8 primitives Liquid Glass + 10 Templates Autonomes · **Accessibilité WCAG 2.1 AA** : `accessibilityRole`, `accessibilityState`, `accessibilityLabel` sur tous les composants et widgets · **Tests** : 245 tests unitaires Vitest (51 suites, 100% vert) · **Typing strict** : Zéro `any`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v1.5.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
-  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v1.5.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v1.6.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v1.6.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
   <a href="https://github.com/AbdoulRachid-Mz/rashwright-ui"><img src="https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github" alt="GitHub" /></a>
   <img src="https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000000.svg?logo=expo" alt="Expo SDK" />
   <img src="https://img.shields.io/badge/MCP%20Server-JSON--RPC%202.0-8A2BE2.svg" alt="MCP Server" />
-  <img src="https://img.shields.io/badge/Tests-227%20passed-success.svg" alt="Tests" />
+  <img src="https://img.shields.io/badge/Tests-245%20passed-success.svg" alt="Tests" />
   <img src="https://img.shields.io/badge/WCAG-2.1%20AA-blue.svg" alt="WCAG 2.1 AA" />
   <img src="https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6.svg?logo=typescript" alt="TypeScript" />
 </p>
@@ -167,6 +167,31 @@ Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`
 - 🧪 **Quality Gate Absolu & Zéro `any`** :
   - **194 tests unitaires Vitest automatisés (40 suites de tests)** à 100% de réussite.
   - Typage TypeScript strict à 100% sur l'ensemble du monorepo.
+
+---
+
+## 🆕 Nouveautés de la Version v1.6.0
+
+- 🧩 **Nouveau Moteur de Widgets Modulaires & Distribuables** :
+  - **Couche fonctionnelle autonome** : les widgets représentent des blocs métiers complets, réutilisables et distribuables indépendamment des pages ou templates complets.
+  - **Catalogue des 6 widgets officiels** :
+    1. `MetricWidget` (`widgets/metric`) : indicateur statistique clé avec tendance, comparaison périodique, icône, état de chargement et support Liquid Glass.
+    2. `ProgressWidget` (`widgets/progress`) : progression vers un objectif avec pourcentage calculé, barre animée, état complété et support Liquid Glass.
+    3. `QuickActionsWidget` (`widgets/quick-actions`) : grille d'actions rapides configurable (2 à 4 colonnes), icônes, badges et retour haptique.
+    4. `ChartWidget` (`widgets/chart`) : visualisation graphique en barres animées, répartition et sparklines avec infobulle interactive sans dépendances lourdes.
+    5. `ActivityFeedWidget` (`widgets/activity-feed`) : flux d'activité chronologique avec avatars/icônes, libellés temporels, statuts, montants et interactions.
+    6. `FinanceWidget` (`widgets/finance`) : bloc portefeuille financier complet avec solde principal, masquage de confidentialité, ratio revenus/dépenses, raccourcis et Liquid Glass.
+  - **Commandes dédiées** :
+    ```bash
+    rs-ui widget list              # Lister les widgets disponibles
+    rs-ui widget info <id>         # Détail des props et spécifications d'un widget
+    rs-ui add -w <id>              # Installer un widget dans votre projet
+    rs-ui widget add <id>          # Alias direct d'installation
+    ```
+  - **Détection automatique et intégrité** : résolution automatique des composants de base requis via `component-detector`, traçabilité par hash SHA-256 dans `rashwright-ui.lock` (`checkWidgetIntegrity`), et copie automatique des skills IA dans `skills/rs-ui/widgets/<id>/SKILL.md`.
+  - **2 Nouveaux Showcases d'intégration** :
+    - `FinanceDashboardShowcase` : tableau de bord financier complet intégrant `FinanceWidget`, `MetricWidget`, `QuickActionsWidget`, `ChartWidget`, `ActivityFeedWidget`.
+    - `AnalyticsDashboardShowcase` : tableau de bord analytique combinant statistiques, graphiques semestriels et événements système.
 
 ---
 

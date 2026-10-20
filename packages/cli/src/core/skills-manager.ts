@@ -115,6 +115,43 @@ export function copyComponentSkill(
 }
 
 /**
+ * Installe le Skill IA d'un widget dans skills/rs-ui/widgets/<widgetId>/SKILL.md.
+ */
+export function copyWidgetSkill(
+  widgetId: string,
+  sourceRoot: string,
+  targetProjectRoot: string,
+  dryRun = false,
+): boolean {
+  const cleanId = widgetId.replace(/-widget$/, "");
+  // Chercher sourcePath dans plusieurs emplacements possibles
+  const candidates = [
+    join(sourceRoot, "skills", "widgets", cleanId, "SKILL.md"),
+    join(sourceRoot, "skills", `${cleanId}-widget`, "SKILL.md"),
+    join(sourceRoot, "skills", cleanId, "SKILL.md"),
+    join(sourceRoot, "widgets", cleanId, "SKILL.md"),
+  ];
+
+  const sourcePath = candidates.find((p) => existsSync(p));
+  if (!sourcePath) {
+    return false;
+  }
+
+  if (dryRun) return true;
+
+  const destDir = join(targetProjectRoot, "skills", "rs-ui", "widgets", cleanId);
+  const destPath = join(destDir, "SKILL.md");
+
+  if (!existsSync(destDir)) {
+    mkdirSync(destDir, { recursive: true });
+  }
+
+  const content = readFileSync(sourcePath, "utf-8");
+  writeFileSync(destPath, content, "utf-8");
+  return true;
+}
+
+/**
  * Supprime le Skill IA d'un composant retiré.
  */
 export function removeComponentSkill(

@@ -1,11 +1,13 @@
 {
   "name": "@rashwright/workspace-root",
   "private": true,
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Rashwright UI Mobile — Workspace racine (Bun workspaces)",
   "license": "MIT",
   "packageManager": "bun@1.4.2",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "check-types": "bun run check-types:cli && bun run check-types:ui",
     "check-types:cli": "bun run --filter @rashwright/cli check-types",

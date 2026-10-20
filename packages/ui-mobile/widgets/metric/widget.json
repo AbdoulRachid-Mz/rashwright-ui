@@ -1,0 +1,29 @@
+{
+  "id": "metric",
+  "name": "Metric Widget",
+  "description": "Indicateur statistique clé avec tendance, comparaison périodique, icône, état de chargement et support Liquid Glass.",
+  "version": "1.0.0",
+  "category": "Analytics",
+  "componentName": "MetricWidget",
+  "entrypoint": "metric-widget.tsx",
+  "files": [
+    "widget.json",
+    "types.ts",
+    "metric-widget.tsx",
+    "index.ts"
+  ],
+  "requiredComponents": [
+    "card",
+    "badge",
+    "skeleton"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons"
+  ],
+  "supportsGlass": true,
+  "defaultSize": {
+    "cols": 2,
+    "rows": 1
+  }
+}

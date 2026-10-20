@@ -24,3 +24,9 @@ export { useScrollAwareTabBar } from "./hooks/useScrollAwareTabBar";
 
 // UI Components — re-exported from components/ui/index.ts
 export * from "./components/ui";
+
+// Widgets Modulaires
+export * from "./widgets";
+
+// Showcases & Démonstrations
+export * from "./showcases";
