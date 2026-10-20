@@ -1,8 +1,8 @@
 # PLAN STRATÉGIQUE & ROADMAP D'ÉVOLUTION — Rashwright UI Mobile (v1.1.0 → v1.5.0)
 
 > **Document de référence stratégique et technique.**  
-> Dernière mise à jour : 2026-10-17  
-> Statut : **v1.4.0 Validée & Prête pour Publication** — 68 composants, 10 templates autonomes (Auth, Commerce, Onboarding, Dashboard, Settings, Showcase, Minimal, Chat, Finance, Social), Commande `rs-ui fix` (auto-remédiation d'environnement), Showcase Storybook Mobile & Tests Maestro E2E (6 flows), Moteur de fusion 3-Way Merge, AST Transformers (`--alias`), Visualisation syntaxique TSX (`rs-ui info --preview`), 218 tests Vitest réussis (Quality Gate 100% vert).
+> Dernière mise à jour : 2026-10-20  
+> Statut : **v1.5.0 Validée & Prête pour Publication** — 68 composants, 10 templates autonomes (Auth, Commerce, Onboarding, Dashboard, Settings, Showcase, Minimal, Chat, Finance, Social), WCAG 2.1 AA accessibilité (button, chip, card, checkbox, modal, icon-button, slider), fix NativeWind v5 `--legacy-peer-deps`, architecture.md formalisée (3 modes init, flux CLI Mermaid), Phase 7 specs écrans Expo (10 écrans critiques), 220 tests Vitest réussis (Quality Gate 100% vert).
 
 ---
 
@@ -172,4 +172,5 @@ Cependant, l'analyse approfondie de l'écosystème met en lumière **5 axes maje
 | **v1.1.0** | Nouveaux Composants Mobiles (`calendar`, `swipeable-row`, `segmented-control`, `tooltip`) | ✅ **Publiée** |
 | **v1.2.0** | Nouveaux Templates Métiers (`chat`, `finance`, `social`) + Cycle de vie (`rs-ui upgrade`, 3-way merge) | ✅ **Publiée** |
 | **v1.3.0** | Showcase interactif Storybook (`rs-ui showcase`) et tests E2E Maestro (6 flows) | ✅ **Publiée** |
-| **v1.4.0** | Commande `rs-ui fix` (auto-remédiation), 68 composants (`command`, `color-picker`, `navigation-menu`), code preview | ✅ **Prête pour npm** |
+| **v1.4.0** | Commande `rs-ui fix` (auto-remédiation), 68 composants (`command`, `color-picker`, `navigation-menu`), code preview | ✅ **Publiée** |
+| **v1.5.0** | WCAG 2.1 AA accessibilité, fix NativeWind v5 npm, architecture.md formalisée, specs Phase 7 écrans Expo, 220 tests | ✅ **Prête pour npm** |

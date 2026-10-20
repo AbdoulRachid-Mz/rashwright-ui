@@ -2,12 +2,13 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile" width="180" />
 </p>
 
-# @rashwright/ui-mobile — v1.4.0
+# @rashwright/ui-mobile — v1.5.0
 
-[![npm version](https://img.shields.io/badge/npm-%401.4.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+[![npm version](https://img.shields.io/badge/npm-%401.5.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2058-000000?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6?logo=typescript)](#)
 [![NativeWind](https://img.shields.io/badge/NativeWind-v4%20%7C%20v5-06b6d4?logo=tailwindcss)](#)
+[![WCAG](https://img.shields.io/badge/WCAG-2.1%20AA-blue)](#)
 
 > **⚠️ Pour les développeurs UTILISATEURS de Rashwright UI : vous n'avez JAMAIS besoin d'installer ce package directement.**
 >
@@ -114,6 +115,15 @@ rs-ui add button
 ```
 
 ---
+
+## 🆕 Nouveautés v1.5.0 — WCAG 2.1 AA & Fix NativeWind v5
+
+- **Accessibilité WCAG 2.1 AA** : `accessibilityRole`, `accessibilityState`, `accessibilityLabel` sur tous les composants interactifs (`button`, `chip`, `card`, `checkbox`, `modal`, `icon-button`, `slider`).
+- **Style priority** : La prop `style` passée par l'utilisateur prime toujours sur les styles internes (`style={[styles.base, internalStyle, style]}`).
+- **Fix NativeWind v5** : `npm install --legacy-peer-deps` — plus d'installation bloquée sur `--force`.
+- **Architecture formalisée** : `architecture.md` documente les 3 modes d'init, les flux CLI, les dépendances inter-packages.
+- **Phase 7 specs** : `PHASE7-EXPO-SCREENS.md` — 10 écrans Expo critiques avec dépendances et plan d'implémentation.
+- **Tests** : 220/220 Vitest (46 suites), fix timeouts Windows (`afterEach` 60 000ms).
 
 ## 🆕 Nouveautés v0.9.0
 

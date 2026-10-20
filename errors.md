@@ -33,3 +33,30 @@ Sur le Web avec `react-native-css-interop` / NativeWind, lorsque le mode sombre 
    // Autorise le basculement manuel de thème sans exception
    ```
 3. **Résultat** : Basculement transparent du mode sombre / clair sur Web, iOS et Android sans conflit d'API.
+
+---
+
+## v1.5.0 — Correctifs NativeWind v5 npm & Tests Windows
+
+### ✅ RÉSOLU — `npm install --force` bloque indéfiniment avec NativeWind v5
+
+**Cause racine** : `nativewind@5.0.0-rc.0` requiert `react-native-css@3.1.0-rc.0` qui lui-même requiert `react>=19`, `react-native>=0.81`, `lightningcss>=1.27.0`. La commande `npm install --force` entre dans un état de résolution infinie de conflits de peer-deps.
+
+**Solution** : `npm install --legacy-peer-deps` — ignore les conflits de peer-deps sans bloquer. Appliqué dans :
+- `buildProjectInstallCommand('npm')` → `"npm install --legacy-peer-deps"`
+- `buildInstallCommand('npm', [...])` → `"npm install --legacy-peer-deps <packages>"`
+
+**Fichiers modifiés** :
+- `packages/cli/src/core/package-manager.ts`
+- `packages/cli/src/commands/init.ts` (message d'erreur)
+- `packages/cli/src/commands/fix.ts` (détection et avertissement npm)
+
+### ✅ RÉSOLU — Tests flaky Windows (`afterEach` timeout 20s)
+
+**Cause** : `rmSync({ recursive: true, force: true })` sur Windows prend parfois >20s sur des répertoires de tests volumineux. Le timeout par défaut de Vitest pour les hooks `afterEach` est 20s.
+
+**Solution** : Ajout de `60_000ms` en 2ème argument de `afterEach` dans :
+- `tests/monorepo.test.ts`
+- `tests/nativewind-manager.test.ts`
+- `tests/create-component.test.ts`
+- `tests/backup-manager.test.ts`

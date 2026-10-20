@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v1.4.0 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v1.5.0 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant, tu possèdes son code source.**
@@ -10,11 +10,12 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-1.4.0-blue)](#)
+[![version](https://img.shields.io/badge/version-1.5.0-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
 [![NativeWind](https://img.shields.io/badge/NativeWind-v4%20%7C%20v5%20optional-06b6d4?logo=tailwindcss)](#)
+[![WCAG](https://img.shields.io/badge/WCAG-2.1%20AA-blue)](#)
 
 ---
 
@@ -256,6 +257,15 @@ bunx expo install expo-router react-dom react-native-web
 - **🧩 Component-Detector Automatique (Modèle shadcn/ui)** :
   - Détection récursive et installation conditionnelle des logiques internes (`hooks/use-responsive.ts`, `lib/responsive.ts`, utilitaires `lib/upload/`) et packages Expo/npm manquants (`expo-device`, `react-native-reanimated`).
 - **🧪 Quality Gate 100% Vert** : 194 tests Vitest passés sur 40 suites, 0 erreur TypeScript strict (`bunx tsc --noEmit` exit 0).
+
+## 🆕 Nouveautés v1.5.0 — WCAG 2.1 AA, NativeWind v5 Fix Définitif & Architecture
+
+- **Accessibilité WCAG 2.1 AA** : Tous les composants interactifs ont maintenant `accessibilityRole`, `accessibilityState` et `accessibilityLabel` — `button`, `chip`, `card`, `checkbox`, `modal`, `icon-button`, `slider` et plus.
+- **Fix NativeWind v5 `npm install`** : `--legacy-peer-deps` systématiquement utilisé pour npm (résout les conflits `react-native-css@3.1.0-rc.0` qui bloquaient `--force` indéfiniment).
+- **Architecture.md formalisée** : 3 modes d'initialisation documentés (Fresh Expo Router, Existing Expo Router, Expo Classic), flux CLI en diagrammes Mermaid, dépendances inter-packages.
+- **Phase 7 — Specs Écrans Expo critiques** : 10 écrans documentés (SplashScreen, PermissionGate, Push Notifications, Deep Linking, BiometricAuth, AppState, FileDownloader, QRScanner, MapView, DocumentPicker).
+- **Tests stabilisés Windows** : `afterEach` timeout 60 000ms pour tous les hooks de nettoyage (`monorepo`, `nativewind-manager`, `create-component`, `backup-manager`).
+- **220 tests Vitest** réussis — 46 suites, Quality Gate 100% vert.
 
 ## 🆕 Nouveautés v1.4.0 — Commande `rs-ui fix`, Showcase & Code Preview
 

@@ -1,8 +1,8 @@
-# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI MOBILE (v1.1.0 → v1.4.0)
+# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI MOBILE (v1.1.0 → v1.5.0)
 
 > **Fichier de suivi dynamique (`TASK.md`)**  
-> Dernière mise à jour : 2026-10-17  
-> Statut général : **v1.4.0 Validée & Prête (Auto-remédiation `rs-ui fix`, 68 composants avec `command`, `color-picker`, `navigation-menu`, code preview `rs-ui info --preview`, showcase Storybook, 6 tests Maestro E2E, 218 tests Vitest réussis, 46 suites de tests, Quality Gate 100% vert, 0 erreur TypeScript strict)**
+> Dernière mise à jour : 2026-10-20  
+> Statut général : **v1.5.0 Validée & Prête (WCAG 2.1 AA accessibilité, fix NativeWind v5 npm, architecture.md formalisée, Phase 7 specs écrans Expo, 68 composants, 220 tests Vitest réussis, 46 suites, Quality Gate 100% vert, 0 erreur TypeScript strict)**
 
 ---
 
@@ -28,6 +28,7 @@
 | **v1.3.1 (Phase 12)** | Commande `rs-ui fix` (Auto-remédiation de l'environnement, Babel Reanimated, Dépendances, Typages ambiants) | ✅ Validé | 2 / 2 tâches |
 | **v1.4.0 (Phase 13)** | Nouveaux Composants Mobiles Avancés (`command`, `color-picker`, `navigation-menu`) — Registre à 68 composants | ✅ Validé | 3 / 3 tâches |
 | **v1.4.0 (Phase 14)** | Visualisation CLI enrichie (`rs-ui info <comp> --preview`) avec extrait de code TSX canonique et boîte ASCII | ✅ Validé | 2 / 2 tâches |
+| **v1.5.0 (Phase 15)** | WCAG 2.1 AA Accessibilité, Fix NativeWind v5 npm, Architecture.md formalisée, Specs Phase 7 écrans Expo | ✅ Validé | 7 / 7 tâches |
 
 ---
 
@@ -316,3 +317,46 @@
 ### 2026-10-14 — Correctifs v0.7.x & Patch Tabs
 - Audit et refonte complète du composant `Tabs` : suppression de `zIndex: -1`, `width: 100%`, support contrôlé/non-contrôlé, `scrollable`, accessibilité ARIA.
 - Correctifs init : ordre d'installation Expo, `rs-ui init .`, dépendances `expo-router`/`react-dom`/`react-native-web`.
+
+---
+
+## Phase 15 : v1.5.0 — WCAG 2.1 AA, NativeWind v5 Fix, Architecture & Phase 7 (✅ ACHEVÉ)
+
+### Tâche 1 — Analyse complète des lacunes & accessibilité WCAG 2.1 AA
+* [x] **TASK-15.1** : Audit de 70 composants pour détecter les attributs d'accessibilité manquants (`accessibilityRole`, `accessibilityState`, `accessibilityLabel`).
+* [x] **TASK-15.2** : Corrections appliquées sur `button.tsx` (role, state disabled/loading), `chip.tsx` (role conditionnel, state selected), `card.tsx` (role button si onPress), `checkbox.tsx` (role + state checked), `modal.tsx` (viewIsModal), `icon-button.tsx` (role button), `slider.tsx` (role adjustable).
+* [x] **TASK-15.3** : Fix tests flaky Windows (`afterEach` timeout 60_000ms) dans `monorepo.test.ts` et `nativewind-manager.test.ts`.
+
+### Tâche 2 — Amélioration composants (performances, accessibilité, compatibilité)
+* [x] **TASK-15.4** : Style priority vérifiée sur 70 composants — `style={[styles.base, internalStyle, style]}` (user prop en dernier).
+* [x] **TASK-15.5** : Zéro régression TypeScript strict sur tous les composants modifiés.
+
+### Tâche 3 — Architecture.md formalisée
+* [x] **TASK-15.6** : `architecture.md` réécrit complètement — 3 modes d'initialisation (A: Fresh Expo Router, B: Existing Expo Router, C: Expo Classic), tous les 10 templates, flux CLI en Mermaid, dépendances inter-packages.
+
+### Tâche 4 — CLI optimisé et robuste
+* [x] **TASK-15.7** : Fix `buildProjectInstallCommand('npm')` → `npm install --legacy-peer-deps` (plus `--force` qui bloque indéfiniment).
+* [x] **TASK-15.8** : Fix `buildInstallCommand('npm', [...])` → `npm install --legacy-peer-deps <packages>`.
+* [x] **TASK-15.9** : Fix `packages/cli/src/commands/fix.ts` — détection npm + avertissement NativeWind v5.
+* [x] **TASK-15.10** : Fix `packages/cli/src/commands/init.ts` — message d'erreur `installFailedSteps` indique `--legacy-peer-deps`.
+
+### Tâche 5 — Résolution erreur NativeWind v5 npm install
+* [x] **TASK-15.11** : Cause racine identifiée — `react-native-css@3.1.0-rc.0` requiert `react>=19`, `react-native>=0.81`, `lightningcss>=1.27.0`. `npm install --force` bloque indéfiniment.
+* [x] **TASK-15.12** : Solution pérenne : `--legacy-peer-deps` pour npm dans tous les cas d'usage CLI.
+* [x] **TASK-15.13** : 18 tests `package-manager.test.ts` mis à jour avec les nouvelles assertions.
+
+### Tâche 6 — Mécanisme de priorité des styles
+* [x] **TASK-15.14** : Vérification systématique de 70 composants — style user (`style` prop) toujours en dernier dans les arrays de style.
+* [x] **TASK-15.15** : Registry `index.json` mis à jour vers v1.5.0, ajout catégorie `Primitives` (text, view gérés par setupCoreUi).
+
+### Tâche 7 — Phase 7 : Specs intégration écrans Expo critiques
+* [x] **TASK-15.16** : `packages/ui-mobile/PHASE7-EXPO-SCREENS.md` créé — 10 écrans critiques documentés : SplashScreen, PermissionGate, Push Notifications, Deep Linking, BiometricAuth, AppState, FileDownloader, QRScanner, MapView, DocumentPicker. Specs complètes, dépendances, API, plan de mise en œuvre 3 priorités.
+
+### Quality Gate v1.5.0
+* [x] **validate-registry** : 0 erreur — 68 composants, 68 sources ✅
+* [x] **validate-maestro** : 6 flows ✅
+* [x] **check-types** : 0 erreur TypeScript strict ✅
+* [x] **tests** : 220/220 passés, 46 suites ✅
+* [x] **build:cli** : 0.38 MB ✅
+* [x] **smoke:all** : `rs-ui --version` → `1.5.0` ✅
+* [x] **Tag** : `v1.5.0` ✅

@@ -44,3 +44,21 @@
 - 43 suites de tests, **212 tests unitaires Vitest réussis (100%)**.
 - Zéro erreur TypeScript (`bun run check-types` code 0).
 - Bundle CLI 0.37 MB autonome.
+
+---
+
+## v1.5.0 — Problèmes résolus définitivement
+
+### ✅ RÉSOLU — NativeWind v5 + npm : `npm install --force` bloqué
+- **v1.5.0** : `buildProjectInstallCommand('npm')` → `npm install --legacy-peer-deps`
+- `buildInstallCommand('npm', [...])` → `npm install --legacy-peer-deps <packages>`
+- Tests `package-manager.test.ts` : 18 assertions mises à jour
+
+### ✅ RÉSOLU — Tests flaky Windows (afterEach timeout)
+- `afterEach(() => {...}, 60_000)` dans `monorepo.test.ts`, `nativewind-manager.test.ts`, `create-component.test.ts`, `backup-manager.test.ts`
+- 220 tests passent maintenant de manière stable
+
+### ✅ RÉSOLU — registry/index.json désynchronisé (68 vs 70 fichiers TSX)
+- `text.tsx` et `view.tsx` sont des primitives Core gérées par `setupCoreUi` → ne doivent pas être dans `index.json`
+- La règle est documentée dans le script `validate-registry.ts` (règle I-2)
+- `registry/index.json` v1.5.0 : 68 composants corrects
