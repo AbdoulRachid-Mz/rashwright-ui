@@ -24,7 +24,7 @@ describe("Backup Manager (.rashwright/backups/)", () => {
     if (existsSync(TEST_DIR)) {
       rmSync(TEST_DIR, { recursive: true, force: true });
     }
-  });
+  }, 60_000);
 
   it("generateBackupId generates valid timestamp format YYYY-MM-DD-HH-MM-SS", () => {
     const id = generateBackupId();

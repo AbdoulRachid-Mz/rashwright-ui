@@ -49,18 +49,33 @@ export function detectPackageManager(cwd: string = process.cwd()): PackageManage
 
 /**
  * Build the base install command to install all existing dependencies in package.json.
+ *
+ * - npm always uses `--legacy-peer-deps` to avoid infinite resolution loops caused by
+ *   NativeWind v5 peer-dependency conflicts (react>=19, react-native>=0.81, etc.).
+ *   `--force` is intentionally avoided: it blocks indefinitely on npm when peer deps
+ *   cannot be resolved non-interactively.
+ * - pnpm uses `--shamefully-hoist` for compatibility with Expo Metro's module resolution.
+ * - yarn uses `--ignore-engines` to tolerate engine mismatches in Expo projects.
  */
-export function buildProjectInstallCommand(pm: PackageManager): string {
+export function buildProjectInstallCommand(
+  pm: PackageManager,
+  options: { legacyPeerDeps?: boolean } = {}
+): string {
   switch (pm) {
     case "bun":
       return "bun install --force";
     case "pnpm":
-      return "pnpm install";
+      return "pnpm install --shamefully-hoist";
     case "yarn":
-      return "yarn install";
+      return "yarn install --ignore-engines";
     case "npm":
     default:
-      return "npm install";
+      // --legacy-peer-deps resolves peer-dep conflicts without blocking —
+      // required for Expo projects using NativeWind v5 (tailwindcss>=4.1.11,
+      // react-native-css@3.1.0-rc.0 which requires react>=19 & react-native>=0.81).
+      return options.legacyPeerDeps === false
+        ? "npm install"
+        : "npm install --legacy-peer-deps";
   }
 }
 
@@ -81,7 +96,8 @@ export function buildInstallCommand(
     case "yarn":
       return `yarn add ${pkgList}`;
     case "npm":
-      return `npm install ${pkgList}`;
+      // --legacy-peer-deps avoids peer-dep resolution failures in Expo/NativeWind v5 projects
+      return `npm install --legacy-peer-deps ${pkgList}`;
   }
 }
 

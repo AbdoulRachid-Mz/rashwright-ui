@@ -204,6 +204,9 @@ const Button = forwardRef<React.ElementRef<typeof View>, ButtonProps>(
         disabled={disabled || loading}
         viscosity={viscosity}
         onPress={onPress}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: disabled || loading }}
+        accessibilityLabel={loading ? "Chargement en cours" : undefined}
         style={[baseContainerStyle, style]}
         {...props}
       >

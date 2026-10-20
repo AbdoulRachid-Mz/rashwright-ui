@@ -262,6 +262,23 @@ export function fixCommand(): Command {
       }
 
       // ─────────────────────────────────────────────────────────────────────
+      // 7. Avertissement npm + NativeWind v5 (--force bloque, --legacy-peer-deps requis)
+      // ─────────────────────────────────────────────────────────────────────
+      const isNativeWindV5 = config?.nativewind?.enabled && config?.nativewind?.version === "v5";
+      if (isNativeWindV5 && project.packageManager === "npm") {
+        const action: FixAction = {
+          id: "npm-legacy-peer-deps",
+          title: "Avertissement : npm + NativeWind v5 détecté",
+          description:
+            "NativeWind v5 requiert react>=19 et react-native>=0.81 comme peerDependencies. " +
+            "Utilisez 'npm install --legacy-peer-deps' (jamais --force qui bloque indéfiniment). " +
+            "Rashwright utilise automatiquement --legacy-peer-deps lors de l'init.",
+          applied: true, // Informatif uniquement — pas d'action corrective nécessaire
+        };
+        actions.push(action);
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
       // Résultat & Affichage
       // ─────────────────────────────────────────────────────────────────────
       if (options.json) {

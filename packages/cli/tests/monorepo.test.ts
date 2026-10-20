@@ -17,7 +17,7 @@ describe("Monorepo & Workspace Awareness (detectProject)", () => {
     if (existsSync(TEST_DIR)) {
       rmSync(TEST_DIR, { recursive: true, force: true });
     }
-  });
+  }, 60_000);
 
   it("detectProject identifies standard non-workspace project", () => {
     writeFileSync(

@@ -128,8 +128,12 @@ const CardRoot = ({
         activeOpacity,
         onPressIn: handlePressIn,
         onPressOut: handlePressOut,
+        accessibilityRole: "button" as const,
+        accessibilityState: { disabled },
       }
-    : {};
+    : {
+        accessibilityRole: "none" as const,
+      };
 
   return (
     <CardContext.Provider value={{ theme, isDark }}>

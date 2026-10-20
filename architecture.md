@@ -1,276 +1,523 @@
-How to organize Expo app folder structure for clarity and scalability
-Organize your Expo Router project with proven folder structures for components, screens, API routes, and more to scale React Native apps.
+# Architecture Rashwright UI Mobile — `rs-ui init`
 
-Kadi Kraman
-Kadi Kraman
+> Généré par Rashwright CLI v1.4.0 · Mis à jour pour v1.5.0
 
-Engineering
+Ce document décrit formellement les architectures de chaque mode d'initialisation disponible avec la commande `rs-ui init`. Il sert de référence pour l'outil CLI, la documentation et les contributions.
 
-How to organize Expo app folder structure for clarity and scalability
-Properly organized folder structure has a great impact on productivity. Just like a tidy office sets you up to do your best work, so does a tidy codebase with every file in its place. This isn’t just helpful for human developers - if you’re using AI to speed up your work, a solid plan increases its chances of generating the right code. Also if you and AI follow the same plan, it and makes it much easier for you to find that code later.
+---
 
-In an Expo Router codebase, we have file-based routing, platform-specific code, styling, server code, and regular React components. In this blog, we discuss some tried and tested strategies for organizing all of these for an app that scales.
+## Table des matières
 
-Use a /src folder
-Expo Router is a file-based router where the navigation tree of your app is based on the folder structure and layout files, with the main entry point being the /app folder. Both /app and /src/app are supported out of the box. So if you want to switch from /app to /src/app, simply move the folder and restart the bundler!
+1. [Vue d'ensemble des modes d'init](#vue-densemble)
+2. [Architecture A — Nouveau projet Expo Router `/src`](#architecture-a)
+3. [Architecture B — Projet Expo Router existant](#architecture-b)
+4. [Architecture C — Classic App.tsx (sans Expo Router)](#architecture-c)
+5. [Templates disponibles](#templates)
+   - [Showcase (défaut)](#template-showcase)
+   - [Minimal Starter](#template-minimal)
+   - [Auth Suite](#template-auth)
+   - [Onboarding Flow](#template-onboarding)
+   - [Dashboard & Analytics](#template-dashboard)
+   - [E-Commerce & Store](#template-commerce)
+   - [Settings & Preferences](#template-settings)
+   - [Finance & Wallet](#template-finance)
+   - [Chat & Social](#template-chat)
+   - [Social Feed](#template-social)
+6. [Dépendances communes](#dependances)
+7. [NativeWind v4 vs v5](#nativewind)
+8. [Flux d'initialisation CLI](#flux-cli)
 
-The benefit of using /src folder is that it allows you to separate your app code from other files, and this makes the codebase much easier to work with.
+---
 
-Example using the /app folder in the root level:
+## Vue d'ensemble des modes d'init {#vue-densemble}
 
+```
+rs-ui init [project-name]
+  │
+  ├─ Mode A : nouveau-projet (create-expo-app + reset + /src)
+  │   └─ Architecture Expo Router standardisée
+  │
+  ├─ Mode B : projet existant avec Expo Router détecté
+  │   └─ Injection Rashwright dans app/ ou src/app/
+  │
+  └─ Mode C : projet existant Classic (App.tsx)
+      └─ Injection Rashwright dans components/ ou src/components/
+```
 
-Copy
+L'outil CLI détecte automatiquement le mode via `detectProject()` et `detectInitMode()` dans `packages/cli/src/core/project-detector.ts`.
 
-├── app/
-├── assets/
-├── components/
-├── scripts/
-├── hooks/
-├── constants.ts
-├── theme.ts
-├── app.json
-├── eas.json
-└── package.json
-Versus adding with /src/app:
+---
 
+## Architecture A — Nouveau projet Expo Router `/src` {#architecture-a}
 
-Copy
+**Déclenché par** : `rs-ui init <nom>` quand aucun projet existant n'est détecté, ou `rs-ui init .` dans un dossier vide.
 
-├── assets/
-├── scripts/
+### Structure générée
+
+```
+<project>/
 ├── src/
 │   ├── app/
-│   ├── components/
-│   ├── hooks/
-│   ├── constants.ts
-│   └── theme.ts
-├── app.json
-├── eas.json
-└── package.json
-In the last example, it is much easier to distinguish between application code and other config files.
-
-Create a reusable components folder
-With file-based routing we are limited on what files we can add to our /app folder since every file will create a new route. A common pattern for all React projects is to have a /components folder for reusable components: buttons, sliders, cards etc.
-
-Each component will generally have one named export. Regarding the filename there are two schools of thought:
-
-Classic: the filename is exactly the same as the component name (including the calitalized first letter)
-Modern: the filename is the a kebab-case version of the component name, e.g. MyComponent becomes my-component
-Choose one based on your preference, both are valid and consistency matters.
-
-
-Copy
-
-export function Button() {
-  ...
-}
-For components that could do with breaking out into separate files, it is common to create a folder with the component name, and add the main component in the index file. This way other smaller components which are not needed anywhere else can be colocated.
-
-
-Copy
-
-import { Row } from "./row";
-import { Cell } from "./cell";
-
-export function Table() {
-  ...
-}
-Using an index file here is a useful convention, because the import path of the component stays unchanged from when the component was just a single file, and you can instantly tell which file is the root component.
-
-Putting these two examples together, the folder structure becomes:
-
-
-Copy
-
-└── src/
-    ├── app/
-    │   ├── index.tsx
-    │   └── _layout.tsx
-    └── components/
-        ├── table/
-        │   ├── components/
-        │   │   ├── row.tsx
-        │   │   └── cell.tsx
-        │   └── index.tsx
-        └── button.tsx
-Consider a /screens folder
-Notice how in the components example above, we created a folder for the Table component so we could break it down further to smaller, more manageable components. As your app grows, you might find it useful to do the same for your app screens, especially when there is a lot of UI code that is complex, but not used in other pages (so it does not make sense to place it in the components folder). Trouble is, since every file in the /app folder creates a route, it is not possible to create extra components in there.
-
-For small apps, this is not usually a problem, but as your app grows, you will feel the need for some separation. So, a solution that large codebases often adopt is to create a /screens folder, with every route simply returning a screen component.
-
-
-Copy
-
-import { Home } from "@screens/home";
-
-export default function HomeScreen() {
-  // Handle any context-specific code in the route, e.g. getting url params
-  return <Home />;
-}
-This way the screen could be made up of multiple components and broken down into multiple files if needed:
-
-
-Copy
-
-└── src/
-    ├── app/
-    │   ├── index.tsx
-    │   ├── settings.tsx
-    │   └── _layout.tsx
-    └── screens/
-        ├── home/
-        │   ├── components/
-        │   │   └── timeline.tsx
-        │   └── index.tsx
-        └── Settings.tsx
-
-A side bonus of this approach is that it makes it extremely easy to render the same screen in multiple routes. Shared routes is always an option, but it some cases just rendering the same screen as a component is just simpler and more readable.
-
-Utilities and hooks
-Is there a box, a cupboard, or perhaps a drawer in your house where the miscellaneous items go to that wouldn't otherwise have a home? Well, most codebases have something similar, and we call it the "utils folder".
-
-Jokes aside, this is a place for small standalone utilities such as date formatters, currency converters, data transformers etc.
-
-In a React (Native) codebase you'll also find yourself writing reusable hooks quite often, so it is very common to also have such a folder for hooks.
-
-
-Copy
-
-└── src/
-    └── utils/
-        ├── format-date.ts
-        └── pluralize.ts
-    └── hooks/
-        ├── use-app-state.ts
-        └── use-theme.ts
-Separate server code
-With Expo Router API routes, we are able to write server code directly in the React Native codebase. Simply appending +api to a file in the /app folder will turn it into an API route: meaning you can deploy it on its own or as part of the web export of your app.
-
-The API code gets executed on the server side environment, meaning that you can use sensitive environment variables (in particular, any process.env.MY_VAL can be used, compared to the rest of the codebase where only environment variables prefixed with EXPO_PUBLIC_ will be inlined). There is also a difference in runtime since the frontend code is executed either in the browser or on device, versus the API code when deployed with EAS Hosting Node.js-like environment.
-
-All this is to say, as your application grows and you want to reuse logic between API routes, or extract parts of the code to a separate codebase, separating the server code will be very useful.
-
-While API routes can be anywhere in the /app folder, I like to place them all in a single /api folder, making the actual routes like /api/user and /api/settings. This not only allows us to group the api routes and colocate them, but is also a sensible precaution against route collisions, e.g. if you happen to have both a screen and an api route for /user .
-
-Furthermore any utilities for the api routes could be extracted to a /server folder to indicate special rules.
-
-
-Copy
-
-└── src/
-    ├── app/
-    │   ├── api/
-    │   │   ├── user+api.ts
-    │   │   └── settings+api.ts
-    │   └── index.tsx
-    └── server/
-        ├── auth.ts
-        └── db.ts
-You may also want to consider adding custom ESLint rules to +api files and everything in the /server folder or the converse, exclude those locations from checks that assume the code is run on the frontend environment.
-
-Platform-specific code
-When building for multiple targets, it is sometimes necessary to add platform-specific code. While smaller such differences can easily be handled with Platform.select or checking the Platform.OS, many such statements will put you in danger of spaghetti code. It is often cleaner to encapsulate larger such changes in separate files using platform-specific file extensions.
-
-Say you had a BarChart component that had completely separate implementations on web and native, including relying on different charting libraries. Then you can create two components: bar-chart.tsx and bar-chart.web.tsx. In your codebase, import it as if the extra file extension didn’t exist:
-
-
-Copy
-
-import { BarChart } from "@components/bar-chart";
-And when metro bundles the JavaScript code, it will automatically pick the web file when it’s bundling the code for the web.
-
-Note that:
-
-the props for BarChart should be identical for both components
-a “default” version of the component without a platform-specific extension is always required (if you wanted to create a component only for one platform, you can make the default component a no-op)
-the following extensions are supported: .web, .native, .ios, .android
-Colocate your styles
-When using StyleSheet, inline styles or Unistyles for styling, you may want to pull your styles out to a separate file like so:
-
-
-Copy
-
-└── src/
-    └── components/
-        ├── button.tsx
-        └── button.styles.tsx
-While this was fashionable for a while, the modern approach is to keep your style object at the bottom of your component file as it makes the styles easier to see and work with:
-
-
-Copy
-
-export function Button() {
-  return ...
-}
-
-const styles = StyleSheet.create({
-  ...
-}):
-Colocate your unit tests
-There are two schools of thought when it comes to unit tests:
-
-create a separate __tests__ folder, or
-colocate the tests with the file being tested
-Both are valid, so really it comes down to preference. I prefer colocating the tests so you can easily see at a glance which files are tested.
-
-
-Copy
-
-└── src/
-    └── utils/
-        └── format-date.ts
-        └── format-date.test.ts
-Summary
-With only a few rules, your codebase becomes much more manageable at scale. If we put all the above rules together, we get something like this:
-
-
-Copy
-
-├── assets/
-├── scripts/
-├── src/
-│   ├── app/
-│   │   ├── api/                    # API routes in a separate folder
-│   │   │   ├── event+api.ts
-│   │   │   └── user+api.ts
-│   │   ├── _layout.tsx
-│   │   ├── _layout.web.tsx         # separate layout file for web
-│   │   ├── index.tsx
-│   │   ├── events.tsx
-│   │   └── settings.tsx
-│   ├── components/
-│   │   ├── table/
-│   │   │   ├── cell.tsx
+│   │   ├── _layout.tsx          # Root layout Expo Router (Provider ThemeProvider + GlobalStore)
+│   │   ├── (tabs)/              # Groupe d'onglets (si template Dashboard/Commerce)
+│   │   │   ├── _layout.tsx
 │   │   │   └── index.tsx
-│   │   ├── bar-chart.tsx
-│   │   ├── bar-chart.web.tsx        # separate components for web and native
-│   │   └── button.tsx
-│   ├── screens/
-│   │   ├── home/
-│   │   │   ├── card.tsx            # component only used in the home page
-│   │   │   └── index.tsx           # returned from /src/app/index.tsx
-│   │   ├── events.tsx              # returned from /src/app/events.tsx
-│   │   └── settings.tsx            # returned from /src/app/settings.tsx
-│   ├── server/                     # code used in /api
-│   │   ├── auth.ts
-│   │   └── db.ts
-│   ├── utils/                      # reusable utilities
-│   │   ├── format-date.ts
-│   │   ├── format-date.test.ts      # unit test next to the file being tested
-│   │   └── pluralize.ts
-│   ├── hooks/
-│   │   ├── use-app-state.ts
-│   │   └── use-theme.ts
-├── app.json
-├── eas.json
-└── package.json
-Changelog
-January 7, 2026: updated the default recommendation to use kebab-case filenames. This will be consistent with our SDK 55 default template.
+│   │   └── index.tsx            # Écran principal (template sélectionné)
+│   ├── components/
+│   │   ├── ui/                  # Composants Rashwright installés
+│   │   │   ├── index.ts         # Barrel export de tous les composants
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── glass-card.tsx   # (si Glass activé)
+│   │   │   └── ...              # Composants du template choisi
+│   │   └── templates/
+│   │       └── <template>/      # Fichiers du template (commerce/, auth/, etc.)
+│   ├── contexts/
+│   │   └── theme-context.tsx    # ThemeProvider + useTheme hook
+│   ├── stores/
+│   │   └── theme-store.ts       # Zustand store pour le thème
+│   ├── theme/
+│   │   ├── index.ts             # Export du thème actif
+│   │   ├── tokens.ts            # Design tokens (spacing, radius, typography)
+│   │   ├── themes/
+│   │   │   ├── default.ts       # Thème Rashwright Blue (light + dark)
+│   │   │   ├── emerald.ts       # Thème Emerald Mint
+│   │   │   ├── violet.ts        # Thème Violet Tech
+│   │   │   └── custom.ts        # (si thème custom configuré)
+│   │   └── glass-theme.ts       # Tokens Glass UI (si mode Glass activé)
+│   ├── constants/
+│   │   └── glass-theme.ts       # createGlassTheme() helper
+│   ├── lib/
+│   │   ├── responsive.ts        # Hooks responsifs (useResponsive, useBreakpoint)
+│   │   └── primitives/          # Primitives headless (usePressable, useToggle...)
+│   ├── hooks/                   # Hooks personnalisés
+│   │   └── use-glass-state.ts   # (si Glass activé)
+│   └── assets/
+│       ├── svg/primary.svg      # Logo Rashwright SVG
+│       └── primary.png          # Logo Rashwright PNG
+├── assets/                      # Assets Expo natifs
+├── skills/
+│   └── rs-ui/                   # Skills IA (si --skills non désactivé)
+│       ├── SKILL.md             # Skill IA global Rashwright
+│       └── components/          # Skills par composant
+├── app.json                     # expo.web.bundler = "metro", plugins
+├── babel.config.js              # babel-preset-expo + Reanimated plugin
+├── metro.config.js              # getDefaultConfig + withNativeWind (si NW)
+├── tsconfig.json                # paths alias @/ → src/
+├── nativewind-env.d.ts          # (si NativeWind activé)
+├── global.css                   # (si NativeWind activé)
+├── rashwright-ui.json           # Configuration Rashwright
+└── rashwright-ui.lock           # Lockfile des composants installés
+```
 
-Expo Router
-folder structure
-React Native folder structure
-file based routing
-EAS Hosting
-React Native scaling
-code organization
+### Dépendances installées
+
+| Groupe | Packages |
+|--------|----------|
+| **Expo (via `expo install`)** | `expo-router`, `react-native-screens`, `expo-constants`, `expo-linking`, `react-dom`, `react-native-web`, `expo-system-ui`, `react-native-reanimated`, `react-native-gesture-handler`, `react-native-safe-area-context`, `@expo/vector-icons`, `expo-haptics`, `expo-image`, `@react-native-async-storage/async-storage`, `expo-image-picker`, `expo-image-manipulator`, `expo-application`, `expo-device`, `expo-blur`, `expo-linear-gradient` |
+| **NPM** | `zustand` |
+| **NativeWind v4** (optionnel) | `nativewind@4.2.7`, `tailwindcss@^3.4.17` |
+| **NativeWind v5** (optionnel) | `nativewind@5.0.0-rc.0`, `react-native-css@3.1.0-rc.0`, `tailwindcss@4.1.12`, `@tailwindcss/postcss@4.1.12`, `postcss`, `lightningcss@1.30.1` |
+
+### Flux de création
+
+```mermaid
+flowchart TD
+    A["rs-ui init mon-app"] --> B[create-expo-app blank-typescript@SDK]
+    B --> C[resetExpoProject /src]
+    C --> D[writeBabelConfig + updateTsconfig]
+    D --> E{NativeWind ?}
+    E -- oui --> F[setupNativeWind v4/v5]
+    E -- non --> G[setupFoundations]
+    F --> G
+    G --> H[copyRashwrightAssets]
+    H --> I[setupStarterTemplate]
+    I --> J[copyGlobalSkill + Skills composants]
+    J --> K[generateShowcaseScreen]
+    K --> L[writeConfig rashwright-ui.json]
+    L --> M[installProjectDependencies]
+    M --> N[installExpoPackages]
+    N --> O[installNpmPackages]
+    O --> P["✅ Projet prêt"]
+```
+
+### tsconfig.json paths
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
+```
+
+---
+
+## Architecture B — Projet Expo Router existant {#architecture-b}
+
+**Déclenché par** : `rs-ui init` dans un dossier contenant déjà un projet avec Expo Router (`app/` ou `src/app/` détecté).
+
+### Différences avec Architecture A
+
+- Pas de `create-expo-app` → le projet est déjà initialisé
+- Reset conditionnel (demande confirmation si template Expo par défaut détecté)
+- Les composants sont injectés dans le chemin `componentsPath` existant ou choisi
+- Le fichier `_layout.tsx` est modifié pour injecter `ThemeProvider` et `GestureHandlerRootView`
+- Les imports `global.css` sont injectés en tête de `_layout.tsx` (si NativeWind)
+
+### Structure attendue en entrée
+
+```
+<projet-existant>/
+├── app/                   # ou src/app/
+│   ├── _layout.tsx        # → ThemeProvider + GestureHandlerRootView injectés
+│   └── index.tsx          # → peut être remplacé par le starter template
+├── package.json           # Expo + React Native présents
+└── ...
+```
+
+### Injection Rashwright
+
+Le CLI détecte `hasExpoRouter: true` dans `detectProject()` et :
+1. Identifie `app/_layout.tsx` ou `src/app/_layout.tsx`
+2. Injecte les providers ThemeProvider en wrappant le layout existant
+3. Copie les composants du template dans le chemin `componentsPath`
+
+---
+
+## Architecture C — Classic App.tsx (sans Expo Router) {#architecture-c}
+
+**Déclenché par** : `rs-ui init` dans un projet Expo sans Expo Router (structure `App.tsx` classique).
+
+### Structure générée
+
+```
+<project>/
+├── App.tsx                # Modifié pour wrapper ThemeProvider + composants
+├── components/
+│   └── ui/               # Composants Rashwright (ou src/components/ui/)
+├── contexts/
+│   └── theme-context.tsx
+├── stores/
+│   └── theme-store.ts
+├── theme/
+│   └── ...
+└── ...
+```
+
+### Différences
+
+- Pas d'Expo Router → pas de `app/` directory
+- L'écran starter est écrit dans `App.tsx` directement
+- Pas de routes multi-écrans automatiques (routes manuelles via React Navigation si besoin)
+
+---
+
+## Templates disponibles {#templates}
+
+Tous les templates sont dans `packages/ui-mobile/templates/` et définis dans `packages/cli/src/core/templates-manager.ts`.
+
+---
+
+### Template : Showcase {#template-showcase}
+
+**Usage** : `rs-ui init --template showcase` (défaut)
+
+**Description** : Vitrine complète de tous les composants Rashwright avec onglets Overview / Composants / Glass.
+
+**Composants installés** : `button`, `card`, `glass-card`, `badge`, `text-input`, `rashwright-logo`, `avatar`, `stat-card`
+
+**Écrans générés** :
+```
+app/index.tsx  →  ShowcaseTemplate (onglets overview/composants/glass)
+```
+
+**Fichiers template** :
+```
+templates/showcase/
+├── template.json
+├── showcase-template.tsx     # ShowcaseTemplate component
+└── index.ts
+```
+
+---
+
+### Template : Minimal Starter {#template-minimal}
+
+**Usage** : `rs-ui init --template minimal`
+
+**Description** : Écran épuré avec logo, card, badges et boutons.
+
+**Composants installés** : `button`, `card`, `badge`, `rashwright-logo`
+
+---
+
+### Template : Auth Suite {#template-auth}
+
+**Usage** : `rs-ui init --template auth`
+
+**Description** : Suite complète d'authentification.
+
+**Composants installés** : `button`, `card`, `text-input`, `badge`, `otp-input`, `form`, `rashwright-logo`
+
+**Écrans générés** :
+```
+app/sign-in.tsx      →  SignInScreen
+app/sign-up.tsx      →  SignUpScreen
+app/otp-verify.tsx   →  OtpVerifyScreen
+app/forgot.tsx       →  ForgotPasswordScreen
+```
+
+**Fichiers template** :
+```
+templates/auth/
+├── template.json
+├── types.ts
+├── auth-template.tsx
+├── index.ts
+└── components/
+    ├── social-auth.tsx
+    └── password-input.tsx
+```
+
+---
+
+### Template : Onboarding Flow {#template-onboarding}
+
+**Usage** : `rs-ui init --template onboarding`
+
+**Description** : Slides animés d'onboarding avec carousel et CTAs.
+
+**Composants installés** : `button`, `badge`, `carousel`, `rashwright-logo`
+
+---
+
+### Template : Dashboard & Analytics {#template-dashboard}
+
+**Usage** : `rs-ui init --template dashboard`
+
+**Description** : Dashboard avec StatCards, métriques et profil.
+
+**Composants installés** : `button`, `card`, `glass-card`, `badge`, `stat-card`, `avatar`, `data-table`, `rashwright-logo`
+
+**Écrans générés** :
+```
+app/(tabs)/index.tsx        →  DashboardHome
+app/(tabs)/analytics.tsx    →  AnalyticsScreen
+app/(tabs)/profile.tsx      →  ProfileScreen
+```
+
+---
+
+### Template : E-Commerce & Store {#template-commerce}
+
+**Usage** : `rs-ui init --template commerce`
+
+**Description** : Boutique avec catalogue, filtres et panier.
+
+**Composants installés** : `card`, `button`, `badge`, `rating`, `rashwright-logo`
+
+**Fichiers template** :
+```
+templates/commerce/
+├── template.json
+├── types.ts                  # Product, CartItem, CommerceTemplateProps
+├── commerce-template.tsx     # CommerceTemplate (FlatList produits, filtres catégories)
+├── index.ts
+└── components/
+    ├── product-card.tsx      # ProductCard (Card + Rating + Button)
+    └── category-filter.tsx   # CategoryFilter (ScrollView horizontal + Badge)
+```
+
+---
+
+### Template : Settings & Preferences {#template-settings}
+
+**Usage** : `rs-ui init --template settings`
+
+**Description** : Page paramètres avec profil, dark mode et notifications.
+
+**Composants installés** : `card`, `avatar`, `button`, `divider`, `badge`, `rashwright-logo`
+
+**Fichiers template** :
+```
+templates/settings/
+├── template.json
+├── types.ts                  # UserProfile, SettingsSection, SettingsTemplateProps
+├── settings-template.tsx     # SettingsTemplate
+├── index.ts
+└── components/
+    ├── profile-section.tsx   # ProfileSection (Avatar + Badge rôle + bouton Modifier)
+    └── preferences-section.tsx # PreferencesSection (Switch dark mode/notifications)
+```
+
+---
+
+### Template : Finance & Wallet {#template-finance}
+
+**Usage** : `rs-ui init --template finance`
+
+**Description** : Wallet, transactions et statistiques financières.
+
+**Composants installés** : `card`, `glass-card`, `button`, `badge`, `stat-card`, `rashwright-logo`
+
+---
+
+### Template : Chat {#template-chat}
+
+**Usage** : `rs-ui init --template chat`
+
+**Description** : Interface de messagerie avec bulles, avatars et input.
+
+**Composants installés** : `card`, `avatar`, `text-input`, `button`, `badge`
+
+---
+
+### Template : Social Feed {#template-social}
+
+**Usage** : `rs-ui init --template social`
+
+**Description** : Feed social avec posts, likes et profils.
+
+**Composants installés** : `card`, `avatar`, `button`, `badge`, `stat-card`
+
+---
+
+## Dépendances communes {#dependances}
+
+### Dépendances React Native / Expo (toujours installées)
+
+| Package | Rôle | Via |
+|---------|------|-----|
+| `expo-router` | Navigation file-based | expo install |
+| `react-native-screens` | Écrans natifs pour la navigation | expo install |
+| `react-native-reanimated` | Animations 60fps native | expo install |
+| `react-native-gesture-handler` | Gestes natifs | expo install |
+| `react-native-safe-area-context` | SafeAreaView natif | expo install |
+| `expo-haptics` | Retour haptique | expo install |
+| `expo-blur` | BlurView Glass UI | expo install |
+| `expo-linear-gradient` | Gradients | expo install |
+| `expo-image` | Image optimisée | expo install |
+| `expo-image-picker` | Picker média | expo install |
+| `zustand` | State management léger | npm/bun add |
+
+### Peer dependencies implicites (gérées par Expo SDK)
+
+- `react` (^19.0.0 pour SDK 58)
+- `react-native` (0.79.x pour SDK 58)
+- `@react-navigation/*` (via expo-router)
+
+---
+
+## NativeWind v4 vs v5 {#nativewind}
+
+### NativeWind v4 (stable, recommandé)
+
+| Fichier | Contenu |
+|---------|---------|
+| `tailwind.config.js` | `darkMode: "class"`, presets `nativewind/preset`, content patterns |
+| `babel.config.js` | `babel-preset-expo` avec `jsxImportSource: "nativewind"` + preset `nativewind/babel` |
+| `metro.config.js` | `withNativeWind(config, { input: "./global.css" })` |
+| `nativewind-env.d.ts` | `/// <reference types="nativewind/types" />` |
+| `global.css` | `@tailwind base/components/utilities` |
+
+### NativeWind v5 (RC — projets avancés)
+
+| Fichier | Contenu |
+|---------|---------|
+| `postcss.config.mjs` | `@tailwindcss/postcss` plugin |
+| `babel.config.js` | `babel-preset-expo` + `react-native-reanimated/plugin` uniquement |
+| `metro.config.js` | `withNativewind(config)` (sans `input`) |
+| `nativewind-env.d.ts` | `/// <reference types="react-native-css/types" />` |
+| `global.css` | `@import "tailwindcss/..."` + `@import "nativewind/theme"` |
+
+> **⚠️ Conflit npm + NativeWind v5** : `react-native-css@3.1.0-rc.0` requiert `react>=19`, `react-native>=0.81`, `lightningcss>=1.27.0`. Utiliser `npm install --legacy-peer-deps` (pas `--force`) pour éviter le blocage.
+
+---
+
+## Flux d'initialisation CLI {#flux-cli}
+
+### Flux complet `rs-ui init`
+
+```mermaid
+flowchart TD
+    Start["rs-ui init [nom] [options]"] --> DetectProject[detectProject + detectInitMode]
+    DetectProject --> IsNew{Nouveau projet ?}
+    
+    IsNew -- oui --> SelectSDK[Choisir SDK 54-58]
+    SelectSDK --> CreateExpo["create-expo-app blank-typescript@SDK --no-install"]
+    CreateExpo --> ResetTemplate[resetExpoProject → structure /src]
+    
+    IsNew -- non --> IsDefault{Template Expo par défaut ?}
+    IsDefault -- oui --> AskReset[Demander reset ?]
+    AskReset -- oui --> ResetTemplate
+    AskReset -- non --> ConfigStep
+    IsDefault -- non --> ConfigStep
+
+    ResetTemplate --> ConfigBabel[writeBabelConfig + updateTsconfig]
+    ConfigBabel --> ConfigStep
+
+    ConfigStep --> SelectTemplate[Choisir template]
+    SelectTemplate --> SelectStyle[Glass ou Default ?]
+    SelectStyle --> SelectTheme[Choisir thème]
+    SelectTheme --> SelectNW{NativeWind ?}
+    SelectNW -- v4/v5 --> SetupNW[setupNativeWind]
+    SelectNW -- non --> SetupFoundations
+    SetupNW --> SetupFoundations[setupFoundations]
+
+    SetupFoundations --> CopyAssets[copyRashwrightAssets]
+    CopyAssets --> SetupTemplate[setupStarterTemplate]
+    SetupTemplate --> InstallSkills[copyGlobalSkill + Skills composants]
+    InstallSkills --> GenerateScreen[generateShowcaseScreen]
+    GenerateScreen --> WriteConfig[writeConfig rashwright-ui.json]
+    WriteConfig --> InstallBase[installProjectDependencies]
+    InstallBase --> InstallExpo[installExpoPackages]
+    InstallExpo --> InstallNpm[installNpmPackages]
+    InstallNpm --> Done["✅ Projet opérationnel"]
+```
+
+### Options CLI disponibles
+
+| Option | Description | Exemple |
+|--------|-------------|---------|
+| `--template <id>` | Template à utiliser | `--template auth` |
+| `--sdk <version>` | Version Expo SDK (54-58) | `--sdk 58` |
+| `--glass` | Activer le mode Glass UI | `--glass` |
+| `--theme <preset>` | Thème prédéfini | `--theme emerald` |
+| `--primary <hex>` | Couleur primaire custom | `--primary #2563EB` |
+| `--nativewind <v4\|v5>` | Activer NativeWind | `--nativewind v4` |
+| `--yes` | Mode non-interactif | `--yes` |
+| `--dry-run` | Simulation sans écriture | `--dry-run` |
+| `--no-skills` | Sans installation des Skills IA | `--no-skills` |
+| `--no-showcase` | Sans écran de démo | `--no-showcase` |
+
+---
+
+## Schéma des dépendances inter-packages
+
+```mermaid
+graph TD
+    CLI["@rashwright/cli v1.5.0"]
+    UI["@rashwright/ui-mobile v1.5.0"]
+    
+    CLI --> |"lit les composants depuis"| UI
+    CLI --> |"lit le registry"| UIReg["registry/index.json"]
+    CLI --> |"lit les templates"| UITempl["templates/*/template.json"]
+    CLI --> |"copie les sources"| UIComp["components/ui/*.tsx"]
+    CLI --> |"copie les skills"| UISkills["skills/*/SKILL.md"]
+    
+    UIReg --> UI
+    UITempl --> UI
+    UIComp --> UI
+    UISkills --> UI
+    
+    UI --> |"peer deps"| RN["react-native + expo SDK"]
+    UI --> |"optionnel"| NW["nativewind v4/v5"]
+```
+
+---
+
+*Document maintenu par l'équipe Rashwright. Dernière mise à jour : octobre 2026 — v1.5.0*

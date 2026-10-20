@@ -121,7 +121,12 @@ export const Slider: React.FC<SliderProps> = ({
     : `${Math.round(currentValue)}`;
 
   return (
-    <View className={className} style={[styles.wrapper, disabled && { opacity: 0.5 }, style]}>
+    <View
+      className={className}
+      accessibilityRole="adjustable"
+      accessibilityValue={{ min, max, now: currentValue }}
+      style={[styles.wrapper, disabled && { opacity: 0.5 }, style]}
+    >
       {(label || valueFormatter) && (
         <View style={styles.labelRow}>
           {label && (

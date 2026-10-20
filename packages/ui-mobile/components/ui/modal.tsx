@@ -117,6 +117,7 @@ const ThemedModal = forwardRef<React.ElementRef<typeof RNModal>, ThemedModalProp
         transparent
         animationType="none"
         onRequestClose={onClose}
+        accessibilityViewIsModal={true}
         {...props}
       >
         <TouchableWithoutFeedback
@@ -139,6 +140,7 @@ const ThemedModal = forwardRef<React.ElementRef<typeof RNModal>, ThemedModalProp
                 <LiquidSurface
                   material="thick"
                   borderRadius={theme.borderRadius.xl}
+                  accessibilityLiveRegion="polite"
                   style={style}
                 >
                   {children}

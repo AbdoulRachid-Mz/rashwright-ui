@@ -21,7 +21,7 @@ describe("NativeWind Manager (v4 & v5)", () => {
 
   afterEach(() => {
     if (existsSync(TEMP_PROJECT)) rmSync(TEMP_PROJECT, { recursive: true, force: true });
-  });
+  }, 60_000);
 
   it("generateGlobalCss outputs correct syntax for v4 and v5", () => {
     const cssV4 = generateGlobalCss("v4");

@@ -194,6 +194,8 @@ export const Chip: React.FC<ChipProps> = ({
       disabled={disabled || !onPress}
       viscosity="soft"
       style={[containerStyle, style]}
+      accessibilityRole={onPress ? (selected !== undefined ? "checkbox" : "button") : "none"}
+      accessibilityState={onPress ? { selected, disabled } : undefined}
     >
       {colors.showHighlight && (
         <LiquidHighlight type="top" borderRadius={theme.borderRadius.full} opacity={0.5} />

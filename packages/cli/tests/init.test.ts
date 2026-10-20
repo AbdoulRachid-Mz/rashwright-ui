@@ -73,9 +73,9 @@ describe("initCommand and bootstrap pipeline", () => {
       expect(cmd).not.toContain("expo");
       // Elle doit être la commande d'install du PM
       if (pm === "bun")  expect(cmd).toBe("bun install --force");
-      if (pm === "npm")  expect(cmd).toBe("npm install");
-      if (pm === "pnpm") expect(cmd).toBe("pnpm install");
-      if (pm === "yarn") expect(cmd).toBe("yarn install");
+      if (pm === "npm")  expect(cmd).toBe("npm install --legacy-peer-deps");
+      if (pm === "pnpm") expect(cmd).toBe("pnpm install --shamefully-hoist");
+      if (pm === "yarn") expect(cmd).toBe("yarn install --ignore-engines");
     }
   });
 

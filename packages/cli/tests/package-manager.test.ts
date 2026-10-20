@@ -22,7 +22,7 @@ describe("package-manager", () => {
 
   it("buildInstallCommand builds correct command for each package manager", () => {
     const pkgs = ["zustand", "clsx"];
-    expect(buildInstallCommand("npm", pkgs)).toBe("npm install zustand clsx");
+    expect(buildInstallCommand("npm", pkgs)).toBe("npm install --legacy-peer-deps zustand clsx");
     expect(buildInstallCommand("bun", pkgs)).toBe("bun add zustand clsx");
     expect(buildInstallCommand("pnpm", pkgs)).toBe("pnpm add zustand clsx");
     expect(buildInstallCommand("yarn", pkgs)).toBe("yarn add zustand clsx");
@@ -113,9 +113,17 @@ describe("package-manager", () => {
   describe("REGRESSION: install order — base before expo", () => {
     it("buildProjectInstallCommand returns the correct base install command for each PM", () => {
       expect(buildProjectInstallCommand("bun")).toBe("bun install --force");
-      expect(buildProjectInstallCommand("npm")).toBe("npm install");
-      expect(buildProjectInstallCommand("pnpm")).toBe("pnpm install");
-      expect(buildProjectInstallCommand("yarn")).toBe("yarn install");
+      expect(buildProjectInstallCommand("npm")).toBe("npm install --legacy-peer-deps");
+      expect(buildProjectInstallCommand("pnpm")).toBe("pnpm install --shamefully-hoist");
+      expect(buildProjectInstallCommand("yarn")).toBe("yarn install --ignore-engines");
+    });
+
+    it("buildProjectInstallCommand npm: explicit legacyPeerDeps=false falls back to plain npm install", () => {
+      expect(buildProjectInstallCommand("npm", { legacyPeerDeps: false })).toBe("npm install");
+    });
+
+    it("buildInstallCommand npm uses --legacy-peer-deps for NativeWind v5 peer-dep safety", () => {
+      expect(buildInstallCommand("npm", ["expo-haptics"])).toBe("npm install --legacy-peer-deps expo-haptics");
     });
 
     it("installProjectDependencies does not throw in dryRun mode", () => {

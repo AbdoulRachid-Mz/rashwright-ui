@@ -777,7 +777,7 @@ export function initCommand(): Command {
             baseInstallSpinner.succeed("Dépendances de base installées (expo disponible)");
           } catch (err) {
             installFailed = true;
-            installFailedSteps.push(`${selectedPm === "bun" ? "bun install --force" : selectedPm === "pnpm" ? "pnpm install" : selectedPm === "yarn" ? "yarn install" : "npm install"}`);
+            installFailedSteps.push(`${selectedPm === "bun" ? "bun install --force" : selectedPm === "pnpm" ? "pnpm install --shamefully-hoist" : selectedPm === "yarn" ? "yarn install --ignore-engines" : "npm install --legacy-peer-deps"}`);
             baseInstallSpinner.fail("Échec de l'installation des dépendances de base");
             console.error(err);
             // Sans expo dans node_modules, expo install ne peut pas fonctionner → on saute les étapes B et C
@@ -807,7 +807,7 @@ export function initCommand(): Command {
             npmInstallSpinner.succeed(`Dépendances NPM installées (${npmDepsToInstall.join(", ")})`);
           } catch (err) {
             installFailed = true;
-            installFailedSteps.push(`${selectedPm === "bun" ? "bun add" : selectedPm === "pnpm" ? "pnpm add" : selectedPm === "yarn" ? "yarn add" : "npm install"} ${npmDepsToInstall.join(" ")}`);
+            installFailedSteps.push(`${selectedPm === "bun" ? "bun add" : selectedPm === "pnpm" ? "pnpm add" : selectedPm === "yarn" ? "yarn add" : "npm install --legacy-peer-deps"} ${npmDepsToInstall.join(" ")}`);
             npmInstallSpinner.fail("Échec de l'installation des dépendances NPM");
             console.error(err);
           }

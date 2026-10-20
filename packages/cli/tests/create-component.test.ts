@@ -23,7 +23,7 @@ describe("Project Component Scaffolder & Create Command (rs-ui create component)
     if (existsSync(TEST_DIR)) {
       rmSync(TEST_DIR, { recursive: true, force: true });
     }
-  });
+  }, 60_000);
 
   it("toPascalCase converts kebab-case to PascalCase accurately", () => {
     expect(toPascalCase("product-card")).toBe("ProductCard");
