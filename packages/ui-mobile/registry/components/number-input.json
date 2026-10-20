@@ -1,0 +1,35 @@
+{
+  "name": "number-input",
+  "version": "1.0.0",
+  "description": "Champ de saisie numérique interactif avec boutons + et -, pas configurable, bornes min/max et formatage d'affichage.",
+  "category": "Forms",
+  "files": [
+    "components/ui/number-input.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-haptics"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "value": "number",
+    "defaultValue": "number",
+    "min": "number",
+    "max": "number",
+    "step": "number",
+    "precision": "number",
+    "onChange": "function",
+    "formatValue": "function"
+  }
+}

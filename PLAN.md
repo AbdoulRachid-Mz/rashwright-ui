@@ -1,8 +1,8 @@
-# PLAN STRATÉGIQUE & ROADMAP D'ÉVOLUTION — Rashwright UI Mobile (v1.1.0 → v1.5.0)
+# PLAN STRATÉGIQUE & ROADMAP D'ÉVOLUTION — Rashwright UI Mobile (v1.1.0 → v1.6.0)
 
 > **Document de référence stratégique et technique.**  
 > Dernière mise à jour : 2026-10-20  
-> Statut : **v1.5.0 Validée & Prête pour Publication** — 68 composants, 10 templates autonomes (Auth, Commerce, Onboarding, Dashboard, Settings, Showcase, Minimal, Chat, Finance, Social), WCAG 2.1 AA accessibilité (button, chip, card, checkbox, modal, icon-button, slider), fix NativeWind v5 `--legacy-peer-deps`, architecture.md formalisée (3 modes init, flux CLI Mermaid), Phase 7 specs écrans Expo (10 écrans critiques), 220 tests Vitest réussis (Quality Gate 100% vert).
+> Statut : **v1.5.0 Validée & Prête pour Publication** — 79 composants (dont 11 nouveaux utilitaires mobiles), 10 templates autonomes (Auth, Commerce, Onboarding, Dashboard, Settings, Showcase, Minimal, Chat, Finance, Social), WCAG 2.1 AA accessibilité, fix NativeWind v5 `--legacy-peer-deps`, architecture.md formalisée, Phase 7 specs écrans Expo, 227 tests Vitest réussis (Quality Gate 100% vert). Jalon suivant : **v1.6.0 — Moteur de Widgets Modulaires**.
 
 ---
 
@@ -173,4 +173,5 @@ Cependant, l'analyse approfondie de l'écosystème met en lumière **5 axes maje
 | **v1.2.0** | Nouveaux Templates Métiers (`chat`, `finance`, `social`) + Cycle de vie (`rs-ui upgrade`, 3-way merge) | ✅ **Publiée** |
 | **v1.3.0** | Showcase interactif Storybook (`rs-ui showcase`) et tests E2E Maestro (6 flows) | ✅ **Publiée** |
 | **v1.4.0** | Commande `rs-ui fix` (auto-remédiation), 68 composants (`command`, `color-picker`, `navigation-menu`), code preview | ✅ **Publiée** |
-| **v1.5.0** | WCAG 2.1 AA accessibilité, fix NativeWind v5 npm, architecture.md formalisée, specs Phase 7 écrans Expo, 220 tests | ✅ **Prête pour npm** |
+| **v1.5.0** | 79 composants (11 nouveaux utilitaires), WCAG 2.1 AA accessibilité, fix NativeWind v5 npm, architecture.md formalisée, specs Phase 7 écrans Expo, 227 tests | ✅ **Prête pour npm** |
+| **v1.6.0** | Architecture et Moteur de Widgets Modulaires (`rs-ui add --widget`), premier catalogue (Metric, Progress, QuickActions, Chart, ActivityFeed, Finance), skills et dashboards | ⏳ **En cours (Phase 0 Audit & Plan)** |

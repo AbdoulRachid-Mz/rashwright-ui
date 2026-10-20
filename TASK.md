@@ -2,7 +2,7 @@
 
 > **Fichier de suivi dynamique (`TASK.md`)**  
 > Dernière mise à jour : 2026-10-20  
-> Statut général : **v1.5.0 Validée & Prête (WCAG 2.1 AA accessibilité, fix NativeWind v5 npm, architecture.md formalisée, Phase 7 specs écrans Expo, 68 composants, 220 tests Vitest réussis, 46 suites, Quality Gate 100% vert, 0 erreur TypeScript strict)**
+> Statut général : **v1.5.0 Validée & Prête (79 composants dont 11 nouveaux utilitaires mobiles de pointe, WCAG 2.1 AA accessibilité, fix NativeWind v5 npm, architecture.md formalisée, Phase 7 specs écrans Expo, 227 tests Vitest réussis, 47 suites, Quality Gate 100% vert, 0 erreur TypeScript strict)**
 
 ---
 
@@ -28,7 +28,7 @@
 | **v1.3.1 (Phase 12)** | Commande `rs-ui fix` (Auto-remédiation de l'environnement, Babel Reanimated, Dépendances, Typages ambiants) | ✅ Validé | 2 / 2 tâches |
 | **v1.4.0 (Phase 13)** | Nouveaux Composants Mobiles Avancés (`command`, `color-picker`, `navigation-menu`) — Registre à 68 composants | ✅ Validé | 3 / 3 tâches |
 | **v1.4.0 (Phase 14)** | Visualisation CLI enrichie (`rs-ui info <comp> --preview`) avec extrait de code TSX canonique et boîte ASCII | ✅ Validé | 2 / 2 tâches |
-| **v1.5.0 (Phase 15)** | WCAG 2.1 AA Accessibilité, Fix NativeWind v5 npm, Architecture.md formalisée, Specs Phase 7 écrans Expo | ✅ Validé | 7 / 7 tâches |
+| **v1.5.0 (Phase 15)** | WCAG 2.1 AA Accessibilité, Fix NativeWind v5 npm, Architecture.md formalisée, Specs Phase 7 écrans Expo, 11 nouveaux composants UI (79 composants au total), 227 tests | ✅ Validé | 8 / 8 tâches |
 
 ---
 
@@ -352,11 +352,25 @@
 ### Tâche 7 — Phase 7 : Specs intégration écrans Expo critiques
 * [x] **TASK-15.16** : `packages/ui-mobile/PHASE7-EXPO-SCREENS.md` créé — 10 écrans critiques documentés : SplashScreen, PermissionGate, Push Notifications, Deep Linking, BiometricAuth, AppState, FileDownloader, QRScanner, MapView, DocumentPicker. Specs complètes, dépendances, API, plan de mise en œuvre 3 priorités.
 
+### Tâche 8 — Extension du catalogue UI : 11 nouveaux composants de pointe
+* [x] **TASK-15.17** : `CopyButton` (presse-papiers, feedback temporisé, haptique, 5 variantes).
+* [x] **TASK-15.18** : `LikeButton` (rebond élastique, halo de particules, compteur, support async).
+* [x] **TASK-15.19** : `ExpandableText` (tronquage intelligent à maxLines, détection automatique, déploiement animé).
+* [x] **TASK-15.20** : `FloatingLabelInput` (label flottant animé Reanimated, icônes, gestion d'erreur et glass).
+* [x] **TASK-15.21** : `PasswordStrength` (évaluation d'entropie locale sécurisée, jauge segmentée, règles configurables).
+* [x] **TASK-15.22** : `TagInput` (saisie et suppression de tags/mots-clés, séparateurs, backspace delete).
+* [x] **TASK-15.23** : `NumberInput` (contrôle pas-à-pas numérique, bornes min/max, formatage personnalisé).
+* [x] **TASK-15.24** : `HoldButton` (appui long sécurisé pour confirmation d'actions critiques/destructives).
+* [x] **TASK-15.25** : `SwipeActionButton` (glissement horizontal slide to confirm avec seuil et spring).
+* [x] **TASK-15.26** : `ReorderableList` (liste réordonnable avec réorganisation animée et boutons fléchés accessibles WCAG).
+* [x] **TASK-15.27** : `InlineEdit` (édition de texte directement en place avec validation et annulation).
+* [x] **TASK-15.28** : Synchronisation des 11 fiches IA Skills, exports barrel `components/ui/index.ts` et 7 tests unitaires dédiés (`packages/cli/tests/new-components.test.ts`).
+
 ### Quality Gate v1.5.0
-* [x] **validate-registry** : 0 erreur — 68 composants, 68 sources ✅
+* [x] **validate-registry** : 0 erreur — 79 composants, 79 sources ✅
 * [x] **validate-maestro** : 6 flows ✅
 * [x] **check-types** : 0 erreur TypeScript strict ✅
-* [x] **tests** : 220/220 passés, 46 suites ✅
+* [x] **tests** : 227/227 passés, 47 suites ✅
 * [x] **build:cli** : 0.38 MB ✅
 * [x] **smoke:all** : `rs-ui --version` → `1.5.0` ✅
 * [x] **Tag** : `v1.5.0` ✅

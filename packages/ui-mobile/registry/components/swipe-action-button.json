@@ -1,0 +1,35 @@
+{
+  "name": "swipe-action-button",
+  "version": "1.0.0",
+  "description": "Bouton de confirmation par glissement horizontal (Slide to Confirm) avec retour élastique, haptique et validation par seuil.",
+  "category": "Basic",
+  "files": [
+    "components/ui/swipe-action-button.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-haptics"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "title": "string",
+    "completedTitle": "string",
+    "thresholdRatio": "number",
+    "variant": [
+      "default",
+      "glass"
+    ],
+    "onActionComplete": "function"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "reorderable-list",
+  "version": "1.0.0",
+  "description": "Liste réordonnable avec réorganisation animée et contrôles fléchés accessibles WCAG 2.1 AA.",
+  "category": "Data",
+  "files": [
+    "components/ui/reorderable-list.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-haptics"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "items": "array",
+    "keyExtractor": "function",
+    "renderItem": "function",
+    "showControls": "boolean",
+    "onReorder": "function"
+  }
+}

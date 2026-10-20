@@ -109,7 +109,7 @@ export { UploadImage } from "./upload-image";
 export { UploadVideo } from "./upload-video";
 
 // ---------------------------------------------------------------------------
-// 10. Nouveaux composants v0.2.0
+// 10. Nouveaux composants v0.2.0 & suivants
 // ---------------------------------------------------------------------------
 export { Accordion } from "./accordion";
 export { Collapsible } from "./collapsible";
@@ -120,5 +120,25 @@ export { Rating } from "./rating";
 export { ColorPicker } from "./color-picker";
 export { Command, CommandDialog, CommandGroup, CommandItem, CommandEmpty } from "./command";
 export { NavigationMenu } from "./navigation-menu";
+export { Calendar } from "./calendar";
+export { DatePicker } from "./date-picker";
+export { SwipeableRow } from "./swipeable-row";
+export { Popover } from "./popover";
+
+// ---------------------------------------------------------------------------
+// 11. Nouveaux composants v1.6.0
+// ---------------------------------------------------------------------------
+export { CopyButton } from "./copy-button";
+export { LikeButton } from "./like-button";
+export { ExpandableText } from "./expandable-text";
+export { FloatingLabelInput } from "./floating-label-input";
+export { PasswordStrength, evaluatePasswordStrength } from "./password-strength";
+export { TagInput } from "./tag-input";
+export { NumberInput } from "./number-input";
+export { HoldButton } from "./hold-button";
+export { SwipeActionButton } from "./swipe-action-button";
+export { ReorderableList } from "./reorderable-list";
+export { InlineEdit } from "./inline-edit";
+
 
 

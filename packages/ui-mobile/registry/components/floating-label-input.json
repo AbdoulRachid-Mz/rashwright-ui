@@ -1,0 +1,35 @@
+{
+  "name": "floating-label-input",
+  "version": "1.0.0",
+  "description": "Champ de saisie avec étiquette flottante animée, support d'icônes, d'erreurs et de variantes Glass.",
+  "category": "Forms",
+  "files": [
+    "components/ui/floating-label-input.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "label": "string",
+    "error": "boolean | string",
+    "hint": "string",
+    "variant": [
+      "default",
+      "outline",
+      "glass"
+    ],
+    "value": "string",
+    "onChangeText": "function"
+  }
+}

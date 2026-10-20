@@ -258,14 +258,15 @@ bunx expo install expo-router react-dom react-native-web
   - Détection récursive et installation conditionnelle des logiques internes (`hooks/use-responsive.ts`, `lib/responsive.ts`, utilitaires `lib/upload/`) et packages Expo/npm manquants (`expo-device`, `react-native-reanimated`).
 - **🧪 Quality Gate 100% Vert** : 194 tests Vitest passés sur 40 suites, 0 erreur TypeScript strict (`bunx tsc --noEmit` exit 0).
 
-## 🆕 Nouveautés v1.5.0 — WCAG 2.1 AA, NativeWind v5 Fix Définitif & Architecture
+## 🆕 Nouveautés v1.5.0 — 79 Composants, WCAG 2.1 AA, NativeWind v5 Fix & Nouveaux Utilitaires
 
+- **11 nouveaux composants UI de pointe** : `LikeButton` (rebond animé, particules), `PasswordStrength` (évaluation d'entropie locale sécurisée, jauge segmentée), `CopyButton` (presse-papiers multi-plateforme), `FloatingLabelInput` (label flottant Reanimated), `HoldButton` (maintien sécurisé anti-clic accidentel), `SwipeActionButton` (slide to confirm), `TagInput` (mots-clés avec badges et filtres), `NumberInput` (contrôle pas-à-pas numérique), `ReorderableList` (liste réordonnable avec contrôles accessibles), `InlineEdit` (édition sur place), `ExpandableText` (tronquage intelligent).
+- **Catalogue porté à 79 composants officiels** dans le registre et skills associés.
 - **Accessibilité WCAG 2.1 AA** : Tous les composants interactifs ont maintenant `accessibilityRole`, `accessibilityState` et `accessibilityLabel` — `button`, `chip`, `card`, `checkbox`, `modal`, `icon-button`, `slider` et plus.
 - **Fix NativeWind v5 `npm install`** : `--legacy-peer-deps` systématiquement utilisé pour npm (résout les conflits `react-native-css@3.1.0-rc.0` qui bloquaient `--force` indéfiniment).
 - **Architecture.md formalisée** : 3 modes d'initialisation documentés (Fresh Expo Router, Existing Expo Router, Expo Classic), flux CLI en diagrammes Mermaid, dépendances inter-packages.
 - **Phase 7 — Specs Écrans Expo critiques** : 10 écrans documentés (SplashScreen, PermissionGate, Push Notifications, Deep Linking, BiometricAuth, AppState, FileDownloader, QRScanner, MapView, DocumentPicker).
-- **Tests stabilisés Windows** : `afterEach` timeout 60 000ms pour tous les hooks de nettoyage (`monorepo`, `nativewind-manager`, `create-component`, `backup-manager`).
-- **220 tests Vitest** réussis — 46 suites, Quality Gate 100% vert.
+- **227 tests Vitest** réussis — 47 suites, Quality Gate 100% vert.
 
 ## 🆕 Nouveautés v1.4.0 — Commande `rs-ui fix`, Showcase & Code Preview
 

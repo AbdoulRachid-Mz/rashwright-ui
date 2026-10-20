@@ -1,0 +1,48 @@
+{
+  "name": "copy-button",
+  "version": "1.0.0",
+  "description": "Bouton de copie interactif dans le presse-papiers avec feedback visuel, états de succès/erreur, haptique et variantes Glass.",
+  "category": "Basic",
+  "files": [
+    "components/ui/copy-button.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [
+    "expo-clipboard",
+    "expo-haptics"
+  ],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "value": "string | function",
+    "variant": [
+      "default",
+      "icon-only",
+      "compact",
+      "full",
+      "glass",
+      "outline"
+    ],
+    "size": [
+      "sm",
+      "md",
+      "lg"
+    ],
+    "label": "string",
+    "copiedLabel": "string",
+    "timeout": "number",
+    "disabled": "boolean",
+    "onCopySuccess": "function",
+    "onCopyError": "function"
+  }
+}

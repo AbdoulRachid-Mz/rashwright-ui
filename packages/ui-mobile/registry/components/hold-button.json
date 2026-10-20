@@ -1,0 +1,37 @@
+{
+  "name": "hold-button",
+  "version": "1.0.0",
+  "description": "Bouton d'action sensible avec maintien prolongé obligatoire, progression animée, annulation et retour haptique.",
+  "category": "Basic",
+  "files": [
+    "components/ui/hold-button.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-haptics"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "title": "string",
+    "holdingTitle": "string",
+    "completedTitle": "string",
+    "holdDuration": "number",
+    "variant": [
+      "destructive",
+      "default",
+      "glass"
+    ],
+    "onHoldComplete": "function"
+  }
+}

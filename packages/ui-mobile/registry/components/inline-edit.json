@@ -1,0 +1,33 @@
+{
+  "name": "inline-edit",
+  "version": "1.0.0",
+  "description": "Composant d'édition de texte directement en place avec validation, annulation et gestion d'erreur.",
+  "category": "Forms",
+  "files": [
+    "components/ui/inline-edit.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-haptics"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "value": "string",
+    "defaultValue": "string",
+    "placeholder": "string",
+    "validate": "function",
+    "onSave": "function",
+    "onCancel": "function"
+  }
+}

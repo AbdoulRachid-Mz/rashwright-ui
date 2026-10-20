@@ -1,0 +1,31 @@
+{
+  "name": "tag-input",
+  "version": "1.0.0",
+  "description": "Champ de saisie d'étiquettes/tags avec ajout par séparateur ou validation, suppression individuelle, limite et validation personnalisée.",
+  "category": "Forms",
+  "files": [
+    "components/ui/tag-input.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "tags": "string[]",
+    "defaultTags": "string[]",
+    "placeholder": "string",
+    "maxTags": "number",
+    "allowDuplicates": "boolean",
+    "onTagsChange": "function"
+  }
+}

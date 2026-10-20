@@ -116,14 +116,16 @@ rs-ui add button
 
 ---
 
-## 🆕 Nouveautés v1.5.0 — WCAG 2.1 AA & Fix NativeWind v5
+## 🆕 Nouveautés v1.5.0 — 79 Composants, WCAG 2.1 AA & Nouveaux Utilitaires
 
-- **Accessibilité WCAG 2.1 AA** : `accessibilityRole`, `accessibilityState`, `accessibilityLabel` sur tous les composants interactifs (`button`, `chip`, `card`, `checkbox`, `modal`, `icon-button`, `slider`).
+- **11 nouveaux composants UI mobiles** : `LikeButton`, `PasswordStrength`, `CopyButton`, `FloatingLabelInput`, `HoldButton`, `SwipeActionButton`, `TagInput`, `NumberInput`, `ReorderableList`, `InlineEdit`, `ExpandableText`.
+- **Catalogue totalisant 79 composants officiels** avec fiches IA Skills synchronisées.
+- **Accessibilité WCAG 2.1 AA** : `accessibilityRole`, `accessibilityState`, `accessibilityLabel` sur tous les composants interactifs.
 - **Style priority** : La prop `style` passée par l'utilisateur prime toujours sur les styles internes (`style={[styles.base, internalStyle, style]}`).
 - **Fix NativeWind v5** : `npm install --legacy-peer-deps` — plus d'installation bloquée sur `--force`.
 - **Architecture formalisée** : `architecture.md` documente les 3 modes d'init, les flux CLI, les dépendances inter-packages.
 - **Phase 7 specs** : `PHASE7-EXPO-SCREENS.md` — 10 écrans Expo critiques avec dépendances et plan d'implémentation.
-- **Tests** : 220/220 Vitest (46 suites), fix timeouts Windows (`afterEach` 60 000ms).
+- **Tests** : 227/227 Vitest (47 suites 100% vertes).
 
 ## 🆕 Nouveautés v0.9.0
 

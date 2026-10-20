@@ -1,0 +1,49 @@
+{
+  "name": "like-button",
+  "version": "1.0.0",
+  "description": "Bouton J'aime interactif avec pulsation de rebond, halo de particules, compteur dynamique, retour haptique et variantes Glass.",
+  "category": "Basic",
+  "files": [
+    "components/ui/like-button.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-haptics"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "props": {
+    "liked": "boolean",
+    "defaultLiked": "boolean",
+    "count": "number",
+    "showCount": "boolean",
+    "variant": [
+      "default",
+      "filled",
+      "outline",
+      "glass",
+      "subtle"
+    ],
+    "size": [
+      "sm",
+      "md",
+      "lg"
+    ],
+    "activeColor": "string",
+    "loading": "boolean",
+    "disabled": "boolean",
+    "onValueChange": "function",
+    "onLike": "function",
+    "onUnlike": "function"
+  }
+}
