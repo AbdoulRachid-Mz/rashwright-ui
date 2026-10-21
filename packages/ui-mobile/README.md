@@ -9,6 +9,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6?logo=typescript)](#)
 [![NativeWind](https://img.shields.io/badge/NativeWind-v4%20%7C%20v5-06b6d4?logo=tailwindcss)](#)
 [![WCAG](https://img.shields.io/badge/WCAG-2.1%20AA-blue)](#)
+[![Tests](https://img.shields.io/badge/Tests-245%20passed-success)](#)
 
 > **⚠️ Pour les développeurs UTILISATEURS de Rashwright UI : vous n'avez JAMAIS besoin d'installer ce package directement.**
 >
@@ -18,6 +19,7 @@
 > bun add -g @rashwright/cli        # ou npm install -g @rashwright/cli
 > rs-ui init --yes                  # initialiser dans un projet Expo
 > rs-ui add button card accordion   # ajouter des composants et skills IA
+> rs-ui add -w metric finance       # ajouter des widgets modulaires autonomes
 > ```
 
 > ⚠️ Si vous rencontrez une erreur après `npx expo start`, le problème provient généralement d'une incompatibilité entre les dépendances Babel, `lru-cache` et `yallist`, ou d'une installation incohérente des packages (un contexte fréquent avec NativeWind v5). Les erreurs typiques dans les logs sont :
@@ -46,7 +48,7 @@
 
 
 Ce package `@rashwright/ui-mobile` est le **fournisseur de code source** et de **Skills IA** de l'écosystème Rashwright. Il est consommé par `@rashwright/cli` (localement ou via CDN unpkg) pour fournir :
-- le **registry JSON central** (79 composants, matrices Expo SDK 54 à 58)
+- le **registry JSON central** (79 composants atomiques, matrices Expo SDK 54 à 58)
 - le **code source TypeScript** de chaque composant (copié directement par le CLI dans votre projet)
 - les **6 Widgets Modulaires Autonomes** (`metric`, `progress`, `quick-actions`, `chart`, `activity-feed`, `finance`) et leurs **Showcases d'intégration**
 - le **catalogue exhaustif de Skills IA** (79 skills composants, 6 skills widgets, 4 modules core, 1 skill global dans `skills/`)
@@ -67,7 +69,7 @@ rs-ui add button
       ├─ Recherche la définition "button.json" dans le registry
       ├─ Copie components/ui/button.tsx et ses dépendances transitives
       ├─ Copie automatiquement son skill IA associé (skills/rs-ui/button/SKILL.md)
-      ├─ Détecte la version d'Expo SDK du projet (SDK 54 → 59)
+      ├─ Détecte la version d'Expo SDK du projet (SDK 54 → 58)
       ├─ Installe les modules natifs requis (reanimated, blur, linear-gradient...)
       └─ Le code source et le contexte IA appartiennent désormais à votre projet.
 ```
@@ -77,21 +79,40 @@ rs-ui add button
 ## 📦 Contenu distribué dans ce package
 
 ```text
-@rashwright/ui-mobile@0.3.0/
-├── index.ts                     → Barrel principal (thème, contextes, stores, hooks, UI)
+@rashwright/ui-mobile@1.6.0/
+├── index.ts                     → Barrel principal (thème, contextes, stores, hooks, UI, widgets, showcases)
 ├── components/
-│   └── ui/                      → 69 fichiers sources
+│   └── ui/                      → 79 composants sources + sous-composants
 │       ├── liquid/              → 8 primitives Liquid Glass (surface, pressable, highlight, border...)
-│       ├── button.tsx · card.tsx · modal.tsx · ... (61 composants au total)
-│       └── index.ts             → ThemedView, ThemedText et barrel des 61 composants
+│       ├── button.tsx · card.tsx · modal.tsx · ... (79 composants au total)
+│       └── index.ts             → Barrel unifié des 79 composants
 │
-├── skills/                      → 🆕 Système complet de Skills IA pour agents de code
+├── widgets/                     → 🆕 6 Widgets Modulaires Autonomes
+│   ├── metric/                  → MetricWidget (indicateur clé & KPI avec tendance)
+│   ├── progress/                → ProgressWidget (progression multi-étapes avec jalons)
+│   ├── quick-actions/           → QuickActionsWidget (grille d'actions haptiques)
+│   ├── chart/                   → ChartWidget (graphiques en barres animées fluides)
+│   ├── activity-feed/           → ActivityFeedWidget (flux chronologique d'activités)
+│   ├── finance/                 → FinanceWidget (portefeuille, solde masquable, flux)
+│   └── index.ts                 → Barrel unifié des widgets et types
+│
+├── showcases/                   → 🆕 Écrans Showcases d'Intégration
+│   ├── finance-dashboard-showcase.tsx    → FinanceDashboardShowcase
+│   ├── analytics-dashboard-showcase.tsx  → AnalyticsDashboardShowcase
+│   └── index.ts
+│
+├── templates/                   → 10 Templates Autonomes Complets
+│   ├── auth/ · commerce/ · dashboard/ · minimal/ · onboarding/ · settings/ · showcase/
+│   └── chat/ · finance/ · social/
+│
+├── skills/                      → Système complet de Skills IA pour agents de code
 │   ├── rs-ui/SKILL.md           → Skill Global (architecture, tokens, Glass UI)
 │   ├── liquid/SKILL.md          → Skill Core Liquid Glass
 │   ├── upload/SKILL.md          → Skill Core Upload & Media
 │   ├── theme/SKILL.md           → Skill Core Theme & Presets
 │   ├── cli/SKILL.md             → Skill Core CLI rs-ui & reset
-│   └── <composant>/SKILL.md     → 61 Skills de composants avec frontmatter YAML
+│   ├── <composant>/SKILL.md     → 79 Skills de composants atomiques
+│   └── <widget>/SKILL.md        → 6 Skills de widgets modulaires
 │
 ├── constants/                   → theme.ts + glass-theme.ts
 ├── contexts/                    → ThemeProvider + TabBarProvider
@@ -107,9 +128,9 @@ rs-ui add button
 │   └── index.ts
 │
 ├── registry/                    → Registry JSON synchronisé 1:1 avec les sources
-│   ├── index.json               → 61 composants, 10 catégories, SDK 54 à 59, 10 thèmes
-│   ├── components/  (61 JSON)   → Définition complète de chaque composant
-│   └── versions/  (6 JSON)      → Matrices de compatibilité Expo SDK 54, 55, 56, 57, 58, 59
+│   ├── index.json               → 79 composants, 10 catégories, SDK 54 à 58, 10 thèmes
+│   ├── components/  (79 JSON)   → Définition complète de chaque composant
+│   └── versions/  (5 JSON)      → Matrices de compatibilité Expo SDK 54, 55, 56, 57, 58
 │
 ├── lib/upload/                  → Moteur d'upload inliné avec 5 providers
 └── assets/                      → primary.png · svg/primary.svg
@@ -117,43 +138,54 @@ rs-ui add button
 
 ---
 
-## 🆕 Nouveautés v1.5.0 — 79 Composants, WCAG 2.1 AA & Nouveaux Utilitaires
+## 🆕 Nouveautés v1.6.0 — Moteur de Widgets Modulaires & Showcases
 
-- **11 nouveaux composants UI mobiles** : `LikeButton`, `PasswordStrength`, `CopyButton`, `FloatingLabelInput`, `HoldButton`, `SwipeActionButton`, `TagInput`, `NumberInput`, `ReorderableList`, `InlineEdit`, `ExpandableText`.
-- **Catalogue totalisant 79 composants officiels** avec fiches IA Skills synchronisées.
-- **Accessibilité WCAG 2.1 AA** : `accessibilityRole`, `accessibilityState`, `accessibilityLabel` sur tous les composants interactifs.
-- **Style priority** : La prop `style` passée par l'utilisateur prime toujours sur les styles internes (`style={[styles.base, internalStyle, style]}`).
-- **Fix NativeWind v5** : `npm install --legacy-peer-deps` — plus d'installation bloquée sur `--force`.
-- **Architecture formalisée** : `architecture.md` documente les 3 modes d'init, les flux CLI, les dépendances inter-packages.
-- **Phase 7 specs** : `PHASE7-EXPO-SCREENS.md` — 10 écrans Expo critiques avec dépendances et plan d'implémentation.
-- **Tests** : 227/227 Vitest (47 suites 100% vertes).
-
-## 🆕 Nouveautés v0.9.0
-
-- **NativeWind opt-in dans `rs-ui init`** : Choix de NativeWind v4 (Tailwind v3.4 classique, `tailwind.config.js`) ou v5 (Tailwind v4 CSS-first) directement pendant l'initialisation — activé par défaut, désactivable via `--no-nativewind`.
-- **Primitives Headless zéro-dépendance** : `useControllableState`, `useDisclosure`, `buildAccessibilityProps` — appliquées sur `accordion` et `collapsible`.
-- **Registre RFC v4 complet** : 5 hooks + 2 libs installables via `rs-ui add hook:<name>` / `rs-ui add lib:<name>`.
-- **Indépendance native garantie** : 61 composants 100% fonctionnels sans NativeWind (`StyleSheet.create` + `useTheme()`).
-- **Schéma RFC v4 pur TypeScript** (`packages/cli/src/core/schema.ts`) — validation sans Zod.
-- **Tests** : 35 suites, **171 tests Vitest**, zéro `any`, 0 erreur TypeScript strict.
+- 🧩 **Moteur de Widgets Modulaires & Autonomes** :
+  - **Couche fonctionnelle distribuée** : blocs métiers prêts pour la production, réutilisables et distribuables indépendamment des pages complètes.
+  - **Catalogue des 6 widgets officiels** :
+    1. `MetricWidget` (`widgets/metric`) : indicateur statistique clé avec tendance (+/-%), libellé, icône et état de chargement.
+    2. `ProgressWidget` (`widgets/progress`) : progression multi-étapes ou linéaire vers un objectif, pourcentage calculé et jalons.
+    3. `QuickActionsWidget` (`widgets/quick-actions`) : grille d'actions configurables (2 à 4 colonnes), badges, retour haptique et désactivation.
+    4. `ChartWidget` (`widgets/chart`) : graphique en barres horizontales et verticales natif avec infobulles tactiles, sans dépendances lourdes tierces.
+    5. `ActivityFeedWidget` (`widgets/activity-feed`) : flux d'activité chronologique avec avatars, badges d'état, montants et timestamps.
+    6. `FinanceWidget` (`widgets/finance`) : bloc portefeuille financier complet avec solde, masquage de confidentialité (`•••• €`), répartition revenus/dépenses et raccourcis.
+  - **Commandes dédiées** :
+    ```bash
+    rs-ui widget list              # Lister les widgets disponibles
+    rs-ui widget info <id>         # Détail des props et spécifications
+    rs-ui add -w <id>              # Installer un widget dans votre projet
+    rs-ui widget add <id>          # Alias direct d'installation
+    ```
+  - **Traçabilité & Lockfile** : Intégration dans `rashwright.lock` avec empreinte SHA-256 (`checkWidgetIntegrity`) et résolution automatique des composants atomiques dépendants via `component-detector`.
+  - **6 Skills IA Dédiés** : Fiches d'intégration IA complètes dans `skills/rs-ui/widgets/<id>/SKILL.md`.
+  - **2 Showcases d'Intégration** : `FinanceDashboardShowcase` et `AnalyticsDashboardShowcase` exportés depuis `@rashwright/ui-mobile/showcases`.
 
 ---
 
-## 🆕 Nouveautés v0.7.1
+## 🆕 Nouveautés v1.5.0 — 79 Composants, WCAG 2.1 AA & Nouveaux Utilitaires
 
-- **🐛 Fix CLI `rs-ui init` — ordre d'installation** :
-  Le CLI installe maintenant `expo` (via `bun install`) **avant** de lancer `expo install` pour les modules natifs. Élimine le `ConfigError: Cannot determine the project's Expo SDK version`.
-- **🐛 Fix `TS2307: Cannot find module './App'`** :
-  L'`index.ts` résiduel du template Expo est supprimé en mode Expo Router ; `package.json` passe à `"main": "expo-router/entry"`.
-- **🐛 Fix fausse réussite du CLI** :
-  En cas d'échec d'installation, le CLI affiche une initialisation partielle avec commandes de réparation manuelles au lieu du faux message de succès.
-- **🐛 Fix `rs-ui init .`** : L'argument `"."` est correctement interprété comme « répertoire courant ».
+- **11 nouveaux composants UI mobiles** : `LikeButton` (rebond animé, particules), `PasswordStrength` (évaluation d'entropie locale sécurisée, jauge segmentée), `CopyButton` (presse-papiers multi-plateforme), `FloatingLabelInput` (label flottant Reanimated), `HoldButton` (maintien sécurisé anti-clic accidentel), `SwipeActionButton` (slide to confirm), `TagInput` (mots-clés avec badges et filtres), `NumberInput` (contrôle pas-à-pas numérique), `ReorderableList` (liste réordonnable accessible), `InlineEdit` (édition sur place), `ExpandableText` (tronquage intelligent).
+- **Catalogue porté à 79 composants officiels** avec fiches IA Skills synchronisées.
+- **Accessibilité WCAG 2.1 AA** : `accessibilityRole`, `accessibilityState`, `accessibilityLabel` sur tous les composants interactifs.
+- **Style Priority** : La prop `style` passée par l'utilisateur prime systématiquement sur les styles internes (`style={[styles.base, internalStyle, style]}`).
+- **Fix NativeWind v5** : Utilisation de `npm install --legacy-peer-deps` éliminant le blocage de `--force` avec `react-native-css`.
+- **Architecture formalisée** : `architecture.md` documente les 3 modes d'init, les flux CLI et les dépendances inter-packages.
+- **Phase 7 specs** : Spécifications de 10 écrans Expo critiques (`PHASE7-EXPO-SCREENS.md`).
+- **Tests** : 227 tests Vitest (47 suites 100% vertes).
 
-## 🆕 Nouveautés v0.7.0
+---
 
-- **7 Templates Autonomes Complets** : `auth`, `commerce`, `dashboard`, `minimal`, `onboarding`, `settings`, `showcase` — chacun sous `templates/<id>/` avec `template.json`, `types.ts`, composants internes et `index.ts`.
-- **6 nouveaux composants** : `accordion`, `collapsible`, `otp-input`, `rating`, `data-table`, `form`.
-- **Architecture /src standardisée** : Reset automatique du template Expo, génération Expo Router (`src/app/_layout.tsx` + `src/app/index.tsx`).
+## 🚀 Nouveautés v1.4.0 — 3 Nouveaux Composants Mobiles Clés & Auto-Remédiation
+
+- 🧩 **3 Nouveaux Composants Mobiles Clés** :
+  - `Command` (`components/ui/command.tsx`) : Palette de recherche rapide et d'actions mobiles (cmd+k style), filtres, raccourcis tactiles, état vide et modale dialog Liquid Glass.
+  - `ColorPicker` (`components/ui/color-picker.tsx`) : Nuancier tactile 12 presets, aperçu dynamique, champ hexadécimal et retour haptique.
+  - `NavigationMenu` (`components/ui/navigation-menu.tsx`) : Menu accordéon hiérarchique avec chevrons rotatifs, capsules actives et badges.
+- 🛠️ **Commande `rs-ui fix`** : Auto-remédiation de l'environnement (Reanimated Babel, dépendances Expo natives, typages CSS, synchronisation des fiches IA Skills).
+- 🔍 **Visualisation CLI enrichie (`rs-ui info --preview`)** : Extrait canonique TSX dans le terminal.
+- 🎪 **Showcase Storybook Mobile & Tests Maestro E2E** : Commande `rs-ui showcase` et 6 flows de test Maestro.
+
+---
 
 ## 🆕 Nouveautés v1.2.0 — Templates Métiers Spécialisés & Écosystème v1.2.0
 
@@ -162,6 +194,8 @@ rs-ui add button
 - 📱 **Nouveau Template `social`** : Réseau social avec carrousel de stories horizontales animées et fil d'actualités avec likes interactifs.
 - 📦 **10 Templates Métiers Autonomes** désormais disponibles et prêts pour l'initialisation ou l'ajout direct via `rs-ui add -t <id>`.
 - ⚡ **Support NativeWind v5 et Bun Install `--force`** assurant une résolution fluide des modules natifs.
+
+---
 
 ## 🆕 Nouveautés v1.1.0 — 65 Composants UI & Composants Mobiles Clés
 
@@ -172,7 +206,9 @@ rs-ui add button
 - 💊 **Nouveaux composants `SegmentedControl`, `Skeleton`, `Shimmer`, `ScreenSkeleton`**.
 - 🏆 **Registre étendu à 65 composants** et 212 tests Vitest réussis (100% vert).
 
-## 🆕 Nouveautés v1.0.1
+---
+
+## 🆕 Nouveautés v1.0.1 — Templates Autonomes Enrichis & Premium
 
 - 💎 **Templates Autonomes Enrichis & Premium** :
   - **`auth`** : 2 écrans séparés (`sign-in.tsx`, `sign-up.tsx`) + composant `GoogleAuthButton` vectoriel haptique Glass.
@@ -184,7 +220,9 @@ rs-ui add button
 - 🧱 **Composant `ThemedView` Auto-Suffisant** : Sous-composant `InlineGridCarousel` intégré directement dans `view.tsx` sans dépendre statiquement de `carousel.tsx`.
 - 📦 **Fondations consolidées** : Ingestion automatique de `use-responsive.ts` et `lib/responsive.ts` lors de `setupFoundations`.
 
-## 🆕 Nouveautés v1.0.0
+---
+
+## 🆕 Nouveautés v1.0.0 — Release Majeure, Moteur Responsive & Serveur MCP IA
 
 - 🤖 **Serveur Model Context Protocol (MCP) IA** : Serveur JSON-RPC 2.0 stdio complet (`rs-ui mcp`) pour Cursor, Claude Desktop et VS Code.
 - 📐 **Moteur Responsive & Grille Multi-Colonnes** : Breakpoints standard (`sm`, `md`, `lg`, `xl`, `2xl`) dans `lib/responsive.ts` et `useResponsive()`.
@@ -192,7 +230,39 @@ rs-ui add button
 - 🎨 **Comparateur Visuel en Ligne de Commande** : Commande `rs-ui diff [component]`.
 - 🌪️ **Double Moteur de Style (Dual Engine)** : StyleSheet natif + NativeWind v4/v5 avec injection `global.css`.
 
-## 🆕 Nouveautés v0.3.0
+---
+
+## 🆕 Nouveautés v0.9.0 — NativeWind opt-in, Primitives Headless & Registre RFC v4
+
+- **NativeWind opt-in dans `rs-ui init`** : Choix de NativeWind v4 (Tailwind v3.4 classique, `tailwind.config.js`) ou v5 (Tailwind v4 CSS-first) directement pendant l'initialisation — activé par défaut, désactivable via `--no-nativewind`.
+- **Primitives Headless zéro-dépendance** : `useControllableState`, `useDisclosure`, `buildAccessibilityProps` — appliquées sur `accordion` et `collapsible`.
+- **Registre RFC v4 complet** : 5 hooks + 2 libs installables via `rs-ui add hook:<name>` / `rs-ui add lib:<name>`.
+- **Indépendance native garantie** : 61 composants 100% fonctionnels sans NativeWind (`StyleSheet.create` + `useTheme()`).
+- **Schéma RFC v4 pur TypeScript** (`packages/cli/src/core/schema.ts`) — validation sans Zod.
+
+---
+
+## 🆕 Nouveautés v0.7.1 — Correctifs critiques CLI
+
+- **🐛 Fix CLI `rs-ui init` — ordre d'installation** :
+  Le CLI installe maintenant `expo` (via `bun install`) **avant** de lancer `expo install` pour les modules natifs. Élimine le `ConfigError: Cannot determine the project's Expo SDK version`.
+- **🐛 Fix `TS2307: Cannot find module './App'`** :
+  L'`index.ts` résiduel du template Expo est supprimé en mode Expo Router ; `package.json` passe à `"main": "expo-router/entry"`.
+- **🐛 Fix fausse réussite du CLI** :
+  En cas d'échec d'installation, le CLI affiche une initialisation partielle avec commandes de réparation manuelles au lieu du faux message de succès.
+- **🐛 Fix `rs-ui init .`** : L'argument `"."` est correctement interprété comme « répertoire courant ».
+
+---
+
+## 🆕 Nouveautés v0.7.0 — 7 Templates Autonomes & Architecture /src
+
+- **7 Templates Autonomes Complets** : `auth`, `commerce`, `dashboard`, `minimal`, `onboarding`, `settings`, `showcase` — chacun sous `templates/<id>/` avec `template.json`, `types.ts`, composants internes et `index.ts`.
+- **6 nouveaux composants** : `accordion`, `collapsible`, `otp-input`, `rating`, `data-table`, `form`.
+- **Architecture /src standardisée** : Reset automatique du template Expo, génération Expo Router (`src/app/_layout.tsx` + `src/app/index.tsx`).
+
+---
+
+## 🆕 Nouveautés v0.3.0 — Système de Skills IA, Reset & Thèmes
 
 - 🤖 **Système de Skills IA pour composants & modules** :
   - 61 fichiers `SKILL.md` dédiés pour chaque composant du catalogue.
@@ -210,16 +280,6 @@ rs-ui add button
   - Résolution de `ignoreDeprecations: "5.0"` pour TypeScript 5.x.
   - Remplacement de `SafeAreaView` déprécié par `react-native-safe-area-context`.
   - Correction du chemin de logo vers `@/assets/primary.png`.
----
-
-## 🚀 Nouveautés v1.4.0
-
-- 🧩 **3 Nouveaux Composants Mobiles Clés** :
-  - `Command` (`components/ui/command.tsx`) : Palette de recherche rapide et d'actions mobiles (cmd+k style), filtres, raccourcis tactiles, état vide et modale dialog Liquid Glass.
-  - `ColorPicker` (`components/ui/color-picker.tsx`) : Nuancier tactile 12 presets, aperçu dynamique, champ hexadécimal et retour haptique.
-  - `NavigationMenu` (`components/ui/navigation-menu.tsx`) : Menu accordéon hiérarchique avec chevrons rotatifs, capsules actives et badges.
-- 📦 **Catalogue étendu à 68 composants** et 10 templates métiers autonomes (`chat`, `finance`, `social`...).
-- 🛡️ **Typage 100% strict** : Zéro `any`, intégration parfaite de `createGlassTheme(theme, isDark)`.
 
 ---
 
