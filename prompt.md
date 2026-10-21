@@ -1,5 +1,8 @@
 # RASHWRIGHT UI MOBILE — ARCHITECTURE ET IMPLÉMENTATION D'UN SYSTÈME DE WIDGETS MODULAIRES
 
+> **STATUT D'EXÉCUTION : ✅ ENTIÈREMENT IMPLÉMENTÉ & VALIDÉ EN V1.6.0**  
+> Les 6 widgets officiels (`MetricWidget`, `ProgressWidget`, `QuickActionsWidget`, `ChartWidget`, `ActivityFeedWidget`, `FinanceWidget`), les 2 dashboards de showcase, le moteur CLI (`rs-ui widget`, `rs-ui add -w`), les suites de tests unitaires/E2E et les Skills IA ont été intégrés et validés à 100% avec le Quality Gate (245 tests verts).
+
 ## 1. Ton rôle et ta mission
 
 Tu interviens comme **architecte logiciel senior spécialisé en React Native, Expo, TypeScript, CLI, systèmes de registry, architecture modulaire et distribution de code source**.

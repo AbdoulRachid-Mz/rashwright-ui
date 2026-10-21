@@ -62,3 +62,20 @@
 - `text.tsx` et `view.tsx` sont des primitives Core gérées par `setupCoreUi` → ne doivent pas être dans `index.json`
 - La règle est documentée dans le script `validate-registry.ts` (règle I-2)
 - `registry/index.json` v1.5.0 : 68 composants corrects
+
+---
+
+## v1.6.0 — Résolution Moteur de Widgets & Showcases
+
+### ✅ RÉSOLU — Isolation architecturale des Showcases
+- **Problème** : `validate-registry.ts` exige une correspondance 1:1 entre les fichiers de `components/ui/` et `registry/components/`.
+- **Solution** : Écrans d'intégration placés dans `packages/ui-mobile/showcases/` et exposés via le barrel racine.
+
+### ✅ RÉSOLU — Résolution et typage des dossiers `widgets/` et `showcases/`
+- **Problème** : `tsconfig.json` de `ui-mobile` n'incluait pas les nouveaux répertoires de widgets.
+- **Solution** : Inclusion explicite dans `tsconfig.json`.
+
+### Métriques Quality Gate v1.6.0
+- **245 tests Vitest réussis (51 suites de tests)** à 100%.
+- 0 erreur TypeScript strict (`zero any`).
+- 79 composants, 6 widgets, 10 templates, 8 primitives Liquid Glass.

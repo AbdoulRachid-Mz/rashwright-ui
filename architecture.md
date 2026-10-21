@@ -1,8 +1,8 @@
-# Architecture Rashwright UI Mobile — `rs-ui init`
+# Architecture Rashwright UI Mobile — `rs-ui init` & Moteur de Widgets
 
-> Généré par Rashwright CLI v1.4.0 · Mis à jour pour v1.5.0
+> Généré par Rashwright CLI v1.6.0 · Mis à jour pour v1.6.0
 
-Ce document décrit formellement les architectures de chaque mode d'initialisation disponible avec la commande `rs-ui init`. Il sert de référence pour l'outil CLI, la documentation et les contributions.
+Ce document décrit formellement les architectures de chaque mode d'initialisation disponible avec la commande `rs-ui init`, ainsi que la nouvelle couche de **Widgets Modulaires Autonomes** introduite en v1.6.0. Il sert de référence pour l'outil CLI, la documentation et les contributions.
 
 ---
 
@@ -12,7 +12,7 @@ Ce document décrit formellement les architectures de chaque mode d'initialisati
 2. [Architecture A — Nouveau projet Expo Router `/src`](#architecture-a)
 3. [Architecture B — Projet Expo Router existant](#architecture-b)
 4. [Architecture C — Classic App.tsx (sans Expo Router)](#architecture-c)
-5. [Templates disponibles](#templates)
+5. [Templates disponibles (10 templates)](#templates)
    - [Showcase (défaut)](#template-showcase)
    - [Minimal Starter](#template-minimal)
    - [Auth Suite](#template-auth)
@@ -23,9 +23,18 @@ Ce document décrit formellement les architectures de chaque mode d'initialisati
    - [Finance & Wallet](#template-finance)
    - [Chat & Social](#template-chat)
    - [Social Feed](#template-social)
-6. [Dépendances communes](#dependances)
-7. [NativeWind v4 vs v5](#nativewind)
-8. [Flux d'initialisation CLI](#flux-cli)
+6. [Widgets Modulaires Autonomes (6 widgets v1.6.0)](#widgets)
+   - [MetricWidget](#widget-metric)
+   - [ProgressWidget](#widget-progress)
+   - [QuickActionsWidget](#widget-quick-actions)
+   - [ChartWidget](#widget-chart)
+   - [ActivityFeedWidget](#widget-activity-feed)
+   - [FinanceWidget](#widget-finance)
+7. [Showcases d'intégration (2 dashboards)](#showcases)
+8. [Dépendances communes](#dependances)
+9. [NativeWind v4 vs v5](#nativewind)
+10. [Flux d'initialisation CLI](#flux-cli)
+11. [Schéma des dépendances inter-packages](#schema-des-dependances-inter-packages)
 
 ---
 
@@ -386,6 +395,72 @@ templates/settings/
 
 ---
 
+## Widgets Modulaires Autonomes (v1.6.0) {#widgets}
+
+Les widgets constituent une couche intermédiaire entre les composants UI atomiques (`Button`, `Card`, `Badge`) et les templates de pages complètes (`Auth`, `Dashboard`). Ils sont distribuables individuellement via `rs-ui add -w <id>` ou `rs-ui widget add <id>` et installés dans `src/components/widgets/<id>/`.
+
+```
+src/components/widgets/
+├── metric/             # MetricWidget
+├── progress/           # ProgressWidget
+├── quick-actions/      # QuickActionsWidget
+├── chart/              # ChartWidget
+├── activity-feed/      # ActivityFeedWidget
+└── finance/            # FinanceWidget
+```
+
+Chaque widget contient :
+- `widget.json` : manifeste avec id, version, composants atomiques requis (`requiresComponents`), dépendances Expo et options Liquid Glass.
+- `types.ts` : interfaces TypeScript strictes sans aucun `any`.
+- `<id>-widget.tsx` : implémentation autonome respectant le thème clair/sombre et le mode Liquid Glass.
+- `index.ts` : barrel export pour consommation propre par l'application.
+
+### MetricWidget {#widget-metric}
+- **Usage** : `rs-ui add -w metric`
+- **Description** : Carte KPI pour indicateurs statistiques clés (ex: revenus, conversion, visiteurs). Affiche une valeur formatée, un badge de tendance animé (positive, négative, neutre avec pourcentage), une icône contextuelle, une mention temporelle et un état de chargement skeleton.
+- **Composants requis** : `card`, `badge`
+
+### ProgressWidget {#widget-progress}
+- **Usage** : `rs-ui add -w progress`
+- **Description** : Jauge de progression vers un objectif avec calcul automatique du pourcentage, barre animée avec spring, jalons intermédiaires et état de complétion visuel.
+- **Composants requis** : `card`, `progress`
+
+### QuickActionsWidget {#widget-quick-actions}
+- **Usage** : `rs-ui add -w quick-actions`
+- **Description** : Grille ou liste horizontale d'actions fréquentes (2 à 4 colonnes). Supporte les icônes vectorielles/texte, libellés secondaires, pastilles de badges, désactivation par item et retour haptique instantané (`expo-haptics`).
+- **Composants requis** : `card`, `button`, `badge`
+
+### ChartWidget {#widget-chart}
+- **Usage** : `rs-ui add -w chart`
+- **Description** : Visualisation graphique native en barres verticales ou horizontales avec infobulles tactiles interactives, animations fluides sans imposer de dépendances externes lourdes (SVG pur ou primitives React Native).
+- **Composants requis** : `card`, `badge`
+
+### ActivityFeedWidget {#widget-activity-feed}
+- **Usage** : `rs-ui add -w activity-feed`
+- **Description** : Flux d'activité récent défilable ou condensé. Présente chaque événement avec avatar ou icône colorée, titre, horodatage relatif formaté, montant ou badge d'état.
+- **Composants requis** : `card`, `avatar`, `badge`
+
+### FinanceWidget {#widget-finance}
+- **Usage** : `rs-ui add -w finance`
+- **Description** : Portefeuille financier moderne. Intègre le solde principal avec bascule de confidentialité (`•••• €`), répartition revenus vs dépenses, et barre de boutons d'action rapide (Virement, Recharger, Convertir).
+- **Composants requis** : `card`, `button`, `badge`
+
+---
+
+## Showcases d'intégration (v1.6.0) {#showcases}
+
+Pour illustrer et valider l'assemblage cohérent des widgets dans des architectures d'écrans réelles, Rashwright propose deux showcases officiels dans `packages/ui-mobile/showcases/` :
+
+1. **`FinanceDashboardShowcase`** :
+   - Assemble `FinanceWidget`, `QuickActionsWidget`, `ChartWidget`, `MetricWidget` et `ActivityFeedWidget`.
+   - Illustre la cohérence visuelle Liquid Glass, l'alternance light/dark et la synchronisation des données financières.
+
+2. **`AnalyticsDashboardShowcase`** :
+   - Assemble `MetricWidget` (KPIs multiples en grille 2 colonnes), `ChartWidget` (évolution mensuelle), `ProgressWidget` (objectifs trimestriels) et `ActivityFeedWidget`.
+   - Démontre l'adaptabilité responsive du layout sur écrans compacts et tablettes.
+
+---
+
 ## Dépendances communes {#dependances}
 
 ### Dépendances React Native / Expo (toujours installées)
@@ -500,18 +575,22 @@ flowchart TD
 
 ```mermaid
 graph TD
-    CLI["@rashwright/cli v1.5.0"]
-    UI["@rashwright/ui-mobile v1.5.0"]
+    CLI["@rashwright/cli v1.6.0"]
+    UI["@rashwright/ui-mobile v1.6.0"]
     
     CLI --> |"lit les composants depuis"| UI
     CLI --> |"lit le registry"| UIReg["registry/index.json"]
+    CLI --> |"lit les widgets"| UIWidg["widgets/*/widget.json"]
     CLI --> |"lit les templates"| UITempl["templates/*/template.json"]
-    CLI --> |"copie les sources"| UIComp["components/ui/*.tsx"]
+    CLI --> |"copie les composants"| UIComp["components/ui/*.tsx"]
+    CLI --> |"copie les widgets"| UIWidgFiles["widgets/*/*.tsx"]
     CLI --> |"copie les skills"| UISkills["skills/*/SKILL.md"]
     
     UIReg --> UI
+    UIWidg --> UI
     UITempl --> UI
     UIComp --> UI
+    UIWidgFiles --> UI
     UISkills --> UI
     
     UI --> |"peer deps"| RN["react-native + expo SDK"]
@@ -520,4 +599,4 @@ graph TD
 
 ---
 
-*Document maintenu par l'équipe Rashwright. Dernière mise à jour : octobre 2026 — v1.5.0*
+*Document maintenu par l'équipe Rashwright. Dernière mise à jour : octobre 2026 — v1.6.0*

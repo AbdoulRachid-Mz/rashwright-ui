@@ -1,171 +1,154 @@
-# PLAN STRATÉGIQUE & ROADMAP D'ÉVOLUTION — Rashwright UI Mobile (v1.1.0 → v1.6.0)
+# PLAN STRATÉGIQUE & ROADMAP D'ÉVOLUTION — Rashwright UI Mobile (v1.6.0 → v2.0.0)
 
 > **Document de référence stratégique et technique.**  
-> Dernière mise à jour : 2026-10-20  
-> Statut : **v1.5.0 Validée & Prête pour Publication** — 79 composants (dont 11 nouveaux utilitaires mobiles), 10 templates autonomes (Auth, Commerce, Onboarding, Dashboard, Settings, Showcase, Minimal, Chat, Finance, Social), WCAG 2.1 AA accessibilité, fix NativeWind v5 `--legacy-peer-deps`, architecture.md formalisée, Phase 7 specs écrans Expo, 227 tests Vitest réussis (Quality Gate 100% vert). Jalon suivant : **v1.6.0 — Moteur de Widgets Modulaires**.
+> Dernière mise à jour : 2026-10-21  
+> Statut : **v1.6.0 Validée & Prête pour Publication** — Moteur de Widgets Modulaires & Distribuables, 6 widgets officiels (`MetricWidget`, `ProgressWidget`, `QuickActionsWidget`, `ChartWidget`, `ActivityFeedWidget`, `FinanceWidget`), 2 Showcases d'intégration (`FinanceDashboardShowcase`, `AnalyticsDashboardShowcase`), commandes CLI dédiées (`rs-ui widget`, `rs-ui add -w`), 79 composants atomiques, 10 templates autonomes, WCAG 2.1 AA accessibilité, 245 tests Vitest réussis (51 suites, 100% vert), Quality Gate complet.
 
 ---
 
-## 0. Bilan de l'Écosystème & Diagnostic des Manques Actuels
+## 0. Bilan de l'Écosystème & Fondations v1.6.0
 
-L'architecture actuelle de Rashwright UI Mobile a atteint une robustesse de niveau production :
-- Le modèle **shadcn/ui adapté à React Native / Expo** est totalement fonctionnel.
-- Le **Component-Detector** garantit qu'aucune dépendance (interne ou externe) n'est oubliée lors de l'ajout d'un composant ou template.
-- Les **7 templates autonomes** offrent une base UI haut de gamme et personnalisable.
-- Le **Serveur MCP** connecte directement les IDEs IA au registre.
-
-Cependant, l'analyse approfondie de l'écosystème met en lumière **5 axes majeurs où des manques subsistent** pour rivaliser avec les plus grands design systems du marché :
+L'architecture de distribution de code source de Rashwright UI Mobile a atteint une maturité exceptionnelle :
+- Le modèle **shadcn/ui appliqué à React Native & Expo** garantit la pleine propriété du code par le développeur.
+- Le **Component-Detector** résout de façon récursive et transparente toutes les dépendances transitives (internes, natives Expo, utilitaires).
+- Les **79 composants atomiques** couvrent l'intégralité des besoins standards de formulaires, navigation, mise en page et feedbacks.
+- Les **10 templates autonomes** fournissent des squelettes d'applications clés en main (`auth`, `commerce`, `dashboard`, `settings`, `chat`, `finance`, `social`...).
+- Les **6 widgets modulaires** permettent d'assembler des briques métiers riches sans alourdir la codebase.
+- Le **Serveur MCP IA** et les **Skills IA contextuels** connectent nativement les assistants de code (Cursor, Claude, Antigravity, VS Code) à l'écosystème.
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────┐
-│             BILAN DES BESOINS & FONCTIONNALITÉS MANQUANTES             │
+│             NOUVELLE VISION STRATÉGIQUE DU MOTEUR DISTRIBUTEUR         │
 ├────────────────────────────────────────────────────────────────────────┤
-│ 1. Composants Mobiles Clés Inexistants                                │
-│    - DatePicker / Calendar (réservations, formulaires, planning)      │
-│    - SwipeableRow (gestes swipe to action : delete, archive, pin)     │
-│    - SegmentedControl (sélecteur d'onglets pill fluide universel)      │
-│    - Tooltip / Popover (positionnement contextuel flottant)           │
-│    - Shimmer / Skeleton automatique pour toutes les cartes et listes  │
+│ 1. Écrans Systèmes Expo Prêts à l'Emploi (v1.7.0)                     │
+│    - Écrans d'intégration matérielle & permissions natives             │
+│    - Biométrie, QR Scanner, Permissions, Téléchargement, MapView       │
 ├────────────────────────────────────────────────────────────────────────┤
-│ 2. Templates Métiers Spécialisés Manquants                            │
-│    - Template "Chat & Messaging" (messagerie instantanée, bulles)     │
-│    - Template "Finance & Crypto" (portefeuille, graphiques, transferts)│
-│    - Template "Social & Community" (fil d'actualité, likes, stories)  │
+│ 2. Moteur de Widgets V2 & Tableaux de Bord Composables (v1.8.0)        │
+│    - WidgetGrid adaptatif avec Drag & Drop et réordonnancement tactile │
+│    - 6 nouveaux widgets (Calendar, Weather, AudioPlayer, DeviceStatus) │
+│    - Persistance locale d'état et disposition (useWidgetStorage)       │
 ├────────────────────────────────────────────────────────────────────────┤
-│ 3. Gestionnaire de Cycle de Vie CLI (Mise à jour & Synchronisation)    │
-│    - Commande `rs-ui upgrade` / `rs-ui update` (détection de version)  │
-│    - 3-Way Merge ou protection différentielle des personnalisations   │
-│    - Réécriture chirurgicale des alias (AST Transformers ts-morph)    │
-│    - Commandes `rs-ui template list` et `rs-ui template info <id>`    │
+│ 3. Registres Distants Privés & Partage Communautaire (v1.9.0)          │
+│    - Registres d'équipe / entreprise sécurisés (Git / S3 / HTTP)       │
+│    - Commandes `rs-ui package` et `rs-ui export` pour créateurs tiers  │
 ├────────────────────────────────────────────────────────────────────────┤
-│ 4. Intelligence Artificielle & Serveur MCP Avancé                     │
-│    - Outil MCP `generate_screen` (composition d'écran assistée par IA)│
-│    - Outil MCP `audit_accessibility` (audit automatique ARIA TalkBack) │
-│    - Outil MCP `convert_styling` (conversion StyleSheet ↔ NativeWind) │
-├────────────────────────────────────────────────────────────────────────┤
-│ 5. Visualisation Interactive & Tests E2E Mobile                       │
-│    - Documentation interactive Storybook Mobile / Expo Web Showcase    │
-│    - Tests end-to-end automatisés Maestro / simulateurs               │
+│ 4. Rashwright Studio & Expo SDK 59 (v2.0.0)                            │
+│    - Interface Web locale (Studio GUI) pour prévisualisation et config │
+│    - Constructeur visuel d'écrans par drag & drop                      │
+│    - Support officiel Expo SDK 59 et React 19                          │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 1. AXE 1 : COMPOSANTS MOBILES ESSENTIELS MANQUANTS (Roadmap v1.1.0)
+## 1. AXE 1 : MOTEUR D'ÉCRANS SYSTÈMES & INTÉGRATIONS EXPO (Roadmap v1.7.0)
 
-### 1.1 `Calendar` & `DatePicker` Mobiles
-- **Problème** : Aucun composant de sélection de date ou plage de dates n'existe dans le catalogue. Les formulaires de réservation (commerce, hôtel, transport, analytics) doivent recourir à des dépendances tierces non unifiées.
-- **Spécifications** :
-  - `Calendar` : Vue calendrier mensuelle fluide avec sélection de date unique ou plage (`mode="single" | "range" | "multiple"`).
-  - `DatePicker` : Modal bottom-sheet ou inline avec roue ou grille calendaire, support de la localisation (français par défaut), dates minimales/maximales, dates désactivées.
-  - Support natif du thème actif et variante Liquid Glass.
+Les applications modernes nécessitent fréquemment des écrans systèmes complexes interagissant directement avec le matériel ou les permissions natives. Au lieu de laisser le développeur réinventer ces flux, le moteur distributeur proposera des écrans complets distribuables via `rs-ui add screen:<id>` ou `rs-ui screen add <id>`.
 
-### 1.2 `SwipeableRow` (Actions Tactiles de Balayage)
-- **Problème** : Le geste de swipe latéral (glisser pour supprimer, archiver, marquer lu) est une convention incontournable du mobile iOS et Android.
-- **Spécifications** :
-  - Basé sur `react-native-gesture-handler` et `react-native-reanimated`.
-  - Props `renderLeftActions` et `renderRightActions`.
-  - Déclenchement automatique de retour haptique (`expo-haptics`) lors du dépassement du seuil de swipe.
-  - Fermeture automatique au tap extérieur ou lors du défilement de la liste parente.
+### 1.1 Écrans Matériels & Sécurité
+- **`BiometricAuthScreen`** :
+  - Authentification biométrique (Face ID, Touch ID, capteur d'empreintes) via `expo-local-authentication`.
+  - Fallback automatique par code PIN / mot de passe, états d'erreur sécurisés, vibrations haptiques et interface Liquid Glass.
+- **`PermissionGateScreen`** :
+  - Écran d'onboarding de permissions unifié (Caméra, Micro, Géolocalisation, Notifications, Photothèque).
+  - Gestion de l'état refusé avec guidage vers les paramètres système de l'OS (`expo-linking`).
+- **`QRScannerScreen`** :
+  - Scanner de codes QR et codes-barres fluide avec `expo-camera`.
+  - Réticule de visée animé, bascule de lampe torche, sélection d'image depuis la galerie et retour haptique immédiat à la détection.
 
-### 1.3 `SegmentedControl` Universel
-- **Problème** : Les sélecteurs à segments sont actuellement codés ad-hoc dans certains templates (Settings, Dashboard).
-- **Spécifications** :
-  - Capsule animée par ressort (`withSpring`) qui glisse derrière le segment sélectionné.
-  - Support de 2 à 5 options, avec icônes optionnelles et badges de notification.
-  - Support de l'accessibilité WAI-ARIA (`accessibilityRole="tablist"` et `tab`).
-
-### 1.4 `Tooltip` & `Popover` Contextuels
-- **Problème** : Pas de mécanisme pour afficher une infobulle d'aide ou un menu contextuel ancré à un bouton ou une icône.
-- **Spécifications** :
-  - Mesure automatique des coordonnées dans la fenêtre (`measureInWindow`).
-  - Détection automatique du débordement d'écran (flip haut/bas, gauche/droite).
-  - Fond Liquid Glass avec flèche d'ancrage.
-
-### 1.5 `ShimmerSkeleton` Automatique
-- **Problème** : Les états de chargement sont souvent statiques ou nécessitent un codage manuel.
-- **Spécifications** :
-  - Balayage lumineux continu avec `LinearGradient` et `react-native-reanimated`.
-  - Presets prêts à l'emploi : `Skeleton.Card`, `Skeleton.Avatar`, `Skeleton.Text`, `Skeleton.Row`.
+### 1.2 Écrans de Données & Média
+- **`FileDownloaderScreen`** :
+  - Gestionnaire de téléchargement basé sur `expo-file-system`.
+  - Jauge de progression en pourcentage, reprise sur interruption, mise en cache locale et partage via `expo-sharing`.
+- **`DocumentPickerScreen`** :
+  - Sélecteur et gestionnaire de pièces jointes (PDF, DOCX, images) via `expo-document-picker`.
+  - Prévisualisation locale et validation de taille/format avant envoi.
+- **`MapViewScreen`** :
+  - Carte interactive avec `react-native-maps`, géolocalisation en temps réel (`expo-location`), points d'intérêt personnalisés et cartes d'info Liquid Glass.
 
 ---
 
-## 2. AXE 2 : NOUVEAUX TEMPLATES MÉTIERS SPÉCIALISÉS (Roadmap v1.2.0)
+## 2. AXE 2 : MOTEUR DE WIDGETS V2 & TABLEAUX DE BORD COMPOSABLES (Roadmap v1.8.0)
 
-### 2.1 Template `chat` (Messagerie Instantanée)
-- **Contenu** :
-  - Écran de conversation avec liste de messages inversée (`inverted`), bulles utilisateur / interlocuteur stylées en Liquid Glass.
-  - Barre de saisie avec attachement de fichiers/photos (intégré à `lib/upload/`), bouton d'envoi et emoji picker.
-  - En-tête avec avatar, statut en ligne et actions d'appel/paramètres.
+La version 1.6.0 a posé les fondations des widgets modulaires autonomes. La v1.8.0 transformera ces widgets en un système de tableau de bord entièrement interactif et composable.
 
-### 2.2 Template `finance` (Portefeuille & Banque Mobile)
-- **Contenu** :
-  - Solde global avec switch de visibilité (œil masquer/afficher).
-  - Graphique linéaire de performance interactif.
-  - Liste des transactions récentes avec catégories colorées et montants formatés.
-  - Raccourcis d'actions : Virement, Recharger, Convertir, Carte virtuelle.
+### 2.1 Conteneur `WidgetGrid` & Réordonnancement Tactile
+- **Grille Adaptative Multi-Colonnes** :
+  - Calcul dynamique de colonnes selon le breakpoint de l'appareil (1 col sur smartphone, 2-3 col sur tablette).
+  - Gestion des largeurs de widgets : demi-largeur (`span: 1`) ou pleine largeur (`span: 2`).
+- **Mode Réordonnancement (Drag & Drop)** :
+  - Appui long pour entrer en mode édition (wiggle effect subtil).
+  - Réorganisation fluide animée par Reanimated avec retour haptique.
+- **Persistance d'état locale (`useWidgetStorage`)** :
+  - Sauvegarde de l'ordre personnalisé des widgets et de leurs options dans `@react-native-async-storage/async-storage`.
 
-### 2.3 Template `social` (Fil d'Actualité & Communauté)
-- **Contenu** :
-  - Feed défilant avec stories en haut (cercles avec bordure dégradée).
-  - Cartes de publications avec carrousel médias, bouton de like animé, commentaires et partage.
-  - Barre d'onglets de navigation persistante avec badge de notifications.
-
----
-
-## 3. AXE 3 : GESTION DU CYCLE DE VIE CLI & AST TRANSFORMERS (Roadmap v1.3.0)
-
-### 3.1 Commande `rs-ui upgrade` / `rs-ui update`
-- **Fonctionnalités** :
-  - Analyse du fichier `rashwright-ui.lock` pour comparer les versions des composants installés avec la dernière version du registre.
-  - Affichage d'un tableau synthétique des mises à jour disponibles.
-  - Mode interactif pour choisir les composants à actualiser.
-  - Intégration de la commande `rs-ui diff` avant validation pour prévisualiser les changements.
-  - Sauvegarde automatique de secours dans `.rashwright/backups/` avant toute mise à jour.
-
-### 3.2 AST Transformers (Réécriture d'Alias Intelligente)
-- **Fonctionnalités** :
-  - Si le projet cible utilise `~/components` au lieu de `@/components`, ou `src/ui/` au lieu de `src/components/ui/`, le CLI réécrit automatiquement les imports dans le code copié grâce à l'AST TypeScript.
-  - Zéro rupture d'import quel que soit le setup du projet cible.
-
-### 3.3 Commandes Template Dédiées
-- `rs-ui template list` : Liste visuelle complète des 7+ templates disponibles avec description, captures d'écran terminal et composants requis.
-- `rs-ui template help` : Guide interactif pour démarrer rapidement avec les templates.
-- `rs-ui template remove <id>` : Nettoyage propre d'un template installé sans supprimer les primitives partagées.
+### 2.2 Catalogue de 6 Nouveaux Widgets Métiers
+1. **`CalendarWidget`** (`widgets/calendar`) :
+   - Calendrier compact hebdomadaire ou mensuel avec indicateurs d'événements, sélection tactile et rappel du prochain rendez-vous.
+2. **`WeatherWidget`** (`widgets/weather`) :
+   - Météo locale en temps réel (température, météo ressentie, vent, humidité) avec icônes animées et arrière-plan Liquid Glass adaptatif au climat.
+3. **`AudioPlayerWidget`** (`widgets/audio-player`) :
+   - Mini-lecteur audio/podcast avec pochette, titre défilant, boutons play/pause/skip et spectre sonore animé.
+4. **`DeviceStatusWidget`** (`widgets/device-status`) :
+   - Diagnostic condensé de l'appareil : niveau de batterie (`expo-battery`), statut de connexion Wi-Fi/Cellulaire (`expo-network`) et mémoire disponible.
+5. **`TimerStopwatchWidget`** (`widgets/timer`) :
+   - Minuteur et chronomètre tactile avec tours (laps) et déclencheur d'alerte.
+6. **`NotificationCenterWidget`** (`widgets/notifications`) :
+   - Centre de notifications in-app condensé avec regroupement par catégories et geste de balayage pour acquitter.
 
 ---
 
-## 4. AXE 4 : INTELLIGENCE ARTIFICIELLE & SERVEUR MCP AVANCÉ (Roadmap v1.4.0)
+## 3. AXE 3 : REGISTRES DISTANTS PRIVÉS & PARTAGE D'ÉQUIPE (Roadmap v1.9.0)
 
-### 4.1 Outil MCP `generate_screen`
-- **Objectif** : Permettre à Cursor, Claude Desktop et VS Code de générer des écrans mobiles complets répondant exactement aux besoins exprimés en langage naturel.
-- **Comportement** :
-  - L'agent IA invoque `generate_screen({ prompt, templateContext, styleEngine })`.
-  - Le serveur MCP assemble les composants Rashwright appropriés, applique les tokens de thème actifs, et garantit la réactivité aux breakpoints mobiles.
+Pour les entreprises et les équipes multi-projets, Rashwright doit permettre de distribuer des bibliothèques de composants et widgets internes sans passer par npm public.
 
-### 4.2 Outil MCP `audit_accessibility`
-- **Objectif** : Analyser le code source d'un écran ou composant et signaler toutes les anomalies d'accessibilité mobile (manque d'`accessibilityLabel`, contraste insuffisant, zones de frappe inférieures à 44x44 points).
+### 3.1 Multi-Registres Distants Sécurisés
+- Configuration de registres privés dans `rashwright-ui.json` :
+  ```json
+  {
+    "registries": {
+      "internal": {
+        "url": "https://raw.githubusercontent.com/my-org/my-ui-registry/main",
+        "auth": "BEARER_TOKEN"
+      }
+    }
+  }
+  ```
+- Installation transparente avec préfixe de namespace :
+  ```bash
+  rs-ui add @internal/payment-card
+  rs-ui widget add @internal/kyc-status
+  ```
 
-### 4.3 Outil MCP `convert_styling`
-- **Objectif** : Traduction automatique bidirectionnelle entre `StyleSheet.create` et classes NativeWind Tailwind.
+### 3.2 Commandes de Packaging et d'Export
+- **`rs-ui package <component|widget>`** :
+  - Valide automatiquement la conformité du composant/widget (zéro any, présence du skill, props typées) et génère son fichier de métadonnées JSON prêt pour un registre.
+- **`rs-ui export`** :
+  - Compile un ensemble de composants locaux vers un sous-dossier ou une archive distribuable.
 
 ---
 
-## 5. AXE 5 : STORYBOOK MOBILE & TESTS E2E MAESTRO (Roadmap v1.5.0)
+## 4. AXE 4 : RASHWRIGHT STUDIO & EXPO SDK 59 (Roadmap v2.0.0)
 
-### 5.1 Showcase Interactif Web / Mobile (Storybook)
-- Environnement dédié permettant de manipuler tous les composants, de tester leurs variantes (Default, Bordered, Glass), leurs états (Loading, Disabled, Error) et de prévisualiser les 9 thèmes en temps réel.
+### 4.1 Rashwright Studio (`rs-ui studio`)
+- Serveur de développement web local autonome déclenché par une simple commande :
+  ```bash
+  rs-ui studio --port 4200
+  ```
+- **Fonctionnalités du Studio** :
+  - **Galerie Interactive** : Visualisation en direct des 79 composants, des widgets et des templates avec simulateur de tailles d'écrans (iPhone, Pixel, iPad).
+  - **Theme Customizer Visuel** : Éditeur de palette de couleurs, curseurs de flou et transparence Liquid Glass, avec injection en temps réel dans `theme/tokens.ts`.
+  - **Générateur d'Écrans Visuel** : Assemblage d'écrans par glisser-déposer de widgets et de composants, avec génération instantanée du code TSX propre copié dans `src/app/`.
 
-### 5.2 Tests End-to-End Automatisés (Maestro)
-- Scénarios d'automatisation sur émulateurs Android et iOS :
-  - Test du flow d'authentification (connexion, Google Auth, saisie OTP).
-  - Test du catalogue commerce (recherche, filtres, ajout panier, détail produit).
-  - Test du changement de mode d'apparence (Système → Clair → Sombre) et persistance dans le store.
+### 4.2 Support Expo SDK 59 & React 19 Strict Mode
+- Validation complète et matrices de dépendances pour Expo SDK 59.
+- Alignement avec les nouveautés de React 19 (Server Actions sur mobile, transitions asynchrones).
 
 ---
 
-## 6. Calendrier des Jalons
- 
+## 5. Calendrier des Jalons
+
 | Version | Objectifs Clés | Statut |
 |---|---|:---:|
 | **v1.0.1** | SDK 58, Dark Mode NativeWind fix, Templates Premium, ThemedView autonome | ✅ **Publiée** |
@@ -173,5 +156,9 @@ Cependant, l'analyse approfondie de l'écosystème met en lumière **5 axes maje
 | **v1.2.0** | Nouveaux Templates Métiers (`chat`, `finance`, `social`) + Cycle de vie (`rs-ui upgrade`, 3-way merge) | ✅ **Publiée** |
 | **v1.3.0** | Showcase interactif Storybook (`rs-ui showcase`) et tests E2E Maestro (6 flows) | ✅ **Publiée** |
 | **v1.4.0** | Commande `rs-ui fix` (auto-remédiation), 68 composants (`command`, `color-picker`, `navigation-menu`), code preview | ✅ **Publiée** |
-| **v1.5.0** | 79 composants (11 nouveaux utilitaires), WCAG 2.1 AA accessibilité, fix NativeWind v5 npm, architecture.md formalisée, specs Phase 7 écrans Expo, 227 tests | ✅ **Prête pour npm** |
-| **v1.6.0** | Architecture et Moteur de Widgets Modulaires (`rs-ui add --widget`), premier catalogue (Metric, Progress, QuickActions, Chart, ActivityFeed, Finance), skills et dashboards | ⏳ **En cours (Phase 0 Audit & Plan)** |
+| **v1.5.0** | 79 composants (11 nouveaux utilitaires mobiles), WCAG 2.1 AA accessibilité, fix NativeWind v5 npm, architecture.md formalisée, specs Phase 7, 227 tests | ✅ **Publiée** |
+| **v1.6.0** | Moteur de Widgets Modulaires (`rs-ui widget`, `rs-ui add -w`), 6 widgets officiels, 2 Showcases, lockfile SHA-256, 245 tests | ✅ **Publiée & Tagguée** |
+| **v1.7.0** | Moteur d'Écrans Systèmes Expo (`rs-ui add screen:<id>`), Biométrie, Permissions, QR Scanner, Download, MapView | 📋 **Planifiée** |
+| **v1.8.0** | Moteur de Widgets V2 : WidgetGrid adaptatif avec Drag & Drop tactile, 6 nouveaux widgets, persistance locale | 📋 **Planifiée** |
+| **v1.9.0** | Registres Distants Privés (`rs-ui registry add`), Packaging & Export (`rs-ui package`), Cloud Sync | 📋 **Planifiée** |
+| **v2.0.0** | Rashwright Studio GUI (`rs-ui studio`), Constructeur visuel d'écrans, Support Expo SDK 59 & React 19 | 📋 **Planifiée** |

@@ -60,3 +60,15 @@ Sur le Web avec `react-native-css-interop` / NativeWind, lorsque le mode sombre 
 - `tests/nativewind-manager.test.ts`
 - `tests/create-component.test.ts`
 - `tests/backup-manager.test.ts`
+
+---
+
+## v1.6.0 — Résolution Moteur de Widgets & Showcases
+
+### ✅ RÉSOLU — `validate-registry.ts` échouait si des showcases étaient sous `components/ui/`
+**Cause** : Le script de validation `validate-registry.ts` applique la règle stricte `F-2` selon laquelle chaque fichier TSX sous `components/ui/` doit obligatoirement avoir une fiche JSON associée dans `registry/components/`. Y placer des écrans de showcase complets cassait la validation.
+**Solution** : Création d'un dossier dédié de premier niveau `packages/ui-mobile/showcases/` (`finance-dashboard-showcase.tsx`, `analytics-dashboard-showcase.tsx`) ré-exporté proprement depuis le barrel racine de la bibliothèque.
+
+### ✅ RÉSOLU — Typage TypeScript pour `widgets/` et `showcases/` dans `ui-mobile`
+**Cause** : `packages/ui-mobile/tsconfig.json` ne ciblait par défaut que `"components/**/*"` et les dossiers initiaux, ce qui provoquait des erreurs lors des imports cross-modules.
+**Solution** : Inclusion explicite de `"widgets/**/*.ts"`, `"widgets/**/*.tsx"`, `"showcases/**/*.ts"`, `"showcases/**/*.tsx"` dans le `tsconfig.json`.

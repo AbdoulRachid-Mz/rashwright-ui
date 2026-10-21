@@ -1,8 +1,8 @@
-# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI MOBILE (v1.1.0 → v1.5.0)
+# SUIVI DES TÂCHES — ROADMAP RASHWRIGHT UI MOBILE (v1.5.0 → v2.0.0)
 
 > **Fichier de suivi dynamique (`TASK.md`)**  
-> Dernière mise à jour : 2026-10-20  
-> Statut général : **v1.5.0 Validée & Prête (79 composants dont 11 nouveaux utilitaires mobiles de pointe, WCAG 2.1 AA accessibilité, fix NativeWind v5 npm, architecture.md formalisée, Phase 7 specs écrans Expo, 227 tests Vitest réussis, 47 suites, Quality Gate 100% vert, 0 erreur TypeScript strict)**
+> Dernière mise à jour : 2026-10-21  
+> Statut général : **v1.6.0 Validée & Prête (Moteur de Widgets Modulaires & Showcases, 6 widgets officiels, 2 dashboards d'intégration, 79 composants atomiques, 10 templates, 245 tests Vitest réussis, 51 suites, Quality Gate 100% vert, 0 erreur TypeScript strict)**
 
 ---
 
@@ -29,6 +29,11 @@
 | **v1.4.0 (Phase 13)** | Nouveaux Composants Mobiles Avancés (`command`, `color-picker`, `navigation-menu`) — Registre à 68 composants | ✅ Validé | 3 / 3 tâches |
 | **v1.4.0 (Phase 14)** | Visualisation CLI enrichie (`rs-ui info <comp> --preview`) avec extrait de code TSX canonique et boîte ASCII | ✅ Validé | 2 / 2 tâches |
 | **v1.5.0 (Phase 15)** | WCAG 2.1 AA Accessibilité, Fix NativeWind v5 npm, Architecture.md formalisée, Specs Phase 7 écrans Expo, 11 nouveaux composants UI (79 composants au total), 227 tests | ✅ Validé | 8 / 8 tâches |
+| **v1.6.0 (Phase 16)** | Moteur de Widgets Modulaires & Distribuables, 6 widgets officiels, 2 Showcases, Lockfile SHA-256, CLI `rs-ui widget` et `add -w`, 245 tests | ✅ Validé | 8 / 8 tâches |
+| **v1.7.0 (Phase 17)** | Moteur d'Écrans Systèmes Expo (`rs-ui add screen:<id>`), Biométrie, Permissions, QR Scanner, Download, MapView | 📋 Planifié | 0 / 7 tâches |
+| **v1.8.0 (Phase 18)** | Moteur de Widgets V2 : WidgetGrid adaptatif avec Drag & Drop tactile, 6 nouveaux widgets, persistance locale | 📋 Planifié | 0 / 6 tâches |
+| **v1.9.0 (Phase 19)** | Registres Distants Privés (`rs-ui registry add`), Packaging & Export (`rs-ui package`), Cloud Sync | 📋 Planifié | 0 / 4 tâches |
+| **v2.0.0 (Phase 20)** | Rashwright Studio GUI Web (`rs-ui studio`), Constructeur visuel d'écrans, Support Expo SDK 59 & React 19 | 📋 Planifié | 0 / 5 tâches |
 
 ---
 
@@ -374,3 +379,71 @@
 * [x] **build:cli** : 0.38 MB ✅
 * [x] **smoke:all** : `rs-ui --version` → `1.5.0` ✅
 * [x] **Tag** : `v1.5.0` ✅
+
+---
+
+## Phase 16 : v1.6.0 — Moteur de Widgets Modulaires & Distribuables (✅ ACHEVÉ)
+
+### Tâche 1 — Moteur CLI & Registre des Widgets
+* [x] **TASK-16.1** : Créer le gestionnaire `packages/cli/src/core/widgets-registry.ts` (`WidgetDefinition`, `loadWidgetsRegistry()`, `getWidgetDefinition(id)`, `listWidgetIds()`, `getWidgetRequiredComponents()`). Support des identifiants avec ou sans suffixe `-widget`.
+* [x] **TASK-16.2** : Créer la commande CLI `packages/cli/src/commands/widget.ts` (`rs-ui widget (list|info|add|remove|help)`) et l'enregistrer dans `src/index.ts`.
+* [x] **TASK-16.3** : Étendre `rs-ui add` avec `-w, --widget <name>` et auto-détection des widgets dans les arguments positionnels.
+* [x] **TASK-16.4** : Intégrer les widgets dans `lock-manager.ts` (`checkWidgetIntegrity`, hash SHA-256) et `skills-manager.ts` (`copyWidgetSkill`).
+
+### Tâche 2 — Les 6 Widgets Officiels & Showcases
+* [x] **TASK-16.5** : Implémenter les 6 widgets modulaires sous `packages/ui-mobile/widgets/` :
+  - `MetricWidget` : indicateur KPI clé avec badge de tendance animée, formatage adaptatif et skeleton.
+  - `ProgressWidget` : progression multi-étapes avec jalons visuels et calcul de pourcentage.
+  - `QuickActionsWidget` : grille d'actions 2-4 colonnes avec badges et haptique.
+  - `ChartWidget` : graphique en barres horizontales et verticales natif avec infobulles tactiles sans dépendances lourdes.
+  - `ActivityFeedWidget` : flux chronologique avec avatars, statuts, montants et horodatages.
+  - `FinanceWidget` : portefeuille financier avec solde masquable (`•••• €`), répartition revenus/dépenses et raccourcis.
+* [x] **TASK-16.6** : Rédiger les 6 fiches IA Skills complètes dans `packages/ui-mobile/skills/*-widget/SKILL.md`.
+* [x] **TASK-16.7** : Développer les 2 dashboards de showcase dans `packages/ui-mobile/showcases/` (`FinanceDashboardShowcase`, `AnalyticsDashboardShowcase`) et les exporter dans le barrel racine.
+
+### Tâche 3 — Tests & Quality Gate v1.6.0
+* [x] **TASK-16.8** : Créer les 4 suites de tests dédiées (`widgets-registry.test.ts`, `widget-command.test.ts`, `add-widget.test.ts`, `e2e-widget-install.test.ts`).
+* [x] **Quality Gate complet validé** : 51 suites de tests, **245 tests Vitest réussis (100% vert)**, 0 erreur TypeScript strict (`zero any`), build CLI 0.40 MB, version 1.6.0.
+
+---
+
+## Phase 17 : v1.7.0 — Moteur d'Écrans Systèmes Expo (📋 PLANIFIÉ)
+
+* [ ] **TASK-17.1** : Concevoir la commande CLI `rs-ui add screen:<id>` ou `rs-ui screen add <id>` et l'inspection automatique des permissions requises dans `app.json`.
+* [ ] **TASK-17.2** : `BiometricAuthScreen` : authentification biométrique Face ID / empreinte (`expo-local-authentication`), fallback PIN et interface Glass.
+* [ ] **TASK-17.3** : `PermissionGateScreen` : écran d'onboarding de permissions unifié (caméra, micro, géolocalisation, notifications push, galerie).
+* [ ] **TASK-17.4** : `QRScannerScreen` : scanner de codes QR et codes-barres avec réticule animé, torche et retour haptique (`expo-camera`).
+* [ ] **TASK-17.5** : `FileDownloaderScreen` : gestionnaire de téléchargements de fichiers avec jauge, reprise et partage (`expo-file-system`, `expo-sharing`).
+* [ ] **TASK-17.6** : `DocumentPickerScreen` : sélecteur de pièces jointes et prévisualisation (`expo-document-picker`).
+* [ ] **TASK-17.7** : `MapViewScreen` : carte interactive avec géolocalisation et marqueurs Liquid Glass (`react-native-maps`, `expo-location`).
+
+---
+
+## Phase 18 : v1.8.0 — Moteur de Widgets V2 & Tableaux de Bord Composables (📋 PLANIFIÉ)
+
+* [ ] **TASK-18.1** : Développer `WidgetGrid` : conteneur de grille adaptative multi-colonnes responsive avec support des spans.
+* [ ] **TASK-18.2** : Implémenter le mode Drag & Drop tactile avec réordonnancement animé et retour haptique.
+* [ ] **TASK-18.3** : Créer le hook `useWidgetStorage` pour persister la disposition et les préférences locales via AsyncStorage.
+* [ ] **TASK-18.4** : Développer 6 nouveaux widgets métiers : `CalendarWidget`, `WeatherWidget`, `AudioPlayerWidget`, `DeviceStatusWidget`, `TimerStopwatchWidget`, `NotificationCenterWidget`.
+* [ ] **TASK-18.5** : Mettre à jour les Skills IA et dashboards d'intégration correspondants.
+* [ ] **TASK-18.6** : Tests unitaires et d'intégration Vitest pour la grille et les nouveaux widgets.
+
+---
+
+## Phase 19 : v1.9.0 — Registres Distants Privés & Partage Communautaire (📋 PLANIFIÉ)
+
+* [ ] **TASK-19.1** : Support de multi-registres distants sécurisés dans `config-manager.ts` avec authentification par token.
+* [ ] **TASK-19.2** : Commande `rs-ui registry add <alias> <url> [--token <secret>]`.
+* [ ] **TASK-19.3** : Commande `rs-ui package <item>` pour valider et préparer un composant/widget au format distribuable.
+* [ ] **TASK-19.4** : Commande `rs-ui export` pour générer des bundles de distribution indépendants.
+
+---
+
+## Phase 20 : v2.0.0 — Rashwright Studio & Expo SDK 59 (📋 PLANIFIÉ)
+
+* [ ] **TASK-20.1** : Développer le serveur web local `rs-ui studio` (serveur HTTP léger sans dépendance lourde).
+* [ ] **TASK-20.2** : Interface GUI interactive de visualisation des composants, widgets et templates avec prévisualisation multi-appareils.
+* [ ] **TASK-20.3** : Studio de personnalisation de thème visuel en direct (couleurs, bordures, flou Liquid Glass) avec sauvegarde synchrone.
+* [ ] **TASK-20.4** : Constructeur visuel d'écrans par drag & drop générant du code TSX propre vers `src/app/`.
+* [ ] **TASK-20.5** : Certification complète Expo SDK 59 Stable et React 19.
+
