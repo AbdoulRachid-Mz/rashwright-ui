@@ -1,6 +1,8 @@
 {
   "name": "modal",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Modal générique avec animations d'entrée/sortie.",
   "category": "Overlay",
   "files": [
@@ -9,10 +11,16 @@
   "dependencies": [],
   "expoDependencies": [
     "expo-blur",
+    "expo-linear-gradient",
     "react-native-reanimated"
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

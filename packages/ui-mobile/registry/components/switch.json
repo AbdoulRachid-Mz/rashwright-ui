@@ -1,6 +1,8 @@
 {
   "name": "switch",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Interrupteur toggle animé avec retour haptique.",
   "category": "Forms",
   "files": [
@@ -10,6 +12,9 @@
   "expoDependencies": [],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

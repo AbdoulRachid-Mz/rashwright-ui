@@ -1,6 +1,8 @@
 {
   "name": "empty-state",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Composant d'état vide générique avec icône, titre, description et action optionnelle.",
   "category": "States",
   "files": [
@@ -8,10 +10,21 @@
   ],
   "dependencies": [],
   "expoDependencies": [
-    "@expo/vector-icons"
+    "@expo/vector-icons",
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-reanimated"
   ],
   "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

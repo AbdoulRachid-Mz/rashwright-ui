@@ -1,6 +1,8 @@
 {
   "name": "navigation-menu",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Menu de navigation hiérarchique avec sections dépliables, indicateurs d'état actif, badges et support Liquid Glass.",
   "category": "Navigation",
   "files": [
@@ -12,6 +14,10 @@
     "expo-haptics"
   ],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

@@ -1,6 +1,8 @@
 {
   "name": "slider",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Curseur de valeur numérique avec labels min/max et retour haptique.",
   "category": "Forms",
   "files": [
@@ -8,10 +10,19 @@
   ],
   "dependencies": [],
   "expoDependencies": [
+    "expo-linear-gradient",
     "react-native-reanimated"
   ],
   "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

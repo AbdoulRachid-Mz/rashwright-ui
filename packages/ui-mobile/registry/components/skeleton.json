@@ -1,6 +1,8 @@
 {
   "name": "skeleton",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Squelette de chargement animé. Nécessite react-native-reanimated.",
   "category": "States",
   "files": [
@@ -8,10 +10,17 @@
   ],
   "dependencies": [],
   "expoDependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
     "react-native-reanimated"
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

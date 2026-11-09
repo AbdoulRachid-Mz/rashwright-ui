@@ -1,6 +1,137 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
+/**
+ * Masque commentaires et littéraux de chaîne afin que seuls les `require()`
+ * réellement exécutés soient détectés.
+ *
+ * - Les commentaires `//` et `/* ... *\/` deviennent des espaces.
+ * - Les chaînes '...' et "..." deviennent des espaces (retours à la ligne
+ *   préservés pour conserver la numérotation).
+ * - Les template literals `` `...` `` sont masqués, MAIS leurs expressions
+ *   `${ ... }` sont analysées comme du code : un `require()` dans une
+ *   interpolation reste détecté.
+ */
+function maskNonCode(source) {
+  const blank = (ch) => (ch === "\n" ? "\n" : ch === "\r" ? "\r" : " ");
+
+  function maskCode(start, endChar) {
+    let out = "";
+    let i = start;
+    let braceDepth = 0;
+
+    while (i < source.length) {
+      const ch = source[i];
+      const next = source[i + 1];
+
+      // Fin d'une expression `${ ... }`.
+      if (endChar === "}" && ch === "}" && braceDepth === 0) {
+        out += "}";
+        return [out, i + 1];
+      }
+
+      // Commentaire de ligne.
+      if (ch === "/" && next === "/") {
+        while (i < source.length && source[i] !== "\n") {
+          out += " ";
+          i++;
+        }
+        continue;
+      }
+
+      // Commentaire de bloc.
+      if (ch === "/" && next === "*") {
+        out += "  ";
+        i += 2;
+        while (
+          i < source.length &&
+          !(source[i] === "*" && source[i + 1] === "/")
+        ) {
+          out += blank(source[i]);
+          i++;
+        }
+        if (i < source.length) {
+          out += "  ";
+          i += 2;
+        }
+        continue;
+      }
+
+      // Chaîne simple ou double.
+      if (ch === "'" || ch === '"') {
+        const quote = ch;
+        out += " ";
+        i++;
+        while (i < source.length) {
+          const c = source[i];
+          if (c === "\\") {
+            out += " ";
+            if (i + 1 < source.length) out += blank(source[i + 1]);
+            i += 2;
+            continue;
+          }
+          out += blank(c);
+          i++;
+          if (c === quote || c === "\n") break;
+        }
+        continue;
+      }
+
+      // Template literal.
+      if (ch === "`") {
+        out += " ";
+        i++;
+        while (i < source.length) {
+          const c = source[i];
+          if (c === "\\") {
+            out += " ";
+            if (i + 1 < source.length) out += blank(source[i + 1]);
+            i += 2;
+            continue;
+          }
+          if (c === "`") {
+            out += " ";
+            i++;
+            break;
+          }
+          if (c === "$" && source[i + 1] === "{") {
+            out += "${";
+            i += 2;
+            const [inner, nextIndex] = maskCode(i, "}");
+            out += inner;
+            i = nextIndex;
+            continue;
+          }
+          out += blank(c);
+          i++;
+        }
+        continue;
+      }
+
+      // Accolades : suivies pour délimiter correctement `${ ... }`.
+      if (ch === "{") {
+        braceDepth++;
+        out += ch;
+        i++;
+        continue;
+      }
+      if (ch === "}") {
+        if (braceDepth > 0) braceDepth--;
+        out += ch;
+        i++;
+        continue;
+      }
+
+      out += ch;
+      i++;
+    }
+
+    return [out, i];
+  }
+
+  return maskCode(0, undefined)[0];
+}
+
 function walk(dir, hits) {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
@@ -10,17 +141,19 @@ function walk(dir, hits) {
       walk(full, hits);
     } else if (/\.ts$/.test(entry)) {
       const content = readFileSync(full, "utf8");
-      const usesCreateRequire = /createRequire\(/.test(content);
-      if (usesCreateRequire) continue;
-      const lines = content.split(/\n/);
-      lines.forEach((l, i) => {
-        if (/\brequire\s*\(/.test(l)) {
+      const masked = maskNonCode(content);
+      // `createRequire` est le mécanisme ESM autorisé (ex: package.json).
+      if (/createRequire\s*\(/.test(masked)) continue;
+      const maskedLines = masked.split(/\n/);
+      const originalLines = content.split(/\n/);
+      maskedLines.forEach((line, i) => {
+        if (/\brequire\s*\(/.test(line)) {
           hits.push(
             relative(process.cwd(), full) +
               ":" +
               (i + 1) +
               ": " +
-              l.trim().slice(0, 140)
+              (originalLines[i] ?? line).trim().slice(0, 140)
           );
         }
       });

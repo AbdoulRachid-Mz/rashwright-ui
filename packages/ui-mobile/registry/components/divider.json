@@ -1,6 +1,8 @@
 {
   "name": "divider",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Séparateur horizontal ou vertical avec label optionnel.",
   "category": "Layout",
   "files": [
@@ -9,7 +11,14 @@
   "dependencies": [],
   "expoDependencies": [],
   "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

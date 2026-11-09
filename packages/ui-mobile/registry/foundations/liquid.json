@@ -1,0 +1,42 @@
+{
+  "name": "liquid",
+  "type": "registry:foundation",
+  "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Primitives Liquid Glass : surface, pressable, highlight, border, glow, blob, shadow et types associés.",
+  "category": "Foundation",
+  "files": [
+    "components/ui/liquid/liquid-types.ts",
+    "components/ui/liquid/liquid-surface.tsx",
+    "components/ui/liquid/liquid-pressable.tsx",
+    "components/ui/liquid/liquid-highlight.tsx",
+    "components/ui/liquid/liquid-border.tsx",
+    "components/ui/liquid/liquid-glow.tsx",
+    "components/ui/liquid/liquid-blob.tsx",
+    "components/ui/liquid/liquid-shadow.ts"
+  ],
+  "assets": [],
+  "dependencies": [],
+  "expoDependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
+  "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "theme"
+  ],
+  "providers": [],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "notes": "expo-haptics est importé statiquement par liquid-pressable : il est installé avec la fondation."
+}

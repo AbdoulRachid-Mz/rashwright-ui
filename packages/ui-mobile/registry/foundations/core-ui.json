@@ -1,0 +1,34 @@
+{
+  "name": "core-ui",
+  "type": "registry:foundation",
+  "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Primitives UI Core ThemedText et ThemedView, utilisées implicitement par la majorité des composants.",
+  "category": "Foundation",
+  "files": [
+    "components/ui/text.tsx",
+    "components/ui/view.tsx"
+  ],
+  "assets": [],
+  "dependencies": [],
+  "expoDependencies": [
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "requiresFoundations": [
+    "responsive",
+    "theme"
+  ],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "notes": "ThemedView consomme useResponsive : responsive fait partie du graphe."
+}

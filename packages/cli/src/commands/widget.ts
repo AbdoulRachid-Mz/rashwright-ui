@@ -190,48 +190,23 @@ export function widgetCommand(): Command {
     .command("remove <name>")
     .description("Supprimer les fichiers d'un widget installé dans le projet")
     .option("--yes", "Confirmer la suppression sans prompt")
+    .option("--force", "Supprimer malgré des dépendants ou des modifications locales")
     .option("--dry-run", "Afficher les suppressions sans les exécuter")
-    .action(async (name: string, opts: { yes?: boolean; dryRun?: boolean }) => {
-      const cwd = process.cwd();
-      const { rmSync, existsSync } = await import("node:fs");
-      const { join } = await import("node:path");
-      const { confirm } = await import("@inquirer/prompts");
-      const { removeLockedWidget } = await import("../core/lock-manager.js");
-
-      const candidates = [
-        join(cwd, "components", "widgets", name),
-        join(cwd, "src", "components", "widgets", name),
-      ];
-
-      const targetPath = candidates.find((p) => existsSync(p));
-      if (!targetPath) {
-        console.log(chalk.yellow(`  ⚠ Widget "${name}" introuvable dans ce projet.`));
-        return;
-      }
-
-      console.log(chalk.bold(`  Suppression du widget "${name}":`));
-      console.log(chalk.dim(`    Dossier : ${targetPath}`));
-      console.log();
-
-      if (!opts.yes && !opts.dryRun) {
-        const ok = await confirm({
-          message: `Confirmer la suppression du widget "${name}" ?`,
-          default: false,
+    .action(
+      async (
+        name: string,
+        opts: { yes?: boolean; force?: boolean; dryRun?: boolean },
+      ) => {
+        const { removeArtefact } = await import("./remove.js");
+        const code = await removeArtefact(`widget:${name}`, {
+          type: "widget",
+          yes: opts.yes,
+          force: opts.force,
+          dryRun: opts.dryRun,
         });
-        if (!ok) {
-          console.log(chalk.dim("  Annulé."));
-          return;
-        }
-      }
-
-      if (!opts.dryRun) {
-        rmSync(targetPath, { recursive: true, force: true });
-        removeLockedWidget(cwd, name);
-        console.log(chalk.green(`  ✔ Widget "${name}" supprimé avec succès.`));
-      } else {
-        console.log(chalk.dim(`  [dry-run] Suppression récursive de ${targetPath}`));
-      }
-    });
+        if (code !== 0) process.exit(code);
+      },
+    );
 
   return cmd;
 }

@@ -1,6 +1,8 @@
 {
   "name": "reorderable-list",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Liste réordonnable avec réorganisation animée et contrôles fléchés accessibles WCAG 2.1 AA.",
   "category": "Data",
   "files": [
@@ -8,10 +10,15 @@
   ],
   "dependencies": [],
   "expoDependencies": [
+    "@expo/vector-icons"
+  ],
+  "optionalExpoDependencies": [
     "expo-haptics"
   ],
-  "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

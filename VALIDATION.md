@@ -1,7 +1,7 @@
-# VALIDATION.md — Checklist Release Rashwright UI Mobile (v1.6.0)
+# VALIDATION.md — Checklist Release Rashwright UI Mobile (v1.6.1)
 
-Version cible : **@rashwright/ui-mobile@1.6.0** · **@rashwright/cli@1.6.0**  
-Dernière validation : 2026-10-21 (245 tests Vitest, 51 suites, Quality Gate 100% vert, 0 erreur TypeScript strict)
+Version cible : **@rashwright/ui-mobile@1.6.1** · **@rashwright/cli@1.6.1**  
+Dernière validation : 2026-10-21 (325 tests Vitest, 58 suites, Quality Gate 100% vert, 0 erreur TypeScript strict)
 
 ---
 
@@ -37,7 +37,7 @@ Contrôles effectués (`scripts/validate-registry.ts`) :
 - [x] **R-1** : Dépendances internes `requiresComponents` existantes et validées
 - [x] **R-2** : Absence totale de cycle dans le graphe de dépendances
 - [x] **C-1** : `expoDependencies` validées et autorisées
-- [x] **C-2** : Version uniforme dans les JSON de composants (1.6.0)
+- [x] **C-2** : Version uniforme dans les JSON de composants (1.6.1)
 - [x] **W-1** : 6 widgets modulaires (`widgets/*/widget.json`) valides et découvrables
 - [x] **T-1** : 10 manifestes `template.json` autonomes valides dans `packages/ui-mobile/templates/`
 
@@ -62,11 +62,11 @@ Statut : ✅ **PASS** (exit 0)
 
 ---
 
-## 4. Tests unitaires Vitest (51 suites, 245 tests)
+## 4. Tests unitaires Vitest (58 suites, 325 tests)
 
 ```bash
 bun run test
-# Attendu : 51 test files passed, 245 tests passed (100%)
+# Attendu : 51 test files passed, 325 tests passed (100%)
 ```
 
 - [x] `widgets-registry.test.ts` (8 tests) : découverte, lookup avec/sans suffixe, résolution de dépendances
@@ -98,7 +98,7 @@ bun run --filter @rashwright/cli smoke:all
 ```
 
 - [x] Compilation du CLI vers `packages/cli/dist/index.js` (bundle ESM autonome ~0.40 MB)
-- [x] `node dist/index.js --version` affiche `1.6.0`
+- [x] `node dist/index.js --version` affiche `1.6.1`
 - [x] `cli-lint-require.mjs` confirme l'absence de `require()` anti-pattern (0 occurrence)
 - [x] `cli-lint-shebang.mjs` confirme l'unicité du shebang (`#!/usr/bin/env node`)
 - [x] `cli-smoke-dep-ui.mjs` confirme que `@rashwright/ui-mobile` est une version semver valide (`^1.0.0`)

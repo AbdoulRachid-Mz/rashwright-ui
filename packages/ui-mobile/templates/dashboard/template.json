@@ -1,8 +1,10 @@
 {
   "id": "dashboard",
   "name": "Dashboard & Analytics",
-  "description": "Tableau de bord complet avec StatCards interactives, feed d'activités, filtres temporels et actions rapides.",
+  "type": "registry:block",
   "version": "1.0.1",
+  "registryVersion": "1.6.1",
+  "description": "Tableau de bord complet avec StatCards interactives, feed d'activités, filtres temporels et actions rapides.",
   "componentName": "DashboardTemplate",
   "entrypoint": "dashboard-template.tsx",
   "files": [
@@ -13,12 +15,16 @@
     "index.ts"
   ],
   "requiredComponents": [
-    "card",
-    "stat-card",
     "avatar",
     "badge",
     "button",
-    "rashwright-logo"
+    "card",
+    "divider",
+    "rashwright-logo",
+    "stat-card"
+  ],
+  "requiresFoundations": [
+    "theme"
   ],
   "dependencies": [],
   "expoDependencies": [],

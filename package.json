@@ -1,7 +1,7 @@
 {
   "name": "@rashwright/workspace-root",
   "private": true,
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Rashwright UI Mobile — Workspace racine (Bun workspaces)",
   "license": "MIT",
   "packageManager": "bun@1.4.2",
@@ -31,6 +31,7 @@
     "cli:doctor": "bun run cli doctor",
     "test": "bun --filter @rashwright/cli test",
     "test:cli": "bun --filter @rashwright/cli test",
+    "test:install-e2e": "bun run --filter @rashwright/cli test:install-e2e",
     "test:coverage": "bun --filter @rashwright/cli test:coverage",
     "quality": "bun run validate-registry && bun run validate-maestro && bun run check-types && bun run test && bun run build:cli && bun run --filter @rashwright/cli smoke:all",
     "preflight": "bun run quality",

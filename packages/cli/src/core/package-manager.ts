@@ -7,35 +7,16 @@ export type PackageManager = "bun" | "pnpm" | "yarn" | "npm";
 // ─── Expo SDK ─────────────────────────────────────────────────────────────────
 
 /**
- * Versions Expo SDK réellement supportées par Rashwright UI.
- * Mettre à jour cette liste lorsqu'un nouveau SDK est validé.
+ * Les versions SDK sont définies une seule fois dans `sdk-versions.ts`.
+ * Réexportées ici pour préserver l'API historique de `package-manager`.
  */
-export const SUPPORTED_SDK_VERSIONS = [54, 55, 56, 57, 58] as const;
-
-export type SupportedSdkVersion = (typeof SUPPORTED_SDK_VERSIONS)[number];
-
-export const MINIMUM_SDK_VERSION: SupportedSdkVersion = 54;
-
-export const LATEST_SUPPORTED_SDK: SupportedSdkVersion = 58;
-
-/**
- * Résoudre "latest" ou un nombre vers une version SDK numérique valide.
- * Retourne `LATEST_SUPPORTED_SDK` si la valeur est "latest" ou invalide.
- */
-export function resolveSdkVersion(raw: string | number | undefined): SupportedSdkVersion {
-  if (raw === "latest" || raw === undefined || raw === "") {
-    return LATEST_SUPPORTED_SDK;
-  }
-  const num = Number(raw);
-  if (
-    Number.isInteger(num) &&
-    (SUPPORTED_SDK_VERSIONS as readonly number[]).includes(num)
-  ) {
-    return num as SupportedSdkVersion;
-  }
-  // Valeur fournie mais non reconnue → fallback latest
-  return LATEST_SUPPORTED_SDK;
-}
+export {
+  SUPPORTED_SDK_VERSIONS,
+  MINIMUM_SDK_VERSION,
+  LATEST_SUPPORTED_SDK,
+  resolveSdkVersion,
+} from "./sdk-versions.js";
+export type { SupportedSdk as SupportedSdkVersion } from "./sdk-versions.js";
 
 /**
  * Detect package manager from lockfiles present in the project root.

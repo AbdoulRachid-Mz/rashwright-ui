@@ -1,18 +1,30 @@
 {
   "name": "copy-button",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Bouton de copie interactif dans le presse-papiers avec feedback visuel, états de succès/erreur, haptique et variantes Glass.",
   "category": "Basic",
   "files": [
     "components/ui/copy-button.tsx"
   ],
   "dependencies": [],
-  "expoDependencies": [],
-  "optionalExpoDependencies": [
+  "expoDependencies": [
+    "@expo/vector-icons",
+    "expo-blur",
     "expo-clipboard",
+    "expo-linear-gradient",
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [
     "expo-haptics"
   ],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

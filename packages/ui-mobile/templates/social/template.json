@@ -1,8 +1,10 @@
 {
   "id": "social",
   "name": "Social Network",
-  "description": "Réseau social mobile moderne : carrousel horizontal de stories animées, fil d'actualités avec likes interactifs, partages et commentaires.",
+  "type": "registry:block",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Réseau social mobile moderne : carrousel horizontal de stories animées, fil d'actualités avec likes interactifs, partages et commentaires.",
   "componentName": "SocialTemplate",
   "entrypoint": "social-template.tsx",
   "files": [
@@ -14,15 +16,15 @@
     "index.ts"
   ],
   "requiredComponents": [
-    "card",
     "avatar",
     "button",
-    "badge"
+    "card"
+  ],
+  "requiresFoundations": [
+    "theme"
   ],
   "dependencies": [],
-  "expoDependencies": [
-    "expo-haptics"
-  ],
+  "expoDependencies": [],
   "supportsGlass": true,
   "screens": [
     {

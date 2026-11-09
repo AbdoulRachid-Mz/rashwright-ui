@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 
 export const SKILL_FILENAME = "SKILL.md";
 
@@ -176,6 +176,48 @@ export function removeComponentSkill(
       }
     } catch {
       // Ignorer
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Supprime le Skill IA d'un widget retiré.
+ * Les skills de widgets vivent sous `skills/rs-ui/widgets/<id>/SKILL.md`.
+ */
+export function removeWidgetSkill(
+  widgetId: string,
+  targetProjectRoot: string,
+  dryRun = false,
+): boolean {
+  const cleanId = widgetId.replace(/-widget$/, "");
+  const candidates = [
+    join(targetProjectRoot, "skills", "rs-ui", "widgets", cleanId),
+    join(targetProjectRoot, "skills", "rs-ui", cleanId),
+  ];
+
+  const skillDir = candidates.find((dir) =>
+    existsSync(join(dir, "SKILL.md")),
+  );
+  if (!skillDir) return false;
+  if (dryRun) return true;
+
+  try {
+    rmSync(join(skillDir, "SKILL.md"), { force: true });
+    try {
+      const remaining = readdirSync(skillDir);
+      if (remaining.length === 0) {
+        rmSync(skillDir, { recursive: true, force: true });
+        const parent = dirname(skillDir);
+        const parentRemaining = readdirSync(parent);
+        if (parentRemaining.length === 0) {
+          rmSync(parent, { recursive: true, force: true });
+        }
+      }
+    } catch {
+      // Le dossier parent n'est pas supprimé si non vide.
     }
     return true;
   } catch {

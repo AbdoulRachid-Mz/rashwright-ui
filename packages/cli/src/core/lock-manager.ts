@@ -10,6 +10,7 @@ export interface LockedFile {
 
 export interface LockedComponent {
   version: string;
+  registryVersion?: string;
   sourceHash?: string;
   files: LockedFile[];
   dependencies: string[];
@@ -19,6 +20,7 @@ export interface LockedComponent {
 
 export interface LockedTemplate {
   version: string;
+  registryVersion?: string;
   installPath: string;
   requiredComponents: string[];
   files: LockedFile[];
@@ -29,8 +31,19 @@ export interface LockedTemplate {
 
 export interface LockedWidget {
   version: string;
+  registryVersion?: string;
   installPath: string;
   requiredComponents: string[];
+  files: LockedFile[];
+  dependencies: string[];
+  expoDependencies: string[];
+  installedAt?: string;
+}
+
+/** Une fondation installée (theme, liquid, core-ui...). */
+export interface LockedFoundation {
+  version: string;
+  registryVersion?: string;
   files: LockedFile[];
   dependencies: string[];
   expoDependencies: string[];
@@ -43,6 +56,7 @@ export interface RashwrightLockfile {
   components: Record<string, LockedComponent>;
   templates: Record<string, LockedTemplate>;
   widgets?: Record<string, LockedWidget>;
+  foundations?: Record<string, LockedFoundation>;
 }
 
 export const LOCKFILE_NAME = "rashwright-ui.lock";
@@ -105,6 +119,7 @@ export function recordLockedComponent(
   dependencies: string[] = [],
   expoDependencies: string[] = [],
   dryRun = false,
+  registryVersion?: string,
 ): RashwrightLockfile {
   const lock = readLockfile(projectRoot) || {
     lockfileVersion: 1,
@@ -129,6 +144,7 @@ export function recordLockedComponent(
 
   lock.components[componentName] = {
     version,
+    ...(registryVersion ? { registryVersion } : {}),
     sourceHash: files[0]?.hash,
     files,
     dependencies,
@@ -171,6 +187,7 @@ export function recordLockedTemplate(
   dependencies: string[] = [],
   expoDependencies: string[] = [],
   dryRun = false,
+  registryVersion?: string,
 ): RashwrightLockfile {
   const lock = readLockfile(projectRoot) || {
     lockfileVersion: 1,
@@ -195,6 +212,7 @@ export function recordLockedTemplate(
 
   lock.templates[templateId] = {
     version,
+    ...(registryVersion ? { registryVersion } : {}),
     installPath: installPath.replace(/\\/g, "/"),
     requiredComponents,
     files,
@@ -238,6 +256,7 @@ export function recordLockedWidget(
   dependencies: string[] = [],
   expoDependencies: string[] = [],
   dryRun = false,
+  registryVersion?: string,
 ): RashwrightLockfile {
   const lock = readLockfile(projectRoot) || {
     lockfileVersion: 1,
@@ -267,6 +286,7 @@ export function recordLockedWidget(
 
   lock.widgets[widgetId] = {
     version,
+    ...(registryVersion ? { registryVersion } : {}),
     installPath: installPath.replace(/\\/g, "/"),
     requiredComponents,
     files,
@@ -275,6 +295,76 @@ export function recordLockedWidget(
     installedAt: new Date().toISOString(),
   };
 
+  lock.generatedAt = new Date().toISOString();
+  writeLockfile(projectRoot, lock, dryRun);
+  return lock;
+}
+
+/**
+ * Enregistre ou met à jour une fondation dans le lockfile avec le hash de ses fichiers.
+ * Les chemins fournis sont relatifs à la racine du projet.
+ */
+export function recordLockedFoundation(
+  projectRoot: string,
+  foundationName: string,
+  version: string,
+  relativeFiles: string[],
+  dependencies: string[] = [],
+  expoDependencies: string[] = [],
+  dryRun = false,
+  registryVersion?: string,
+): RashwrightLockfile {
+  const lock = readLockfile(projectRoot) || {
+    lockfileVersion: 1,
+    generatedAt: new Date().toISOString(),
+    components: {},
+    templates: {},
+  };
+
+  if (!lock.foundations) {
+    lock.foundations = {};
+  }
+
+  const files: LockedFile[] = [];
+  for (const rel of relativeFiles) {
+    const normalizedRel = rel.replace(/\\/g, "/");
+    const abs = join(projectRoot, normalizedRel);
+    if (existsSync(abs)) {
+      const content = readFileSync(abs, "utf-8");
+      files.push({
+        path: normalizedRel,
+        hash: computeFileHash(content),
+        installedAt: new Date().toISOString(),
+      });
+    }
+  }
+
+  lock.foundations[foundationName] = {
+    version,
+    ...(registryVersion ? { registryVersion } : {}),
+    files,
+    dependencies,
+    expoDependencies,
+    installedAt: new Date().toISOString(),
+  };
+
+  lock.generatedAt = new Date().toISOString();
+  writeLockfile(projectRoot, lock, dryRun);
+  return lock;
+}
+
+/**
+ * Retire une fondation du lockfile.
+ */
+export function removeLockedFoundation(
+  projectRoot: string,
+  foundationName: string,
+  dryRun = false,
+): RashwrightLockfile | null {
+  const lock = readLockfile(projectRoot);
+  if (!lock || !lock.foundations) return null;
+
+  delete lock.foundations[foundationName];
   lock.generatedAt = new Date().toISOString();
   writeLockfile(projectRoot, lock, dryRun);
   return lock;
@@ -407,6 +497,50 @@ export function checkWidgetIntegrity(
   const missingFiles: string[] = [];
 
   for (const f of lockedWgt.files) {
+    const abs = join(projectRoot, f.path);
+    if (!existsSync(abs)) {
+      missingFiles.push(f.path);
+    } else {
+      const content = readFileSync(abs, "utf-8");
+      const currentHash = computeFileHash(content);
+      if (currentHash !== f.hash) {
+        modifiedFiles.push(f.path);
+      }
+    }
+  }
+
+  if (missingFiles.length > 0) {
+    return { status: "missing", modifiedFiles, missingFiles };
+  }
+  if (modifiedFiles.length > 0) {
+    return { status: "modified", modifiedFiles, missingFiles };
+  }
+  return { status: "clean", modifiedFiles, missingFiles };
+}
+
+/**
+ * Analyse l'intégrité d'une fondation installée en comparant le hash de ses
+ * fichiers au lockfile.
+ */
+export function checkFoundationIntegrity(
+  projectRoot: string,
+  foundationName: string,
+): {
+  status: FileIntegrityStatus;
+  modifiedFiles: string[];
+  missingFiles: string[];
+} {
+  const lock = readLockfile(projectRoot);
+  const locked = lock?.foundations?.[foundationName];
+
+  if (!locked) {
+    return { status: "untracked", modifiedFiles: [], missingFiles: [] };
+  }
+
+  const modifiedFiles: string[] = [];
+  const missingFiles: string[] = [];
+
+  for (const f of locked.files) {
     const abs = join(projectRoot, f.path);
     if (!existsSync(abs)) {
       missingFiles.push(f.path);

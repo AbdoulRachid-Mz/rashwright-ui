@@ -1,6 +1,8 @@
 {
   "name": "color-picker",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Sélecteur de couleur tactile avec nuancier de palettes rapides, saisie hexadécimale, retour haptique et variante Liquid Glass.",
   "category": "Forms",
   "files": [
@@ -12,6 +14,10 @@
     "expo-haptics"
   ],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

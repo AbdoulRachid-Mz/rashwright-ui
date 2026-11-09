@@ -144,7 +144,9 @@ describe("Widgets Registry Subsystem", () => {
     expect(finance?.componentName).toBe("FinanceWidget");
     expect(finance?.requiredComponents).toContain("card");
     expect(finance?.requiredComponents).toContain("badge");
-    expect(finance?.requiredComponents).toContain("button");
+    // Le widget utilise TouchableOpacity, pas le composant `button`.
+    expect(finance?.requiredComponents).not.toContain("button");
+    expect(finance?.requiredComponents).toContain("text");
     expect(finance?.supportsGlass).toBe(true);
   });
 });

@@ -1,6 +1,8 @@
 {
   "name": "avatar",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Avatar utilisateur avec image, initiales fallback et indicateur de présence.",
   "category": "Basic",
   "files": [
@@ -13,6 +15,11 @@
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

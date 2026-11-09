@@ -128,7 +128,7 @@ const CardRoot = ({
     };
   });
 
-  const Container = onPress ? AnimatedTouchableOpacity : AnimatedView;
+  const Container = (onPress ? AnimatedTouchableOpacity : AnimatedView) as React.ComponentType<any>;
   const containerProps = onPress
     ? {
         testID,

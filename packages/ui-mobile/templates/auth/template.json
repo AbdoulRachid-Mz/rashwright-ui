@@ -1,8 +1,10 @@
 {
   "id": "auth",
   "name": "Authentication Suite",
-  "description": "Suite complète d'authentification : écrans séparés SignIn et SignUp, bouton Google Auth et validation OTP sécurisée.",
+  "type": "registry:block",
   "version": "1.0.1",
+  "registryVersion": "1.6.1",
+  "description": "Suite complète d'authentification : écrans séparés SignIn et SignUp, bouton Google Auth et validation OTP sécurisée.",
   "componentName": "AuthTemplate",
   "entrypoint": "auth-template.tsx",
   "files": [
@@ -17,18 +19,20 @@
     "index.ts"
   ],
   "requiredComponents": [
-    "card",
+    "badge",
     "button",
-    "text-input",
+    "card",
     "checkbox",
     "otp-input",
-    "divider",
-    "badge",
-    "rashwright-logo"
+    "rashwright-logo",
+    "text-input"
+  ],
+  "requiresFoundations": [
+    "theme"
   ],
   "dependencies": [],
   "expoDependencies": [
-    "expo-haptics"
+    "react-native-safe-area-context"
   ],
   "supportsGlass": true,
   "screens": [

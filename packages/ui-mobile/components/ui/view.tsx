@@ -130,7 +130,7 @@ export interface ThemedViewProps extends RNViewProps {
   carousels?: CarouselSlot<unknown>[] | CarouselSlot<unknown>;
 }
 
-const ThemedView = forwardRef<RNView, ThemedViewProps>(
+const ThemedView = forwardRef<React.ElementRef<typeof RNView>, ThemedViewProps>(
   (
     {
       children,

@@ -1,6 +1,8 @@
 {
   "name": "fab-menu",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "FAB avec menu d'actions secondaires déployable en éventail.",
   "category": "Navigation",
   "files": [
@@ -9,12 +11,23 @@
   "dependencies": [],
   "expoDependencies": [
     "@expo/vector-icons",
+    "expo-blur",
+    "expo-linear-gradient",
     "react-native-reanimated",
     "react-native-safe-area-context"
   ],
-  "optionalExpoDependencies": [],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
   "requiresComponents": [
-    "floating-action-button"
+    "floating-action-button",
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
   ],
   "providers": [
     "ThemeProvider"

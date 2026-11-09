@@ -1,6 +1,8 @@
 {
   "name": "form",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Composants de formulaire (Field, Label, Message, Description) compatibles react-hook-form.",
   "category": "Forms",
   "files": [
@@ -12,6 +14,9 @@
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

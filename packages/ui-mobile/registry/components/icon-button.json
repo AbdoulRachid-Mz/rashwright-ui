@@ -1,15 +1,31 @@
 {
   "name": "icon-button",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Bouton icône rond avec variants de style et retour haptique optionnel.",
   "category": "Basic",
   "files": [
     "components/ui/icon-button.tsx"
   ],
   "dependencies": [],
-  "expoDependencies": [],
-  "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "expoDependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

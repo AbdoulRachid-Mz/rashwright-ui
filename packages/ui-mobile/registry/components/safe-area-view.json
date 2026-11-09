@@ -1,1 +1,27 @@
-{"name":"safe-area-view","version":"1.0.0","description":"SafeAreaView thémé qui respecte les encoches et barres d'état.","category":"Layout","files":["components/ui/safe-area-view.tsx"],"dependencies":[],"expoDependencies":["react-native-safe-area-context"],"optionalExpoDependencies":[],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "safe-area-view",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "SafeAreaView thémé qui respecte les encoches et barres d'état.",
+  "category": "Layout",
+  "files": [
+    "components/ui/safe-area-view.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "react-native-safe-area-context"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "requiresFoundations": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

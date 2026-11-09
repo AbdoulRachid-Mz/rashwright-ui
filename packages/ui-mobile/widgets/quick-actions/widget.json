@@ -1,8 +1,10 @@
 {
   "id": "quick-actions",
   "name": "Quick Actions Widget",
-  "description": "Grille d'actions rapides configurable avec icônes, libellés, badges et support Liquid Glass.",
+  "type": "registry:block",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Grille d'actions rapides configurable avec icônes, libellés, badges et support Liquid Glass.",
   "category": "Interactions",
   "componentName": "QuickActionsWidget",
   "entrypoint": "quick-actions-widget.tsx",
@@ -13,9 +15,14 @@
     "index.ts"
   ],
   "requiredComponents": [
-    "card",
     "badge",
-    "skeleton"
+    "card",
+    "skeleton",
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "theme"
   ],
   "dependencies": [],
   "expoDependencies": [

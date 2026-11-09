@@ -1,16 +1,29 @@
 {
   "name": "data-table",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Tableau de données avec tri par colonnes, recherche et support Glass.",
   "category": "Data",
   "files": [
     "components/ui/data-table.tsx"
   ],
   "dependencies": [],
-  "expoDependencies": [],
-  "optionalExpoDependencies": [],
+  "expoDependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
   "requiresComponents": [
     "search-input"
+  ],
+  "requiresFoundations": [
+    "glass",
+    "liquid",
+    "theme"
   ],
   "providers": [
     "ThemeProvider"

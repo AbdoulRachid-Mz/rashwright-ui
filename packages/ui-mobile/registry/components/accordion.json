@@ -1,6 +1,8 @@
 {
   "name": "accordion",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Sections dépliables animées avec support multi-ouverture et variantes Glass.",
   "category": "Layout",
   "files": [
@@ -14,6 +16,10 @@
     "expo-haptics"
   ],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

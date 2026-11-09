@@ -1,6 +1,8 @@
 {
   "name": "inline-edit",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Composant d'édition de texte directement en place avec validation, annulation et gestion d'erreur.",
   "category": "Forms",
   "files": [
@@ -8,10 +10,18 @@
   ],
   "dependencies": [],
   "expoDependencies": [
+    "@expo/vector-icons"
+  ],
+  "optionalExpoDependencies": [
     "expo-haptics"
   ],
-  "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

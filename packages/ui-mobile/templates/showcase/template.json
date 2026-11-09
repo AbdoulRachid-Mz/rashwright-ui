@@ -1,8 +1,10 @@
 {
   "id": "showcase",
   "name": "Showcase",
-  "description": "Vitrine de tous les composants Rashwright UI avec onglets overview, composants et glass.",
+  "type": "registry:block",
   "version": "1.0.1",
+  "registryVersion": "1.6.1",
+  "description": "Vitrine de tous les composants Rashwright UI avec onglets overview, composants et glass.",
   "componentName": "ShowcaseTemplate",
   "entrypoint": "showcase-template.tsx",
   "files": [
@@ -10,8 +12,20 @@
     "showcase-template.tsx",
     "index.ts"
   ],
-  "requiredComponents": ["card", "button", "badge", "glass-card", "text-input", "rashwright-logo", "avatar", "stat-card", "rating"],
+  "requiredComponents": [
+    "badge",
+    "button",
+    "card",
+    "glass-card",
+    "rashwright-logo",
+    "text-input"
+  ],
+  "requiresFoundations": [
+    "theme"
+  ],
   "dependencies": [],
-  "expoDependencies": [],
+  "expoDependencies": [
+    "react-native-safe-area-context"
+  ],
   "supportsGlass": true
 }

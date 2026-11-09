@@ -1,20 +1,45 @@
 {
   "name": "popover",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Panneau contextuel ancré à un élément déclencheur avec calcul de position automatique et support Glass.",
   "category": "Feedback",
-  "files": ["components/ui/popover.tsx"],
+  "files": [
+    "components/ui/popover.tsx"
+  ],
   "dependencies": [],
   "expoDependencies": [],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
-  "providers": ["ThemeProvider"],
+  "requiresFoundations": [
+    "glass",
+    "theme"
+  ],
+  "providers": [
+    "ThemeProvider"
+  ],
   "supportsGlass": true,
-  "platforms": ["ios", "android"],
+  "platforms": [
+    "ios",
+    "android"
+  ],
   "nativeRebuildRequired": false,
   "props": {
-    "placement": ["top", "bottom", "left", "right", "top-start", "top-end", "bottom-start", "bottom-end"],
-    "variant": ["default", "glass"],
+    "placement": [
+      "top",
+      "bottom",
+      "left",
+      "right",
+      "top-start",
+      "top-end",
+      "bottom-start",
+      "bottom-end"
+    ],
+    "variant": [
+      "default",
+      "glass"
+    ],
     "closeOnBackdropPress": "boolean"
   }
 }

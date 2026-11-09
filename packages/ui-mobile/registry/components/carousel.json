@@ -1,6 +1,8 @@
 {
   "name": "carousel",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Carrousel d'éléments swipeable avec pagination et défilement automatique optionnel.",
   "category": "Navigation",
   "files": [
@@ -12,7 +14,14 @@
     "react-native-reanimated"
   ],
   "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "responsive",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

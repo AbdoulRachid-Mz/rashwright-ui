@@ -1,1 +1,29 @@
-{"name":"alert","version":"1.0.0","description":"Alerte inline avec variants (success, warning, error, info) et bouton de fermeture.","category":"Feedback","files":["components/ui/alert.tsx"],"dependencies":[],"expoDependencies":["@expo/vector-icons"],"optionalExpoDependencies":[],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "alert",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Alerte inline avec variants (success, warning, error, info) et bouton de fermeture.",
+  "category": "Feedback",
+  "files": [
+    "components/ui/alert.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [
+    "@expo/vector-icons"
+  ],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "requiresFoundations": [
+    "theme"
+  ],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

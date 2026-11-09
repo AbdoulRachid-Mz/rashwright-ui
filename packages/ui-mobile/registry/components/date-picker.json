@@ -1,6 +1,8 @@
 {
   "name": "date-picker",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Sélecteur de date en bottom-sheet modal avec intégration du Calendar et support du thème.",
   "category": "Forms",
   "files": [
@@ -11,6 +13,10 @@
   "optionalExpoDependencies": [],
   "requiresComponents": [
     "calendar"
+  ],
+  "requiresFoundations": [
+    "glass",
+    "theme"
   ],
   "providers": [
     "ThemeProvider"

@@ -2,12 +2,17 @@ import { Command } from "commander";
 import chalk from "chalk";
 import ora from "ora";
 import { confirm, input, select } from "@inquirer/prompts";
-import { basename, join } from "node:path";
-import { existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
+import { basename, join, relative } from "node:path";
+import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { detectProject, isDefaultExpoTemplate } from "../core/project-detector.js";
 import { detectExpo } from "../core/expo-detector.js";
 import { readConfig, writeConfig, mergeRashwrightConfigs } from "../core/config-manager.js";
+import {
+  loadComponentEntry,
+  loadFoundationEntry,
+  type ComponentRegistryEntry,
+} from "../core/dependency-resolver.js";
 import { printBanner } from "../core/banner.js";
 import { detectPackageManager, installExpoPackages, installNpmPackages, installProjectDependencies, buildCreateExpoAppCommand, resolveSdkVersion, SUPPORTED_SDK_VERSIONS, LATEST_SUPPORTED_SDK, type PackageManager } from "../core/package-manager.js";
 import {
@@ -22,8 +27,14 @@ import {
   type CustomThemeColors,
 } from "../core/starter-generator.js";
 import { copyGlobalSkill, copyComponentSkill } from "../core/skills-manager.js";
-import { recordLockedComponent, recordLockedTemplate } from "../core/lock-manager.js";
-import { SOURCE_ROOT, TEMPLATES_ROOT } from "../core/paths.js";
+import {
+  readLockfile,
+  recordLockedComponent,
+  recordLockedFoundation,
+  recordLockedTemplate,
+} from "../core/lock-manager.js";
+import { resolveFoundationDestination } from "../core/foundations-manager.js";
+import { REGISTRY_ROOT, SOURCE_ROOT, TEMPLATES_ROOT } from "../core/paths.js";
 import { getTemplateDefinition } from "../core/templates-registry.js";
 import {
   AVAILABLE_TEMPLATES,
@@ -37,6 +48,21 @@ import {
   injectGlobalCssImport,
   type NativeWindVersion,
 } from "../core/nativewind-manager.js";
+
+/**
+ * Fondations copiées sans condition par `setupFoundations` lors de `init`.
+ * Elles doivent être verrouillées pour que `doctor`, `info`, `update` et la
+ * vérification post-installation reflètent l'état réel du disque.
+ */
+const INITIAL_FOUNDATIONS = [
+  "theme",
+  "glass",
+  "responsive",
+  "core-ui",
+  "tab-bar",
+  "liquid",
+  "upload",
+] as const;
 
 const CORE_EXPO_DEPS = [
   // Navigation (OBLIGATOIRE — "main": "expo-router/entry" est écrit dans package.json)
@@ -106,7 +132,7 @@ export function initCommand(): Command {
   cmd
     .description("Initialiser Rashwright UI Mobile (configure un projet existant ou en crée un nouveau)")
     .argument("[project-name]", "Nom du projet Expo à créer (si aucun projet React Native existant)")
-    .option("--sdk <version>", "Version Expo SDK pour un nouveau projet (58, 57, 56, 55, 54 ou 'latest')")
+    .option("--sdk <version>", "Version Expo SDK pour un nouveau projet (54, 55, 56, 57, 58 ou 'latest')")
     .option("--theme <preset>", "Choisir parmi les thèmes : default, emerald, violet, amber, rose, slate, green, red, cyan, custom", "default")
     .option("--theme-mode <mode>", "Mode d'apparence initial : system, light, dark (défaut : system)")
     .option("--template <type>", "Choisir le Starter Template : minimal, showcase, auth, onboarding, dashboard, commerce, settings", "showcase")
@@ -132,6 +158,20 @@ export function initCommand(): Command {
       let cwd = process.cwd();
 
       printBanner("rs-ui init");
+
+      // ── Validation immédiate de --sdk ───────────────────────────────────
+      // Toute valeur non supportée doit échouer avant les prompts et avant
+      // toute création de projet : jamais de repli silencieux sur "latest".
+      let requestedSdk: number | undefined;
+      if (options.sdk !== undefined) {
+        try {
+          requestedSdk = resolveSdkVersion(options.sdk);
+        } catch (error) {
+          console.log(chalk.red(`  ✖ ${(error as Error).message}`));
+          process.exitCode = 1;
+          return;
+        }
+      }
 
       // ── 0. Sélection du gestionnaire de paquets (Point 3) ────────────────
       let selectedPm: PackageManager = "npm";
@@ -231,8 +271,8 @@ export function initCommand(): Command {
           console.log(chalk.yellow(`  ⚠  Installation dans le répertoire courant : ${chalk.bold(targetDir)}`));
         } else {
           let resolvedSdk: number;
-          if (options.sdk !== undefined) {
-            resolvedSdk = resolveSdkVersion(options.sdk);
+          if (requestedSdk !== undefined) {
+            resolvedSdk = requestedSdk;
           } else if (options.yes) {
             resolvedSdk = LATEST_SUPPORTED_SDK;
           } else {
@@ -240,10 +280,10 @@ export function initCommand(): Command {
               message: "Choisir la version Expo SDK :",
               choices: [
                 { name: `Latest (SDK ${LATEST_SUPPORTED_SDK}) - Recommandé`, value: LATEST_SUPPORTED_SDK },
-                { name: "SDK 57", value: 57 },
-                { name: "SDK 56", value: 56 },
-                { name: "SDK 55", value: 55 },
-                { name: "SDK 54", value: 54 },
+                ...[...SUPPORTED_SDK_VERSIONS]
+                  .filter((sdk) => sdk !== LATEST_SUPPORTED_SDK)
+                  .reverse()
+                  .map((sdk) => ({ name: `SDK ${sdk}`, value: sdk })),
               ],
               default: LATEST_SUPPORTED_SDK,
             });
@@ -595,6 +635,32 @@ export function initCommand(): Command {
         const nwSpinner = ora(`Configuration de NativeWind ${nativeWindVersion} (Tailwind CSS)...`).start();
         setupNativeWind(cwd, nativeWindVersion, selectedPm, { dryRun: options.dryRun, useSrc: hasSrc });
         nwSpinner.succeed(`NativeWind ${nativeWindVersion} configuré (global.css, tailwind.config, metro & types)`);
+      } else if (!options.dryRun) {
+        // Mode 100 % natif : les composants Rashwright utilisent encore l'attribut
+        // `className` (sans effet visuel sans NativeWind). On fournit un typage
+        // ambiant minimal pour que `tsc --noEmit` reste vert, sans dépendance
+        // runtime à NativeWind.
+        const envPath = join(cwd, "nativewind-env.d.ts");
+        if (!existsSync(envPath)) {
+          writeFileSync(
+            envPath,
+            [
+              "// Typage ambiant généré par rs-ui init (--no-nativewind).",
+              "// Permet aux composants Rashwright d'utiliser `className` sans erreur TypeScript.",
+              'import "react-native";',
+              "",
+              'declare module "react-native" {',
+              "  interface ViewProps { className?: string; }",
+              "  interface TextProps { className?: string; }",
+              "  interface ImageProps { className?: string; }",
+              "  interface PressableProps { className?: string; }",
+              "  interface ScrollViewProps { className?: string; }",
+              "}",
+              "",
+            ].join("\n"),
+            "utf-8",
+          );
+        }
       }
 
       if (themePreset === "custom" && customColors) {
@@ -612,7 +678,9 @@ export function initCommand(): Command {
       const templateMeta = AVAILABLE_TEMPLATES[selectedTemplate];
       const compSpinner = ora(`Installation des composants du template (${templateMeta.name})...`).start();
       const targetComponentsDir = join(cwd, componentsPath);
-      if (!existsSync(targetComponentsDir)) mkdirSync(targetComponentsDir, { recursive: true });
+      if (!options.dryRun && !existsSync(targetComponentsDir)) {
+        mkdirSync(targetComponentsDir, { recursive: true });
+      }
       const { installedComponents: installedStarterComps, templateTargetRel } = setupStarterTemplate(
         SOURCE_ROOT,
         cwd,
@@ -683,9 +751,39 @@ export function initCommand(): Command {
       }
 
       // ── 9. Enregistrer la configuration rashwright-ui.json ──────────────
-      const componentsRecord: Record<string, string> = {};
+      //
+      // Les versions proviennent des manifestes réels du registre. Un écran
+      // proxy généré localement (auth-screen, onboarding-screen…) n'existe pas
+      // dans le registre : il n'est donc ni verrouillé ni déclaré comme
+      // artefact, plutôt que d'inventer une version.
+      const starterEntries: Array<{ id: string; entry: ComponentRegistryEntry }> = [];
+      const componentsRecord: Record<
+        string,
+        { version: string; registryVersion?: string }
+      > = {};
+      const localOnlyScreens: string[] = [];
+
       for (const comp of installedStarterComps) {
-        componentsRecord[comp] = "1.0.0";
+        const entry = loadComponentEntry(`ui:${comp}`, REGISTRY_ROOT);
+        if (!entry) {
+          localOnlyScreens.push(comp);
+          continue;
+        }
+        starterEntries.push({ id: comp, entry });
+        componentsRecord[comp] = {
+          version: entry.version,
+          ...(entry.registryVersion
+            ? { registryVersion: entry.registryVersion }
+            : {}),
+        };
+      }
+
+      if (localOnlyScreens.length > 0) {
+        console.log(
+          chalk.dim(
+            `  ℹ Écrans locaux générés (hors registre) : ${localOnlyScreens.join(", ")}`,
+          ),
+        );
       }
 
       const existingConfig = readConfig(join(cwd, "rashwright-ui.json"));
@@ -710,18 +808,23 @@ export function initCommand(): Command {
             }
           : {}),
       });
-      writeConfig(join(cwd, "rashwright-ui.json"), config);
+      // En dry-run, aucune configuration ne doit être écrite : le rapport doit
+      // refléter exactement l'état actuel du projet.
+      if (!options.dryRun) {
+        writeConfig(join(cwd, "rashwright-ui.json"), config);
+      }
 
       // ── 9b. Enregistrer l'état initial dans rashwright-ui.lock ───────────
-      for (const comp of installedStarterComps) {
+      for (const { id: comp, entry } of starterEntries) {
         recordLockedComponent(
           cwd,
           comp,
-          "0.3.0",
+          entry.version,
           [`${componentsPath}/${comp}.tsx`],
-          [],
-          [],
-          options.dryRun
+          entry.dependencies ?? [],
+          entry.expoDependencies ?? [],
+          options.dryRun,
+          entry.registryVersion,
         );
       }
 
@@ -738,7 +841,56 @@ export function initCommand(): Command {
             tplFiles,
             tplDef.dependencies,
             tplDef.expoDependencies,
-            options.dryRun
+            options.dryRun,
+            tplDef.registryVersion
+          );
+        }
+      }
+
+      // ── 9c. Verrouiller les fondations réellement copiées ──────────────
+      // `setupFoundations` copie ces fondations sans passer par un plan ;
+      // sans entrée de lockfile, la vérification post-installation et
+      // `doctor` les signalent à tort comme incohérentes.
+      if (!options.dryRun) {
+        // Ne jamais écraser une entrée existante : cela masquerait des
+        // fichiers modifiés localement depuis la dernière installation.
+        const existingLock = readLockfile(cwd);
+        for (const foundationName of INITIAL_FOUNDATIONS) {
+          if (existingLock?.foundations?.[foundationName]) continue;
+
+          const foundation = loadFoundationEntry(foundationName, REGISTRY_ROOT);
+          if (!foundation) {
+            throw new Error(
+              `Manifeste de fondation introuvable ou invalide : ${foundationName}`,
+            );
+          }
+
+          const relativeFiles: string[] = [];
+          for (const file of foundation.files) {
+            const destination = resolveFoundationDestination(
+              file,
+              cwd,
+              componentsPath,
+            );
+            if (!existsSync(destination)) {
+              throw new Error(
+                `Fondation "${foundationName}" : fichier attendu absent après copie → ${relative(cwd, destination).replace(/\\/g, "/")}`,
+              );
+            }
+            relativeFiles.push(
+              relative(cwd, destination).replace(/\\/g, "/"),
+            );
+          }
+
+          recordLockedFoundation(
+            cwd,
+            foundation.name,
+            foundation.version,
+            relativeFiles,
+            foundation.dependencies ?? [],
+            foundation.expoDependencies ?? [],
+            false,
+            foundation.registryVersion,
           );
         }
       }

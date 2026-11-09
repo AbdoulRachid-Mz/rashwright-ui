@@ -53,10 +53,12 @@ export function resolveTransformedImportPath(
   if (aliases) {
     if (subPath.startsWith("components/ui/") && aliases.components) {
       const rest = subPath.slice("components/ui/".length);
-      const target = aliases.components.endsWith("/")
-        ? aliases.components
-        : `${aliases.components}/`;
-      return `${target}${rest}`;
+      const base = aliases.components.replace(/\/$/, "");
+      // `aliases.components` désigne conventionnellement le dossier parent
+      // (`@/components`) alors que les composants vivent dans `<parent>/ui`.
+      // On ne duplique pas `ui` si l'alias cible déjà ce sous-dossier.
+      const target = base.endsWith("/ui") || base === "ui" ? base : `${base}/ui`;
+      return `${target}/${rest}`;
     }
 
     if (subPath.startsWith("components/") && aliases.components) {

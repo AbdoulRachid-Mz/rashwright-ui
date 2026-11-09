@@ -2,6 +2,7 @@
   "name": "primitives",
   "type": "registry:lib",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Primitives headless zéro-dépendance pour React Native (useControllableState, useDisclosure, WAI-ARIA helpers).",
   "category": "Lib",
   "files": [
@@ -14,6 +15,7 @@
   "expoDependencies": [],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [],
   "providers": [],
   "supportsGlass": false,
   "platforms": [

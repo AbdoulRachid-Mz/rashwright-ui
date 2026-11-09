@@ -2,6 +2,11 @@ import { existsSync, mkdirSync, copyFileSync, readFileSync, writeFileSync, rmSyn
 import { join, dirname, resolve, relative, basename } from "node:path";
 import { execSync } from "node:child_process";
 import { copyComponentFiles, writeFile } from "./file-manager.js";
+import {
+  LATEST_SUPPORTED_SDK,
+  SUPPORTED_SDK_VERSIONS,
+  isSupportedSdk,
+} from "./sdk-versions.js";
 
 /**
  * Copy Rashwright assets (RS logo PNG + SVG) into target project assets directory.
@@ -69,10 +74,9 @@ export function createExpoProject(params: {
         const expoVersion = projectPkg.dependencies?.["expo"] ?? "";
         // Extraire numéro SDK depuis "~54.0.0" ou "54.0.0" ou "^54.1.0"
         const detectedSdk = parseInt(expoVersion.replace(/^[\^~>=\s]+/, ""), 10);
-        const SUPPORTED = [54, 55, 56, 57, 58];
-        if (!isNaN(detectedSdk) && !SUPPORTED.includes(detectedSdk)) {
+        if (!isNaN(detectedSdk) && !isSupportedSdk(detectedSdk)) {
           console.log(
-            `  ⚠ SDK Expo détecté (${detectedSdk}) hors de la plage supportée (54→58). Certains composants peuvent ne pas fonctionner correctement.`
+            `  ⚠ SDK Expo détecté (${detectedSdk}) hors de la plage supportée (${SUPPORTED_SDK_VERSIONS[0]}→${LATEST_SUPPORTED_SDK}). Certains composants peuvent ne pas fonctionner correctement.`
           );
         } else if (!isNaN(detectedSdk)) {
           console.log(`  ✔ SDK Expo ${detectedSdk} détecté — version supportée.`);
@@ -84,7 +88,7 @@ export function createExpoProject(params: {
   }
 
   // Si un SDK spécifique (non-latest) est demandé, le pinner via expo install
-  if (!isLatest && !isNaN(sdkNum) && sdkNum >= 54 && sdkNum <= 58) {
+  if (!isLatest && !isNaN(sdkNum) && isSupportedSdk(sdkNum)) {
     const pinCmd = `npx expo install expo@~${sdkNum}.0.0 -- --non-interactive`;
 
     if (dryRun) {
@@ -322,6 +326,7 @@ export function writeBabelConfig(
 export function updateTsconfig(
   targetProjectRoot: string,
   dryRun = false,
+  aliasPrefixes: string[] = [],
 ): void {
   if (dryRun) return;
 
@@ -398,6 +403,16 @@ export function updateTsconfig(
   }
 
   cfg.compilerOptions.paths["@/*"] = ["./src/*", "./*"];
+
+  // Alias personnalisés réellement utilisés par la transformation d'imports.
+  // Sans cette déclaration, `--alias ~/` produirait des imports que TypeScript
+  // et Metro ne sauraient pas résoudre.
+  for (const rawPrefix of aliasPrefixes) {
+    const prefix = rawPrefix.trim().replace(/\\/g, "/");
+    if (!prefix) continue;
+    const withSlash = prefix.endsWith("/") ? prefix : `${prefix}/`;
+    cfg.compilerOptions.paths[`${withSlash}*`] = ["./src/*", "./*"];
+  }
 
   // ---------------------------------------------------------------------------
   // Migration depuis les anciennes versions de Rashwright
@@ -530,7 +545,8 @@ export const COMPONENT_EXPORTS_MAP: Record<string, string> = {
 
 /**
  * ⚡ Point 4 — Génération dynamique de components/ui/index.ts
- * Ne référence et n'exporte QUE les composants effectivement installés dans le projet.
+ * Ne référence et n'exporte QUE les fichiers réellement présents dans le projet.
+ * Une fondation absente ne doit jamais produire un export non résolu.
  */
 export function generateUiIndex(
   targetComponentsRoot: string,
@@ -539,45 +555,91 @@ export function generateUiIndex(
 ): void {
   if (dryRun) return;
 
-  const lines = [
+  const normalizedTarget = targetComponentsRoot.replace(/\\/g, "/");
+  const useSrc = /\/src\/components\/ui\/?$/.test(normalizedTarget);
+  const projectRoot = normalizedTarget.replace(/\/src\/components\/ui\/?$/, "").replace(/\/components\/ui\/?$/, "");
+  const existsInUi = (rel: string): boolean => existsSync(join(targetComponentsRoot, rel));
+
+  const lines: string[] = [
     '// @/components/ui/index.ts',
     '//',
     '// Barrel d\'exportation dynamique Rashwright UI Mobile.',
-    '// Exporte les primitives Liquid Glass, les vues de base et uniquement les composants installés.',
+    '// Exporte uniquement les primitives et composants réellement présents.',
     '',
-    '// ---------------------------------------------------------------------------',
-    '// 1. Primitives Liquid Glass',
-    '// ---------------------------------------------------------------------------',
-    'export { default as LiquidSurface } from "./liquid/liquid-surface";',
-    'export { default as LiquidPressable } from "./liquid/liquid-pressable";',
-    'export { default as LiquidHighlight } from "./liquid/liquid-highlight";',
-    'export { default as LiquidBorder } from "./liquid/liquid-border";',
-    'export { default as LiquidGlow } from "./liquid/liquid-glow";',
-    'export { default as LiquidBlob } from "./liquid/liquid-blob";',
-    'export { getLiquidShadow, mergeShadows } from "./liquid/liquid-shadow";',
-    'export * from "./liquid/liquid-types";',
-    '',
-    '// ---------------------------------------------------------------------------',
-    '// 2. Vues Thématiques de Base',
-    '// ---------------------------------------------------------------------------',
-    'export { default as ThemedView } from "./view";',
-    'export { default as ThemedText } from "./text";',
-    'export { createGlassTheme } from "@/constants/glass-theme";',
-    '',
-    '// ---------------------------------------------------------------------------',
-    '// 3. Composants Installés',
-    '// ---------------------------------------------------------------------------',
   ];
 
+  // ---------------------------------------------------------------------------
+  // 1. Primitives Liquid Glass (uniquement si les fichiers existent)
+  // ---------------------------------------------------------------------------
+  const liquidExports: Array<[string, string]> = [
+    ["liquid/liquid-surface.tsx", 'export { default as LiquidSurface } from "./liquid/liquid-surface";'],
+    ["liquid/liquid-pressable.tsx", 'export { default as LiquidPressable } from "./liquid/liquid-pressable";'],
+    ["liquid/liquid-highlight.tsx", 'export { default as LiquidHighlight } from "./liquid/liquid-highlight";'],
+    ["liquid/liquid-border.tsx", 'export { default as LiquidBorder } from "./liquid/liquid-border";'],
+    ["liquid/liquid-glow.tsx", 'export { default as LiquidGlow } from "./liquid/liquid-glow";'],
+    ["liquid/liquid-blob.tsx", 'export { default as LiquidBlob } from "./liquid/liquid-blob";'],
+    ["liquid/liquid-shadow.ts", 'export { getLiquidShadow, mergeShadows } from "./liquid/liquid-shadow";'],
+    ["liquid/liquid-types.ts", 'export * from "./liquid/liquid-types";'],
+  ];
+  const availableLiquid = liquidExports.filter(([file]) => existsInUi(file));
+  if (availableLiquid.length > 0) {
+    lines.push(
+      '// ---------------------------------------------------------------------------',
+      '// 1. Primitives Liquid Glass',
+      '// ---------------------------------------------------------------------------',
+      ...availableLiquid.map(([, statement]) => statement),
+      '',
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // 2. Vues Thématiques de Base + thème Glass (uniquement si présents)
+  // ---------------------------------------------------------------------------
+  const baseExports: string[] = [];
+  if (existsInUi("view.tsx")) baseExports.push('export { default as ThemedView } from "./view";');
+  if (existsInUi("text.tsx")) baseExports.push('export { default as ThemedText } from "./text";');
+
+  const glassCandidates = useSrc
+    ? [join(projectRoot, "src/constants/glass-theme.ts"), join(projectRoot, "constants/glass-theme.ts")]
+    : [join(projectRoot, "constants/glass-theme.ts"), join(projectRoot, "src/constants/glass-theme.ts")];
+  if (glassCandidates.some((candidate) => existsSync(candidate))) {
+    baseExports.push('export { createGlassTheme } from "@/constants/glass-theme";');
+  }
+  if (baseExports.length > 0) {
+    lines.push(
+      '// ---------------------------------------------------------------------------',
+      '// 2. Vues Thématiques de Base',
+      '// ---------------------------------------------------------------------------',
+      ...baseExports,
+      '',
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // 3. Composants Installés (uniquement si le fichier source existe)
+  // ---------------------------------------------------------------------------
+  const componentExports: string[] = [];
   const uniqueInstalled = Array.from(new Set(installedComponents)).sort();
   for (const name of uniqueInstalled) {
     const exportStatement = COMPONENT_EXPORTS_MAP[name];
-    if (exportStatement) {
-      lines.push(exportStatement);
-    }
+    if (!exportStatement) continue;
+    const hasFile =
+      existsInUi(`${name}.tsx`) ||
+      existsInUi(`${name}.ts`) ||
+      existsInUi(`${name}/index.ts`) ||
+      existsInUi(`${name}/index.tsx`);
+    if (hasFile) componentExports.push(exportStatement);
+  }
+  if (componentExports.length > 0) {
+    lines.push(
+      '// ---------------------------------------------------------------------------',
+      '// 3. Composants Installés',
+      '// ---------------------------------------------------------------------------',
+      ...componentExports,
+      '',
+    );
   }
 
-  lines.push("");
   const content = lines.join("\n");
   const targetFile = join(targetComponentsRoot, "index.ts");
   const dir = dirname(targetFile);
@@ -840,11 +902,14 @@ export function setupFoundations(
   for (const { src, dest } of filesToCopy) {
     const srcPath = join(sourceRoot, src);
     const destPath = join(targetProjectRoot, dest);
-    if (existsSync(srcPath)) {
-      const dir = dirname(destPath);
-      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-      copyFileSync(srcPath, destPath);
+    if (!existsSync(srcPath)) {
+      throw new Error(`Fondation introuvable : ${srcPath}`);
     }
+    // Non destructif : un fichier existant n'est jamais écrasé par init.
+    if (existsSync(destPath)) continue;
+    const dir = dirname(destPath);
+    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+    copyFileSync(srcPath, destPath);
   }
 
   setupCoreUi(sourceRoot, join(targetProjectRoot, componentsPath), dryRun);

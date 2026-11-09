@@ -2,7 +2,7 @@
 
 > **Fichier de suivi dynamique (`TASK.md`)**  
 > Dernière mise à jour : 2026-10-21  
-> Statut général : **v1.6.0 Validée & Prête (Moteur de Widgets Modulaires & Showcases, 6 widgets officiels, 2 dashboards d'intégration, 79 composants atomiques, 10 templates, 245 tests Vitest réussis, 51 suites, Quality Gate 100% vert, 0 erreur TypeScript strict)**
+> Statut général : **v1.6.1 Validée & Prête (Moteur de Widgets Modulaires & Showcases, 6 widgets officiels, 2 dashboards d'intégration, 79 composants atomiques, 10 templates, 325 tests Vitest réussis, 58 suites, Quality Gate 100% vert, 0 erreur TypeScript strict)**
 
 ---
 
@@ -29,7 +29,7 @@
 | **v1.4.0 (Phase 13)** | Nouveaux Composants Mobiles Avancés (`command`, `color-picker`, `navigation-menu`) — Registre à 68 composants | ✅ Validé | 3 / 3 tâches |
 | **v1.4.0 (Phase 14)** | Visualisation CLI enrichie (`rs-ui info <comp> --preview`) avec extrait de code TSX canonique et boîte ASCII | ✅ Validé | 2 / 2 tâches |
 | **v1.5.0 (Phase 15)** | WCAG 2.1 AA Accessibilité, Fix NativeWind v5 npm, Architecture.md formalisée, Specs Phase 7 écrans Expo, 11 nouveaux composants UI (79 composants au total), 227 tests | ✅ Validé | 8 / 8 tâches |
-| **v1.6.0 (Phase 16)** | Moteur de Widgets Modulaires & Distribuables, 6 widgets officiels, 2 Showcases, Lockfile SHA-256, CLI `rs-ui widget` et `add -w`, 245 tests | ✅ Validé | 8 / 8 tâches |
+| **v1.6.1 (Phase 16)** | Moteur de Widgets Modulaires & Distribuables, 6 widgets officiels, 2 Showcases, Lockfile SHA-256, CLI `rs-ui widget` et `add -w`, 325 tests | ✅ Validé | 8 / 8 tâches |
 | **v1.7.0 (Phase 17)** | Moteur d'Écrans Systèmes Expo (`rs-ui add screen:<id>`), Biométrie, Permissions, QR Scanner, Download, MapView | 📋 Planifié | 0 / 7 tâches |
 | **v1.8.0 (Phase 18)** | Moteur de Widgets V2 : WidgetGrid adaptatif avec Drag & Drop tactile, 6 nouveaux widgets, persistance locale | 📋 Planifié | 0 / 6 tâches |
 | **v1.9.0 (Phase 19)** | Registres Distants Privés (`rs-ui registry add`), Packaging & Export (`rs-ui package`), Cloud Sync | 📋 Planifié | 0 / 4 tâches |
@@ -382,7 +382,7 @@
 
 ---
 
-## Phase 16 : v1.6.0 — Moteur de Widgets Modulaires & Distribuables (✅ ACHEVÉ)
+## Phase 16 : v1.6.1 — Moteur de Widgets Modulaires & Distribuables (✅ ACHEVÉ)
 
 ### Tâche 1 — Moteur CLI & Registre des Widgets
 * [x] **TASK-16.1** : Créer le gestionnaire `packages/cli/src/core/widgets-registry.ts` (`WidgetDefinition`, `loadWidgetsRegistry()`, `getWidgetDefinition(id)`, `listWidgetIds()`, `getWidgetRequiredComponents()`). Support des identifiants avec ou sans suffixe `-widget`.
@@ -401,9 +401,9 @@
 * [x] **TASK-16.6** : Rédiger les 6 fiches IA Skills complètes dans `packages/ui-mobile/skills/*-widget/SKILL.md`.
 * [x] **TASK-16.7** : Développer les 2 dashboards de showcase dans `packages/ui-mobile/showcases/` (`FinanceDashboardShowcase`, `AnalyticsDashboardShowcase`) et les exporter dans le barrel racine.
 
-### Tâche 3 — Tests & Quality Gate v1.6.0
+### Tâche 3 — Tests & Quality Gate v1.6.1
 * [x] **TASK-16.8** : Créer les 4 suites de tests dédiées (`widgets-registry.test.ts`, `widget-command.test.ts`, `add-widget.test.ts`, `e2e-widget-install.test.ts`).
-* [x] **Quality Gate complet validé** : 51 suites de tests, **245 tests Vitest réussis (100% vert)**, 0 erreur TypeScript strict (`zero any`), build CLI 0.40 MB, version 1.6.0.
+* [x] **Quality Gate complet validé** : 58 suites de tests, **325 tests Vitest réussis (100% vert)**, 0 erreur TypeScript strict (`zero any`), build CLI 0.40 MB, version 1.6.1.
 
 ---
 

@@ -27,12 +27,18 @@ export interface TemplateDefinition {
   name: string;
   description: string;
   version: string;
+  /** Version du registre au moment de la publication (optionnelle, rétrocompatible). */
+  registryVersion?: string;
   componentName: string;
   entrypoint: string;
   /** Chemins relatifs au dossier du template. */
   files: string[];
   /** Noms des composants rs-ui requis. */
   requiredComponents: string[];
+  /** Fondations internes requises (theme, glass, core-ui...). */
+  requiresFoundations: string[];
+  /** Assets référencés par le template, relatifs à la racine ui-mobile. */
+  assets: string[];
   /** Dépendances npm (non-Expo). */
   dependencies: string[];
   /** Dépendances Expo. */
@@ -82,12 +88,19 @@ function readTemplateJson(
       name: parsed.name,
       description: parsed.description ?? "",
       version: parsed.version ?? "0.0.0",
+      ...(typeof parsed.registryVersion === "string"
+        ? { registryVersion: parsed.registryVersion }
+        : {}),
       componentName: parsed.componentName,
       entrypoint: parsed.entrypoint,
       files: Array.isArray(parsed.files) ? parsed.files : [],
       requiredComponents: Array.isArray(parsed.requiredComponents)
         ? parsed.requiredComponents
         : [],
+      requiresFoundations: Array.isArray(parsed.requiresFoundations)
+        ? parsed.requiresFoundations
+        : [],
+      assets: Array.isArray(parsed.assets) ? parsed.assets : [],
       dependencies: Array.isArray(parsed.dependencies)
         ? parsed.dependencies
         : [],

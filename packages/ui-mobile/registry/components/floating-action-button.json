@@ -1,6 +1,8 @@
 {
   "name": "floating-action-button",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Bouton d'action flottant (FAB) avec animation d'apparition et retour haptique.",
   "category": "Navigation",
   "files": [
@@ -8,10 +10,23 @@
   ],
   "dependencies": [],
   "expoDependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-reanimated",
     "react-native-safe-area-context"
   ],
-  "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

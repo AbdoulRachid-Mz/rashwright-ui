@@ -1,6 +1,8 @@
 {
   "name": "command",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Palette de commande mobile et recherche rapide avec filtres par sections, raccourcis, état vide et modale dialog Liquid Glass.",
   "category": "Navigation",
   "files": [
@@ -12,6 +14,10 @@
     "expo-haptics"
   ],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

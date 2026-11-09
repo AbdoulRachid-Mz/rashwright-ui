@@ -2,6 +2,7 @@
   "name": "use-device",
   "type": "registry:hook",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Hook pour inspecter les métadonnées et identifiants matériels du terminal (OS, marque, modèle).",
   "category": "Hooks",
   "files": [
@@ -9,11 +10,12 @@
   ],
   "dependencies": [],
   "expoDependencies": [
-    "expo-device",
-    "expo-application"
+    "expo-application",
+    "expo-device"
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [],
   "providers": [],
   "supportsGlass": false,
   "platforms": [

@@ -1,8 +1,10 @@
 {
   "id": "chart",
   "name": "Chart Widget",
-  "description": "Visualisation de données sous forme de graphiques en barres animées, répartition et sparklines avec infobulle interactive et Liquid Glass.",
+  "type": "registry:block",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Visualisation de données sous forme de graphiques en barres animées, répartition et sparklines avec infobulle interactive et Liquid Glass.",
   "category": "Analytics",
   "componentName": "ChartWidget",
   "entrypoint": "chart-widget.tsx",
@@ -13,9 +15,14 @@
     "index.ts"
   ],
   "requiredComponents": [
-    "card",
     "badge",
-    "skeleton"
+    "card",
+    "skeleton",
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "theme"
   ],
   "dependencies": [],
   "expoDependencies": [

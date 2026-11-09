@@ -4,24 +4,20 @@ const cmd = process.platform === "win32" ? "node dist/index.js" : "node dist/ind
 const cases = [
   "init --help",
   "add --help",
-  "list --json",
+  "list --help",
   "doctor --help",
-  "info button",
+  "info --help",
   "remove --help",
   "update --help",
+  "why --help",
 ];
 cases.forEach((c) => {
   const first = c.split(" ")[0];
   console.log("---- rs-ui " + first + " ----");
-  try {
-    const out = execSync(cmd + " " + c, {
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    const lines = out.split(/\n/).slice(0, 4);
-    console.log(lines.join("\n"));
-  } catch (e) {
-    const msg = (e.stdout || e.stderr || String(e)).split(/\n/)[0];
-    console.log("WARN/INFO: " + msg.slice(0, 120));
-  }
+  const out = execSync(cmd + " " + c, {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  const lines = out.split(/\n/).slice(0, 3);
+  console.log(lines.join("\n"));
 });

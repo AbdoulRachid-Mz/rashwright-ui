@@ -1,6 +1,8 @@
 {
   "name": "shimmer",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Effet de scintillement skeleton avec dégradé animé de gauche à droite.",
   "category": "States",
   "files": [
@@ -13,6 +15,9 @@
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "theme"
+  ],
   "providers": [],
   "supportsGlass": false,
   "platforms": [

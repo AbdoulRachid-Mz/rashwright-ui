@@ -2,7 +2,10 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 
 export interface ComponentLockInfo {
+  /** Version de l'artefact (manifeste). */
   version: string;
+  /** Version du registre au moment de l'installation (peut différer de `version`). */
+  registryVersion?: string;
   installedAt?: string;
 }
 
@@ -97,7 +100,8 @@ export function writeConfig(configPath: string, config: RashwrightConfig): void 
 export function markComponentInstalled(
   config: RashwrightConfig,
   name: string,
-  version: string
+  version: string,
+  registryVersion?: string
 ): RashwrightConfig {
   return {
     ...config,
@@ -105,6 +109,7 @@ export function markComponentInstalled(
       ...config.components,
       [name]: {
         version,
+        ...(registryVersion ? { registryVersion } : {}),
         installedAt: new Date().toISOString(),
       },
     },
@@ -146,6 +151,19 @@ export function getInstalledVersion(
 /**
  * Get the installation timestamp of a component if available.
  */
+/**
+ * Version du registre enregistrée lors de l'installation, si connue.
+ * Les anciennes configurations (version stockée en chaîne) n'en ont pas.
+ */
+export function getInstalledRegistryVersion(
+  config: RashwrightConfig,
+  name: string
+): string | null {
+  const item = config.components[name];
+  if (!item || typeof item === "string") return null;
+  return item.registryVersion ?? null;
+}
+
 export function getInstalledAt(
   config: RashwrightConfig,
   name: string

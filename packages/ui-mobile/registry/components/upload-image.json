@@ -1,6 +1,8 @@
 {
   "name": "upload-image",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Sélecteur et uploader d'image avec preview, recadrage et multi-providers.",
   "category": "Media",
   "files": [
@@ -14,6 +16,10 @@
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "theme",
+    "upload"
+  ],
   "providers": [
     "ThemeProvider"
   ],

@@ -1,6 +1,8 @@
 {
   "name": "chip",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Chip/tag sélectionnable avec icône optionnelle et bouton de suppression.",
   "category": "Forms",
   "files": [
@@ -8,10 +10,23 @@
   ],
   "dependencies": [],
   "expoDependencies": [
-    "@expo/vector-icons"
+    "@expo/vector-icons",
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-reanimated"
   ],
-  "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

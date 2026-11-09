@@ -1,8 +1,10 @@
 {
   "id": "settings",
   "name": "Settings",
-  "description": "Écran paramètres avec profil utilisateur, sélecteur d'apparence 3 modes (Système, Clair, Sombre) et contrôle Liquid Glass.",
+  "type": "registry:block",
   "version": "1.0.1",
+  "registryVersion": "1.6.1",
+  "description": "Écran paramètres avec profil utilisateur, sélecteur d'apparence 3 modes (Système, Clair, Sombre) et contrôle Liquid Glass.",
   "componentName": "SettingsTemplate",
   "entrypoint": "settings-template.tsx",
   "files": [
@@ -13,7 +15,17 @@
     "components/profile-section.tsx",
     "components/preferences-section.tsx"
   ],
-  "requiredComponents": ["card", "avatar", "button", "divider", "badge", "rashwright-logo"],
+  "requiredComponents": [
+    "avatar",
+    "badge",
+    "button",
+    "card",
+    "divider",
+    "rashwright-logo"
+  ],
+  "requiresFoundations": [
+    "theme"
+  ],
   "dependencies": [],
   "expoDependencies": [],
   "supportsGlass": true

@@ -44,11 +44,14 @@ describe("starter-generator", () => {
     expect(cfg.compilerOptions.paths["@/*"]).toEqual(["./src/*", "./*"]);
   });
 
-  it("generateUiIndex generates selective exports for only installed components", () => {
+  it("generateUiIndex generates selective exports for only installed components present on disk", () => {
     const compDir = join(tempDir, "src/components/ui");
     mkdirSync(compDir, { recursive: true });
+    writeFileSync(join(compDir, "button.tsx"), "export default function Button() { return null; }\n");
+    writeFileSync(join(compDir, "card.tsx"), "export default function Card() { return null; }\n");
+    writeFileSync(join(compDir, "accordion.tsx"), "export function Accordion() { return null; }\n");
 
-    generateUiIndex(compDir, ["button", "card", "accordion"]);
+    generateUiIndex(compDir, ["button", "card", "accordion", "switch"]);
     const indexFile = join(compDir, "index.ts");
     expect(existsSync(indexFile)).toBe(true);
     const content = readFileSync(indexFile, "utf-8");
@@ -56,6 +59,20 @@ describe("starter-generator", () => {
     expect(content).toContain('export { default as Card } from "./card";');
     expect(content).toContain('export { Accordion } from "./accordion";');
     expect(content).not.toContain('export { default as Switch } from "./switch";');
+  });
+
+  it("generateUiIndex never exports a foundation file that is absent", () => {
+    const compDir = join(tempDir, "src/components/ui");
+    mkdirSync(compDir, { recursive: true });
+    writeFileSync(join(compDir, "button.tsx"), "export default function Button() { return null; }\n");
+
+    generateUiIndex(compDir, ["button", "text", "view"]);
+    const content = readFileSync(join(compDir, "index.ts"), "utf-8");
+    expect(content).toContain("./button");
+    expect(content).not.toContain("./text");
+    expect(content).not.toContain("./view");
+    expect(content).not.toContain("liquid/liquid-surface");
+    expect(content).not.toContain("@/constants/glass-theme");
   });
 
   it("COMPONENT_EXPORTS_MAP includes all 68 components and 6 template screens", () => {

@@ -1,0 +1,29 @@
+{
+  "name": "glass",
+  "type": "registry:foundation",
+  "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Tokens et thème Liquid Glass : usine createGlassTheme et preset glass construit sur le thème de base.",
+  "category": "Foundation",
+  "files": [
+    "constants/glass-theme.ts",
+    "theme/themes/glass.ts"
+  ],
+  "assets": [],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "requiresFoundations": [
+    "theme"
+  ],
+  "providers": [],
+  "supportsGlass": true,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "notes": "Dépend du thème de base pour ses tokens de couleurs."
+}

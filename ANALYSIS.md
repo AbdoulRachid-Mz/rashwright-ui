@@ -2,7 +2,7 @@
 
 > **Date** : 2026-10-14  
 > **Version actuelle** : `@rashwright/ui-mobile@0.7.1` · `@rashwright/cli@0.7.3`  
-> **Statut global** : STABLE · **Zéro `any` · 61 Composants · 7 Templates · 155 Tests Vitest (100% pass) · 32 Suites · Quality Gate exit 0**
+> **Statut global** : STABLE — Zéro `any` — 79 Composants — 10 Templates — 6 Widgets — 325 Tests Vitest (100% pass) — 58 Suites — Quality Gate exit 0
 
 ---
 

@@ -1,0 +1,34 @@
+{
+  "name": "upload",
+  "type": "registry:foundation",
+  "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Moteur d'upload inliné : orchestration, contrats et providers Cloudinary, Firebase, Vercel Blob, Local et Mock.",
+  "category": "Foundation",
+  "files": [
+    "lib/upload/index.ts",
+    "lib/upload/types.ts",
+    "lib/upload/errors.ts",
+    "lib/upload/upload-manager.ts",
+    "lib/upload/providers/cloudinary-provider.ts",
+    "lib/upload/providers/firebase-provider.ts",
+    "lib/upload/providers/vercel-blob-provider.ts",
+    "lib/upload/providers/local-provider.ts",
+    "lib/upload/providers/mock-provider.ts"
+  ],
+  "assets": [],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "requiresFoundations": [],
+  "providers": [],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "notes": "Les providers n'importent aucun module Expo : les sélecteurs de fichiers vivent dans les composants upload-*."
+}

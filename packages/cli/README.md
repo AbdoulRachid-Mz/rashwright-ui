@@ -2,7 +2,7 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile CLI" width="180" />
 </p>
 
-# @rashwright/cli — v1.6.0 · Commande `rs-ui` & `rs-ui-reset`
+# @rashwright/cli — v1.6.1 · Commande `rs-ui` & `rs-ui-reset`
 
 > CLI officiel **Rashwright UI Mobile** pour React Native / Expo.
 > Inspiré de la philosophie shadcn/ui : **tu installes un composant ou un widget, tu possèdes son code source.**
@@ -10,7 +10,7 @@
 > Plus de `node_modules` opaque. Plus de surprise quant à la compatibilité Expo SDK.
 
 [![npm](https://img.shields.io/badge/npm-%40rashwright%2Fcli-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/cli)
-[![version](https://img.shields.io/badge/version-1.6.0-blue)](#)
+[![version](https://img.shields.io/badge/version-1.6.1-blue)](#)
 [![GitHub](https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github)](https://github.com/AbdoulRachid-Mz/rashwright-ui)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000020?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript)](#)
@@ -206,7 +206,7 @@ Le fichier de configuration et le lockfile tracent l'état complet du starter, d
 
 ---
 
-## 🆕 Nouveautés v1.6.0 — Moteur de Widgets Modulaires & Showcases
+## 🆕 Nouveautés v1.6.1 — Moteur de Widgets Modulaires & Showcases
 
 - 🧩 **Moteur de Widgets Modulaires & Distribuables** :
   - **Couche fonctionnelle autonome** : les widgets représentent des blocs métiers complets, réutilisables et distribuables indépendamment des pages ou templates complets.
@@ -229,7 +229,7 @@ Le fichier de configuration et le lockfile tracent l'état complet du starter, d
   - **2 Nouveaux Showcases d'Intégration** :
     - `FinanceDashboardShowcase` : tableau de bord financier complet combinant `FinanceWidget`, `MetricWidget`, `QuickActionsWidget`, `ChartWidget`, `ActivityFeedWidget`.
     - `AnalyticsDashboardShowcase` : tableau de bord analytique intégrant métriques, barres de progression et événements.
-  - **Quality Gate complet** : 51 suites de tests, **245 tests unitaires Vitest réussis (100% vert)**.
+  - **Quality Gate complet** : 58 suites de tests, **325 tests unitaires Vitest réussis (100% vert)**.
 
 ---
 

@@ -50,11 +50,14 @@ describe("initCommand and bootstrap pipeline", () => {
 
   it("resolves SDK options correctly for latest and specific versions", () => {
     expect(resolveSdkVersion("latest")).toBe(LATEST_SUPPORTED_SDK);
+    expect(resolveSdkVersion("58")).toBe(58);
     expect(resolveSdkVersion("57")).toBe(57);
     expect(resolveSdkVersion("56")).toBe(56);
     expect(resolveSdkVersion("55")).toBe(55);
     expect(resolveSdkVersion("54")).toBe(54);
     expect(resolveSdkVersion(undefined)).toBe(LATEST_SUPPORTED_SDK);
+    expect(() => resolveSdkVersion("59")).toThrow(/non supporté/);
+    expect(() => resolveSdkVersion("42")).toThrow(/non supporté/);
   });
 
   // ── Tests de non-régression : ordre d'installation ─────────────────────

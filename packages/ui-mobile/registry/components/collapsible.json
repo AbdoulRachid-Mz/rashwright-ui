@@ -1,6 +1,8 @@
 {
   "name": "collapsible",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Section dépliable animée, version single-item de l'Accordion.",
   "category": "Layout",
   "files": [
@@ -8,10 +10,19 @@
   ],
   "dependencies": [],
   "expoDependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
     "react-native-reanimated"
   ],
-  "optionalExpoDependencies": [],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

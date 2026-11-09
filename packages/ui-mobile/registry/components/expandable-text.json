@@ -1,6 +1,8 @@
 {
   "name": "expandable-text",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Composant de texte tronqué avec bouton interactif Voir plus / Voir moins, animation fluide et support d'accessibilité.",
   "category": "Basic",
   "files": [
@@ -10,6 +12,9 @@
   "expoDependencies": [],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

@@ -1,10 +1,14 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import {
+  MINIMUM_SDK_VERSION,
+  SUPPORTED_SDK_VERSIONS,
+  isSupportedSdk,
+  type SupportedSdk,
+} from "./sdk-versions.js";
 
-export const SUPPORTED_SDK_VERSIONS = [54, 55, 56, 57, 58, 59] as const;
-export const MINIMUM_SDK_VERSION = 54;
-
-export type SupportedSdk = (typeof SUPPORTED_SDK_VERSIONS)[number];
+export { MINIMUM_SDK_VERSION, SUPPORTED_SDK_VERSIONS };
+export type { SupportedSdk };
 
 export interface ExpoInfo {
   detected: boolean;
@@ -22,10 +26,8 @@ export function detectExpo(cwd: string = process.cwd()): ExpoInfo {
       const expoPkg = JSON.parse(readFileSync(expoNodeModules, "utf-8"));
       const version: string = expoPkg.version ?? "";
       const sdk = parseInt(version.split(".")[0] ?? "0", 10);
-      const isSupported = sdk >= MINIMUM_SDK_VERSION;
-      const supportedVersion = SUPPORTED_SDK_VERSIONS.includes(sdk as SupportedSdk)
-        ? (sdk as SupportedSdk)
-        : null;
+      const supportedVersion = isSupportedSdk(sdk) ? (sdk as SupportedSdk) : null;
+      const isSupported = supportedVersion !== null;
       return { detected: true, version, sdkVersion: sdk, isSupported, supportedVersion };
     } catch {
       // fall through
@@ -42,16 +44,13 @@ export function detectExpo(cwd: string = process.cwd()): ExpoInfo {
       if (expoVersion) {
         const match = String(expoVersion).match(/(\d+)/);
         const sdk = match ? parseInt(match[1], 10) : null;
-        const isSupported = sdk !== null && sdk >= MINIMUM_SDK_VERSION;
         const supportedVersion =
-          sdk !== null && SUPPORTED_SDK_VERSIONS.includes(sdk as SupportedSdk)
-            ? (sdk as SupportedSdk)
-            : null;
+          sdk !== null && isSupportedSdk(sdk) ? (sdk as SupportedSdk) : null;
         return {
           detected: true,
           version: expoVersion,
           sdkVersion: sdk,
-          isSupported,
+          isSupported: supportedVersion !== null,
           supportedVersion,
         };
       }

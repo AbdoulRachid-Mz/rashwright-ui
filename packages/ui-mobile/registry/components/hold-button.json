@@ -1,6 +1,8 @@
 {
   "name": "hold-button",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Bouton d'action sensible avec maintien prolongé obligatoire, progression animée, annulation et retour haptique.",
   "category": "Basic",
   "files": [
@@ -8,10 +10,19 @@
   ],
   "dependencies": [],
   "expoDependencies": [
+    "@expo/vector-icons",
+    "expo-linear-gradient",
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [
     "expo-haptics"
   ],
-  "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

@@ -1,6 +1,8 @@
 {
   "name": "screen-skeleton",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Skeleton complet d'un écran pendant le chargement (header + liste de cards).",
   "category": "States",
   "files": [
@@ -12,6 +14,9 @@
   "requiresComponents": [
     "safe-area-view",
     "skeleton"
+  ],
+  "requiresFoundations": [
+    "theme"
   ],
   "providers": [
     "ThemeProvider"

@@ -1,8 +1,8 @@
 # Architecture Rashwright UI Mobile — `rs-ui init` & Moteur de Widgets
 
-> Généré par Rashwright CLI v1.6.0 · Mis à jour pour v1.6.0
+> Généré par Rashwright CLI v1.6.1 · Mis à jour pour v1.6.1
 
-Ce document décrit formellement les architectures de chaque mode d'initialisation disponible avec la commande `rs-ui init`, ainsi que la nouvelle couche de **Widgets Modulaires Autonomes** introduite en v1.6.0. Il sert de référence pour l'outil CLI, la documentation et les contributions.
+Ce document décrit formellement les architectures de chaque mode d'initialisation disponible avec la commande `rs-ui init`, ainsi que la nouvelle couche de **Widgets Modulaires Autonomes** introduite en v1.6.1. Il sert de référence pour l'outil CLI, la documentation et les contributions.
 
 ---
 
@@ -23,7 +23,7 @@ Ce document décrit formellement les architectures de chaque mode d'initialisati
    - [Finance & Wallet](#template-finance)
    - [Chat & Social](#template-chat)
    - [Social Feed](#template-social)
-6. [Widgets Modulaires Autonomes (6 widgets v1.6.0)](#widgets)
+6. [Widgets Modulaires Autonomes (6 widgets v1.6.1)](#widgets)
    - [MetricWidget](#widget-metric)
    - [ProgressWidget](#widget-progress)
    - [QuickActionsWidget](#widget-quick-actions)
@@ -395,7 +395,7 @@ templates/settings/
 
 ---
 
-## Widgets Modulaires Autonomes (v1.6.0) {#widgets}
+## Widgets Modulaires Autonomes (v1.6.1) {#widgets}
 
 Les widgets constituent une couche intermédiaire entre les composants UI atomiques (`Button`, `Card`, `Badge`) et les templates de pages complètes (`Auth`, `Dashboard`). Ils sont distribuables individuellement via `rs-ui add -w <id>` ou `rs-ui widget add <id>` et installés dans `src/components/widgets/<id>/`.
 
@@ -447,7 +447,7 @@ Chaque widget contient :
 
 ---
 
-## Showcases d'intégration (v1.6.0) {#showcases}
+## Showcases d'intégration (v1.6.1) {#showcases}
 
 Pour illustrer et valider l'assemblage cohérent des widgets dans des architectures d'écrans réelles, Rashwright propose deux showcases officiels dans `packages/ui-mobile/showcases/` :
 
@@ -575,8 +575,8 @@ flowchart TD
 
 ```mermaid
 graph TD
-    CLI["@rashwright/cli v1.6.0"]
-    UI["@rashwright/ui-mobile v1.6.0"]
+    CLI["@rashwright/cli v1.6.1"]
+    UI["@rashwright/ui-mobile v1.6.1"]
     
     CLI --> |"lit les composants depuis"| UI
     CLI --> |"lit le registry"| UIReg["registry/index.json"]
@@ -599,4 +599,4 @@ graph TD
 
 ---
 
-*Document maintenu par l'équipe Rashwright. Dernière mise à jour : octobre 2026 — v1.6.0*
+*Document maintenu par l'équipe Rashwright. Dernière mise à jour : octobre 2026 — v1.6.1*

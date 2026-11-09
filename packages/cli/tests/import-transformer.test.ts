@@ -29,6 +29,22 @@ describe("import-transformer (AST Transformers)", () => {
       expect(result).toBe("@/shared/ui/card");
     });
 
+    it("preserves the ui segment when the alias points to the components parent", () => {
+      const result = resolveTransformedImportPath("@/components/ui/card", {
+        aliases: {
+          components: "@/components",
+        },
+      });
+      expect(result).toBe("@/components/ui/card");
+
+      const custom = resolveTransformedImportPath("@/components/ui/button", {
+        aliases: {
+          components: "~/components",
+        },
+      });
+      expect(custom).toBe("~/components/ui/button");
+    });
+
     it("respects targeted alias mapping for contexts and hooks", () => {
       const resContext = resolveTransformedImportPath("@/contexts/theme-context", {
         aliases: {

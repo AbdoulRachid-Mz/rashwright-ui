@@ -1,6 +1,8 @@
 {
   "name": "error-state",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "État d'erreur avec illustration, message et bouton de réessai.",
   "category": "States",
   "files": [
@@ -8,11 +10,21 @@
   ],
   "dependencies": [],
   "expoDependencies": [
-    "@expo/vector-icons"
+    "@expo/vector-icons",
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-reanimated"
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [
-    "button"
+    "button",
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
   ],
   "providers": [
     "ThemeProvider"

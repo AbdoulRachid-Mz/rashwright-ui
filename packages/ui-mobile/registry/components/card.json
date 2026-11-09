@@ -1,6 +1,8 @@
 {
   "name": "card",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Conteneur de carte générique avec support Glass, ombres et coins arrondis.",
   "category": "Layout",
   "files": [
@@ -8,10 +10,20 @@
   ],
   "dependencies": [],
   "expoDependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
     "react-native-reanimated"
   ],
   "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

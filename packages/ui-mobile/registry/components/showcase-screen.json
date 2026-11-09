@@ -1,6 +1,8 @@
 {
   "name": "showcase-screen",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Écran de démonstration interactif avec sélecteur de thèmes, toggle Glass et galerie des composants.",
   "category": "Starter",
   "files": [
@@ -18,6 +20,9 @@
     "glass-card",
     "rashwright-logo",
     "text-input"
+  ],
+  "requiresFoundations": [
+    "theme"
   ],
   "providers": [
     "ThemeProvider"

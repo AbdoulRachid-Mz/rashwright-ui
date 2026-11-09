@@ -1,6 +1,8 @@
 {
   "name": "image",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Composant image optimisé avec chargement progressif, placeholder et gestion d'erreur.",
   "category": "Media",
   "files": [
@@ -13,6 +15,9 @@
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "theme"
+  ],
   "providers": [],
   "supportsGlass": false,
   "platforms": [

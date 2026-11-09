@@ -1,6 +1,8 @@
 {
   "name": "particles",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Système de particules animées pour arrière-plans décoratifs.",
   "category": "Glass",
   "files": [
@@ -12,6 +14,7 @@
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [],
   "providers": [],
   "supportsGlass": false,
   "platforms": [

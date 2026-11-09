@@ -1,6 +1,8 @@
 {
   "name": "time-picker",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Sélecteur d'heure avec rouleaux natifs iOS/Android.",
   "category": "Forms",
   "files": [
@@ -9,7 +11,14 @@
   "dependencies": [],
   "expoDependencies": [],
   "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "requiresComponents": [
+    "text",
+    "view"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

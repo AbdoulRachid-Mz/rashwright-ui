@@ -1,6 +1,8 @@
 {
   "name": "number-input",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Champ de saisie numérique interactif avec boutons + et -, pas configurable, bornes min/max et formatage d'affichage.",
   "category": "Forms",
   "files": [
@@ -8,10 +10,19 @@
   ],
   "dependencies": [],
   "expoDependencies": [
+    "@expo/vector-icons"
+  ],
+  "optionalExpoDependencies": [
     "expo-haptics"
   ],
-  "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

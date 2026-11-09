@@ -6,12 +6,12 @@
 
 > Système moderne de composants et de widgets **distribuables** pour **React Native** & **Expo** avec moteur **Liquid Glass UI**, inspiré de la philosophie *shadcn/ui* : **vous copiez le code source dans votre projet, vous en êtes propriétaire**.
 
-**Statut v1.6.0** : ✅ Version v1.6.0 — `@rashwright/cli@1.6.0` · `@rashwright/ui-mobile@1.6.0`  
-**Moteur de Widgets Modulaires & Showcases** : 6 Widgets autonomes (`MetricWidget`, `ProgressWidget`, `QuickActionsWidget`, `ChartWidget`, `ActivityFeedWidget`, `FinanceWidget`) + 2 Showcases d'intégration (`FinanceDashboardShowcase`, `AnalyticsDashboardShowcase`) · **Commandes dédiées** : `rs-ui widget list/info/add/remove` et `rs-ui add -w <id>` avec détection automatique et résolution de dépendances · **Composants & Templates** : 79 composants UI + 8 primitives Liquid Glass + 10 Templates Autonomes · **Accessibilité WCAG 2.1 AA** : `accessibilityRole`, `accessibilityState`, `accessibilityLabel` sur tous les composants et widgets · **Tests** : 245 tests unitaires Vitest (51 suites, 100% vert) · **Typing strict** : Zéro `any`.
+**Statut v1.6.1** : ✅ Version v1.6.1 — `@rashwright/cli@1.6.1` · `@rashwright/ui-mobile@1.6.1`  
+**Moteur de Widgets Modulaires & Showcases** : 6 Widgets autonomes (`MetricWidget`, `ProgressWidget`, `QuickActionsWidget`, `ChartWidget`, `ActivityFeedWidget`, `FinanceWidget`) + 2 Showcases d'intégration (`FinanceDashboardShowcase`, `AnalyticsDashboardShowcase`) · **Commandes dédiées** : `rs-ui widget list/info/add/remove` et `rs-ui add -w <id>` avec détection automatique et résolution de dépendances · **Composants & Templates** : 79 composants UI + 8 primitives Liquid Glass + 10 Templates Autonomes · **Accessibilité WCAG 2.1 AA** : `accessibilityRole`, `accessibilityState`, `accessibilityLabel` sur tous les composants et widgets · **Tests** : 325 tests unitaires Vitest (58 suites, 100% vert) · **Typing strict** : Zéro `any`.
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v1.6.0-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
-  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v1.6.0-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/cli"><img src="https://img.shields.io/badge/@rashwright/cli-v1.6.1-cb3837?logo=npm" alt="npm - @rashwright/cli" /></a>
+  <a href="https://www.npmjs.com/package/@rashwright/ui-mobile"><img src="https://img.shields.io/badge/@rashwright/ui--mobile-v1.6.1-cb3837?logo=npm" alt="npm - @rashwright/ui-mobile" /></a>
   <a href="https://github.com/AbdoulRachid-Mz/rashwright-ui"><img src="https://img.shields.io/badge/GitHub-rashwright--ui-181717?logo=github" alt="GitHub" /></a>
   <img src="https://img.shields.io/badge/Expo%20SDK-SDK%2054%20→%2058-000000.svg?logo=expo" alt="Expo SDK" />
   <img src="https://img.shields.io/badge/MCP%20Server-JSON--RPC%202.0-8A2BE2.svg" alt="MCP Server" />
@@ -51,7 +51,7 @@ rs-ui reset
 ## 📑 Sommaire — Guide utilisateur
 
 1. [Pourquoi Rashwright ?](#-pourquoi-rashwright-)
-2. [Nouveautés de la Version v1.6.0](#-nouveautés-de-la-version-v160)
+2. [Nouveautés de la Version v1.6.1](#-nouveautés-de-la-version-v160)
 3. [Nouveautés de la Version v1.5.0](#-nouveautés-de-la-version-v150)
 4. [Moteur de Widgets Modulaires (`rs-ui widget`)](#-moteur-de-widgets-modulaires-rs-ui-widget)
 5. [Templates Autonomes Complets (`rs-ui template`)](#-templates-autonomes-rs-ui-template)
@@ -89,7 +89,7 @@ Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`
 
 ---
 
-## 🆕 Nouveautés de la Version v1.6.0
+## 🆕 Nouveautés de la Version v1.6.1
 
 - 🧩 **Nouveau Moteur de Widgets Modulaires & Distribuables** :
   - **Couche fonctionnelle autonome** : les widgets représentent des blocs métiers complets, réutilisables et distribuables indépendamment des pages ou templates complets.
@@ -112,7 +112,7 @@ Rashwright UI Mobile n'est **pas une dépendance npm opaque dans `node_modules/`
   - **2 Nouveaux Showcases d'intégration** :
     - `FinanceDashboardShowcase` : tableau de bord financier complet intégrant `FinanceWidget`, `MetricWidget`, `QuickActionsWidget`, `ChartWidget`, `ActivityFeedWidget`.
     - `AnalyticsDashboardShowcase` : tableau de bord analytique combinant statistiques, graphiques semestriels et événements système.
-  - **Quality Gate complet** : 51 suites de tests, **245 tests unitaires Vitest réussis (100% vert)**.
+  - **Quality Gate complet** : 58 suites de tests, **325 tests unitaires Vitest réussis (100% vert)**.
 
 ---
 
@@ -283,7 +283,7 @@ npx @rashwright/cli <commande>
 Vérifier l'installation :
 ```bash
 rs-ui --version
-# Affiche 1.6.0
+# Affiche 1.6.1
 ```
 
 ---
@@ -400,7 +400,10 @@ rs-ui doctor
 | SDK 56 | 🟢 Tested |
 | SDK 57 | 🟢 Tested |
 | SDK 58 | 🟢 Tested |
-| SDK 59 | 🟡 Experimental (Matrice prête) |
+
+> Expo n'a jamais publié de SDK 59 à ce jour ; `rs-ui` cible uniquement les SDK
+> réellement publiés (54 à 58). Un SDK futur ne sera déclaré supporté qu'après
+> régénération de sa matrice depuis les données officielles d'Expo.
 
 ---
 
@@ -409,10 +412,10 @@ rs-ui doctor
 ```text
 Dépôt GitHub rashwright-ui             npm registry (public)
            │                                  │
-           ├── packages/cli/       ──────▶   @rashwright/cli@1.6.0
+           ├── packages/cli/       ──────▶   @rashwright/cli@1.6.1
            │    └── commandes: rs-ui / rs-ui-reset / rs-ui-mcp / rs-ui fix / rs-ui showcase / rs-ui widget
            │
-           └── packages/ui-mobile/ ──────▶   @rashwright/ui-mobile@1.6.0
+           └── packages/ui-mobile/ ──────▶   @rashwright/ui-mobile@1.6.1
                 ├── components/ui/              (79 composants sources)
                 ├── widgets/                    (6 widgets modulaires)
                 ├── showcases/                  (2 dashboards d'intégration)

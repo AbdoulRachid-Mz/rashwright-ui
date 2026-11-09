@@ -1,8 +1,10 @@
 {
   "id": "activity-feed",
   "name": "Activity Feed Widget",
-  "description": "Flux d'activité chronologique avec avatars/icônes, libellés temporels, statuts, interactions et Liquid Glass.",
+  "type": "registry:block",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Flux d'activité chronologique avec avatars/icônes, libellés temporels, statuts, interactions et Liquid Glass.",
   "category": "Feed",
   "componentName": "ActivityFeedWidget",
   "entrypoint": "activity-feed-widget.tsx",
@@ -13,11 +15,16 @@
     "index.ts"
   ],
   "requiredComponents": [
-    "card",
     "avatar",
     "badge",
+    "card",
     "divider",
-    "skeleton"
+    "skeleton",
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "theme"
   ],
   "dependencies": [],
   "expoDependencies": [

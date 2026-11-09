@@ -1,15 +1,28 @@
 {
   "name": "floating-label-input",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Champ de saisie avec étiquette flottante animée, support d'icônes, d'erreurs et de variantes Glass.",
   "category": "Forms",
   "files": [
     "components/ui/floating-label-input.tsx"
   ],
   "dependencies": [],
-  "expoDependencies": [],
+  "expoDependencies": [
+    "expo-linear-gradient",
+    "react-native-reanimated"
+  ],
   "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

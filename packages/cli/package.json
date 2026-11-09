@@ -1,6 +1,6 @@
 {
   "name": "@rashwright/cli",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "CLI rs-ui pour Rashwright UI Mobile",
   "license": "MIT",
   "author": "Rashwright office",
@@ -34,6 +34,7 @@
     "dev": "bun run --watch src/index.ts",
     "prepublishOnly": "bun run build && bun run check-types",
     "test": "vitest run",
+    "test:install-e2e": "vitest run --config vitest.e2e.config.ts",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "check-types": "tsc --noEmit",

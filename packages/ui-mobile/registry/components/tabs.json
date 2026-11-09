@@ -1,6 +1,8 @@
 {
   "name": "tabs",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Navigation par onglets animée avec indicateur capsule Glass et support Reanimated.",
   "category": "Navigation",
   "files": [
@@ -8,10 +10,22 @@
   ],
   "dependencies": [],
   "expoDependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
     "react-native-reanimated"
   ],
-  "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

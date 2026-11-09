@@ -1,6 +1,8 @@
 {
   "name": "avatar-group",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Groupe d'avatars empilés avec compteur de dépassement.",
   "category": "Basic",
   "files": [
@@ -10,7 +12,14 @@
   "expoDependencies": [],
   "optionalExpoDependencies": [],
   "requiresComponents": [
-    "avatar"
+    "avatar",
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
   ],
   "providers": [
     "ThemeProvider"

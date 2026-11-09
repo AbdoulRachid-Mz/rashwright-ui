@@ -1,6 +1,8 @@
 {
   "name": "confirm",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Dialogue de confirmation natif ou personnalisé avec boutons Confirmer/Annuler.",
   "category": "Feedback",
   "files": [
@@ -9,11 +11,21 @@
   "dependencies": [],
   "expoDependencies": [
     "expo-blur",
+    "expo-linear-gradient",
     "react-native-reanimated"
   ],
-  "optionalExpoDependencies": [],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
   "requiresComponents": [
-    "button"
+    "button",
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
   ],
   "providers": [
     "ThemeProvider"

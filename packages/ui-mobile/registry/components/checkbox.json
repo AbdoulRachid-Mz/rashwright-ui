@@ -1,6 +1,8 @@
 {
   "name": "checkbox",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Case à cocher animée avec label et état indéterminé.",
   "category": "Forms",
   "files": [
@@ -9,10 +11,22 @@
   "dependencies": [],
   "expoDependencies": [
     "@expo/vector-icons",
+    "expo-blur",
+    "expo-linear-gradient",
     "react-native-reanimated"
   ],
-  "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

@@ -2,9 +2,9 @@
   <img src="https://github.com/AbdoulRachid-Mz/rashwright-ui/raw/main/packages/ui-mobile/assets/primary.png" alt="Rashwright UI Mobile" width="180" />
 </p>
 
-# @rashwright/ui-mobile — v1.6.0
+# @rashwright/ui-mobile — v1.6.1
 
-[![npm version](https://img.shields.io/badge/npm-%401.6.0-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
+[![npm version](https://img.shields.io/badge/npm-%401.6.1-cb3837?logo=npm)](https://www.npmjs.com/package/@rashwright/ui-mobile)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54%20→%2058-000000?logo=expo)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict%20%7C%20zero%20any-3178c6?logo=typescript)](#)
 [![NativeWind](https://img.shields.io/badge/NativeWind-v4%20%7C%20v5-06b6d4?logo=tailwindcss)](#)
@@ -79,7 +79,7 @@ rs-ui add button
 ## 📦 Contenu distribué dans ce package
 
 ```text
-@rashwright/ui-mobile@1.6.0/
+@rashwright/ui-mobile@1.6.1/
 ├── index.ts                     → Barrel principal (thème, contextes, stores, hooks, UI, widgets, showcases)
 ├── components/
 │   └── ui/                      → 79 composants sources + sous-composants
@@ -138,7 +138,7 @@ rs-ui add button
 
 ---
 
-## 🆕 Nouveautés v1.6.0 — Moteur de Widgets Modulaires & Showcases
+## 🆕 Nouveautés v1.6.1 — Moteur de Widgets Modulaires & Showcases
 
 - 🧩 **Moteur de Widgets Modulaires & Autonomes** :
   - **Couche fonctionnelle distribuée** : blocs métiers prêts pour la production, réutilisables et distribuables indépendamment des pages complètes.

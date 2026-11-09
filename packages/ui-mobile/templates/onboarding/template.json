@@ -1,8 +1,10 @@
 {
   "id": "onboarding",
   "name": "Onboarding Flow",
-  "description": "Flux d'onboarding immersif avec étapes illustrées, badges de fonctionnalité, pagination fluide et redirection vers HomeScreen d'accueil.",
+  "type": "registry:block",
   "version": "1.0.1",
+  "registryVersion": "1.6.1",
+  "description": "Flux d'onboarding immersif avec étapes illustrées, badges de fonctionnalité, pagination fluide et redirection vers HomeScreen d'accueil.",
   "componentName": "OnboardingTemplate",
   "entrypoint": "onboarding-template.tsx",
   "files": [
@@ -13,15 +15,18 @@
     "index.ts"
   ],
   "requiredComponents": [
-    "card",
-    "button",
-    "stat-card",
     "badge",
-    "rashwright-logo"
+    "button",
+    "card",
+    "rashwright-logo",
+    "stat-card"
+  ],
+  "requiresFoundations": [
+    "theme"
   ],
   "dependencies": [],
   "expoDependencies": [
-    "expo-haptics"
+    "react-native-safe-area-context"
   ],
   "supportsGlass": true,
   "screens": [

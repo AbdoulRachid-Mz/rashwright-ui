@@ -1,15 +1,28 @@
 {
   "name": "badge",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Badge de statut ou compteur avec variants de couleur et taille.",
   "category": "Basic",
   "files": [
     "components/ui/badge.tsx"
   ],
   "dependencies": [],
-  "expoDependencies": [],
-  "optionalExpoDependencies": [],
+  "expoDependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-reanimated"
+  ],
+  "optionalExpoDependencies": [
+    "expo-haptics"
+  ],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

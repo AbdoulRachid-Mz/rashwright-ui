@@ -2,6 +2,7 @@
   "name": "use-scroll-aware-tab-bar",
   "type": "registry:hook",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Hook pour animer et masquer la barre d'onglets lors du défilement d'une liste.",
   "category": "Hooks",
   "files": [
@@ -13,6 +14,9 @@
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "tab-bar"
+  ],
   "providers": [
     "TabBarProvider"
   ],

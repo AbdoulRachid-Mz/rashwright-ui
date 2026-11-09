@@ -1,15 +1,29 @@
 {
   "name": "loading-state",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "État de chargement plein écran ou inline avec spinner et message.",
   "category": "States",
   "files": [
     "components/ui/loading-state.tsx"
   ],
   "dependencies": [],
-  "expoDependencies": [],
+  "expoDependencies": [
+    "expo-blur",
+    "expo-linear-gradient",
+    "react-native-reanimated"
+  ],
   "optionalExpoDependencies": [],
-  "requiresComponents": [],
+  "requiresComponents": [
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "glass",
+    "liquid",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

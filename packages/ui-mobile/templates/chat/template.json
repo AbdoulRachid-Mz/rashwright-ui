@@ -1,8 +1,10 @@
 {
   "id": "chat",
   "name": "Chat & Messaging",
-  "description": "Messagerie instantanée mobile : liste inversée de messages, bulles Liquid Glass, barre de saisie tactile et notifications visuelles.",
+  "type": "registry:block",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Messagerie instantanée mobile : liste inversée de messages, bulles Liquid Glass, barre de saisie tactile et notifications visuelles.",
   "componentName": "ChatTemplate",
   "entrypoint": "chat-template.tsx",
   "files": [
@@ -14,16 +16,17 @@
     "index.ts"
   ],
   "requiredComponents": [
-    "card",
-    "button",
     "avatar",
     "badge",
+    "button",
+    "card",
     "text-input"
   ],
-  "dependencies": [],
-  "expoDependencies": [
-    "expo-haptics"
+  "requiresFoundations": [
+    "theme"
   ],
+  "dependencies": [],
+  "expoDependencies": [],
   "supportsGlass": true,
   "screens": [
     {

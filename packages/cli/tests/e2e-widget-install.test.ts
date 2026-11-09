@@ -72,7 +72,10 @@ describe("E2E Widget Installation & Requirement Detection", () => {
     const plan = detectMissingWidgetRequirements("finance", testProjectDir);
     expect(plan.components).toContain("card");
     expect(plan.components).toContain("badge");
-    expect(plan.components).toContain("button");
+    // Le widget utilise TouchableOpacity, pas le composant `button` :
+    // l'ancien manifeste le surexigeait (corrigé par sync-registry).
+    expect(plan.components).not.toContain("button");
+    expect(plan.components).toContain("text");
     expect(plan.components).toContain("skeleton");
   });
 

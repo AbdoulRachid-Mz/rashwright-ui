@@ -1,0 +1,41 @@
+{
+  "name": "theme",
+  "type": "registry:foundation",
+  "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Socle de thème : contrats Theme, store Zustand persistant, contexte React et presets de couleurs.",
+  "category": "Foundation",
+  "files": [
+    "constants/theme.ts",
+    "stores/theme-store.ts",
+    "contexts/theme-context.tsx",
+    "theme/themes/default.ts",
+    "theme/themes/emerald.ts",
+    "theme/themes/violet.ts",
+    "theme/themes/amber.ts",
+    "theme/themes/rose.ts",
+    "theme/themes/slate.ts",
+    "theme/themes/green.ts",
+    "theme/themes/red.ts",
+    "theme/themes/cyan.ts"
+  ],
+  "assets": [],
+  "dependencies": [
+    "zustand"
+  ],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "requiresFoundations": [],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "notes": "Fondation racine : ne dépend d'aucune autre fondation."
+}

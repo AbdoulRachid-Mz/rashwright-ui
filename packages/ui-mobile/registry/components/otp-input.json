@@ -1,6 +1,8 @@
 {
   "name": "otp-input",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Champ OTP avec cases individuelles, focus automatique et support Glass.",
   "category": "Forms",
   "files": [
@@ -14,6 +16,10 @@
     "expo-haptics"
   ],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "theme"
+  ],
   "providers": [
     "ThemeProvider"
   ],

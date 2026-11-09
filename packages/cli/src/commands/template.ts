@@ -181,46 +181,23 @@ export function templateCommand(): Command {
     .command("remove <name>")
     .description("Supprimer les fichiers d'un template installé dans le projet")
     .option("--yes", "Confirmer la suppression sans prompt")
+    .option("--force", "Supprimer malgré des dépendants ou des modifications locales")
     .option("--dry-run", "Afficher les suppressions sans les exécuter")
-    .action(async (name: string, opts: { yes?: boolean; dryRun?: boolean }) => {
-      const cwd = process.cwd();
-      const { rmSync, existsSync } = await import("node:fs");
-      const { join } = await import("node:path");
-      const { confirm } = await import("@inquirer/prompts");
-
-      const candidates = [
-        join(cwd, "components", "templates", name),
-        join(cwd, "src", "components", "templates", name),
-      ];
-
-      const targetPath = candidates.find((p) => existsSync(p));
-      if (!targetPath) {
-        console.log(chalk.yellow(`  ⚠ Template "${name}" introuvable dans ce projet.`));
-        return;
-      }
-
-      console.log(chalk.bold(`  Suppression du template "${name}":`));
-      console.log(chalk.dim(`    Dossier : ${targetPath}`));
-      console.log();
-
-      if (!opts.yes && !opts.dryRun) {
-        const ok = await confirm({
-          message: `Confirmer la suppression du template "${name}" ?`,
-          default: false,
+    .action(
+      async (
+        name: string,
+        opts: { yes?: boolean; force?: boolean; dryRun?: boolean },
+      ) => {
+        const { removeArtefact } = await import("./remove.js");
+        const code = await removeArtefact(`template:${name}`, {
+          type: "template",
+          yes: opts.yes,
+          force: opts.force,
+          dryRun: opts.dryRun,
         });
-        if (!ok) {
-          console.log(chalk.dim("  Annulé."));
-          return;
-        }
-      }
-
-      if (!opts.dryRun) {
-        rmSync(targetPath, { recursive: true, force: true });
-        console.log(chalk.green(`  ✔ Template "${name}" supprimé avec succès.`));
-      } else {
-        console.log(chalk.dim(`  [dry-run] Suppression récursive de ${targetPath}`));
-      }
-    });
+        if (code !== 0) process.exit(code);
+      },
+    );
 
   return cmd;
 }

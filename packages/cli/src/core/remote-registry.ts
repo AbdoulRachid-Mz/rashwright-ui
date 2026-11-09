@@ -89,6 +89,8 @@ export interface ResolvedRegistryPaths {
   sourceRoot: string;
   isRemote: boolean;
   registryUrl?: string;
+  /** Le cache local a été utilisé parce que le registre distant est injoignable. */
+  stale?: boolean;
 }
 
 /**
@@ -138,6 +140,7 @@ export async function resolveRegistry(options: {
           sourceRoot: cacheDir,
           isRemote: true,
           registryUrl: baseUrl,
+          stale: true,
         };
       }
       throw new Error(
@@ -156,8 +159,11 @@ export async function resolveRegistry(options: {
 }
 
 /**
- * Assure que le fichier JSON d'un composant ainsi que l'ensemble de ses fichiers sources
- * sont présents localement (téléchargés depuis le CDN si nécessaire).
+ * Assure que le fichier JSON d'un composant ainsi que l'ensemble de ses fichiers
+ * sources et assets sont présents localement.
+ *
+ * Toute anomalie est une erreur explicite : un manifeste absent/illisible ou un
+ * fichier déclaré non téléchargeable ne doit jamais produire un plan partiel.
  */
 export async function ensureComponentDownloaded(
   componentName: string,
@@ -166,51 +172,161 @@ export async function ensureComponentDownloaded(
     sourceRoot?: string;
     registryRoot?: string;
   } = {}
-): Promise<ComponentRegistryEntry | null> {
+): Promise<ComponentRegistryEntry> {
   const baseUrl = (options.registryUrl || process.env.RS_UI_REGISTRY || DEFAULT_REMOTE_REGISTRY).replace(/\/$/, "");
   const cacheDir = options.sourceRoot || getCacheDir();
   const cachedRegistryRoot = options.registryRoot || join(cacheDir, "registry");
 
   const componentJsonPath = join(cachedRegistryRoot, "components", `${componentName}.json`);
 
+  const fetchManifest = async (): Promise<ComponentRegistryEntry> => {
+    try {
+      return await fetchRemoteJson<ComponentRegistryEntry>(
+        `${baseUrl}/registry/components/${componentName}.json`
+      );
+    } catch (error) {
+      throw new Error(
+        `Composant '${componentName}' introuvable dans le registre distant (${baseUrl}).\n` +
+          `Détail : ${(error as Error).message}`
+      );
+    }
+  };
+
   let entry: ComponentRegistryEntry;
+  let cachedInvalidReason: string | null = null;
 
   if (existsSync(componentJsonPath)) {
     try {
       entry = JSON.parse(readFileSync(componentJsonPath, "utf-8")) as ComponentRegistryEntry;
-    } catch {
-      entry = await fetchRemoteJson<ComponentRegistryEntry>(
-        `${baseUrl}/registry/components/${componentName}.json`
+    } catch (error) {
+      cachedInvalidReason = (error as Error).message;
+      entry = await fetchManifest();
+      const jsonDir = dirname(componentJsonPath);
+      if (!existsSync(jsonDir)) mkdirSync(jsonDir, { recursive: true });
+      writeFileSync(componentJsonPath, JSON.stringify(entry, null, 2), "utf-8");
+      if (cachedInvalidReason) {
+        // Le cache a été réparé, mais l'utilisateur doit savoir que le manifeste
+        // local était corrompu (aucun échec silencieux masqué).
+        console.warn(
+          `  ⚠ Manifeste en cache illisible pour '${componentName}' (${cachedInvalidReason}) — retéléchargé.`
+        );
+      }
+    }
+  } else {
+    entry = await fetchManifest();
+    const jsonDir = dirname(componentJsonPath);
+    if (!existsSync(jsonDir)) mkdirSync(jsonDir, { recursive: true });
+    writeFileSync(componentJsonPath, JSON.stringify(entry, null, 2), "utf-8");
+  }
+
+  if (typeof entry.name !== "string" || entry.name.trim() === "") {
+    throw new Error(
+      `Manifeste invalide pour '${componentName}' : champ 'name' manquant ou vide (${baseUrl}).`
+    );
+  }
+  if (!Array.isArray(entry.files) || entry.files.length === 0) {
+    throw new Error(
+      `Manifeste invalide pour '${componentName}' : aucun fichier déclaré (${baseUrl}).`
+    );
+  }
+
+  // Télécharger les fichiers sources et les assets associés.
+  const remoteFiles = [
+    ...entry.files,
+    ...(Array.isArray(entry.assets) ? entry.assets : []),
+  ];
+  for (const relFile of remoteFiles) {
+    const destPath = join(cacheDir, relFile);
+    if (existsSync(destPath)) continue;
+    try {
+      const fileUrl = `${baseUrl}/${relFile}`;
+      const content = await fetchRemoteText(fileUrl);
+      const destDir = dirname(destPath);
+      if (!existsSync(destDir)) mkdirSync(destDir, { recursive: true });
+      writeFileSync(destPath, content, "utf-8");
+    } catch (error) {
+      throw new Error(
+        `Téléchargement incomplet du composant '${componentName}' : ${relFile}\n` +
+          `Détail : ${(error as Error).message}`
+      );
+    }
+  }
+
+  return entry;
+}
+
+/**
+ * Assure qu'un manifeste de fondation et TOUS ses fichiers/assets sont
+ * présents dans le cache local. Contrairement aux composants, une fondation
+ * incomplète fait échouer explicitement : elle est indispensable à la
+ * résolution des imports.
+ */
+export async function ensureFoundationDownloaded(
+  foundationName: string,
+  options: {
+    registryUrl?: string;
+    sourceRoot?: string;
+    registryRoot?: string;
+  } = {}
+): Promise<ComponentRegistryEntry> {
+  const baseUrl = (options.registryUrl || process.env.RS_UI_REGISTRY || DEFAULT_REMOTE_REGISTRY).replace(/\/$/, "");
+  const cacheDir = options.sourceRoot || getCacheDir();
+  const cachedRegistryRoot = options.registryRoot || join(cacheDir, "registry");
+  const foundationJsonPath = join(cachedRegistryRoot, "foundations", `${foundationName}.json`);
+
+  let entry: ComponentRegistryEntry;
+  if (existsSync(foundationJsonPath)) {
+    try {
+      entry = JSON.parse(readFileSync(foundationJsonPath, "utf-8")) as ComponentRegistryEntry;
+    } catch (error) {
+      throw new Error(
+        `Manifeste de fondation illisible en cache (${foundationJsonPath}) : ${(error as Error).message}`,
       );
     }
   } else {
     try {
       entry = await fetchRemoteJson<ComponentRegistryEntry>(
-        `${baseUrl}/registry/components/${componentName}.json`
+        `${baseUrl}/registry/foundations/${foundationName}.json`,
       );
-      const jsonDir = dirname(componentJsonPath);
-      if (!existsSync(jsonDir)) mkdirSync(jsonDir, { recursive: true });
-      writeFileSync(componentJsonPath, JSON.stringify(entry, null, 2), "utf-8");
-    } catch {
-      return null;
+    } catch (error) {
+      throw new Error(
+        `Fondation '${foundationName}' introuvable dans le registre distant (${baseUrl}).\n` +
+          `Détail : ${(error as Error).message}`,
+      );
     }
+    const jsonDir = dirname(foundationJsonPath);
+    if (!existsSync(jsonDir)) mkdirSync(jsonDir, { recursive: true });
+    writeFileSync(foundationJsonPath, JSON.stringify(entry, null, 2), "utf-8");
   }
 
-  // Télécharger les fichiers sources associés (ex: components/ui/button.tsx)
-  if (Array.isArray(entry.files)) {
-    for (const relFile of entry.files) {
-      const destPath = join(cacheDir, relFile);
-      if (!existsSync(destPath)) {
-        try {
-          const fileUrl = `${baseUrl}/${relFile}`;
-          const content = await fetchRemoteText(fileUrl);
-          const destDir = dirname(destPath);
-          if (!existsSync(destDir)) mkdirSync(destDir, { recursive: true });
-          writeFileSync(destPath, content, "utf-8");
-        } catch {
-          // Si le téléchargement échoue pour un fichier individuel
-        }
-      }
+  if (typeof entry.name !== "string" || entry.name.trim() === "") {
+    throw new Error(
+      `Manifeste de fondation invalide pour '${foundationName}' : champ 'name' manquant ou vide (${baseUrl}).`,
+    );
+  }
+  if (!Array.isArray(entry.files) || entry.files.length === 0) {
+    throw new Error(
+      `Manifeste de fondation invalide pour '${foundationName}' : aucun fichier déclaré (${baseUrl}).`,
+    );
+  }
+
+  const remoteFiles = [
+    ...(Array.isArray(entry.files) ? entry.files : []),
+    ...(Array.isArray(entry.assets) ? entry.assets : []),
+  ];
+  for (const relFile of remoteFiles) {
+    const destPath = join(cacheDir, relFile);
+    if (existsSync(destPath)) continue;
+    try {
+      const content = await fetchRemoteText(`${baseUrl}/${relFile}`);
+      const destDir = dirname(destPath);
+      if (!existsSync(destDir)) mkdirSync(destDir, { recursive: true });
+      writeFileSync(destPath, content, "utf-8");
+    } catch (error) {
+      throw new Error(
+        `Téléchargement incomplet de la fondation '${foundationName}' : ${relFile}\n` +
+          `Détail : ${(error as Error).message}`,
+      );
     }
   }
 
@@ -219,26 +335,31 @@ export async function ensureComponentDownloaded(
 
 /**
  * Assure que la matrice de compatibilité Expo d'un SDK spécifique est téléchargée en cache.
+ *
+ * Retourne `true` si la matrice est disponible localement après l'appel.
+ * Un échec n'est pas masqué : l'appelant doit avertir ou bloquer selon la
+ * criticité des dépendances (aucune version n'est inventée).
  */
 export async function ensureCompatibilityMatrixDownloaded(
   sdkVersion: number | string,
   options: { registryUrl?: string; registryRoot?: string } = {}
-): Promise<void> {
+): Promise<boolean> {
   const baseUrl = (options.registryUrl || process.env.RS_UI_REGISTRY || DEFAULT_REMOTE_REGISTRY).replace(/\/$/, "");
   const cacheDir = getCacheDir();
   const cachedRegistryRoot = options.registryRoot || join(cacheDir, "registry");
   const matrixPath = join(cachedRegistryRoot, "versions", `expo-${sdkVersion}.json`);
 
-  if (!existsSync(matrixPath)) {
-    try {
-      const matrixUrl = `${baseUrl}/registry/versions/expo-${sdkVersion}.json`;
-      const content = await fetchRemoteText(matrixUrl);
-      const destDir = dirname(matrixPath);
-      if (!existsSync(destDir)) mkdirSync(destDir, { recursive: true });
-      writeFileSync(matrixPath, content, "utf-8");
-    } catch {
-      // Fallback silencieux si la matrice n'est pas trouvée
-    }
+  if (existsSync(matrixPath)) return true;
+
+  try {
+    const matrixUrl = `${baseUrl}/registry/versions/expo-${sdkVersion}.json`;
+    const content = await fetchRemoteText(matrixUrl);
+    const destDir = dirname(matrixPath);
+    if (!existsSync(destDir)) mkdirSync(destDir, { recursive: true });
+    writeFileSync(matrixPath, content, "utf-8");
+    return true;
+  } catch {
+    return false;
   }
 }
 

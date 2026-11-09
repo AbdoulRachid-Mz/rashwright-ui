@@ -1,6 +1,8 @@
 {
   "name": "upload-video",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Sélecteur et uploader de vidéo avec preview, durée et multi-providers.",
   "category": "Media",
   "files": [
@@ -9,10 +11,19 @@
   "dependencies": [],
   "expoDependencies": [
     "@expo/vector-icons",
-    "expo-image-picker"
+    "expo-blur",
+    "expo-image-picker",
+    "expo-linear-gradient",
+    "react-native-reanimated"
   ],
   "optionalExpoDependencies": [],
   "requiresComponents": [],
+  "requiresFoundations": [
+    "glass",
+    "liquid",
+    "theme",
+    "upload"
+  ],
   "providers": [
     "ThemeProvider"
   ],

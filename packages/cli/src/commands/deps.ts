@@ -90,11 +90,16 @@ export function depsCommand(): Command {
 
       let entry = loadComponentEntry(name, resolved.registryRoot);
       if (!entry && resolved.isRemote) {
-        entry = await ensureComponentDownloaded(name, {
-          registryUrl: resolved.registryUrl,
-          registryRoot: resolved.registryRoot,
-          sourceRoot: resolved.sourceRoot,
-        });
+        try {
+          entry = await ensureComponentDownloaded(name, {
+            registryUrl: resolved.registryUrl,
+            registryRoot: resolved.registryRoot,
+            sourceRoot: resolved.sourceRoot,
+          });
+        } catch (error) {
+          console.log(chalk.red(`  ✖ ${(error as Error).message}`));
+          process.exit(1);
+        }
       }
 
       if (!entry) {

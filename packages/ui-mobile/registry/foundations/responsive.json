@@ -1,0 +1,27 @@
+{
+  "name": "responsive",
+  "type": "registry:foundation",
+  "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Breakpoints, helpers ResponsiveValue et hook useResponsive partagés par les composants adaptatifs.",
+  "category": "Foundation",
+  "files": [
+    "lib/responsive.ts",
+    "hooks/use-responsive.ts"
+  ],
+  "assets": [],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "requiresFoundations": [],
+  "providers": [],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false,
+  "notes": "Aucune dépendance externe : uniquement React Native."
+}

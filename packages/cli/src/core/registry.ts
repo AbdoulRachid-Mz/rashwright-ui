@@ -9,6 +9,8 @@ export type { ResolvedComponent };
 export interface RegistryIndex {
   version: string;
   minimumExpoSdk: number;
+  totalComponents?: number;
+  sdkVersions?: number[];
   components: string[];
   categories: Record<string, string[]>;
   themes: string[];

@@ -1,1 +1,27 @@
-{"name":"activity-indicator","version":"1.0.0","description":"Indicateur d'activité thémé avec taille et couleur configurables.","category":"States","files":["components/ui/activity-indicator.tsx"],"dependencies":[],"expoDependencies":[],"optionalExpoDependencies":[],"requiresComponents":[],"providers":["ThemeProvider"],"supportsGlass":false,"platforms":["ios","android"],"nativeRebuildRequired":false}
+{
+  "name": "activity-indicator",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Indicateur d'activité thémé avec taille et couleur configurables.",
+  "category": "States",
+  "files": [
+    "components/ui/activity-indicator.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "requiresFoundations": [
+    "theme"
+  ],
+  "providers": [
+    "ThemeProvider"
+  ],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android"
+  ],
+  "nativeRebuildRequired": false
+}

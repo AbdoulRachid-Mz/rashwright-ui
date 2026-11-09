@@ -1,8 +1,10 @@
 {
   "id": "finance",
   "name": "Finance Widget",
-  "description": "Bloc portefeuille complet avec solde principal, masquage de confidentialité, ratio revenus/dépenses, raccourcis et Liquid Glass.",
+  "type": "registry:block",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
+  "description": "Bloc portefeuille complet avec solde principal, masquage de confidentialité, ratio revenus/dépenses, raccourcis et Liquid Glass.",
   "category": "Finance",
   "componentName": "FinanceWidget",
   "entrypoint": "finance-widget.tsx",
@@ -13,10 +15,14 @@
     "index.ts"
   ],
   "requiredComponents": [
-    "card",
     "badge",
-    "button",
-    "skeleton"
+    "card",
+    "skeleton",
+    "text"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "theme"
   ],
   "dependencies": [],
   "expoDependencies": [

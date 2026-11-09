@@ -1,6 +1,8 @@
 {
   "name": "popup",
+  "type": "registry:ui",
   "version": "1.0.0",
+  "registryVersion": "1.6.1",
   "description": "Popup contextuel ancré à un élément avec contenu personnalisable.",
   "category": "Feedback",
   "files": [
@@ -11,7 +13,13 @@
   "optionalExpoDependencies": [],
   "requiresComponents": [
     "button",
-    "modal"
+    "modal",
+    "text",
+    "view"
+  ],
+  "requiresFoundations": [
+    "core-ui",
+    "theme"
   ],
   "providers": [
     "ThemeProvider"

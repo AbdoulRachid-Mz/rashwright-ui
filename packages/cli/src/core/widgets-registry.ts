@@ -22,6 +22,8 @@ export interface WidgetDefinition {
   name: string;
   description: string;
   version: string;
+  /** Version du registre au moment de la publication (optionnelle, rétrocompatible). */
+  registryVersion?: string;
   category?: string;
   componentName: string;
   entrypoint: string;
@@ -29,6 +31,10 @@ export interface WidgetDefinition {
   files: string[];
   /** Noms des composants rs-ui requis (ex: ["card", "stat-card", "badge"]). */
   requiredComponents: string[];
+  /** Fondations internes requises (theme, glass, core-ui...). */
+  requiresFoundations: string[];
+  /** Assets référencés par le widget, relatifs à la racine ui-mobile. */
+  assets: string[];
   /** Dépendances npm (non-Expo). */
   dependencies: string[];
   /** Dépendances Expo (ex: ["@expo/vector-icons", "expo-haptics"]). */
@@ -78,6 +84,9 @@ function readWidgetJson(
       name: parsed.name,
       description: parsed.description ?? "",
       version: parsed.version ?? "1.0.0",
+      ...(typeof parsed.registryVersion === "string"
+        ? { registryVersion: parsed.registryVersion }
+        : {}),
       category: parsed.category ?? "General",
       componentName: parsed.componentName,
       entrypoint: parsed.entrypoint,
@@ -85,6 +94,10 @@ function readWidgetJson(
       requiredComponents: Array.isArray(parsed.requiredComponents)
         ? parsed.requiredComponents
         : [],
+      requiresFoundations: Array.isArray(parsed.requiresFoundations)
+        ? parsed.requiresFoundations
+        : [],
+      assets: Array.isArray(parsed.assets) ? parsed.assets : [],
       dependencies: Array.isArray(parsed.dependencies)
         ? parsed.dependencies
         : [],

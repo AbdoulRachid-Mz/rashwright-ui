@@ -33,7 +33,7 @@ import type {
 } from "./liquid-types";
 import { INTENSITY_MULTIPLIER } from "./liquid-types";
 
-const LiquidSurface = forwardRef<View, LiquidSurfaceProps>(
+const LiquidSurface = forwardRef<React.ElementRef<typeof View>, LiquidSurfaceProps>(
   (
     {
       children,

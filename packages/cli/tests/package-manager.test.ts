@@ -77,9 +77,19 @@ describe("package-manager", () => {
       expect(resolveSdkVersion(56)).toBe(56);
     });
 
-    it("fallbacks unknown or invalid SDKs to latest", () => {
-      expect(resolveSdkVersion("99")).toBe(58);
-      expect(resolveSdkVersion("invalid")).toBe(58);
+    it("throws explicitly for unknown or unpublished SDKs", () => {
+      expect(() => resolveSdkVersion("99")).toThrow(/non supporté/);
+      expect(() => resolveSdkVersion("59")).toThrow(/non supporté/);
+      expect(() => resolveSdkVersion("42")).toThrow(/non supporté/);
+      expect(() => resolveSdkVersion("invalid")).toThrow(/non supporté/);
+
+      try {
+        resolveSdkVersion("59");
+        throw new Error("resolveSdkVersion aurait dû échouer");
+      } catch (error) {
+        expect((error as Error).message).toContain("54, 55, 56, 57, 58");
+        expect((error as Error).message).toContain("dernière : 58");
+      }
     });
   });
 
