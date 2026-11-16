@@ -3,7 +3,7 @@
   "name": "Progress Widget",
   "type": "registry:block",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Indicateur de progression vers un objectif avec calcul de pourcentage, barre animée, état complété et support Liquid Glass.",
   "category": "Analytics",
   "componentName": "ProgressWidget",

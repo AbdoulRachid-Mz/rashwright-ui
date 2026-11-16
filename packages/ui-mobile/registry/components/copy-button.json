@@ -2,7 +2,7 @@
   "name": "copy-button",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Bouton de copie interactif dans le presse-papiers avec feedback visuel, états de succès/erreur, haptique et variantes Glass.",
   "category": "Basic",
   "files": [

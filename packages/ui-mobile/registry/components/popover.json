@@ -2,7 +2,7 @@
   "name": "popover",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Panneau contextuel ancré à un élément déclencheur avec calcul de position automatique et support Glass.",
   "category": "Feedback",
   "files": [

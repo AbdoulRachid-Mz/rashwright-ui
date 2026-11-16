@@ -2,7 +2,7 @@
   "name": "use-back-handler",
   "type": "registry:hook",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Hook pour intercepter le bouton retour matériel Android avec dialogue ou double-tap toast.",
   "category": "Hooks",
   "files": [

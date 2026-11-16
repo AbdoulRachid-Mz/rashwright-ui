@@ -3,7 +3,7 @@
   "name": "Onboarding Flow",
   "type": "registry:block",
   "version": "1.0.1",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Flux d'onboarding immersif avec étapes illustrées, badges de fonctionnalité, pagination fluide et redirection vers HomeScreen d'accueil.",
   "componentName": "OnboardingTemplate",
   "entrypoint": "onboarding-template.tsx",

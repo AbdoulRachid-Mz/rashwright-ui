@@ -2,7 +2,7 @@
   "name": "use-controllable-state",
   "type": "registry:hook",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Primitive headless gérant de façon unifiée et sans dépendance externe l'état contrôlé vs non contrôlé.",
   "category": "Hooks",
   "files": [

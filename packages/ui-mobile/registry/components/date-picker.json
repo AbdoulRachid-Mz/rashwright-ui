@@ -2,7 +2,7 @@
   "name": "date-picker",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Sélecteur de date en bottom-sheet modal avec intégration du Calendar et support du thème.",
   "category": "Forms",
   "files": [

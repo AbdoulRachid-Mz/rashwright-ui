@@ -2,7 +2,7 @@
   "name": "liquid",
   "type": "registry:foundation",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Primitives Liquid Glass : surface, pressable, highlight, border, glow, blob, shadow et types associés.",
   "category": "Foundation",
   "files": [

@@ -2,7 +2,7 @@
   "name": "use-device",
   "type": "registry:hook",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Hook pour inspecter les métadonnées et identifiants matériels du terminal (OS, marque, modèle).",
   "category": "Hooks",
   "files": [

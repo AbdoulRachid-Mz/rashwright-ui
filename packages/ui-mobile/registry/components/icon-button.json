@@ -2,7 +2,7 @@
   "name": "icon-button",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Bouton icône rond avec variants de style et retour haptique optionnel.",
   "category": "Basic",
   "files": [

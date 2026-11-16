@@ -852,7 +852,6 @@ export function setupFoundations(
     { src: "constants/glass-theme.ts", dest: join(basePrefix, "constants/glass-theme.ts").replace(/\\/g, "/") },
     { src: "stores/theme-store.ts", dest: join(basePrefix, "stores/theme-store.ts").replace(/\\/g, "/") },
     { src: "contexts/theme-context.tsx", dest: join(basePrefix, "contexts/theme-context.tsx").replace(/\\/g, "/") },
-    { src: "contexts/tab-bar-context.tsx", dest: join(basePrefix, "contexts/tab-bar-context.tsx").replace(/\\/g, "/") },
     { src: "hooks/use-device.ts", dest: join(basePrefix, "hooks/use-device.ts").replace(/\\/g, "/") },
     { src: "hooks/useBackHandler.ts", dest: join(basePrefix, "hooks/useBackHandler.ts").replace(/\\/g, "/") },
     { src: "hooks/useScrollAwareTabBar.ts", dest: join(basePrefix, "hooks/useScrollAwareTabBar.ts").replace(/\\/g, "/") },
@@ -876,28 +875,10 @@ export function setupFoundations(
     { src: "theme/themes/cyan.ts", dest: join(basePrefix, "theme/themes/cyan.ts").replace(/\\/g, "/") },
   ];
 
-  // Copier lib/upload dans le dossier cible
-  const libUploadSourceDir = join(sourceRoot, "lib", "upload");
-  const uploadDestRel = join(basePrefix, "lib", "upload").replace(/\\/g, "/");
-  if (existsSync(libUploadSourceDir)) {
-    const walkCopy = (dir: string): void => {
-      const srcDir = join(libUploadSourceDir, dir);
-      if (!existsSync(srcDir)) return;
-      const entries = readdirSync(srcDir, { withFileTypes: true });
-      for (const e of entries) {
-        const rel = join(dir, e.name);
-        if (e.isDirectory()) {
-          walkCopy(rel);
-        } else if (e.isFile()) {
-          filesToCopy.push({
-            src: join("lib", "upload", rel).replace(/\\/g, "/"),
-            dest: join(uploadDestRel, rel).replace(/\\/g, "/"),
-          });
-        }
-      }
-    };
-    walkCopy("");
-  }
+  // La librairie upload (lib/upload) et le contexte tab-bar ne sont plus copiés
+  // ici : ils sont installés à la demande par `rs-ui add upload-image` /
+  // `rs-ui add tabs` via requiresFoundations, pour éviter d'alourdir les projets
+  // qui ne les utilisent pas.
 
   for (const { src, dest } of filesToCopy) {
     const srcPath = join(sourceRoot, src);

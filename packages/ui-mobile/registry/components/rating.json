@@ -2,7 +2,7 @@
   "name": "rating",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Notation par étoiles interactive avec support demi-étoiles et variante Glass.",
   "category": "Forms",
   "files": [

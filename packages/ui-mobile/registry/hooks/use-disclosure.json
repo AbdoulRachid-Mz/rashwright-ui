@@ -2,7 +2,7 @@
   "name": "use-disclosure",
   "type": "registry:hook",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Primitive headless pour piloter l'ouverture, fermeture et basculement des modales, tiroirs et menus.",
   "category": "Hooks",
   "files": [

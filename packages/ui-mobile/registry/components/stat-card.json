@@ -2,7 +2,7 @@
   "name": "stat-card",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Carte de statistique avec valeur, label, icône et tendance (up/down).",
   "category": "Layout",
   "files": [

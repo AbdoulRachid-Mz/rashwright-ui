@@ -2,7 +2,7 @@
   "name": "popup",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Popup contextuel ancré à un élément avec contenu personnalisable.",
   "category": "Feedback",
   "files": [

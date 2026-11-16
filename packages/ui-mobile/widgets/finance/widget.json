@@ -3,7 +3,7 @@
   "name": "Finance Widget",
   "type": "registry:block",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Bloc portefeuille complet avec solde principal, masquage de confidentialité, ratio revenus/dépenses, raccourcis et Liquid Glass.",
   "category": "Finance",
   "componentName": "FinanceWidget",

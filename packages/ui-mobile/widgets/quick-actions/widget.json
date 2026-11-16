@@ -3,7 +3,7 @@
   "name": "Quick Actions Widget",
   "type": "registry:block",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Grille d'actions rapides configurable avec icônes, libellés, badges et support Liquid Glass.",
   "category": "Interactions",
   "componentName": "QuickActionsWidget",

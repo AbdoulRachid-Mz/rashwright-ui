@@ -59,9 +59,7 @@ const INITIAL_FOUNDATIONS = [
   "glass",
   "responsive",
   "core-ui",
-  "tab-bar",
   "liquid",
-  "upload",
 ] as const;
 
 const CORE_EXPO_DEPS = [

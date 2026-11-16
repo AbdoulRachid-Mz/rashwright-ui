@@ -2,7 +2,7 @@
   "name": "video",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Lecteur vidéo natif avec contrôles de lecture, volume et plein écran.",
   "category": "Media",
   "files": [

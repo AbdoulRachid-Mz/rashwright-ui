@@ -3,7 +3,7 @@
   "name": "Authentication Suite",
   "type": "registry:block",
   "version": "1.0.1",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Suite complète d'authentification : écrans séparés SignIn et SignUp, bouton Google Auth et validation OTP sécurisée.",
   "componentName": "AuthTemplate",
   "entrypoint": "auth-template.tsx",

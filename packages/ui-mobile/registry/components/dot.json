@@ -2,7 +2,7 @@
   "name": "dot",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Indicateur de point (dot) coloré, utilisé pour les statuts ou la pagination.",
   "category": "Basic",
   "files": [

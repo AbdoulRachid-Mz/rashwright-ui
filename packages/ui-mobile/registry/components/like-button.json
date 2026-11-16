@@ -2,7 +2,7 @@
   "name": "like-button",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Bouton J'aime interactif avec pulsation de rebond, halo de particules, compteur dynamique, retour haptique et variantes Glass.",
   "category": "Basic",
   "files": [

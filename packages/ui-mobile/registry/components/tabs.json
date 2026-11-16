@@ -2,7 +2,7 @@
   "name": "tabs",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Navigation par onglets animée avec indicateur capsule Glass et support Reanimated.",
   "category": "Navigation",
   "files": [

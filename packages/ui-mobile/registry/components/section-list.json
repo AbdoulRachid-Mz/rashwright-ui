@@ -2,7 +2,7 @@
   "name": "section-list",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "SectionList thémée avec headers de section sticky et état vide.",
   "category": "Data",
   "files": [

@@ -2,7 +2,7 @@
   "name": "safe-area-view",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "SafeAreaView thémé qui respecte les encoches et barres d'état.",
   "category": "Layout",
   "files": [

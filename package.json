@@ -1,7 +1,7 @@
 {
   "name": "@rashwright/workspace-root",
   "private": true,
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Rashwright UI Mobile — Workspace racine (Bun workspaces)",
   "license": "MIT",
   "packageManager": "bun@1.4.2",

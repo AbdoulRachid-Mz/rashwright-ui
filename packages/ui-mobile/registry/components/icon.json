@@ -2,7 +2,7 @@
   "name": "icon",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Composant d'icône universel basé sur @expo/vector-icons avec support de toutes les familles (Ionicons, MaterialIcons, FontAwesome, etc.).",
   "category": "Basic",
   "files": [

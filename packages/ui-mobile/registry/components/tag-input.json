@@ -2,7 +2,7 @@
   "name": "tag-input",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Champ de saisie d'étiquettes/tags avec ajout par séparateur ou validation, suppression individuelle, limite et validation personnalisée.",
   "category": "Forms",
   "files": [

@@ -3,7 +3,7 @@
   "name": "Finance & Wallet",
   "type": "registry:block",
   "version": "1.0.0",
-  "registryVersion": "1.6.2",
+  "registryVersion": "1.6.3",
   "description": "Portefeuille financier mobile : solde avec masquage de confidentialité, raccourcis d'actions, historique catégorisé et cartes bancaires Liquid Glass.",
   "componentName": "FinanceTemplate",
   "entrypoint": "finance-template.tsx",
