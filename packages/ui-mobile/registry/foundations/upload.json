@@ -2,7 +2,7 @@
   "name": "upload",
   "type": "registry:foundation",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Moteur d'upload inliné : orchestration, contrats et providers Cloudinary, Firebase, Vercel Blob, Local et Mock.",
   "category": "Foundation",
   "files": [

@@ -3,7 +3,7 @@
   "name": "Activity Feed Widget",
   "type": "registry:block",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Flux d'activité chronologique avec avatars/icônes, libellés temporels, statuts, interactions et Liquid Glass.",
   "category": "Feed",
   "componentName": "ActivityFeedWidget",

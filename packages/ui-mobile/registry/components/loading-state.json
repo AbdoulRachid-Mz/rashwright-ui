@@ -2,7 +2,7 @@
   "name": "loading-state",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "État de chargement plein écran ou inline avec spinner et message.",
   "category": "States",
   "files": [

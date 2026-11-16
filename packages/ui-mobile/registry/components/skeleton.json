@@ -2,7 +2,7 @@
   "name": "skeleton",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Squelette de chargement animé. Nécessite react-native-reanimated.",
   "category": "States",
   "files": [

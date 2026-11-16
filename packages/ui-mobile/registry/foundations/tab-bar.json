@@ -2,7 +2,7 @@
   "name": "tab-bar",
   "type": "registry:foundation",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Contexte de tab bar animée (valeur partagée Reanimated) pour les écrans à navigation personnalisée.",
   "category": "Foundation",
   "files": [

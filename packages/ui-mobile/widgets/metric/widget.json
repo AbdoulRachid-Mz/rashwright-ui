@@ -3,7 +3,7 @@
   "name": "Metric Widget",
   "type": "registry:block",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Indicateur statistique clé avec tendance, comparaison périodique, icône, état de chargement et support Liquid Glass.",
   "category": "Analytics",
   "componentName": "MetricWidget",

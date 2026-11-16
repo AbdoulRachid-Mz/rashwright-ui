@@ -3,7 +3,7 @@
   "name": "Minimal Starter",
   "type": "registry:block",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Structure d'accueil épurée avec Logo Rashwright, Card, Badges et boutons d'action.",
   "componentName": "MinimalTemplate",
   "entrypoint": "minimal-template.tsx",

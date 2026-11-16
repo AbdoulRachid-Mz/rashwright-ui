@@ -2,7 +2,7 @@
   "name": "text-input",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Champ de saisie texte avec label, erreur, icônes et support Glass.",
   "category": "Forms",
   "files": [

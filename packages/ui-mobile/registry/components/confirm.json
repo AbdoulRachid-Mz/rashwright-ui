@@ -2,7 +2,7 @@
   "name": "confirm",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Dialogue de confirmation natif ou personnalisé avec boutons Confirmer/Annuler.",
   "category": "Feedback",
   "files": [

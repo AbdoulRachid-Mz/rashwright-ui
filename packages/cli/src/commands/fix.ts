@@ -7,7 +7,8 @@ import { detectExpo } from "../core/expo-detector.js";
 import { readConfig, writeConfig } from "../core/config-manager.js";
 import { resolveRegistry } from "../core/remote-registry.js";
 import { diagnoseSkills, copyGlobalSkill, copyComponentSkill } from "../core/skills-manager.js";
-import { installExpoPackages } from "../core/package-manager.js";
+import { installExpoPackages, installNpmPackages } from "../core/package-manager.js";
+import { readLockfile } from "../core/lock-manager.js";
 import { generateNativeWindEnv } from "../core/nativewind-manager.js";
 
 export interface FixAction {
@@ -143,22 +144,34 @@ export function fixCommand(): Command {
         try {
           const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
           const allDeps = { ...(pkg.dependencies ?? {}), ...(pkg.devDependencies ?? {}) };
-          const missingNativeDeps: string[] = [];
 
           const requiredCore = [
             "react-native-reanimated",
             "react-native-gesture-handler",
             "react-native-safe-area-context",
+            "expo-system-ui",
           ];
 
           if (config?.glass) {
             requiredCore.push("expo-blur", "expo-linear-gradient");
           }
 
-          for (const dep of requiredCore) {
-            if (!(dep in allDeps)) {
-              missingNativeDeps.push(dep);
+          // Collect all Expo dependencies declared by the locked artifacts so
+          // that a partial/crashed install is fully repaired (not only a
+          // hard-coded subset).
+          const lock = readLockfile(cwd);
+          const declaredExpoDeps = new Set<string>(requiredCore);
+          for (const section of ["components", "foundations", "templates", "widgets"] as const) {
+            for (const entry of Object.values((lock as unknown as Record<string, Record<string, { expoDependencies?: string[] }>>)?.[section] ?? {})) {
+              for (const dep of entry?.expoDependencies ?? []) {
+                declaredExpoDeps.add(dep);
+              }
             }
+          }
+
+          const missingNativeDeps: string[] = [];
+          for (const dep of declaredExpoDeps) {
+            if (!(dep in allDeps)) missingNativeDeps.push(dep);
           }
 
           if (missingNativeDeps.length > 0) {
@@ -172,6 +185,36 @@ export function fixCommand(): Command {
             if (!options.dryRun) {
               try {
                 installExpoPackages(missingNativeDeps, project.packageManager, cwd, false);
+                action.applied = true;
+              } catch (err: unknown) {
+                action.error = err instanceof Error ? err.message : String(err);
+              }
+            } else {
+              action.applied = true;
+            }
+            actions.push(action);
+          }
+
+          // npm dependencies declared by locked artifacts but missing from package.json
+          const declaredNpmDeps = new Set<string>();
+          for (const section of ["components", "foundations", "templates", "widgets"] as const) {
+            for (const entry of Object.values((lock as unknown as Record<string, Record<string, { dependencies?: string[] }>>)?.[section] ?? {})) {
+              for (const dep of entry?.dependencies ?? []) {
+                declaredNpmDeps.add(dep);
+              }
+            }
+          }
+          const missingNpmDeps = [...declaredNpmDeps].filter((dep) => !(dep in allDeps));
+          if (missingNpmDeps.length > 0) {
+            const action: FixAction = {
+              id: "npm-deps",
+              title: `Installation des dépendances npm manquantes (${missingNpmDeps.join(", ")})`,
+              description: `Synchronisation via ${project.packageManager}`,
+              applied: false,
+            };
+            if (!options.dryRun) {
+              try {
+                installNpmPackages(missingNpmDeps, project.packageManager, cwd, false);
                 action.applied = true;
               } catch (err: unknown) {
                 action.error = err instanceof Error ? err.message : String(err);

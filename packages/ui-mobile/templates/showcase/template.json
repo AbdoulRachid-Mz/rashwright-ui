@@ -3,7 +3,7 @@
   "name": "Showcase",
   "type": "registry:block",
   "version": "1.0.1",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Vitrine de tous les composants Rashwright UI avec onglets overview, composants et glass.",
   "componentName": "ShowcaseTemplate",
   "entrypoint": "showcase-template.tsx",

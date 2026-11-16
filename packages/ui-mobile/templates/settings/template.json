@@ -3,7 +3,7 @@
   "name": "Settings",
   "type": "registry:block",
   "version": "1.0.1",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Écran paramètres avec profil utilisateur, sélecteur d'apparence 3 modes (Système, Clair, Sombre) et contrôle Liquid Glass.",
   "componentName": "SettingsTemplate",
   "entrypoint": "settings-template.tsx",

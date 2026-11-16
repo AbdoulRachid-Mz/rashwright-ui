@@ -2,7 +2,7 @@
   "name": "data-table",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Tableau de données avec tri par colonnes, recherche et support Glass.",
   "category": "Data",
   "files": [

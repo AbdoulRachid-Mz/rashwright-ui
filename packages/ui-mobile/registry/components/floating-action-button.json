@@ -2,7 +2,7 @@
   "name": "floating-action-button",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Bouton d'action flottant (FAB) avec animation d'apparition et retour haptique.",
   "category": "Navigation",
   "files": [

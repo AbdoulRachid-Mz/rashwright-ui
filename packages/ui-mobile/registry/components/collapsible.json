@@ -2,7 +2,7 @@
   "name": "collapsible",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Section dépliable animée, version single-item de l'Accordion.",
   "category": "Layout",
   "files": [

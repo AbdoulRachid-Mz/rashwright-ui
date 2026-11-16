@@ -2,7 +2,7 @@
   "name": "floating-label-input",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Champ de saisie avec étiquette flottante animée, support d'icônes, d'erreurs et de variantes Glass.",
   "category": "Forms",
   "files": [

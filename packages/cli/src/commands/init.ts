@@ -861,7 +861,8 @@ export function initCommand(): Command {
           const foundation = loadFoundationEntry(foundationName, REGISTRY_ROOT);
           if (!foundation) {
             throw new Error(
-              `Manifeste de fondation introuvable ou invalide : ${foundationName}`,
+              `Manifeste de fondation introuvable ou invalide : ${foundationName}. ` +
+                `Mettez à jour @rashwright/ui-mobile (version >= 1.6.0) : bun add -g @rashwright/ui-mobile@latest`,
             );
           }
 

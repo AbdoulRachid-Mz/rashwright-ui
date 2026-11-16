@@ -2,7 +2,7 @@
   "name": "rashwright-logo",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Logo officiel Rashwright (RS) en PNG avec fallback SVG textuel, taille configurable.",
   "category": "Basic",
   "files": [

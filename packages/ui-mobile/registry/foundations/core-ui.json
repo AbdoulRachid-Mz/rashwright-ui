@@ -2,7 +2,7 @@
   "name": "core-ui",
   "type": "registry:foundation",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Primitives UI Core ThemedText et ThemedView, utilisées implicitement par la majorité des composants.",
   "category": "Foundation",
   "files": [

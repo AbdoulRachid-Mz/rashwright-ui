@@ -2,7 +2,7 @@
   "name": "upload",
   "type": "registry:lib",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Moteur d'upload modulaire et inliné supportant 5 providers (Cloudinary, Firebase, Vercel Blob, Local, Mock).",
   "category": "Lib",
   "files": [

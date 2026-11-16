@@ -2,7 +2,7 @@
   "name": "activity-indicator",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Indicateur d'activité thémé avec taille et couleur configurables.",
   "category": "States",
   "files": [

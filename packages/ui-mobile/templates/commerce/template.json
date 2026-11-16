@@ -3,7 +3,7 @@
   "name": "Commerce Suite",
   "type": "registry:block",
   "version": "1.0.1",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Boutique e-commerce premium avec catalogue de produits, écran de détail produit complet (productId), sélection de variantes et gestion du panier.",
   "componentName": "CommerceTemplate",
   "entrypoint": "commerce-template.tsx",

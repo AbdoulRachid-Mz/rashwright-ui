@@ -2,7 +2,7 @@
   "name": "color-picker",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Sélecteur de couleur tactile avec nuancier de palettes rapides, saisie hexadécimale, retour haptique et variante Liquid Glass.",
   "category": "Forms",
   "files": [

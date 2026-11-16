@@ -2,7 +2,7 @@
   "name": "modal",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Modal générique avec animations d'entrée/sortie.",
   "category": "Overlay",
   "files": [

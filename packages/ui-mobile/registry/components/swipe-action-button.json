@@ -2,7 +2,7 @@
   "name": "swipe-action-button",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Bouton de confirmation par glissement horizontal (Slide to Confirm) avec retour élastique, haptique et validation par seuil.",
   "category": "Basic",
   "files": [

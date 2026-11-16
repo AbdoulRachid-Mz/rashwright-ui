@@ -2,7 +2,7 @@
   "name": "alert",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Alerte inline avec variants (success, warning, error, info) et bouton de fermeture.",
   "category": "Feedback",
   "files": [

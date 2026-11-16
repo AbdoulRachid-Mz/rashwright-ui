@@ -43,7 +43,7 @@ describe("artefacts — manifestes", () => {
     expect(manifest).not.toBeNull();
     expect(manifest?.type).toBe("component");
     expect(manifest?.version).toBe("1.0.0");
-    expect(manifest?.registryVersion).toBe("1.6.0");
+    expect(manifest?.registryVersion).toBe("1.6.2");
     expect(manifest?.requiresComponents).toContain("text");
     expect(manifest?.requiresFoundations).toContain("theme");
     expect(manifest?.expoDependencies).toContain("expo-blur");

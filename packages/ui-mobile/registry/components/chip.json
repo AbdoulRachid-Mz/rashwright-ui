@@ -2,7 +2,7 @@
   "name": "chip",
   "type": "registry:ui",
   "version": "1.0.0",
-  "registryVersion": "1.6.1",
+  "registryVersion": "1.6.2",
   "description": "Chip/tag sélectionnable avec icône optionnelle et bouton de suppression.",
   "category": "Forms",
   "files": [
