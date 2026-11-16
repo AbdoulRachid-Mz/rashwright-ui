@@ -31,7 +31,7 @@ import {
 } from "../src/core/widgets-registry.js";
 import { REGISTRY_ROOT } from "../src/core/paths.js";
 
-const EXPECTED_COMPONENT_COUNT = 79;
+const EXPECTED_COMPONENT_COUNT = 81;
 
 function artifactFiles(
   kind: "templates" | "widgets",

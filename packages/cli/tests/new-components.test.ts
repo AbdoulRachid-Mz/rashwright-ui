@@ -43,7 +43,7 @@ describe("Nouveaux Composants v1.6.0 & Registry Expansion", () => {
 
   it("le registre contient désormais 79 composants distincts et valides", () => {
     const all = getAllComponents(REGISTRY_ROOT);
-    expect(all.length).toBe(79);
+    expect(all.length).toBe(81);
     for (const comp of NEW_COMPONENTS) {
       const found = getComponent(comp, REGISTRY_ROOT);
       expect(found).toBeDefined();

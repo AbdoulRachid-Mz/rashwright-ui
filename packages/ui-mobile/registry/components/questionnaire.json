@@ -1,0 +1,26 @@
+{
+  "name": "questionnaire",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "registryVersion": "1.6.2",
+  "description": "Primitive de questionnaire multi-étapes avec choix, progression, validation et navigation.",
+  "category": "Forms",
+  "files": [
+    "components/ui/questionnaire.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "requiresFoundations": [
+    "theme"
+  ],
+  "providers": [],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false
+}

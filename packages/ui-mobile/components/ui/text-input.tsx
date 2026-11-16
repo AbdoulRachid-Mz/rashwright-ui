@@ -10,7 +10,6 @@ import {
   View,
   StyleProp,
   NativeSyntheticEvent,
-  TextInputFocusEventData,
 } from "react-native";
 import { useTheme } from "@/contexts/theme-context";
 import ThemedText from "./text";
@@ -92,7 +91,6 @@ const TextInput = forwardRef<React.ElementRef<typeof RNTextInput>, TextInputProp
           fontSize: theme.typography.base,
           paddingVertical: theme.spacing.sm,
           ...(Platform.OS === "web" && {
-            outlineStyle: "none" satisfies TextStyle[keyof TextStyle],
             outlineWidth: 0,
             borderWidth: 0,
           }),

@@ -1,0 +1,26 @@
+{
+  "name": "message",
+  "type": "registry:ui",
+  "version": "1.0.0",
+  "registryVersion": "1.6.2",
+  "description": "Composant de message de conversation avec avatar, en-tête, pied de page et alignement.",
+  "category": "Communication",
+  "files": [
+    "components/ui/message.tsx"
+  ],
+  "dependencies": [],
+  "expoDependencies": [],
+  "optionalExpoDependencies": [],
+  "requiresComponents": [],
+  "requiresFoundations": [
+    "theme"
+  ],
+  "providers": [],
+  "supportsGlass": false,
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "nativeRebuildRequired": false
+}

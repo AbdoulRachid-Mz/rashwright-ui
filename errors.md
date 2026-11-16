@@ -1,74 +1,81 @@
-# Diagnostic & Résolution des Erreurs — NativeWind Dark Mode
+PS C:\Users\user\Desktop\abdoul\dev\rashwright-office\rs-test> rs-ui add
 
-## Statut : ✅ RÉSOLU (v1.0.1 / v1.2.0)
+  Rashwright UI Mobile — rs-ui add
 
-### Erreur initiale
-```text
-Web ERROR [Error: Cannot manually set color scheme, as dark mode is type 'media'. Please use StyleSheet.setFlag('darkMode', 'class')]
+? Sélectionnez les composants à installer (↑/↓ naviguer, Espace = cocher, a = tout, Entrée = va
+lider, taper = filtrer)
+ --force pour réinstaller)
+ - icon-button               Bouton icône rond avec variants de style et retour haptique option
+nel. [🥽 glass]  déjà installé (utilisez --force pour réinstaller)
+>( ) like-button               Bouton J'aime interactif avec pulsation de rebond, halo de parti
+cules, compteur dynamique, retour haptique et variantes Glass. [🥽 glass]
+ - rashwright-logo           Logo officiel Rashwright (RS) en PNG avec fallback SVG textuel, ta
+ille configurable. déjà installé (utilisez --force pour réinstaller)
 
-Code: color-scheme.js
-  44 | set(value) {
-  45 | if (darkMode === "media") {
-> 46 | throw new Error("Cannot manually set color scheme, as dark mode is type 'media'. Please use StyleSheet.setFlag('darkMode', 'class')");
-     | ^
-  47 | }
-  48 | if (!globalThis.window) {
-  49 | throw new Error("Cannot manually set color scheme while not in a browser environment.");
-Call Stack
-  exports.colorScheme.set (node_modules\react-native-css-interop\dist\runtime\web\color-scheme.js:46:19)
-  MutationObserver$argument_0 (node_modules\react-native-css-interop\dist\runtime\web\color-scheme.js:36:29)
-```
+like-button@1.0.0 · ios,android,web
+↑↓ navigate • space select • a all • i invert • ⏎ submit
 
-### Cause racine
-Sur le Web avec `react-native-css-interop` / NativeWind, lorsque le mode sombre n'est pas explicitement configuré en mode classe (`class`), il utilise par défaut la media query système (`media`). Tenter de basculer manuellement le thème via `colorScheme.set(...)` lève alors cette exception bloquante.
 
-### Correctifs appliqués dans le générateur CLI (`nativewind-manager.ts`)
-1. **Configuration Tailwind** : `tailwind.config.js` généré inclut systématiquement :
-   ```javascript
-   darkMode: "class",
-   ```
-2. **Initialisation CSS Interop** : Configuration automatique du flag d'interopérabilité pour le runtime Web :
-   ```javascript
-   import { StyleSheet } from "react-native";
-   // Autorise le basculement manuel de thème sans exception
-   ```
-3. **Résultat** : Basculement transparent du mode sombre / clair sur Web, iOS et Android sans conflit d'API.
 
----
+==============================================tsc errors===========================
+PS C:\Users\user\Desktop\abdoul\dev\rashwright-office\rs-test> rs-ui add
 
-## v1.5.0 — Correctifs NativeWind v5 npm & Tests Windows
+  Rashwright UI Mobile — rs-ui add
 
-### ✅ RÉSOLU — `npm install --force` bloque indéfiniment avec NativeWind v5
+√ Sélectionnez les composants à installer (↑/↓ naviguer, Espace = cocher, a = tout, Entrée = va
+lider, taper = filtrer) like-button               Bouton J'aime interactif avec pulsation de re
+bond, halo de particules, compteur dynamique, retour haptique et variantes Glass. [🥽 glass]
+  → 1 composant(s) sélectionné(s)
+  Plan d'installation:
 
-**Cause racine** : `nativewind@5.0.0-rc.0` requiert `react-native-css@3.1.0-rc.0` qui lui-même requiert `react>=19`, `react-native>=0.81`, `lightningcss>=1.27.0`. La commande `npm install --force` entre dans un état de résolution infinie de conflits de peer-deps.
+  Fondations internes:
+    + theme déjà installée [12 fichier(s)]
+    + glass déjà installée [2 fichier(s)]
+    + liquid déjà installée [8 fichier(s)]
 
-**Solution** : `npm install --legacy-peer-deps` — ignore les conflits de peer-deps sans bloquer. Appliqué dans :
-- `buildProjectInstallCommand('npm')` → `"npm install --legacy-peer-deps"`
-- `buildInstallCommand('npm', [...])` → `"npm install --legacy-peer-deps <packages>"`
+  Composants demandés:
+    + like-button@1.0.0 [1 fichier(s)]
 
-**Fichiers modifiés** :
-- `packages/cli/src/core/package-manager.ts`
-- `packages/cli/src/commands/init.ts` (message d'erreur)
-- `packages/cli/src/commands/fix.ts` (détection et avertissement npm)
+  Intégrations système (providers React):
+    • ThemeProvider
 
-### ✅ RÉSOLU — Tests flaky Windows (`afterEach` timeout 20s)
+√ Continuer? Yes
+√ Fondations traitées (3)
+√ ✔ like-button@1.0.0 ajouté
 
-**Cause** : `rmSync({ recursive: true, force: true })` sur Windows prend parfois >20s sur des répertoires de tests volumineux. Le timeout par défaut de Vitest pour les hooks `afterEach` est 20s.
+  Vérification post-installation (indépendante du lockfile) :
+    23 fichier(s) et 82 import(s) analysés
+    ✖ TypeScript : tsc a retourné 2
+    ⚠ TypeScript signale des erreurs hors des fichiers installés :
+src/components/ui/text-input.tsx(13,3): error TS2724: '"react-native"' has no exported member named 'TextInputFocusEventData'. Did you mean 'TextInputFocusEvent'?
+src/components/ui/text-input.tsx(89,9): error TS2322: Type '{ outlineStyle?: "none" | undefined; outlineWidth?: number | undefined; borderWidth?: number | undefined; flex: number; color: string; fontSize: number; paddingVertical: number; }' is not assignable to type 'Partial<Readonly<Omit<Readonly<Omit<TextStyle, "resizeMode" | "objectFit" | "tintColor" | "overlayColor"> & { resizeMode?: ImageResizeMode | undefined; objectFit?: "fill" | ... 4 more ... | undefined; tintColor?: ____ColorValue_Internal | undefined; overlayColor?: ____ColorValue_Internal | undefined; }>, never> & Om...'.
+  Types of property 'outlineStyle' are incompatible.
+    Type '"none" | undefined' is not assignable to type '"solid" | "dotted" | "dashed" | undefined'.
+      Type '"none"' is not assignable to type '"solid" | "dotted" | "dashed" | undefined'.
 
-**Solution** : Ajout de `60_000ms` en 2ème argument de `afterEach` dans :
-- `tests/monorepo.test.ts`
-- `tests/nativewind-manager.test.ts`
-- `tests/create-component.test.ts`
-- `tests/backup-manager.test.ts`
+  ✔ Installation terminée
+    ✔ index.ts synchronisé avec 15 composants
 
----
+PS C:\Users\user\Desktop\abdoul\dev\rashwright-office\rs-test> bunx tsc --noEmit
+src/components/ui/text-input.tsx:13:3 - error TS2724: '"react-native"' has no exported member named 'TextInputFocusEventData'. Did you mean 'TextInputFocusEvent'?
 
-## v1.6.0 — Résolution Moteur de Widgets & Showcases
+13   TextInputFocusEventData,
+     ~~~~~~~~~~~~~~~~~~~~~~~
 
-### ✅ RÉSOLU — `validate-registry.ts` échouait si des showcases étaient sous `components/ui/`
-**Cause** : Le script de validation `validate-registry.ts` applique la règle stricte `F-2` selon laquelle chaque fichier TSX sous `components/ui/` doit obligatoirement avoir une fiche JSON associée dans `registry/components/`. Y placer des écrans de showcase complets cassait la validation.
-**Solution** : Création d'un dossier dédié de premier niveau `packages/ui-mobile/showcases/` (`finance-dashboard-showcase.tsx`, `analytics-dashboard-showcase.tsx`) ré-exporté proprement depuis le barrel racine de la bibliothèque.
+src/components/ui/text-input.tsx:89:9 - error TS2322: Type '{ outlineStyle?: "none" | undefined; outlineWidth?: number | undefined; borderWidth?: number | undefined; flex: number; color: string; fontSize: number; paddingVertical: number; }' is not assignable to type 'Partial<Readonly<Omit<Readonly<Omit<TextStyle, "resizeMode" | "objectFit" | "tintColor" | "overlayColor"> & { resizeMode?: ImageResizeMode | undefined; objectFit?: "fill" | ... 4 more ... | undefined; tintColor?: ____ColorValue_Internal | undefined; overlayColor?: ____ColorValue_Internal | undefined; }>, never> & Om...'.
+  Types of property 'outlineStyle' are incompatible.
+    Type '"none" | undefined' is not assignable to type '"solid" | "dotted" | "dashed" | undefined'.
+      Type '"none"' is not assignable to type '"solid" | "dotted" | "dashed" | undefined'.
 
-### ✅ RÉSOLU — Typage TypeScript pour `widgets/` et `showcases/` dans `ui-mobile`
-**Cause** : `packages/ui-mobile/tsconfig.json` ne ciblait par défaut que `"components/**/*"` et les dossiers initiaux, ce qui provoquait des erreurs lors des imports cross-modules.
-**Solution** : Inclusion explicite de `"widgets/**/*.ts"`, `"widgets/**/*.tsx"`, `"showcases/**/*.ts"`, `"showcases/**/*.tsx"` dans le `tsconfig.json`.
+89         input: {
+           ~~~~~
+
+  node_modules/react-native/types_generated/Libraries/StyleSheet/StyleSheetTypes.d.ts:870:3
+    870   readonly [key: string]: Partial<____DangerouslyImpreciseStyle_Internal>;
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    The expected type comes from this index signature.
+
+
+Found 2 errors in the same file, starting at: src/components/ui/text-input.tsx:13
+
+PS C:\Users\user\Desktop\abdoul\dev\rashwright-office\rs-test>

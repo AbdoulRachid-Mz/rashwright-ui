@@ -361,6 +361,8 @@ export function addCommand(): Command {
           const selected = await checkbox({
             message: "Sélectionnez les composants à installer (↑/↓ naviguer, Espace = cocher, a = tout, Entrée = valider, taper = filtrer)",
             choices,
+            pageSize: Math.max(10, (process.stdout.rows ?? 30) - 6),
+            loop: false,
           });
           componentNames = selected.filter((s): s is string => typeof s === "string" && !s.startsWith("__SEP_"));
         } catch (err) {

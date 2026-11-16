@@ -43,6 +43,7 @@
     "keyboard-avoiding-view",
     "like-button",
     "loading-state",
+    "message",
     "modal",
     "navigation-menu",
     "number-input",
@@ -52,6 +53,7 @@
     "popover",
     "popup",
     "progress",
+    "questionnaire",
     "radio",
     "rashwright-logo",
     "rating",
@@ -93,6 +95,7 @@
       "icon",
       "icon-button",
       "like-button",
+      "message",
       "rashwright-logo",
       "swipe-action-button"
     ],
@@ -128,7 +131,8 @@
       "switch",
       "tag-input",
       "text-input",
-      "time-picker"
+      "time-picker",
+      "questionnaire"
     ],
     "Navigation": [
       "actions-grid",
@@ -194,7 +198,7 @@
     "cyan",
     "glass"
   ],
-  "totalComponents": 79,
+  "totalComponents": 81,
   "sdkVersions": [
     54,
     55,
